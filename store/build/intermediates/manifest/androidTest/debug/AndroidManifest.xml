@@ -10,8 +10,8 @@
         android:name="android.test.InstrumentationTestRunner"
         android:functionalTest="false"
         android:handleProfiling="false"
-        android:label="Tests for com.nytimes.android.store.test"
-        android:targetPackage="com.nytimes.android.store.test" />
+        android:label="Tests for com.nytimes.android.external.store.test"
+        android:targetPackage="com.nytimes.android.external.store.test" />
 
     <application>
         <uses-library android:name="android.test.runner" />
