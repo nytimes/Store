@@ -5,7 +5,7 @@ apply plugin: 'nytimes-android-quality'
 //apply from: '../../buildsystem/dependencies.gradle'
 apply plugin: 'com.getkeepsafe.dexcount'
 
-group = 'com.nytimes.android.store.middleware'
+group = 'com.nytimes.android.external.store.middleware'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 

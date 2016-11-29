@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.nytimes.android.store.base.Persister;
-import com.nytimes.android.store.base.Store;
-import com.nytimes.android.store.base.impl.BarCode;
-import com.nytimes.android.store.base.impl.StoreBuilder;
+import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.nytimes.android.store.base.impl.BarCode.empty;
+import static com.nytimes.android.external.store.base.impl.BarCode.empty;
 
 public class StoreActivity extends Activity {
     @Override

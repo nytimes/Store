@@ -1,7 +1,7 @@
 package com.nytimes.android.external.store.middleware;
 
 import com.google.gson.Gson;
-import com.nytimes.android.store.base.Parser;
+import com.nytimes.android.external.store.base.Parser;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

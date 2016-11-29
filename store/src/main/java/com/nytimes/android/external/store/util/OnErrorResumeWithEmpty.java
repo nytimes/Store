@@ -1,4 +1,4 @@
-package com.nytimes.android.store.util;
+package com.nytimes.android.external.store.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

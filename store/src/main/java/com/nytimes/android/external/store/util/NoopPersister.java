@@ -1,7 +1,7 @@
-package com.nytimes.android.store.util;
+package com.nytimes.android.external.store.util;
 
-import com.nytimes.android.store.base.Persister;
-import com.nytimes.android.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

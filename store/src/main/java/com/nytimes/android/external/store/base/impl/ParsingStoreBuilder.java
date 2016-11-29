@@ -1,15 +1,15 @@
-package com.nytimes.android.store.base.impl;
+package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
 
 import com.google.common.cache.Cache;
-import com.nytimes.android.store.base.DiskRead;
-import com.nytimes.android.store.base.DiskWrite;
-import com.nytimes.android.store.base.Fetcher;
-import com.nytimes.android.store.base.Parser;
-import com.nytimes.android.store.base.Persister;
-import com.nytimes.android.store.base.Store;
-import com.nytimes.android.store.util.NoopPersister;
+import com.nytimes.android.external.store.base.DiskRead;
+import com.nytimes.android.external.store.base.DiskWrite;
+import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.util.NoopPersister;
 
 import java.util.concurrent.Callable;
 

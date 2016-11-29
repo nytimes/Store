@@ -1,4 +1,4 @@
-package com.nytimes.android.store.base;
+package com.nytimes.android.external.store.base;
 
 import rx.functions.Func1;
 

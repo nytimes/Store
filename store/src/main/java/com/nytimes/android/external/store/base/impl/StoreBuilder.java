@@ -1,11 +1,11 @@
-package com.nytimes.android.store.base.impl;
+package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
 
 import com.google.common.cache.Cache;
-import com.nytimes.android.store.base.*;
-import com.nytimes.android.store.util.NoopParserFunc;
-import com.nytimes.android.store.util.NoopPersister;
+import com.nytimes.android.external.store.base.*;
+import com.nytimes.android.external.store.util.NoopParserFunc;
+import com.nytimes.android.external.store.util.NoopPersister;
 
 import java.util.concurrent.Callable;
 

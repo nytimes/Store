@@ -1,15 +1,15 @@
-package com.nytimes.android.store.base.impl;
+package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
 
 import com.google.common.cache.Cache;
-import com.nytimes.android.store.base.Fetcher;
-import com.nytimes.android.store.base.InternalStore;
-import com.nytimes.android.store.base.Parser;
-import com.nytimes.android.store.base.Persister;
-import com.nytimes.android.store.base.Store;
-import com.nytimes.android.store.util.NoopParserFunc;
-import com.nytimes.android.store.util.NoopPersister;
+import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.InternalStore;
+import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.util.NoopParserFunc;
+import com.nytimes.android.external.store.util.NoopPersister;
 
 import rx.Observable;
 import rx.functions.Func1;

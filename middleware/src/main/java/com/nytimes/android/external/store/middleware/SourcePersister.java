@@ -3,8 +3,8 @@ package com.nytimes.android.external.store.middleware;
 import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.store.middleware.fs.FileSystem;
-import com.nytimes.android.store.base.Persister;
-import com.nytimes.android.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.base.impl.BarCode;
 
 import javax.inject.Inject;
 

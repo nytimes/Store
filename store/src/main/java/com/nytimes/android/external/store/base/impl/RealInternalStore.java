@@ -1,13 +1,13 @@
-package com.nytimes.android.store.base.impl;
+package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.nytimes.android.store.base.Fetcher;
-import com.nytimes.android.store.base.InternalStore;
-import com.nytimes.android.store.base.Persister;
-import com.nytimes.android.store.util.OnErrorResumeWithEmpty;
+import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.InternalStore;
+import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

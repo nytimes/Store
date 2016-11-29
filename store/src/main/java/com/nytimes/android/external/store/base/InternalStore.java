@@ -1,8 +1,8 @@
-package com.nytimes.android.store.base;
+package com.nytimes.android.external.store.base;
 
 import android.support.annotation.NonNull;
 
-import com.nytimes.android.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.BarCode;
 
 import rx.Observable;
 

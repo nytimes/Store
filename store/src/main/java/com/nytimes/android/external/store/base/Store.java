@@ -1,18 +1,18 @@
-package com.nytimes.android.store.base;
+package com.nytimes.android.external.store.base;
 
 import android.support.annotation.NonNull;
 
-import com.nytimes.android.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.BarCode;
 
 import rx.Observable;
 
 /**
- * a {@link com.nytimes.android.store.base.impl.StoreBuilder StoreBuilder}
+ * a {@link com.nytimes.android.external.store.base.impl.StoreBuilder StoreBuilder}
  * will return an instance of a store
  * <p>
- * A {@link com.nytimes.android.store.base.Store  Store} can
- * {@link com.nytimes.android.store.base.Store#get(BarCode) Store.get() } cached data or
- * force a call to {@link com.nytimes.android.store.base.Store#fetch(BarCode) Store.fetch() }
+ * A {@link com.nytimes.android.external.store.base.Store  Store} can
+ * {@link com.nytimes.android.external.store.base.Store#get(BarCode) Store.get() } cached data or
+ * force a call to {@link com.nytimes.android.external.store.base.Store#fetch(BarCode) Store.fetch() }
  * (skipping cache)
  */
 public interface Store<T> {
@@ -29,7 +29,7 @@ public interface Store<T> {
     Observable<T> fetch(@NonNull BarCode barCode);
 
     /**
-     * Similar to  {@link com.nytimes.android.store.base.Store#get(BarCode) Store.get() }
+     * Similar to  {@link com.nytimes.android.external.store.base.Store#get(BarCode) Store.get() }
      * Rather than returning a single response, Stream will stay subscribed for future emissions to the Store
      * NOTE: Stream will continue to get emissions for ANY barcode not just starting one
      */
