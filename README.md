@@ -10,21 +10,7 @@ Here at The New York Times we strive to deliver our users the absolute best expe
 
 A Store is a class that simplifies fetching, parsing, storage, and retrieval of data in your application. A Store is similar to the Repository pattern [[https://msdn.microsoft.com/en-us/library/ff649690.aspx](https://msdn.microsoft.com/en-us/library/ff649690.aspx)] while being exposing a Reactive API built with RxJava and adhering to a unidirectional data flow.
 
-The New York Times Android team uses Store
-#
-[ANNOTATION:
-
-BY &#39;Mike Nakhimovich&#39;
-ON &#39;2016-10-27T04:11:52&#39;
-NOTE: &#39;Sample projects and diagrams to follow. Sorry still a bit rough.&#39;]
-
-#
-[ANNOTATION:
-
-BY &#39;Jolanda Verhoef&#39;
-ON &#39;2016-10-27T04:11:52&#39;
-NOTE: &#39;I&#39;d love a visual representation here. That&#39;s way easier to interpret than written words.&#39;]
-as the abstraction between our UI elements and data operations. Stores simplify the logic around data fetching for offline and online users, helping us be an offline-first application. Stores also help boost app performance by preventing unnecessary network calls or disk reads. The architecture of our flagship news app is made up of immutable data (M)odels, Custom (V)iews, (P)resenters and (S)tores -  which we like to call MVPS.
+The New York Times Android team uses Store as the abstraction between our UI elements and data operations. Stores simplify the logic around data fetching for offline and online users, helping us be an offline-first application. Stores also help boost app performance by preventing unnecessary network calls or disk reads. The architecture of our flagship news app is made up of immutable data (M)odels, Custom (V)iews, (P)resenters and (S)tores -  which we like to call MVPS.
 
 Overview
 
