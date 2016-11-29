@@ -1,0 +1,76 @@
+apply from: 'buildsystem/dependencies.gradle'
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+        maven {
+            url 'https://artifactory.em.nytimes.com/artifactory/android-snapshots/'
+        }
+        maven {
+            url 'https://artifactory.em.nytimes.com/artifactory/android-releases/'
+        }
+        maven {
+            url 'https://artifactory.em.nytimes.com/artifactory/android-maven-thirdparty-local/'
+        }
+        maven {
+            url = 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+        }
+
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.google.gms:google-services:3.0.0'
+        classpath('com.nytimes.android.gradle:base-plugin:1.0.5') {
+            exclude module: 'guava-jdk5'
+        }
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.5' // for non-android projects
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+        classpath 'com.google.gms:google-services:3.0.0'
+    }
+
+    // this corresponds to the lombok.ast included above. fixes lint for retro-lambda
+    configurations.classpath.exclude group: 'com.android.tools.com.nytimes.android.external.lombok'
+}
+
+allprojects {
+    buildscript {
+
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    // Workaround to prevent Gradle from stealing focus from other apps during tests run/etc.
+    // https://gist.github.com/artem-zinnatullin/4c250e04636e25797165
+    tasks.withType(JavaForkOptions) {
+        jvmArgs '-Djava.awt.headless=true'
+    }
+}
+
+// From command line use: -PdisablePreDex to disable it: primarily for jenkins
+project.ext.preDexLibs = !project.hasProperty('disablePreDex')
+
+subprojects {
+    project.plugins.whenPluginAdded { plugin ->
+        if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        }
+    }
+}
+
+task gitHooksInit (type:Exec) {
+    workingDir "$projectDir"
+    commandLine './init-git-hooks'
+}
