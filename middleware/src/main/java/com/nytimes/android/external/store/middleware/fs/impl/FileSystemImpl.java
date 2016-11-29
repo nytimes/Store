@@ -21,7 +21,6 @@ import static com.google.common.io.Files.createParentDirs;
 import static com.google.common.io.Files.simplifyPath;
 import static java.lang.String.format;
 
-
 /**
  * implements a {@link FileSystem} as regular files on disk in a specific document root (kind of like a root jail)
  * <p>
@@ -63,10 +62,12 @@ public class FileSystemImpl implements FileSystem {
 
     @Override
     public Collection<String> list(String directory) throws FileNotFoundException {
+
+
         return findFiles(directory).transform(new Function<FSFile, String>() {
             @Override
-            public String apply(FSFile fsFile) {
-                return fsFile.path();
+            public String apply(FSFile input) {
+                return input.path();
             }
         }).toList();
     }

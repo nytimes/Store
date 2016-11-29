@@ -28,4 +28,8 @@ public final class BarCode implements Serializable {
     public String getType() {
         return type;
     }
+
+    public static BarCode empty() {
+        return new BarCode("","");
+    }
 }

@@ -38,7 +38,6 @@ android {
 
 dependencies {
     compile project(path: ':store')
-
     testCompile libraries.mockito
     testCompile libraries.assertJ
     testCompile libraries.junit
