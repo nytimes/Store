@@ -3,6 +3,12 @@ package com.nytimes.android.sample.activity;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.nytimes.android.sample.cache.Cache;
+import com.nytimes.android.sample.cache.CacheBuilder;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoreActivity extends Activity {
@@ -10,6 +16,25 @@ public class StoreActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AtomicInteger integer = new AtomicInteger(0);
+
+
+        Cache<Object, Object> cache = CacheBuilder.newBuilder()
+                .maximumSize(5)
+                .expireAfterAccess(5, TimeUnit.SECONDS)
+                .build();
+
+        try {
+            cache.get("hello", new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    return "Hello";
+                }
+            });
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+
 //        Store<String> sampleStore = StoreBuilder.<String>builder()
 //                .nonObservableFetcher(barCode -> "Hello")
 //                .persister(new Persister<String>() {
