@@ -38,10 +38,8 @@ android {
 
 dependencies {
 //    compile fileTree(dir: 'libs', include: ['*.jar'])
-        compile project(path: ':cache')
-
+    compile project(path: ':cache')
     compile libraries.rxJava
-//    compile libraries.guava
     compile libraries.slf4jNoOp
     compile libraries.supportAnnotations
 
