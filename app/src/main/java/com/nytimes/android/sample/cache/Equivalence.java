@@ -170,66 +170,66 @@ public abstract class Equivalence<T> {
    *
    * @since 10.0
    */
-  public static final class Wrapper<T> implements Serializable {
-    private final Equivalence<? super T> equivalence;
-    @Nullable private final T reference;
-
-    private Wrapper(Equivalence<? super T> equivalence, @Nullable T reference) {
-      this.equivalence = equivalence;
-      this.reference = reference;
-    }
-
-    /** Returns the (possibly null) reference wrapped by this instance. */
-    @Nullable
-    public T get() {
-      return reference;
-    }
-
-    /**
-     * Returns {@code true} if {@link Equivalence#equivalent(Object, Object)} applied to the wrapped
-     * references is {@code true} and both wrappers use the {@link Object#equals(Object) same}
-     * equivalence.
-     */
-    @Override
-    public boolean equals(@Nullable Object obj) {
-      if (obj == this) {
-        return true;
-      }
-      if (obj instanceof Wrapper) {
-        Wrapper<?> that = (Wrapper<?>) obj; // note: not necessarily a Wrapper<T>
-
-        if (this.equivalence.equals(that.equivalence)) {
-          /*
-           * We'll accept that as sufficient "proof" that either equivalence should be able to
-           * handle either reference, so it's safe to circumvent compile-time type checking.
-           */
-          @SuppressWarnings("unchecked")
-          Equivalence<Object> equivalence = (Equivalence<Object>) this.equivalence;
-          return equivalence.equivalent(this.reference, that.reference);
-        }
-      }
-      return false;
-    }
-
-    /**
-     * Returns the result of {@link Equivalence#hash(Object)} applied to the wrapped reference.
-     */
-    @Override
-    public int hashCode() {
-      return equivalence.hash(reference);
-    }
-
-    /**
-     * Returns a string representation for this equivalence wrapper. The form of this string
-     * representation is not specified.
-     */
-    @Override
-    public String toString() {
-      return equivalence + ".wrap(" + reference + ")";
-    }
-
-    private static final long serialVersionUID = 0;
-  }
+//  public static final class Wrapper<T> implements Serializable {
+//    private final Equivalence<? super T> equivalence;
+//    @Nullable private final T reference;
+//
+//    private Wrapper(Equivalence<? super T> equivalence, @Nullable T reference) {
+//      this.equivalence = equivalence;
+//      this.reference = reference;
+//    }
+//
+//    /** Returns the (possibly null) reference wrapped by this instance. */
+//    @Nullable
+//    public T get() {
+//      return reference;
+//    }
+//
+//    /**
+//     * Returns {@code true} if {@link Equivalence#equivalent(Object, Object)} applied to the wrapped
+//     * references is {@code true} and both wrappers use the {@link Object#equals(Object) same}
+//     * equivalence.
+//     */
+//    @Override
+//    public boolean equals(@Nullable Object obj) {
+//      if (obj == this) {
+//        return true;
+//      }
+//      if (obj instanceof Wrapper) {
+//        Wrapper<?> that = (Wrapper<?>) obj; // note: not necessarily a Wrapper<T>
+//
+//        if (this.equivalence.equals(that.equivalence)) {
+//          /*
+//           * We'll accept that as sufficient "proof" that either equivalence should be able to
+//           * handle either reference, so it's safe to circumvent compile-time type checking.
+//           */
+//          @SuppressWarnings("unchecked")
+//          Equivalence<Object> equivalence = (Equivalence<Object>) this.equivalence;
+//          return equivalence.equivalent(this.reference, that.reference);
+//        }
+//      }
+//      return false;
+//    }
+//
+//    /**
+//     * Returns the result of {@link Equivalence#hash(Object)} applied to the wrapped reference.
+//     */
+//    @Override
+//    public int hashCode() {
+//      return equivalence.hash(reference);
+//    }
+//
+//    /**
+//     * Returns a string representation for this equivalence wrapper. The form of this string
+//     * representation is not specified.
+//     */
+//    @Override
+//    public String toString() {
+//      return equivalence + ".wrap(" + reference + ")";
+//    }
+//
+//    private static final long serialVersionUID = 0;
+//  }
 
 
 
@@ -239,46 +239,46 @@ public abstract class Equivalence<T> {
 //  }
 // --Commented out by Inspection STOP (11/29/16, 5:02 PM)
 
-  private static final class EquivalentToPredicate<T> implements Predicate<T>, Serializable {
-
-    private final Equivalence<T> equivalence;
-    @Nullable private final T target;
-
-    EquivalentToPredicate(Equivalence<T> equivalence, @Nullable T target) {
-      this.equivalence = equivalence;
-      this.target = target;
-    }
-
-    @Override
-    public boolean apply(@Nullable T input) {
-      return equivalence.equivalent(input, target);
-    }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj instanceof EquivalentToPredicate) {
-        EquivalentToPredicate<?> that = (EquivalentToPredicate<?>) obj;
-
-        return equivalence.equals(that.equivalence) && Objects.equal(target, that.target);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hashCode(equivalence, target);
-    }
-
-    @Override
-    public String toString() {
-      return equivalence + ".equivalentTo(" + target + ")";
-    }
-
-    private static final long serialVersionUID = 0;
-  }
+//  private static final class EquivalentToPredicate<T> implements Predicate<T>, Serializable {
+//
+//    private final Equivalence<T> equivalence;
+//    @Nullable private final T target;
+//
+//    EquivalentToPredicate(Equivalence<T> equivalence, @Nullable T target) {
+//      this.equivalence = equivalence;
+//      this.target = target;
+//    }
+//
+//    @Override
+//    public boolean apply(@Nullable T input) {
+//      return equivalence.equivalent(input, target);
+//    }
+//
+//    @Override
+//    public boolean equals(@Nullable Object obj) {
+//      if (this == obj) {
+//        return true;
+//      }
+//      if (obj instanceof EquivalentToPredicate) {
+//        EquivalentToPredicate<?> that = (EquivalentToPredicate<?>) obj;
+//
+//        return equivalence.equals(that.equivalence) && Objects.equal(target, that.target);
+//      }
+//      return false;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//      return Objects.hashCode(equivalence, target);
+//    }
+//
+//    @Override
+//    public String toString() {
+//      return equivalence + ".equivalentTo(" + target + ")";
+//    }
+//
+//    private static final long serialVersionUID = 0;
+//  }
 
   /**
    * Returns an equivalence that delegates to {@link Object#equals} and {@link Object#hashCode}.

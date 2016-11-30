@@ -7,7 +7,6 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,28 +50,28 @@ public final class Futures {
 // --Commented out by Inspection STOP (11/29/16, 5:03 PM)
 
 
-    private static Executor rejectionPropagatingExecutor(final Executor delegate, final AbstractFuture<?> future) {
-        Preconditions.checkNotNull(delegate);
-        return delegate == DirectExecutor.INSTANCE ? delegate : new Executor() {
-            volatile boolean thrownFromDelegate = true;
-
-            public void execute(final Runnable command) {
-                try {
-                    delegate.execute(new Runnable() {
-                        public void run() {
-                            thrownFromDelegate = false;
-                            command.run();
-                        }
-                    });
-                } catch (RejectedExecutionException var3) {
-                    if (this.thrownFromDelegate) {
-                        future.setException(var3);
-                    }
-                }
-
-            }
-        };
-    }
+//    private static Executor rejectionPropagatingExecutor(final Executor delegate, final AbstractFuture<?> future) {
+//        Preconditions.checkNotNull(delegate);
+//        return delegate == DirectExecutor.INSTANCE ? delegate : new Executor() {
+//            volatile boolean thrownFromDelegate = true;
+//
+//            public void execute(final Runnable command) {
+//                try {
+//                    delegate.execute(new Runnable() {
+//                        public void run() {
+//                            thrownFromDelegate = false;
+//                            command.run();
+//                        }
+//                    });
+//                } catch (RejectedExecutionException var3) {
+//                    if (this.thrownFromDelegate) {
+//                        future.setException(var3);
+//                    }
+//                }
+//
+//            }
+//        };
+//    }
 
     public static <I, O> ListenableFuture<O> transform(ListenableFuture<I> input, Function<? super I, ? extends O> function) {
         Preconditions.checkNotNull(function);
@@ -281,26 +280,26 @@ public final class Futures {
         }
     }
 
-    static final class AsyncCatchingFuture<V, X extends Throwable>
-            extends AbstractCatchingFuture<V, X, AsyncFunction<? super X, ? extends V>> {
-
-        AsyncCatchingFuture(ListenableFuture<? extends V> input, Class<X> exceptionType,
-                            AsyncFunction<? super X, ? extends V> fallback) {
-            super(input, exceptionType, fallback);
-        }
-
-
-        @Override
-        void doFallback(
-                AsyncFunction<? super X, ? extends V> fallback, X cause) throws Exception {
-            ListenableFuture<? extends V> replacement = fallback.apply(cause);
-            Preconditions.checkNotNull(replacement, "AsyncFunction.apply returned null instead of a Future. "
-                    + "Did you mean to return immediateFuture(null)?");
-            setFuture(replacement);
-        }
-
-
-    }
+//    static final class AsyncCatchingFuture<V, X extends Throwable>
+//            extends AbstractCatchingFuture<V, X, AsyncFunction<? super X, ? extends V>> {
+//
+//        AsyncCatchingFuture(ListenableFuture<? extends V> input, Class<X> exceptionType,
+//                            AsyncFunction<? super X, ? extends V> fallback) {
+//            super(input, exceptionType, fallback);
+//        }
+//
+//
+//        @Override
+//        void doFallback(
+//                AsyncFunction<? super X, ? extends V> fallback, X cause) throws Exception {
+//            ListenableFuture<? extends V> replacement = fallback.apply(cause);
+//            Preconditions.checkNotNull(replacement, "AsyncFunction.apply returned null instead of a Future. "
+//                    + "Did you mean to return immediateFuture(null)?");
+//            setFuture(replacement);
+//        }
+//
+//
+//    }
 
     private abstract static class AbstractCatchingFuture<V, X extends Throwable, F>
             extends AbstractFuture.TrustedFuture<V> implements Runnable {
