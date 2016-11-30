@@ -1,15 +1,16 @@
 package com.nytimes.android.external.store.middleware;
 
-import com.nytimes.android.external.store.middleware.fs.FileSystem;
+import android.database.Observable;
+
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.fs.FileSystem;
 
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import okio.BufferedSource;
-import rx.Observable;
 
 import static com.nytimes.android.external.store.middleware.SourcePersister.pathForBarcode;
 import static okio.Okio.buffer;

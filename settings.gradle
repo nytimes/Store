@@ -1,1 +1,1 @@
-include ':app', ':store', ':middleware'
+include ':app', ':store', ':middleware', ':cache', ':filesystem'

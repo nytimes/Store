@@ -3,8 +3,8 @@ package com.nytimes.android.sample.activity;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.nytimes.android.sample.cache.Cache;
-import com.nytimes.android.sample.cache.CacheBuilder;
+import com.nytimes.android.cache.Cache;
+import com.nytimes.android.cache.CacheBuilder;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;

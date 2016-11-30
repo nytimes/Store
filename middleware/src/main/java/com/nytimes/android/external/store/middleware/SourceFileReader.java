@@ -1,6 +1,6 @@
 package com.nytimes.android.external.store.middleware;
 
-import com.nytimes.android.external.store.middleware.fs.FileSystem;
+import com.nytimes.android.fs.FileSystem;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
