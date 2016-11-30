@@ -37,7 +37,6 @@ android {
 }
 
 dependencies {
-    compile project(path: ':filesystem')
     compile project(path: ':store')
     compile libraries.rxJava
     compile libraries.dagger

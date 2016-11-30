@@ -1,9 +1,9 @@
-package com.nytimes.android.fs;
+package com.nytimes.android.middleware.fs;
 
 import com.google.common.collect.ImmutableMap;
-import com.nytimes.android.fs.impl.BaseTestCase;
+import com.nytimes.android.middleware.fs.impl.BaseTestCase;
+import com.nytimes.android.middleware.fs.impl.FileSystemImpl;
 
-import org.apache.tools.ant.types.resources.comparators.FileSystem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

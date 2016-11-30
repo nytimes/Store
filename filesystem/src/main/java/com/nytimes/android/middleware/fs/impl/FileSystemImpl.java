@@ -1,4 +1,4 @@
-package com.nytimes.android.fs.impl;
+package com.nytimes.android.middleware.fs.impl;
 
 
 import com.google.common.base.Function;
@@ -7,7 +7,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import com.nytimes.android.cache.CacheLoader;
 import com.nytimes.android.cache.LoadingCache;
-import com.nytimes.android.fs.FileSystem;
+import com.nytimes.android.middleware.fs.FileSystem;
 
 import java.io.File;
 import java.io.FileNotFoundException;

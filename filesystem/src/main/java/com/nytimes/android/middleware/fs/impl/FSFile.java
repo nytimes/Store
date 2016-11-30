@@ -1,4 +1,4 @@
-package com.nytimes.android.fs.impl;
+package com.nytimes.android.middleware.fs.impl;
 
 import java.io.File;
 import java.io.FileNotFoundException;

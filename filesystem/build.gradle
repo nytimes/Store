@@ -37,7 +37,10 @@ dependencies {
     compile libraries.okio
     compile libraries.gson
     compile libraries.guava
+    compile libraries.rxJava
     compile project(path: ':cache')
+    compile project(path: ':store')
+    compile project(path: ':middleware')
     testCompile libraries.mockito
     testCompile libraries.assertJ
     testCompile libraries.junit

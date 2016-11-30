@@ -1,8 +1,8 @@
-package com.nytimes.android.fs;
+package com.nytimes.android.middleware.fs;
 
 import com.google.common.collect.ImmutableMap;
-import com.nytimes.android.fs.impl.BaseTestCase;
-import com.nytimes.android.fs.impl.FileSystemImpl;
+import com.nytimes.android.middleware.fs.impl.BaseTestCase;
+import com.nytimes.android.middleware.fs.impl.FileSystemImpl;
 
 import org.junit.After;
 import org.junit.Before;

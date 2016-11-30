@@ -1,8 +1,9 @@
-package com.nytimes.android.external.store;
+package com.nytimes.android.middleware.fs;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.middleware.GsonSourceParser;
-import com.nytimes.android.external.store.middleware.SourcePersister;
+import com.nytimes.android.external.store.middleware.SourceFileReader;
+import com.nytimes.android.external.store.middleware.SourceFileWriter;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
@@ -24,12 +25,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SourceDiskDaoStoreTest {
+public class SourceFilerReaderWriterStoreTest {
     public static final String KEY = "key";
     @Mock
     Fetcher<BufferedSource> fetcher;
     @Mock
-    SourcePersister diskDAO;
+    SourceFileReader fileReader;
+    @Mock
+    SourceFileWriter fileWriter;
 
     private final BarCode barCode = new BarCode("value", KEY);
 
@@ -37,8 +40,8 @@ public class SourceDiskDaoStoreTest {
     public void testSimple() {
         MockitoAnnotations.initMocks(this);
         GsonSourceParser<Foo> parser = new GsonSourceParser<>(new Gson(), Foo.class);
-        Store<Foo> simpleStore = ParsingStoreBuilder.<BufferedSource, Foo>builder()
-                .persister(diskDAO)
+        Store<Foo> simpleStore = new ParsingStoreBuilder<BufferedSource, Foo>()
+                .persister(fileReader, fileWriter)
                 .fetcher(fetcher)
                 .parser(parser)
                 .open();
@@ -54,11 +57,11 @@ public class SourceDiskDaoStoreTest {
         when(fetcher.fetch(barCode))
                 .thenReturn(value);
 
-        when(diskDAO.read(barCode))
+        when(fileReader.read(barCode))
                 .thenReturn(Observable.<BufferedSource>empty())
                 .thenReturn(value);
 
-        when(diskDAO.write(barCode, source))
+        when(fileWriter.write(barCode, source))
                 .thenReturn(Observable.just(true));
 
         Foo result = simpleStore.get(barCode).toBlocking().first();

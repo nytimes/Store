@@ -1,7 +1,7 @@
-package com.nytimes.android.fs.impl;
+package com.nytimes.android.middleware.fs.impl;
 
 
-import com.nytimes.android.fs.FileSystem;
+import com.nytimes.android.middleware.fs.FileSystem;
 
 import org.junit.After;
 import org.junit.Before;

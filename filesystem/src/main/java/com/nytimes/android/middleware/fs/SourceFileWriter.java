@@ -1,10 +1,9 @@
-package com.nytimes.android.external.store.middleware;
+package com.nytimes.android.middleware.fs;
 
 import android.database.Observable;
 
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.fs.FileSystem;
 
 import java.util.concurrent.Callable;
 
