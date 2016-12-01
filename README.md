@@ -253,3 +253,5 @@ We’ve also include sample projects of how to use stores with:
 OKHTTP + our FileSystem + GSON
 Retrofit + FileSystem 
 Retrofit + SqlBrite + SqlDelight
+
+
