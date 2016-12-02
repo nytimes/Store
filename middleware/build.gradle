@@ -5,9 +5,6 @@ apply plugin: 'nytimes-version'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 group = 'com.nytimes.android.external.store.middleware'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
 
 android {
     compileSdkVersion versions.compileSdk

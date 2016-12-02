@@ -32,10 +32,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile libraries.okio
     compile libraries.gson
-    compile libraries.guava
+
     compile libraries.rxJava
     compile project(path: ':cache')
     compile project(path: ':store')
@@ -46,5 +45,3 @@ dependencies {
     testCompile libraries.robolectric
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
