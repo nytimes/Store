@@ -6,9 +6,6 @@ apply plugin: 'nytimes-version'
 apply plugin: 'com.neenbedankt.android-apt'
 
 group = 'com.nytimes.android.ecomm'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 
 
 android {
