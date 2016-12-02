@@ -2,7 +2,7 @@ package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
 
-import com.google.common.cache.Cache;
+import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.Fetcher;

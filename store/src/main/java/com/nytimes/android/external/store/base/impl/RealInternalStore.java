@@ -2,8 +2,8 @@ package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.nytimes.android.external.cache.Cache;
+import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Persister;
