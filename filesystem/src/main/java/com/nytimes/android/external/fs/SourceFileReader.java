@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import okio.BufferedSource;
 import rx.Observable;
 
-import static com.nytimes.android.external.store.middleware.SourcePersister.pathForBarcode;
+import static com.nytimes.android.external.fs.SourcePersister.pathForBarcode;
 
 public class SourceFileReader implements DiskRead<BufferedSource> {
 
