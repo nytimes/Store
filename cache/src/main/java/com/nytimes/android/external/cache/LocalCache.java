@@ -3979,9 +3979,6 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
             throw new ExecutionException(e);
         } catch (Error e) {
             throw new ExecutionError(e);
-        } finally {
-            if (!success) {
-            }
         }
 
         if (result == null) {

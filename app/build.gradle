@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 24
@@ -26,10 +27,20 @@ android {
 }
 
 dependencies {
+    final RETROFIT_VERSION = '2.0.0-beta3'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+    compile "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
+    compile "com.squareup.retrofit2:adapter-rxjava:$RETROFIT_VERSION"
+
+    apt "org.immutables:value:2.1.16" // <-- for annotation processor
+    provided "org.immutables:value:2.1.16" // <-- for annotation API
+    provided "org.immutables:gson:2.1.16" // for annotations
+
     testCompile 'junit:junit:4.12'
 //    compile project(path: ':store')
     compile project(path: ':cache')
