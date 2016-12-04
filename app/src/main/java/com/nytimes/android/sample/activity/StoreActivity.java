@@ -2,6 +2,7 @@ package com.nytimes.android.sample.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -45,6 +46,7 @@ public class StoreActivity extends Activity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showPosts, throwable -> {
+                    Log.e(StoreActivity.class.getSimpleName(), throwable.getMessage(), throwable);
                 });
     }
 

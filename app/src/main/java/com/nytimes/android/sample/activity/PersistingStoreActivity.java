@@ -82,7 +82,7 @@ public class PersistingStoreActivity extends Activity {
 
     private Observable<BufferedSource> fetcher(BarCode barCode) {
         return provideRetrofit().fetchSubredditForPersister(barCode.getKey(), "10")
-                .map(response -> response.raw().body().source());
+                .map(responseBody -> responseBody.source());
     }
 
     private Api provideRetrofit() {

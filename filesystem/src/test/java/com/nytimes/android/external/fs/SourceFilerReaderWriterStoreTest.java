@@ -49,7 +49,6 @@ public class SourceFilerReaderWriterStoreTest {
 
         String sourceData = new Gson().toJson(foo);
 
-
         BufferedSource source = source(sourceData);
         Observable<BufferedSource> value = Observable.just(source);
         when(fetcher.fetch(barCode))

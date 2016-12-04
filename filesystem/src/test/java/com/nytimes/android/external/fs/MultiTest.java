@@ -4,14 +4,11 @@ import com.google.common.collect.ImmutableMap;
 import com.nytimes.android.external.fs.impl.BaseTestCase;
 import com.nytimes.android.external.fs.impl.FileSystemImpl;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +19,8 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.createTempDir;
 import static java.util.Arrays.asList;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class MultiTest extends BaseTestCase {
 
     private static final Map<String, List<String>> fileData
@@ -30,48 +29,42 @@ public class MultiTest extends BaseTestCase {
             .put("/foo/bar/baz.xyz", asList("sasffvSFv", "AsfgsdvzsfbvasFgae", "szfvzsfszfvzsvbzdsfb"))
             .build();
 
-
-    private static FileSystem fileSystem;
-
-    @Before
-    public void start() throws IOException {
+    private FileSystem createAndPopulateTestFileSystem() throws IOException {
         File baseDir = createTempDir();
-
-        fileSystem = new FileSystemImpl(baseDir);
+        FileSystem fileSystem = new FileSystemImpl(baseDir);
         for (String path : fileData.keySet()) {
             for (String data : fileData.get(path)) {
-                fileSystem.write(path, source(data));
+                BufferedSource source = source(data);
+                fileSystem.write(path, source);
+                source.close();
             }
         }
+        assertThat(fileSystem.list("/").size()).isEqualTo(fileData.size());
+        return fileSystem;
     }
-
-
 
     @Test
     public void deleteAll() throws IOException {
+        FileSystem fileSystem = createAndPopulateTestFileSystem();
         fileSystem.deleteAll("/");
-        assertEquals(0, fileSystem.list("/").size());
-
+        assertThat(fileSystem.list("/").size()).isZero();
     }
 
     @Test
     public void listNCompare() throws IOException {
-        Map<String, List<String>> listData = new HashMap<>();
+        FileSystem fileSystem = createAndPopulateTestFileSystem();
+        int assertCount = 0;
         for (String path : fileSystem.list("/")) {
             String data = fileSystem.read(path).readUtf8();
             List<String> written = fileData.get(path);
-            assertEquals(data, written.get(written.size() - 1));
+            String writtenData = written.get(written.size() - 1);
+            assertThat(data).isEqualTo(writtenData);
+            assertCount++;
         }
-    }
-
-
-    @After
-    public void stop() {
-
+        assertThat(assertCount).isEqualTo(fileData.size());
     }
 
     private static BufferedSource source(String data) {
         return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
     }
-
 }
