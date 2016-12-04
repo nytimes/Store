@@ -98,7 +98,7 @@ public class StoreTest {
         String value = simpleStore.get(barCode).toBlocking().first();
         verify(fetcher, times(1)).fetch(barCode);
         verify(persister, times(1)).write(barCode, NETWORK);
-        verify(persister, times(1)).read(barCode);
+        verify(persister, times(2)).read(barCode);
         assertThat(value).isEqualTo(NETWORK);
 
 
@@ -108,8 +108,6 @@ public class StoreTest {
         verify(fetcher, times(1)).fetch(barCode);
 
         assertThat(value).isEqualTo(NETWORK);
-
     }
-
 
 }
