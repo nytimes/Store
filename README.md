@@ -234,10 +234,10 @@ public class SampleStore extends RealStore<String> {
 
 ### Artifacts
 Since our stores depend heavily on Guava for Caching we have included 2 separate artifacts:
-
-+ **Store**. This contains only Store classes and has a dependecy on RxJava + a shaded Guava Cache.  
-+ **Cache**  Cache extracted from Guava (~200 methods)\
-+ **File System** Persistence Library built using OKIO Source/Sink, can be used on its own
++ **Cache**  Cache extracted from Guava (~200 methods)
++ **Store**. This contains only Store classes and has a dependecy on RxJava + the above cache.  
++ **MiddleWare** Sample gson parsers, (feel free to create more and open PRs)
++ **File System** Persistence Library built using OKIO Source/Sink + Middleware for streaming from Network to FileSystem
 
 
 + **Store-All**. This contains Store and Guava shaded dependency (V19 currently). We have proguarded out all parts of Guava that we are not using which takes the method count down to less than 1000 Guava methods.  You will still need to add RxJava as a dependency to your app.
