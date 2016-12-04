@@ -74,7 +74,7 @@ ext.versions = [
         protobuf             : '3.0.0-alpha-7',
 
         // Debugging & Inspecting.
-        git cslf4j                : '1.7.19',
+        slf4j                : '1.7.19',
         stetho               : '1.2.0',
         leakCanary           : '1.4',
 
