@@ -4,6 +4,7 @@ apply plugin: 'nytimes-android-quality'
 apply plugin: 'nytimes-version'
 apply plugin: 'com.getkeepsafe.dexcount'
 
+group = 'com.nytimes.android.external.filesystem'
 
 android {
     compileSdkVersion versions.compileSdk

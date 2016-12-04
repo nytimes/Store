@@ -5,7 +5,7 @@ apply plugin: 'nytimes-android-quality'
 apply plugin: 'nytimes-version'
 apply plugin: 'com.neenbedankt.android-apt'
 
-group = 'com.nytimes.android.ecomm'
+group = 'com.nytimes.android.external.cache'
 
 
 android {
