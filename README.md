@@ -235,7 +235,9 @@ public class SampleStore extends RealStore<String> {
 ### Artifacts
 Since our stores depend heavily on Guava for Caching we have included 2 separate artifacts:
 
-+ **Store-Base**. This contains only Store classes and requires that you add RxJava + Guava to your code base.  We strongly recommend using proguard to strip out unused methods as guava has  a large method count (insert how many methods).  Store base is only 500 total methods.
++ **Store**. This contains only Store classes and has a dependecy on RxJava + a shaded Guava Cache.  
++ **Cache**  Cache extracted from Guava (~200 methods)\
++ **File System** Persistence Library built using OKIO Source/Sink, can be used on its own
 
 
 + **Store-All**. This contains Store and Guava shaded dependency (V19 currently). We have proguarded out all parts of Guava that we are not using which takes the method count down to less than 1000 Guava methods.  You will still need to add RxJava as a dependency to your app.
@@ -257,7 +259,6 @@ Middleware has a transitive dependency on GSON & OKIO
 
 
 
-We’ve also include sample projects showing how to use stores with:
-+ OKHTTP + our FileSystem + GSON
-+ Retrofit + FileSystem
-+ Retrofit + SqlBrite + SqlDelight
+We’ve also a sample project showing how to use stores with:
++ Simple Example: Retrofit + Store
++ Complex Example: BufferedSource from Retrofit (Can be OKHTTP too) + our FileSystem + our GsonSourceParser
