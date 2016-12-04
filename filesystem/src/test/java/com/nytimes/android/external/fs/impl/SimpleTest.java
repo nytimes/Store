@@ -3,7 +3,6 @@ package com.nytimes.android.external.fs.impl;
 
 import com.nytimes.android.external.fs.FileSystem;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +16,8 @@ import okio.Okio;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.createTempDir;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleTest extends BaseTestCase {
 
@@ -47,9 +48,10 @@ public class SimpleTest extends BaseTestCase {
     @Test
     public void delete() throws IOException {
         fileSystem.write("/boo", source(testString1));
-        assertEquals(testString1, fileSystem.read("/boo").readUtf8());
+        assertThat(fileSystem.read("/boo").readUtf8()).isEqualTo(testString1);
         fileSystem.delete("/boo");
-        assertFalse(fileSystem.exists("/boo"));
+        assertThat(fileSystem.exists("/boo")).isFalse();
+        assertThat(fileSystem.exists("/boo")).isFalse();
     }
 
     @Test
@@ -59,9 +61,9 @@ public class SimpleTest extends BaseTestCase {
         BufferedSource source = fileSystem.read("/boo");
         fileSystem.delete("/boo");
 
-        assertFalse(fileSystem.exists("/boo"));
-        assertEquals(testString1, source.readUtf8());
-        assertFalse(fileSystem.exists("/boo"));
+        assertThat(fileSystem.exists("/boo")).isFalse();
+        assertThat(source.readUtf8()).isEqualTo(testString1);
+        assertThat(fileSystem.exists("/boo")).isFalse();
     }
 
     @Test
@@ -69,23 +71,22 @@ public class SimpleTest extends BaseTestCase {
 
         fileSystem.write("/boo", source(testString1));
 
-
         BufferedSource source1 = fileSystem.read("/boo"); // open a source and hang onto it
         fileSystem.delete("/boo"); // now delete the file
 
-        assertFalse(fileSystem.exists("/boo")); // exists() should say it's gone even though
+        assertThat(fileSystem.exists("/boo")).isFalse(); // exists() should say it's gone even though
                                                 // we still have a source to it
         fileSystem.write("/boo", source(testString2)); // and now un-delete it by writing a new version
-        assertTrue(fileSystem.exists("/boo")); // exists() should say it's back
+        assertThat(fileSystem.exists("/boo")).isTrue(); // exists() should say it's back
         BufferedSource source2 = fileSystem.read("/boo"); // open another source and hang onto it
         fileSystem.delete("/boo"); // now delete the file *again*
 
         // the sources should have the correct data even though the file was deleted/re-written/deleted
-        assertEquals(testString1, source1.readUtf8());
-        assertEquals(testString2, source2.readUtf8());
+        assertThat(source1.readUtf8()).isEqualTo(testString1);
+        assertThat(source2.readUtf8()).isEqualTo(testString2);
 
         // now that the 2 sources have been fully read, you shouldn't be able to read it
-        assertFalse(fileSystem.exists("/boo"));
+        assertThat(fileSystem.exists("/boo")).isFalse();
     }
 
     private void diffMe(String first, String second) {
@@ -96,7 +97,7 @@ public class SimpleTest extends BaseTestCase {
         }
 
         try {
-            assertEquals(testString1, fileSystem.read(second).readUtf8());
+            assertThat(fileSystem.read(second).readUtf8()).isEqualTo(testString1);
         } catch (IOException error) {
             throw new RuntimeException("unable to read from " + second, error);
         }
@@ -108,16 +109,10 @@ public class SimpleTest extends BaseTestCase {
         }
 
         try {
-            assertEquals(testString2, fileSystem.read(first).readUtf8());
+            assertThat(fileSystem.read(first).readUtf8()).isEqualTo(testString2);
         } catch (IOException error) {
             throw new RuntimeException("unable to read from " + first, error);
         }
-    }
-
-    @After
-    public void stop() {
-        // Write some after test execution steps.
-        //Added above to remove PMD violations.
     }
 
     private static BufferedSource source(String data) {
