@@ -1,6 +1,7 @@
 package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
@@ -8,9 +9,6 @@ import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
@@ -36,8 +34,8 @@ import rx.subjects.BehaviorSubject;
 @SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
 final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
-    static final Logger LOGGER = LoggerFactory.getLogger(RealInternalStore.class);
 
+    public static final String TAG = RealInternalStore.class.getSimpleName();
     Cache<BarCode, Observable<Parsed>> inFlightRequests;
 
     Cache<BarCode, Observable<Parsed>> memCache;
@@ -180,7 +178,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                 .flatMap(new Func1<Raw, Observable<Parsed>>() {
                     @Override
                     public Observable<Parsed> call(Raw raw) {
-                        LOGGER.info("writing and then reading from Persister");
+                        Log.i(TAG,"writing and then reading from Persister");
                         return persister().write(barCode, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
                                     @Override
@@ -205,7 +203,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     }
 
     void notifySubscribers(Parsed data) {
-        LOGGER.debug("notify stream subscribers of fresh data");
+        Log.d(TAG,"notify stream subscribers of fresh data");
         subject.onNext(data);
     }
 

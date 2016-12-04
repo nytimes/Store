@@ -56,7 +56,6 @@ public class StoreTest {
         assertThat(value).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
-
     @Test
     public void testSubclass() {
         MockitoAnnotations.initMocks(this);

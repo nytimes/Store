@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'nytimes-android-maven'
 apply plugin: 'nytimes-android-quality'
-//apply plugin: 'nytimes-version'
-//apply from: '../../buildsystem/dependencies.gradle'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 group = 'com.nytimes.android.external.store'
@@ -39,7 +37,6 @@ android {
 dependencies {
     compile project(path: ':cache')
     compile libraries.rxJava
-    compile libraries.slf4jNoOp
     compile libraries.supportAnnotations
 
     testCompile libraries.mockito
