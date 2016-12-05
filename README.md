@@ -30,7 +30,9 @@ Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
                .persister(new SourcePersister(new FileSystemImpl(context.getFilesDir())))
                .parser(new GsonSourceParser<>(gson, String.class))
                .open();
-	       ```
+	      
+```
+
 The above builder is how we work with Data at New York Times.  
 With the above setup you have:
 + Memory caching with Guava Cache
@@ -45,7 +47,7 @@ And now for the details:
 
 Create a store using a builder, the only requirement is to include a `.fetcher()`.
 
-```
+
 
 Store<Article> ArticleStore = StoreBuilder.<String>builder()
                .nonObservableFetcher(barCode -> api.getArticle(barcode.getValue()))
