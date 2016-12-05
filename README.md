@@ -214,14 +214,6 @@ in-flight request management
 
 We recommend using the above setup of the builder for most Stores.  The SourcePersister implementation has a tiny memory footprint as it will stream bytes from network to disk and then from disk to parser. The streaming nature of our stores allows us to download dozens of 1mb+ json responses without worrying about OOM on low-memory devices.  As mentioned above, Stores allow us to do things like calling `configStore.get()` a dozen times asynchronously before our Main Activity finishes loading without blocking the main thread or flooding our network.
 
-### Factory Classes:
-
-Besides using builders, stores can be constructed through factories:
-```
-Store<String> simpleStore = new RealStore<>(StoreFactory.of(fetcher, persister));
-Store<String> simpleStore = new RealStore<>(StoreFactory.withParser(fetcher, persister,parser));
-```
-
 ### Subclassing a Store
 
 We can also subclass a Store implementation (RealStore<T>):
