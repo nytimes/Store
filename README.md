@@ -48,7 +48,7 @@ And now for the details:
 Create a store using a builder, the only requirement is to include a `.fetcher()`.
 
 
-
+```
 Store<Article> ArticleStore = StoreBuilder.<String>builder()
                .nonObservableFetcher(barCode -> api.getArticle(barcode.getValue()))
                .open();
