@@ -57,7 +57,7 @@ The first time you subscribe using `store.get(barcode)`, the response will be st
 
 
 So far our Store’s data flow looks like this:
-
+![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-1.jpg)
 `store.get()`  -> return memory cached version if exists, otherwise -> fetch new networkResponse -> save in memory -> return newly cached response from memory
 
 
@@ -69,7 +69,8 @@ By default 100 items will be cached in memory for 24 hours. You may pass in your
 Alternatively you can call `store.fresh(barcode)` to get an Observable that skips the memory (and optional disk cache).
 
 
-Fresh data call will look like: `store.fresh()` -> fetch new networkResponse -> save in memory -> return newly cached response from memory
+Fresh data call will look like: `store.fresh()`
+![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-2.jpg)
 
 
 Overnight background updates within our app us fresh to make sure that calls to `store.get()` will not have to hit network during normal usage.  Another good use case for fresh is pull to refresh.
@@ -106,7 +107,9 @@ ParsingStoreBuilder.<BufferedSource, String>builder()
 ```
 
 Our updated data flow now looks like this:
-`store.get()` -> return memory cached version if exists -> otherwise, fetch new networkResponse -> pass network response to parser -> save parsed response in memory -> return newly cached response from memory
+
+`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-3.jpg)
+
 
 
 ### Middleware - GsonSourceParser
@@ -131,7 +134,8 @@ Stores can enable disk caching by passing in a Persister to the builder.  Whenev
 
 
 Now our data flow looks like:
-`store.get()` -> return memory cached version if exists -> otherwise, get disk cached version if exists and cache in memory -> otherwise fetch new networkResponse write network response to disk read network response from disk cache pass disk response to parser (if parser exists) save parsed response in memory return newly cached response from memory.
+`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-5.jpg)
+
 
 
  Ideally, data will be streamed from network to disk using either a BufferedSource or Reader as your network raw type (rather than String).
