@@ -22,6 +22,25 @@ A Store is responsible for managing a particular data request in an application.
 
 Store leverages RxJava and multiple request throttling to prevent excessive calls to the network and disk cache. By utilizing our library, you eliminate the possibility of flooding your network with the same request while adding 2 layers of caching (memory + disk).
 
+### Fully Configured Store
+Let's start by looking at what a fully configured store looks like, we will then walk through simpler examples building up functionality:
+```java
+Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
+               .fetcher(this::ResponseAsSource)  //okhttp responseBody.source()
+               .persister(new SourcePersister(new FileSystemImpl(context.getFilesDir())))
+               .parser(new GsonSourceParser<>(gson, String.class))
+               .open();
+	       ```
+The above builder is how we work with Data at New York Times.  
+With the above setup you have:
++ Memory caching with Guava Cache
++ Disk caching with FileSystem
++ Parsing from a BufferedSource to a <T> with Gson
++ in-flight request management
++ Ability to get cached data or bust through your caches
+
+And now for the details:
+
 ### Creating a Store
 
 Create a store using a builder, the only requirement is to include a `.fetcher()`.
@@ -173,7 +192,7 @@ If using SqlLite we recommend working with SqlBrite.  If you are not using SqlBr
 
 ### Middleware - SourcePersister & FileSystem
 
-We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included in the Store's Middleware a blazing fast reactive FileSystem which depends on OKIO BufferedSources. We have also included a SourcePersister which will give you disk caching and works beautifully with GsonSourceParser
+We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included a seperate artifact with a reactive FileSystem which depends on OKIO BufferedSources. We have also included a SourcePersister which will give you disk caching and works beautifully with GsonSourceParser
 
 ```
 Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
@@ -191,7 +210,7 @@ in-flight request management
 + Ability to get cached data or bust through your caches (get vs fresh)
 
 
-We recommend using the above setup of the builder for most Stores.  The SourcePersister implementation has a tiny memory footprint as it will stream bytes from network to disk and then from disk to parser. The streaming nature of our stores allows us to download 10 1mb+ json responses on app start without worrying about OOM on low-memory devices.  As mentioned above, Stores allow us to do things like calling `configStore.get()` a dozen times asynchronously before our Main Activity finishes loading without blocking the main thread or flooding our network.
+We recommend using the above setup of the builder for most Stores.  The SourcePersister implementation has a tiny memory footprint as it will stream bytes from network to disk and then from disk to parser. The streaming nature of our stores allows us to download dozens of 1mb+ json responses without worrying about OOM on low-memory devices.  As mentioned above, Stores allow us to do things like calling `configStore.get()` a dozen times asynchronously before our Main Activity finishes loading without blocking the main thread or flooding our network.
 
 ### Factory Classes:
 
@@ -203,7 +222,7 @@ Store<String> simpleStore = new RealStore<>(StoreFactory.withParser(fetcher, per
 
 ### Subclassing a Store
 
-We can also subclass a Store implementation (RealStore<T>) passing a factory method to the parent:
+We can also subclass a Store implementation (RealStore<T>):
 
 ```
 public class SampleStore extends RealStore<String> {
@@ -237,32 +256,15 @@ public class SampleStore extends RealStore<String> {
 
 
 ### Artifacts
-Since our stores depend heavily on Guava for Caching we have included 2 separate artifacts:
+Since this is android, we have split Store into 4 artifacts:
 + **Cache**  Cache extracted from Guava (~200 methods)
 + **Store**. This contains only Store classes and has a dependecy on RxJava + the above cache.  
-+ **MiddleWare** Sample gson parsers, (feel free to create more and open PRs)
++ **Middleware** Sample gson parsers, (feel free to create more and open PRs)
 + **File System** Persistence Library built using OKIO Source/Sink + Middleware for streaming from Network to FileSystem
 
 
-+ **Store-All**. This contains Store and Guava shaded dependency (V19 currently). We have proguarded out all parts of Guava that we are not using which takes the method count down to less than 1000 Guava methods.  You will still need to add RxJava as a dependency to your app.
+### Sample Project
 
-
-### Store-Middleware
-
-Contains common implementation of Parser and Persister, ideally you would use the GsonSourceParser with the SourcePersister:
-
-
-GsonReaderParser
-GsonSourceParser
-GsonStringParser
-SourceFileReader
-SourceFileWriter
-SourcePersister
-Middleware has a transitive dependency on GSON & OKIO
-
-
-
-
-We’ve also a sample project showing how to use stores with:
+See app for example usage of Store.
 + Simple Example: Retrofit + Store
 + Complex Example: BufferedSource from Retrofit (Can be OKHTTP too) + our FileSystem + our GsonSourceParser
