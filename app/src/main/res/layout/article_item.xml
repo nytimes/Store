@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/post_horizontal_margin"
+        android:layout_marginRight="@dimen/post_horizontal_margin"
+        android:layout_marginTop="@dimen/post_horizontal_margin_half"
+        android:layout_marginBottom="@dimen/post_horizontal_margin_half"
+
+        card_view:cardUseCompatPadding="false"
+        card_view:cardElevation="7dp"
+        card_view:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/topSpacer"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/post_horizontal_margin"/>
+
+            <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/post_horizontal_margin_half"
+                android:layout_marginRight="@dimen/post_horizontal_margin_half"
+
+                android:gravity="center"
+                android:padding="10dp"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"/>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
