@@ -7,38 +7,37 @@ Android library for async data loading from multiple sources
 ### The Problems:
 
 + Modern Android Apps need their data representations to be fluid and always available.
-+ Users expect their UI experience to never be compromised (blocked) by new data loads. Whether an application is a social, news, or business-to-business, users expect a seamless experience both online and offline.
-+ International users expetBeing a world phone, mbs of download can quickly turn into astronomical phone bills.
++ Users expect their UI experience to never be compromised (blocked) by new data loads. Whether an application is a social, news, or business-to-business app, users expect a seamless experience both online and offline.
++ International users expect minimal data downloads as mbs of download can quickly turn into astronomical phone bills.
 
-The The New York Times strives to deliver our users the best possible experience. On Android, this means creating an offline first, reactive architecture that minimizes how much data our app uses. The Android team uses open source libraries including Dagger, Rxjava, OkHTTP, OKIO and the MVP pattern. We then tie these technologies together with a simple library we have developed called Store.
+The New York Times strives to deliver our users the best possible experience. On Android, this means creating an offline first, reactive architecture that minimizes how much data our app uses. The Android team used open source libraries including Dagger, Rxjava, OkHTTP, OKIO. We then tie these technologies together with a simple library we have developed called Store.
 
 A Store is a class that simplifies fetching, parsing, storage, and retrieval of data in your application. A Store is similar to the Repository pattern [[https://msdn.microsoft.com/en-us/library/ff649690.aspx](https://msdn.microsoft.com/en-us/library/ff649690.aspx)] while exposing a Reactive API built with RxJava that adheres to a unidirectional data flow.
 
-Store provides a level of abstraction between our UI elements and data operations. Stores simplify the logic around data fetching for offline and online users, helping us be an offline-first application. Stores also help boost app performance by preventing unnecessary network calls or disk reads. The architecture of our flagship news app is made up of immutable data (M)odels, Custom (V)iews, (P)resenters and (S)tores -  which we like to call MVPS.
+Store provides a level of abstraction between our UI elements and data operations. We tried to simplify the logic around data fetching for offline and online users, helping us be an offline-first application. Stores also help boost app performance by preventing unnecessary network calls or disk reads. The architecture of our flagship news app is made up of immutable data (M)odels, Custom (V)iews, (P)resenters and (S)tores -  which we like to call MVPS.
 
 ### Overview
 
-A Store is responsible for managing a particular data request in an application. When you create an implementation of a Store, you provide it with a Fetcher&lt;link&gt;. Additionally, you can define how your Store will save data in-memory and on-disk, as well as how to parse it. Since you&#39;ll be getting back an Observable of your data, threading is a breeze! Once stores are built, Store handles the logic around data flow, allowing your views to use the best data source and ensuring that the newest data is always available for later offline use. Stores can be customized to work with your own implementations or use our including middleware.
+A Store is responsible for managing a particular data request in an application. When you create an implementation of a Store, you provide it with a Fetcher&lt;link&gt;. Additionally, you can define how your Store will cache data in-memory and on-disk, as well as how to parse it. Since you'll be getting back an Observable of your data, threading is a breeze! Once a store is  built, it will handle the logic around data flow, allowing your views to use the best data source and ensuring that the newest data is always available for later offline use. Stores can be customized to work with your own implementations or use our included middleware.
 
 Store leverages RxJava and multiple request throttling to prevent excessive calls to the network and disk cache. By utilizing our library, you eliminate the possibility of flooding your network with the same request while adding 2 layers of caching (memory + disk).
 
 ### Fully Configured Store
 Let's start by looking at what a fully configured store looks like, we will then walk through simpler examples building up functionality:
 ```java
-Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
-               .fetcher(this::ResponseAsSource)  //okhttp responseBody.source()
+Store<Foo> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
+               .fetcher(this::ResponseAsSource)  //responseBody.source()
                .persister(new SourcePersister(new FileSystemImpl(context.getFilesDir())))
-               .parser(new GsonSourceParser<>(gson, String.class))
+               .parser(new GsonSourceParser<>(gson, Foo.class))
                .open();
 	      
 ```
 
 The above builder is how we work with Data at New York Times.  
 With the above setup you have:
-+ Memory caching with Guava Cache
-+ Disk caching with FileSystem
-+ Parsing from a BufferedSource to a <T> with Gson
-+ in-flight request management
++ In Memory Caching
++ Disk caching
++ Parsing through streaming api
 + Ability to get cached data or bust through your caches
 
 And now for the details:
