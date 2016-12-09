@@ -1,7 +1,10 @@
 package com.nytimes.android.sample.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -13,11 +16,13 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonSourceParser;
 import com.nytimes.android.sample.BuildConfig;
+import com.nytimes.android.sample.R;
 import com.nytimes.android.sample.data.model.Children;
 import com.nytimes.android.sample.data.model.GsonAdaptersModel;
 import com.nytimes.android.sample.data.model.Post;
 import com.nytimes.android.sample.data.model.RedditData;
 import com.nytimes.android.sample.data.remote.Api;
+import com.nytimes.android.sample.reddit.PostAdapter;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,19 +38,36 @@ import rx.schedulers.Schedulers;
 import static android.widget.Toast.makeText;
 
 
-public class PersistingStoreActivity extends Activity {
+public class PersistingStoreActivity extends AppCompatActivity {
+
+    private SourcePersister sourcePersister;
+    private RecyclerView recyclerView;
+    private PostAdapter postAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_store);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
         try {
-            loadPosts();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            sourcePersister = persister();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
+
+        postAdapter = new PostAdapter();
+        recyclerView = (RecyclerView) findViewById(R.id.postRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(postAdapter);
+
+        loadPosts();
     }
 
-    public void loadPosts() throws IOException {
+    public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
         provideRedditStore()
                 .get(awwRequest)
@@ -57,6 +79,7 @@ public class PersistingStoreActivity extends Activity {
     }
 
     private void showPosts(List<Post> posts) {
+        postAdapter.setPosts(posts);
         makeText(PersistingStoreActivity.this,
                 "Loaded " + posts.size() + " posts",
                 Toast.LENGTH_SHORT)
@@ -68,10 +91,10 @@ public class PersistingStoreActivity extends Activity {
                 .map(Children::data);
     }
 
-    private Store<RedditData> provideRedditStore() throws IOException {
+    private Store<RedditData> provideRedditStore() {
         return ParsingStoreBuilder.<BufferedSource,RedditData>builder()
                 .fetcher(this::fetcher)
-                .persister(persister())
+                .persister(sourcePersister)
                 .parser(new GsonSourceParser<>(provideGson(),RedditData.class))
                 .open();
     }

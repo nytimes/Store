@@ -3,4 +3,44 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="primary">#222222</color>
+    <color name="primary_dark">#000000</color>
+    <color name="accent">#FFFFFF</color>
+    <color name="gray">#ffdfdfdf</color>
+
+    <color name="transparent">@android:color/transparent</color>
+    <color name="black">#000</color>
+    <color name="black_10_percent">#1A000000</color>
+    <color name="black_15_percent">#26000000</color>
+    <color name="black_40_percent">#66000000</color>
+    <color name="black_50_percent">#80000000</color>
+    <color name="black_75_percent">#BF000000</color>
+    <color name="black_80_percent">#CC000000</color>
+    <color name="black_85_percent">#CF000000</color>
+    <color name="black_90_percent">#E6000000</color>
+
+
+    <color name="gray10">#1a1a1a</color>
+    <color name="gray10_90">#E61a1a1a</color>
+    <color name="gray15">#222</color>
+    <color name="gray15_85">#CF222222</color>
+    <color name="gray20">#333</color>
+    <color name="gray25">#505050</color>
+    <color name="gray30">#666</color>
+    <color name="gray35">#808080</color>
+    <color name="gray40">#999</color>
+    <color name="gray45">#b3b3b3</color>
+    <color name="gray50">#ccc</color>
+    <color name="gray60">#e3e3e3</color>
+    <color name="gray70">#ebebeb</color>
+    <color name="gray80">#f3f3f3</color>
+    <color name="gray90">#f7f7f7</color>
+    <color name="gray95">#fafafa</color>
+    <color name="gray100">#a5a5a5</color>
+    <color name="gray246">#f6f6f6</color>
+    <color name="grey240">#cccccc</color>
+
+    <color name="white">#fff</color>
+    <color name="white50">#80ffffff</color>
 </resources>
