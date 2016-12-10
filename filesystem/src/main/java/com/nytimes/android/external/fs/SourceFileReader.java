@@ -31,4 +31,8 @@ public class SourceFileReader implements DiskRead<BufferedSource> {
             }
         });
     }
+
+    public boolean exists(BarCode barCode) {
+        return fileSystem.exists(pathForBarcode(barCode));
+    }
 }

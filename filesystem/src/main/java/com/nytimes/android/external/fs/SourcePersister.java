@@ -32,7 +32,7 @@ public class SourcePersister implements Persister<BufferedSource> {
 
     @Override
     public Observable<BufferedSource> read(final BarCode barCode) {
-        return sourceFileReader.read(barCode);
+        return sourceFileReader.exists(barCode) ? sourceFileReader.read(barCode) : Observable.<BufferedSource>empty();
     }
 
     @Override

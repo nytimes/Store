@@ -68,7 +68,10 @@ class FSFile {
 
 
     public BufferedSource source() throws FileNotFoundException {
-        return Okio.buffer(Okio.source(file));
+        if (file.exists()) {
+            return Okio.buffer(Okio.source(file));
+        }
+        throw new FileNotFoundException(path);
     }
 }
 
