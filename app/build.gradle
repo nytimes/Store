@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 24
@@ -11,20 +14,50 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+        disable 'InvalidPackage'
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    final RETROFIT_VERSION = '2.0.0-beta3'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.0'
+
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:cardview-v7:24.0.0'
+    compile 'com.android.support:design:24.0.0'
+    compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+    compile "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
+    compile "com.squareup.retrofit2:adapter-rxjava:$RETROFIT_VERSION"
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.google.guava:guava:19.0'
+
+    apt "org.immutables:value:2.1.16" // <-- for annotation processor
+    provided "org.immutables:value:2.1.16" // <-- for annotation API
+    provided "org.immutables:gson:2.1.16" // for annotations
+
     testCompile 'junit:junit:4.12'
-    project(':middleware')
+//    compile project(path: ':store')
+//    compile project(path: ':cache')
+    compile project(path: ':store')
+    compile project(path: ':middleware')
+    compile project(path: ':filesystem')
+    retrolambdaConfig libraries.retrolambda
+    compile libraries.rxAndroid
+
 }

@@ -16,8 +16,10 @@ buildscript {
         maven {
             url 'https://artifactory.em.nytimes.com/artifactory/android-maven-thirdparty-local/'
         }
+
+
         maven {
-            url = 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+            url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
         }
 
         jcenter()
@@ -27,7 +29,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath('com.nytimes.android.gradle:base-plugin:1.0.5') {
-            exclude module: 'guava-jdk5'
+           // exclude module: 'guava-jdk5'
         }
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
@@ -56,6 +58,29 @@ allprojects {
         jvmArgs '-Djava.awt.headless=true'
     }
 }
+
+ext {
+    // SDK versions
+
+    // POM file
+    GROUP = "com.nytimes.android"
+    VERSION_NAME = "1.0.1"
+    POM_PACKAGING = "pom"
+    POM_DESCRIPTION = "Store"
+
+    POM_URL = "https://github.com/nytimes/Store/"
+    POM_SCM_URL = "https://github.com/nytimes/Store/"
+    POM_SCM_CONNECTION = "scm:git:https://github.com/nytm/Store.git"
+    POM_SCM_DEV_CONNECTION = "scm:git:git@github.com:nytm/Store.git"
+
+    POM_LICENCE_NAME = "Apache License"
+    POM_LICENCE_URL = "http://www.apache.org/licenses/"
+    POM_LICENCE_DIST = "repo"
+
+    POM_DEVELOPER_ID = "nytimesandroid"
+    POM_DEVELOPER_NAME = "New York Times"
+}
+
 
 // From command line use: -PdisablePreDex to disable it: primarily for jenkins
 project.ext.preDexLibs = !project.hasProperty('disablePreDex')

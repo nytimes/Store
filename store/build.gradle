@@ -1,11 +1,9 @@
 apply plugin: 'com.android.library'
-apply plugin: 'nytimes-android-maven'
-apply plugin: 'nytimes-android-quality'
-//apply plugin: 'nytimes-version'
-//apply from: '../../buildsystem/dependencies.gradle'
 apply plugin: 'com.getkeepsafe.dexcount'
 
-group = 'com.nytimes.android.store'
+group = GROUP
+version = VERSION_NAME
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -37,13 +35,8 @@ android {
 }
 
 dependencies {
-//    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(path: ':cache')
     compile libraries.rxJava
-    compile libraries.guava
-    compile libraries.slf4jNoOp
-    compile libraries.dagger
-    compile libraries.okio
-    compile libraries.gson
     compile libraries.supportAnnotations
 
     testCompile libraries.mockito
@@ -62,3 +55,4 @@ task sourcesJar(type: Jar) {
 artifacts {
     archives sourcesJar
 }
+apply from: rootProject.file("gradle/maven-push.gradle")

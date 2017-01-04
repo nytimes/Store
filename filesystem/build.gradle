@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.getkeepsafe.dexcount'
+
+group = GROUP
+version = VERSION_NAME
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            zipAlignEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    lintOptions {
+        abortOnError false
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    compile libraries.okio
+    compile libraries.gson
+
+    compile libraries.rxJava
+    compile project(path: ':cache')
+    compile project(path: ':store')
+    compile project(path: ':middleware')
+    testCompile libraries.mockito
+    testCompile libraries.assertJ
+    testCompile libraries.junit
+    testCompile libraries.robolectric
+}
+apply from: rootProject.file("gradle/maven-push.gradle")
+
+
