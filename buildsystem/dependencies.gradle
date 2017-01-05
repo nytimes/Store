@@ -19,8 +19,8 @@ allprojects {
 
 ext.versions = [
         minSdk               : 16,
-        targetSdk            : 23,
-        compileSdk           : 23,
+        targetSdk            : 24,
+        compileSdk           : 24,
         buildTools           : '24.0.2',
 
         // UI libs.
