@@ -9,11 +9,8 @@ android:
   - build-tools-24.0.2
   - android-24
   - extra-android-m2repository
-  licenses:
-    - 'android-sdk-preview-license-52d11cd2'
-    - 'android-sdk-license-.+'
 script:
-- "./gradlew clean build --stacktrace"
+- ./gradlew check --stacktrace
 branches:
   except:
   - gh-pages
