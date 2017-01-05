@@ -108,17 +108,16 @@ There is an inflight debouncer as well to prevent duplicative requests for the s
 Since it is rare that data comes from the network in the format that your views need, Stores can delegate to a parser. by using a `ParsingStoreBuilder<T,V>` rather than a `StoreBuilder<T>.`  ParsingStoreBuilder has an additional method `parser()` which can take a Parser<Raw, Parsed>
 
 ```
-Store<Article> Store =
-ParsingStoreBuilder.<BufferedSource, String>builder()
-      .nonObservableFetcher(barCode -> source)) //okhttp responseBody.source()
-       .parser(source -> {
-           try (InputStreamReader reader = new InputStreamReader(source.inputStream())) {
-               return gson.fromJson(reader, Article.class);
-           } catch (IOException e) {
-               throw new RuntimeException(e);
-           }
-       })
-       .open();
+Store<Article> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
+        .nonObservableFetcher(barCode -> source) //okhttp responseBody.source()
+        .parser(source -> {
+          try (InputStreamReader reader = new InputStreamReader(source.inputStream())) {
+            return gson.fromJson(reader, Article.class);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        })
+        .open();
 ```
 
 Our updated data flow now looks like this:
@@ -139,8 +138,8 @@ Our example can now be rewritten as:
 ```java
 Store<Article> Store = ParsingStoreBuilder.<BufferedSource, Article>builder()
                 .nonObservableFetcher(this::getResponse)
-       .parser(new GsonSourceParser<>(gson, Article.class))
-       .open();
+                .parser(new GsonSourceParser<>(gson, Article.class))
+                .open();
 ```
 
 ### Disk Caching
@@ -157,24 +156,25 @@ Now our data flow looks like:
 
 ```java
        Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
-                              .nonObservableFetcher(this::ResponseAsSource)  //okhttp responseBody.source()
-                .persister(new Persister<BufferedSource>() {
-                    @Override
-                    public Observable<BufferedSource> read(BarCode barCode) {
-                      if(dataIsCached)
-  return Observable.fromCallable(()->userImplementedCache.get(barcode));
-        	      else{
-			  Return Observable.empty();
-       		     }
-
-                    @Override
-                    public Observable<Boolean> write(BarCode barCode, BufferedSource source) {
-	                       userImplementedCache.save(barcode,source)
-         			return Observable.just(true);
-                    }
-                })
-		.parser(new GsonSourceParser<>(gson, String.class))
-                .open();
+               .nonObservableFetcher(this::ResponseAsSource)  //okhttp responseBody.source()
+               .persister(new Persister<BufferedSource>() {
+                 @Override
+                 public Observable<BufferedSource> read(BarCode barCode) {
+                   if (dataIsCached) {
+                     return Observable.fromCallable(() -> userImplementedCache.get(barcode));
+                   } else {
+                     return Observable.empty();
+                   }
+                 }
+       
+                 @Override
+                 public Observable<Boolean> write(BarCode barCode, BufferedSource source) {
+                   userImplementedCache.save(barcode, source);
+                   return Observable.just(true);
+                 }
+               })
+               .parser(new GsonSourceParser<>(gson, String.class))
+               .open();
 ```
 
 Stores don’t care how you’re storing or retrieving your data from disk. As a result, you can use stores with object storage or any database (realm, sql lite, couchDB,firebase etc).  The only requirement is that you can store and retrieve the data using the same type as your Fetcher.  Technically there is nothing stopping you from implementing an in memory cache for the “persister” implementation and instead have 2 levels of in memory caching (one with inflated and one with deflated models, allowing for sharing of the “persister” cache data between stores)
@@ -193,7 +193,7 @@ We've found the fastest form of persistence is streaming network responses direc
 Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
                .nonObservableFetcher(this::ResponseAsSource)  //okhttp responseBody.source()
                .persister(new SourcePersister(new FileSystemImpl(context.getFilesDir())))
-   .parser(new GsonSourceParser<>(gson, String.class))
+               .parser(new GsonSourceParser<>(gson, String.class))
                .open();
 ```
 
