@@ -44,12 +44,12 @@ Create a store using a builder, the only requirement is to include a `.fetcher()
 
 ``` java
 Store<Article> ArticleStore = StoreBuilder.<String>builder()
-               .nonObservableFetcher(barCode -> api.getArticle(barcode.getValue()))
+               .nonObservableFetcher(barCode -> api.getArticle(barcode.getKey()))
                .open();
 
 
 Store<Article> ArticleStore = StoreBuilder.<String>builder()
-               .fetcher(barCode -> retrofitApi.getArticleObservable(barcode.getValue()))
+               .fetcher(barCode -> retrofitApi.getArticleObservable(barcode.getKey()))
                .open();
 ```
 
