@@ -1,0 +1,22 @@
+language: android
+jdk:
+- oraclejdk8
+android:
+  components:
+  - tools
+  - platform-tools
+  - build-tools-24.0.3
+  - android-24
+  - extra-android-m2repository
+script:
+- "./gradlew clean build --stacktrace"
+branches:
+  except:
+  - gh-pages
+notifications:
+  email: false
+sudo: false
+cache:
+  directories:
+  - "$HOME/.m2"
+  - "$HOME/.gradle"
