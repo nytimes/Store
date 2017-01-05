@@ -10,7 +10,9 @@ android:
   - android-24
   - extra-android-m2repository
 script:
-- ./gradlew check --stacktrace
+- ./gradlew build --stacktrace
+after_success:
+  - .buildscript/deploy_snapshot.sh
 branches:
   except:
   - gh-pages
