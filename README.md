@@ -183,7 +183,7 @@ Stores don’t care how you’re storing or retrieving your data from disk. As a
 **Note**: When using a Parser and a disk cache, the parser will be called AFTER fetching from disk and not between the network and disk allow your persister to work on the network stream directly.
 
 
-If using SQLLite we recommend working with SqlBrite. If you are not using SqlBrite an Observable can be created rather simply with `Observable.fromCallable(() -> getDBValue())`
+If using SQLite we recommend working with SqlBrite. If you are not using SqlBrite an Observable can be created rather simply with `Observable.fromCallable(() -> getDBValue())`
 
 ### Middleware - SourcePersister & FileSystem
 
