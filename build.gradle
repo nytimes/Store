@@ -20,7 +20,6 @@ buildscript {
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.5' // for non-android projects
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
     }
