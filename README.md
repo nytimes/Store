@@ -62,7 +62,7 @@ BarCode barcode = new BarCode("Article", "42");
 Stores use BarCodes as identifiers for data. A BarCode is a class that holds two strings, type and value. The two values act as unique identifiers for your data. When your Fetcher function is called, it will be passed the BarCode. Similarly, the barcode will be used as a key in your cache(s).
 
 
-### Public Interfaces for Accessing Data - Get, Fresh, Stream
+### Public Interfaces for Accessing Data - Get, Fetch, Stream
 
 ```java
 Observable<Article> article = store.get(barCode);
@@ -81,17 +81,17 @@ By default 100 items will be cached in memory for 24 hours. You may pass in your
 
 ### Busting through the cache
 
-Alternatively you can call `store.fresh(barCode)` to get an Observable that skips the memory (and optional disk cache).
+Alternatively you can call `store.fetch(barCode)` to get an Observable that skips the memory (and optional disk cache).
 
 
-Fresh data call will look like: `store.fresh()`
+Fresh data call will look like: `store.fetch()`
 ![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-2.jpg)
 
 
-Overnight background updates within our app us fresh to make sure that calls to `store.get()` will not have to hit network during normal usage. Another good use case for fresh is pull to refresh.
+Overnight background updates within our app us `fetch` to make sure that calls to `store.get()` will not have to hit network during normal usage. Another good use case for `fetch` is pull to refresh.
 
 
-Calls to both `fresh()` and `get()` emit one value and then call `onCompleted()` or throw an error
+Calls to both `fetch()` and `get()` emit one value and then call `onCompleted()` or throw an error
 
 
 ### Stream
