@@ -1,8 +1,7 @@
-package com.nytimes.android.external.fs.impl;
+package com.nytimes.android.external.fs.filesystem;
 
 import com.nytimes.android.external.cache.CacheLoader;
 import com.nytimes.android.external.cache.LoadingCache;
-import com.nytimes.android.external.fs.FileSystem;
 import com.nytimes.android.external.fs.Util;
 
 import java.io.File;
@@ -22,13 +21,13 @@ import static java.lang.String.format;
  * <p>
  * All operations are on the caller's thread.
  */
-public class FileSystemImpl implements FileSystem {
+class FileSystemImpl implements FileSystem {
 
     private final Util util = new Util();
-    final LoadingCache<String, FSFile> files;
-    final File root;
+    private final LoadingCache<String, FSFile> files;
+    private final File root;
 
-    public FileSystemImpl(final File root) throws IOException {
+    FileSystemImpl(final File root) throws IOException {
         this.root = root;
 
         this.files = newBuilder().maximumSize(20)

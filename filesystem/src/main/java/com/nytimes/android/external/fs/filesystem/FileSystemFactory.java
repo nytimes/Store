@@ -1,6 +1,5 @@
-package com.nytimes.android.external.fs;
+package com.nytimes.android.external.fs.filesystem;
 
-import com.nytimes.android.external.fs.impl.FileSystemImpl;
 import java.io.File;
 import java.io.IOException;
 
