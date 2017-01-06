@@ -6,11 +6,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nytimes.android.external.fs.SourcePersister;
-import com.nytimes.android.external.fs.impl.FileSystemImpl;
+import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
@@ -23,10 +22,8 @@ import com.nytimes.android.sample.data.model.Post;
 import com.nytimes.android.sample.data.model.RedditData;
 import com.nytimes.android.sample.data.remote.Api;
 import com.nytimes.android.sample.reddit.PostAdapter;
-
 import java.io.IOException;
 import java.util.List;
-
 import okio.BufferedSource;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
@@ -100,7 +97,7 @@ public class PersistingStoreActivity extends AppCompatActivity {
     }
 
     private SourcePersister persister() throws IOException {
-        return new SourcePersister(new FileSystemImpl(getApplicationContext().getCacheDir()));
+        return new SourcePersister(FileSystemFactory.create(getApplicationContext().getCacheDir()));
     }
 
     private Observable<BufferedSource> fetcher(BarCode barCode) {
