@@ -1,24 +1,21 @@
 package com.nytimes.android.external.fs;
 
 import com.google.common.collect.ImmutableMap;
+import com.nytimes.android.external.fs.filesystem.FileSystem;
+import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 import com.nytimes.android.external.fs.impl.BaseTestCase;
-import com.nytimes.android.external.fs.impl.FileSystemImpl;
-
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 import okio.BufferedSource;
 import okio.Okio;
+import org.junit.Test;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.createTempDir;
 import static java.util.Arrays.asList;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiTest extends BaseTestCase {
@@ -31,7 +28,7 @@ public class MultiTest extends BaseTestCase {
 
     private FileSystem createAndPopulateTestFileSystem() throws IOException {
         File baseDir = createTempDir();
-        FileSystem fileSystem = new FileSystemImpl(baseDir);
+        FileSystem fileSystem = FileSystemFactory.create(baseDir);
         for (String path : fileData.keySet()) {
             for (String data : fileData.get(path)) {
                 BufferedSource source = source(data);

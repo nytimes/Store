@@ -1,4 +1,4 @@
-package com.nytimes.android.external.fs.impl;
+package com.nytimes.android.external.fs.filesystem;
 
 /*
  * Copyright 2004-2007 the original author or authors.
@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
  @since 1.1
  */
 
-public class BreadthFirstFileTreeIterator implements Iterator{
+class BreadthFirstFileTreeIterator implements Iterator{
 
     private File root;
     private int currentIndex = 0;
@@ -45,7 +45,7 @@ public class BreadthFirstFileTreeIterator implements Iterator{
      @param root The root directory
      */
 
-    public BreadthFirstFileTreeIterator(File root){
+    BreadthFirstFileTreeIterator(File root){
         this.root = root;
         this.currentList = root.listFiles();
         this.directories = new Stack();

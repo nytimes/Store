@@ -1,4 +1,4 @@
-package com.nytimes.android.external.fs.impl;
+package com.nytimes.android.external.fs.filesystem;
 
 import com.nytimes.android.external.fs.Util;
 
