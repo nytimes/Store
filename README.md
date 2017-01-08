@@ -88,7 +88,7 @@ Fresh data call will look like: `store.fetch()`
 ![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-2.jpg)
 
 
-Overnight background updates within our app us `fetch` to make sure that calls to `store.get()` will not have to hit network during normal usage. Another good use case for `fetch` is pull to refresh.
+Overnight background updates within our app use `fetch` to make sure that calls to `store.get()` will not have to hit network during normal usage. Another good use case for `fetch` is pull to refresh.
 
 
 Calls to both `fetch()` and `get()` emit one value and then call `onCompleted()` or throw an error
