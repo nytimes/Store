@@ -1,22 +1,19 @@
 package com.nytimes.android.external.fs.impl;
 
 
-import com.nytimes.android.external.fs.FileSystem;
-
-import org.junit.Before;
-import org.junit.Test;
-
+import com.nytimes.android.external.fs.filesystem.FileSystem;
+import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import okio.BufferedSource;
 import okio.Okio;
+import org.junit.Before;
+import org.junit.Test;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.createTempDir;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleTest extends BaseTestCase {
@@ -29,7 +26,7 @@ public class SimpleTest extends BaseTestCase {
     @Before
     public void start() throws IOException {
         File baseDir = createTempDir();
-        fileSystem = new FileSystemImpl(baseDir);
+        fileSystem = FileSystemFactory.create(baseDir);
     }
 
     @Test(expected = FileNotFoundException.class)
