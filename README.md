@@ -23,8 +23,8 @@ Let's start by looking at what a fully configured store looks like, we will then
 ```java
 Store<Foo> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
                .fetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
-               .persister(new SourcePersister(new FileSystemImpl(context.getFilesDir())))
-               .parser(new GsonSourceParser<>(gson, Foo.class))
+               .persister(SourcePersisterFactory.create(context.getFilesDir())
+               .parser(GsonParserFactory.createSourceParser(gson, Foo.class))
                .open();
 	      
 ```
@@ -138,7 +138,7 @@ Our example can now be rewritten as:
 ```java
 Store<Article> Store = ParsingStoreBuilder.<BufferedSource, Article>builder()
                 .nonObservableFetcher(this::getResponse)
-                .parser(new GsonSourceParser<>(gson, Article.class))
+                .parser(GsonParserFactory.createSourceParser(gson, Article.class))
                 .open();
 ```
 
@@ -173,7 +173,7 @@ Now our data flow looks like:
                    return Observable.just(true);
                  }
                })
-               .parser(new GsonSourceParser<>(gson, String.class))
+               .parser(GsonParserFactory.createSourceParser(gson, String.class))
                .open();
 ```
 
@@ -192,8 +192,8 @@ We've found the fastest form of persistence is streaming network responses direc
 ```java
 Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
                .nonObservableFetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
-               .persister(new SourcePersister(new FileSystemImpl(context.getFilesDir())))
-               .parser(new GsonSourceParser<>(gson, String.class))
+               .persister(SourcePersisterFactory.create(context.getFilesDir()))
+               .parser(GsonParserFactory.createSourceParser(gson, String.class))
                .open();
 ```
 
