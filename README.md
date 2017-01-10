@@ -23,8 +23,8 @@ Let's start by looking at what a fully configured store looks like, we will then
 ```java
 Store<Foo> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
                .fetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
-               .persister(new SourcePersister(new FileSystemImpl(context.getFilesDir())))
-               .parser(new GsonSourceParser<>(gson, Foo.class))
+               .persister(SourcePersisterFactory.create(context.getFilesDir())
+               .parser(GsonParserFactory.createSourceParser(gson, Foo.class))
                .open();
 	      
 ```
@@ -138,7 +138,7 @@ Our example can now be rewritten as:
 ```java
 Store<Article> Store = ParsingStoreBuilder.<BufferedSource, Article>builder()
                 .nonObservableFetcher(this::getResponse)
-                .parser(new GsonSourceParser<>(gson, Article.class))
+                .parser(GsonParserFactory.createSourceParser(gson, Article.class))
                 .open();
 ```
 
@@ -173,7 +173,7 @@ Now our data flow looks like:
                    return Observable.just(true);
                  }
                })
-               .parser(new GsonSourceParser<>(gson, String.class))
+               .parser(GsonParserFactory.createSourceParser(gson, String.class))
                .open();
 ```
 
@@ -192,8 +192,8 @@ We've found the fastest form of persistence is streaming network responses direc
 ```java
 Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
                .nonObservableFetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
-               .persister(new SourcePersister(new FileSystemImpl(context.getFilesDir())))
-               .parser(new GsonSourceParser<>(gson, String.class))
+               .persister(SourcePersisterFactory.create(context.getFilesDir()))
+               .parser(GsonParserFactory.createSourceParser(gson, String.class))
                .open();
 ```
 
@@ -247,22 +247,22 @@ Since this is android, we have split Store into 4 artifacts:
 + **Cache** Cache extracted from Guava (~200 methods) 
 
 	```groovy
-	compile 'com.nytimes.android:cache:1.0.1'
+	compile 'com.nytimes.android:cache:1.0.2'
 	```
 + **Store** This contains only Store classes and has a dependecy on RxJava + the above cache.  
 
 	```groovy
-	compile 'com.nytimes.android:store:1.0.1'
+	compile 'com.nytimes.android:store:1.0.2'
 	```
 + **Middleware** Sample gson parsers, (feel free to create more and open PRs) 
 
 	```groovy
-	compile 'com.nytimes.android:middleware:1.0.1'
+	compile 'com.nytimes.android:middleware:1.0.2'
 	```
 + **File System** Persistence Library built using OKIO Source/Sink + Middleware for streaming from Network to FileSystem 
 
 	```groovy
-	compile 'com.nytimes.android:filesystem:1.0.1'
+	compile 'com.nytimes.android:filesystem:1.0.2'
 	```
 
 
