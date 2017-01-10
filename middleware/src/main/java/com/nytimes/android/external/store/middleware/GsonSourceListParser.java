@@ -14,7 +14,7 @@ import okio.BufferedSource;
  * ParsingStoreBuilder.<BufferedSource, List<BookResults>>builder()
  * .fetcher(fetcher)
  * .persister(new SourcePersister(fileSystem))
- * .parser(new GsonSourceListParser<>(gson, new TypeToken<List<BookResults>())
+ * .parser(GsonParserFactory.createSourceListParser(new Gson(), new TypeToken<List<BookResults>>() {}))
  * .open();
  */
 
