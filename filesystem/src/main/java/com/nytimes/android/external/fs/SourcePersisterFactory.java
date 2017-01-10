@@ -9,7 +9,7 @@ import java.io.IOException;
 import okio.BufferedSource;
 
 /**
- * Created by Scott on 1/8/2017.
+ * Factory for {@link SourcePersister}
  */
 
 public class SourcePersisterFactory {
@@ -17,8 +17,6 @@ public class SourcePersisterFactory {
     /**
      * Returns a new {@link BufferedSource} persister with the provided file as the root of the
      * persistence {@link com.nytimes.android.external.fs.filesystem.FileSystem}.
-     * @param root
-     * @return
      * @throws IOException
      */
     public static Persister<BufferedSource> create(File root) throws IOException {

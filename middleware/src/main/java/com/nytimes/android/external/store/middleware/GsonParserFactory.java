@@ -10,17 +10,16 @@ import okio.BufferedSource;
 /**
  * Factory which returns various Gson {@link Parser} implementations.
  */
-
 public class GsonParserFactory {
 
     /**
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * the provided {@link Gson} instance.
      */
-    public static <T> Parser<Reader,T> createReaderParser(Gson gson, Class<T> parsedClass) {
+    public static <T> Parser<Reader, T> createReaderParser(Gson gson, Class<T> parsedClass) {
         if (gson == null) throw new IllegalArgumentException("gson cannot be null.");
         if (parsedClass == null) throw new IllegalArgumentException("parsedClass cannot be null.");
-        return new GsonReaderParser<>(gson,parsedClass);
+        return new GsonReaderParser<>(gson, parsedClass);
     }
 
     /**
@@ -36,10 +35,10 @@ public class GsonParserFactory {
      * Returns a new Parser which parses from {@link BufferedSource} to the specified type, using
      * the provided {@link Gson} instance.
      */
-    public static <T> Parser<BufferedSource,T> createSourceParser(Gson gson, Class<T> parsedClass) {
+    public static <T> Parser<BufferedSource, T> createSourceParser(Gson gson, Class<T> parsedClass) {
         if (gson == null) throw new IllegalArgumentException("gson cannot be null.");
         if (parsedClass == null) throw new IllegalArgumentException("parsedClass cannot be null.");
-        return new GsonSourceParser<>(gson,parsedClass);
+        return new GsonSourceParser<>(gson, parsedClass);
     }
 
     /**
@@ -55,19 +54,19 @@ public class GsonParserFactory {
      * Returns a new Parser which parses from a String to the specified type, using
      * the provided {@link Gson} instance.
      */
-    public static <T> Parser <String,T> createStringParser(Class<T> parsedClass) {
+    public static <T> Parser<String, T> createStringParser(Gson gson, Class<T> parsedClass) {
+        if (gson == null) throw new IllegalArgumentException("gson cannot be null.");
         if (parsedClass == null) throw new IllegalArgumentException("parsedClass cannot be null.");
-        return new GsonStringParser<>(new Gson(), parsedClass);
+        return new GsonStringParser<>(gson, parsedClass);
     }
 
     /**
      * Returns a new Parser which parses from a String to the specified type, using
      * a new default {@link Gson} instance.
      */
-    public static <T> Parser<String,T> createStringParser(Gson gson, Class<T> parsedClass) {
-        if (gson == null) throw new IllegalArgumentException("gson cannot be null.");
+    public static <T> Parser<String, T> createStringParser(Class<T> parsedClass) {
         if (parsedClass == null) throw new IllegalArgumentException("parsedClass cannot be null.");
-        return new GsonStringParser<>(gson,parsedClass);
+        return new GsonStringParser<>(new Gson(), parsedClass);
     }
 
 }
