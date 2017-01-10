@@ -8,12 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nytimes.android.external.fs.SourcePersister;
-import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
+import com.nytimes.android.external.fs.SourcePersisterFactory;
+import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
-import com.nytimes.android.external.store.middleware.GsonSourceParser;
+import com.nytimes.android.external.store.middleware.GsonParserFactory;
 import com.nytimes.android.sample.BuildConfig;
 import com.nytimes.android.sample.R;
 import com.nytimes.android.sample.data.model.Children;
@@ -37,7 +37,7 @@ import static android.widget.Toast.makeText;
 
 public class PersistingStoreActivity extends AppCompatActivity {
 
-    private SourcePersister sourcePersister;
+    private Persister<BufferedSource> persister;
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
 
@@ -49,7 +49,7 @@ public class PersistingStoreActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         try {
-            sourcePersister = persister();
+            persister = newPersister();
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -91,13 +91,13 @@ public class PersistingStoreActivity extends AppCompatActivity {
     private Store<RedditData> provideRedditStore() {
         return ParsingStoreBuilder.<BufferedSource,RedditData>builder()
                 .fetcher(this::fetcher)
-                .persister(sourcePersister)
-                .parser(new GsonSourceParser<>(provideGson(),RedditData.class))
+                .persister(persister)
+                .parser(GsonParserFactory.createSourceParser(provideGson(),RedditData.class))
                 .open();
     }
 
-    private SourcePersister persister() throws IOException {
-        return new SourcePersister(FileSystemFactory.create(getApplicationContext().getCacheDir()));
+    private Persister<BufferedSource> newPersister() throws IOException {
+        return SourcePersisterFactory.create(getApplicationContext().getCacheDir());
     }
 
     private Observable<BufferedSource> fetcher(BarCode barCode) {
