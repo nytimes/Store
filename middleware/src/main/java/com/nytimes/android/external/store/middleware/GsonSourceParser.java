@@ -1,10 +1,12 @@
 package com.nytimes.android.external.store.middleware;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nytimes.android.external.store.base.Parser;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 
 import javax.inject.Inject;
 
@@ -24,18 +26,18 @@ import okio.BufferedSource;
 public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> {
 
     private final Gson gson;
-    private final Class<Parsed> parsedClass;
+    private Type type;
 
     @Inject
-    public GsonSourceParser(Gson gson, Class<Parsed> parsedClass) {
+    public GsonSourceParser(Gson gson, Type type) {
         this.gson = gson;
-        this.parsedClass = parsedClass;
+        this.type = type;
     }
 
     @Override
     public Parsed call(BufferedSource source) {
         try (InputStreamReader reader = new InputStreamReader(source.inputStream())) {
-            return gson.fromJson(reader, parsedClass);
+            return gson.fromJson(reader, type);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
