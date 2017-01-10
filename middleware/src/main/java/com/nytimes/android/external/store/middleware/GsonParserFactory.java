@@ -6,6 +6,7 @@ import com.nytimes.android.external.store.base.Parser;
 
 import java.io.Reader;
 
+import java.util.List;
 import okio.BufferedSource;
 
 /**
@@ -55,7 +56,7 @@ public class GsonParserFactory {
      * Returns a new Parser which parses from {@link BufferedSource} to the specified type, using
      * the provided {@link Gson} instance.
      */
-    public static <T> Parser<BufferedSource, T> createSourceListParser(Gson gson, TypeToken<T> parsedTypeToken) {
+    public static <T> Parser<BufferedSource, List<T>> createSourceListParser(Gson gson, TypeToken<List<T>> parsedTypeToken) {
         if (gson == null) throw new IllegalArgumentException("gson cannot be null.");
         if (parsedTypeToken == null) throw new IllegalArgumentException("type token cannot be null.");
         return new GsonSourceListParser<>(gson, parsedTypeToken);
@@ -65,7 +66,7 @@ public class GsonParserFactory {
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * a new default configured {@link Gson} instance.
      */
-    public static <T> Parser<BufferedSource, T> createSourceListParser(TypeToken<T> parsedTypeToken) {
+    public static <T> Parser<BufferedSource, List<T>> createSourceListParser(TypeToken<List<T>> parsedTypeToken) {
         if (parsedTypeToken == null) throw new IllegalArgumentException("type token cannot be null.");
         return new GsonSourceListParser<>(new Gson(), parsedTypeToken);
     }
