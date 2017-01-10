@@ -10,16 +10,16 @@ import javax.inject.Inject;
 public class GsonStringParser<Parsed> implements Parser<String, Parsed> {
 
     private final Gson gson;
-    private final Type parsedClass;
+    private final Type type;
 
     @Inject
     public GsonStringParser(Gson gson, Type parsedClass) {
         this.gson = gson;
-        this.parsedClass = parsedClass;
+        this.type = parsedClass;
     }
 
     @Override
     public Parsed call(String source) {
-        return gson.fromJson(source, parsedClass);
+        return gson.fromJson(source, type);
     }
 }
