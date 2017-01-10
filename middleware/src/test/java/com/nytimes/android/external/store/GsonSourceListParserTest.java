@@ -9,14 +9,17 @@ import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-import java.util.List;
-import okio.BufferedSource;
-import okio.Okio;
+
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.List;
+
+import okio.BufferedSource;
+import okio.Okio;
 import rx.Observable;
 
 import static com.google.common.base.Charsets.UTF_8;
@@ -39,7 +42,7 @@ public class GsonSourceListParserTest {
         MockitoAnnotations.initMocks(this);
 
         Parser<BufferedSource, List<Foo>> parser =
-            GsonParserFactory.createSourceListParser(new Gson(), new TypeToken<List<Foo>>() {});
+                GsonParserFactory.createSourceParser(new Gson(),new TypeToken<List<Foo>>() {}.getType());
 
         Store<List<Foo>> simpleStore = ParsingStoreBuilder.<BufferedSource, List<Foo>>builder()
                 .persister(persister)

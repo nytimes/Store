@@ -4,18 +4,19 @@ import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
 
 import java.io.Reader;
+import java.lang.reflect.Type;
 
 import javax.inject.Inject;
 
 public class GsonReaderParser<Parsed> implements Parser<Reader, Parsed> {
 
     private final Gson gson;
-    private final Class<Parsed> parsedClass;
+    private final Type parsedClass;
 
     @Inject
-    public GsonReaderParser(Gson gson, Class<Parsed> parsedClass) {
+    public GsonReaderParser(Gson gson,Type type) {
         this.gson = gson;
-        this.parsedClass = parsedClass;
+        this.parsedClass = type;
     }
 
     @Override

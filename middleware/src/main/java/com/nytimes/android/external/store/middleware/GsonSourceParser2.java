@@ -1,7 +1,6 @@
 package com.nytimes.android.external.store.middleware;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.nytimes.android.external.store.base.Parser;
 
 import java.io.IOException;
@@ -14,31 +13,31 @@ import javax.inject.Inject;
 import okio.BufferedSource;
 
 /**
- * Parser to be used when going from a BufferedSource to any Parsed List<Type>
+ * Parser to be used when going from a BufferedSource to any Parsed Type
  * example usage:
- * ParsingStoreBuilder.<BufferedSource, List<BookResults>>builder()
+ * ParsingStoreBuilder.<BufferedSource, BookResults>builder()
  * .fetcher(fetcher)
  * .persister(new SourcePersister(fileSystem))
- * .parser(GsonParserFactory.createSourceListParser(new Gson(), new TypeToken<List<BookResults>>() {}))
+ * .parser(new GsonSourceParser<>(gson, BookResults.class))
  * .open();
  */
 
 
-public class GsonSourceListParser<Parsed> implements Parser<BufferedSource, Parsed> {
-
+public class GsonSourceParser2<Parsed> implements Parser<BufferedSource, Parsed> {
     private final Gson gson;
-    private final TypeToken<Parsed> parsedTypeToken;
+    private Type type;
 
     @Inject
-    public GsonSourceListParser(Gson gson, TypeToken<Parsed> parsedTypeToken) {
+    public GsonSourceParser2(Gson gson, Type type) {
         this.gson = gson;
-        this.parsedTypeToken = parsedTypeToken;
+        this.type = type;
+        Class<String> stringClass = String.class;
     }
 
     @Override
     public Parsed call(BufferedSource source) {
         try (InputStreamReader reader = new InputStreamReader(source.inputStream())) {
-            return gson.fromJson(reader, parsedTypeToken.getType());
+            return gson.fromJson(reader, type);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
