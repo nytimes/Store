@@ -55,7 +55,7 @@ public class SimpleTest extends BaseTestCase {
     }
 
     @Test
-    public void deleteWhileReading() throws IOException {
+    public void testDeleteWhileReading() throws IOException {
 
         fileSystem.write("/boo", source(testString1));
         BufferedSource source = fileSystem.read("/boo");

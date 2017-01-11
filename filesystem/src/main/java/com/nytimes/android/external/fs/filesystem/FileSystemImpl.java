@@ -62,7 +62,7 @@ class FileSystemImpl implements FileSystem {
         Collection<FSFile> foundFiles = findFiles(directory);
         Collection<String> names = new ArrayList<>(foundFiles.size());
         Iterator<FSFile> iterator = foundFiles.iterator();
-        while ((iterator.hasNext())) {
+        while (iterator.hasNext()) {
             names.add(iterator.next().path());
         }
         return names;
@@ -73,7 +73,7 @@ class FileSystemImpl implements FileSystem {
 
         Collection<FSFile> foundFiles = findFiles(directory);
         Iterator<FSFile> iterator = foundFiles.iterator();
-        while ((iterator.hasNext())) {
+        while (iterator.hasNext()) {
             iterator.next().delete();
         }
     }

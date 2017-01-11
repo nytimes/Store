@@ -41,6 +41,7 @@ public class ParsingStoreBuilder<Raw, Parsed> {
             public Observable<Raw> fetch(final BarCode barCode) {
                 return Observable.fromCallable(new Callable<Raw>() {
                     @Override
+                    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
                     public Raw call() throws Exception {
                         return fetcher.call(barCode);
                     }

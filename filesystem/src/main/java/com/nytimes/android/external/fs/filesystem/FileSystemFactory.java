@@ -6,7 +6,9 @@ import java.io.IOException;
 /**
  * Factory for {@link FileSystem}.
  */
-public class FileSystemFactory {
+public final class FileSystemFactory {
+  private FileSystemFactory() {
+  }
 
   /**
    * Creates new instance of {@link FileSystemImpl}.

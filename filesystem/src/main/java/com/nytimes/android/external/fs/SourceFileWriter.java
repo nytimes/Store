@@ -28,6 +28,7 @@ public class SourceFileWriter implements DiskWrite<BufferedSource> {
     public Observable<Boolean> write(final BarCode barCode, final BufferedSource data) {
         return Observable.fromCallable(new Callable<Boolean>() {
             @Override
+            @SuppressWarnings("PMD.SignatureDeclareThrowsException")
             public Boolean call() throws Exception {
                 fileSystem.write(pathForBarcode(barCode), buffer(data));
                 return true;

@@ -33,12 +33,10 @@ import java.util.Stack;
  */
 
 class BreadthFirstFileTreeIterator implements Iterator {
-
-    private File root;
     private int currentIndex = 0;
     private File[] currentList;
     private File nextFile;
-    private Stack directories;
+    private final Stack directories;
     private boolean endOfTree = false;
 
     /**
@@ -48,7 +46,6 @@ class BreadthFirstFileTreeIterator implements Iterator {
      */
 
     BreadthFirstFileTreeIterator(File root) {
-        this.root = root;
         this.currentList = root.listFiles();
         this.directories = new Stack();
     }

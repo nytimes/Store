@@ -12,7 +12,9 @@ import okio.BufferedSource;
  * Factory for {@link SourcePersister}
  */
 
-public class SourcePersisterFactory {
+public final class SourcePersisterFactory {
+    private SourcePersisterFactory() {
+    }
 
     /**
      * Returns a new {@link BufferedSource} persister with the provided file as the root of the

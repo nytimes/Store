@@ -1,7 +1,6 @@
 package com.nytimes.android.external.store.middleware;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.nytimes.android.external.store.base.Parser;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ import okio.BufferedSource;
 public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> {
 
     private final Gson gson;
-    private Type type;
+    private final Type type;
 
     @Inject
     public GsonSourceParser(Gson gson, Type type) {
