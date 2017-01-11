@@ -1,8 +1,9 @@
 apply plugin: 'pmd'
+check.dependsOn('pmd')
 
 task pmd(type: Pmd) {
     ruleSetFiles = files("${project.rootDir}/pmd-ruleset.xml")
-    ignoreFailures = true
+    ignoreFailures = false
 
 
     source 'src'
