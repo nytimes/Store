@@ -19,7 +19,7 @@ public class Util {
         Stack<String> stack = new Stack<String>();
 
         for (String str : arr) {
-            if(str.equals("/")){
+            if (str.equals("/")) {
                 continue;
             }
             if (str.equals("..")) {

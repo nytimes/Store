@@ -24,7 +24,7 @@ public class NoopPersisterTest {
     public void noopParserFuncTest() throws Exception {
         NoopParserFunc<String, String> noopParserFunc = new NoopParserFunc<>();
         String input = "foo";
-        String output = (String) noopParserFunc.call((Object) input);
+        String output = (String) noopParserFunc.call(input);
         assertThat(input).isEqualTo(output);
         //intended object ref comparison
         assertThat(input == output).isTrue();

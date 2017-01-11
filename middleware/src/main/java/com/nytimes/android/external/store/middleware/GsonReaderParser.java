@@ -14,7 +14,7 @@ public class GsonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     private final Type type;
 
     @Inject
-    public GsonReaderParser(Gson gson,Type type) {
+    public GsonReaderParser(Gson gson, Type type) {
         this.gson = gson;
         this.type = type;
     }

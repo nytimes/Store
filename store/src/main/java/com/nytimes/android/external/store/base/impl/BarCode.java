@@ -30,6 +30,6 @@ public final class BarCode implements Serializable {
     }
 
     public static BarCode empty() {
-        return new BarCode("","");
+        return new BarCode("", "");
     }
 }

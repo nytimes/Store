@@ -17,8 +17,8 @@ import okio.BufferedSource;
  * example usage:
  * ParsingStoreBuilder.<BufferedSource, BookResults>builder()
  * .fetcher(fetcher)
- * .persister(new SourcePersister(fileSystem))
- * .parser(new GsonSourceParser<>(gson, BookResults.class))
+ * .persister(SourcePersisterFactory.create(getApplicationContext().getCacheDir()))
+ * .parser(GsonParserFactory.createSourceParser(new Gson(),BookResult.class)
  * .open();
  */
 
