@@ -1,7 +1,6 @@
 package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
@@ -97,6 +96,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         try {
             return memCache.get(barCode, new Callable<Observable<Parsed>>() {
                 @Override
+                @SuppressWarnings("PMD.SignatureDeclareThrowsException")
                 public Observable<Parsed> call() throws Exception {
                     return disk(barCode);
                 }

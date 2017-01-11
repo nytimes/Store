@@ -44,7 +44,7 @@ public class MultiTest extends BaseTestCase {
     }
 
     @Test
-    public void deleteAll() throws IOException {
+    public void testDeleteAll() throws IOException {
         FileSystem fileSystem = createAndPopulateTestFileSystem();
         fileSystem.deleteAll("/");
         assertThat(fileSystem.list("/").size()).isZero();

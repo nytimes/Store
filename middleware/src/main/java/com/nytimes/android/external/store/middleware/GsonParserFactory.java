@@ -11,7 +11,9 @@ import okio.BufferedSource;
 /**
  * Factory which returns various Gson {@link Parser} implementations.
  */
-public class GsonParserFactory {
+public final class GsonParserFactory {
+    private GsonParserFactory() {
+    }
 
     /**
      * Returns a new Parser which parses from {@link Reader} to the specified type, using

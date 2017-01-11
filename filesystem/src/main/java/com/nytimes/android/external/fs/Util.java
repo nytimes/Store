@@ -9,7 +9,7 @@ import static dagger.internal.Preconditions.checkNotNull;
 public class Util {
 
     public String simplifyPath(String path) {
-        if (path == null || path.length() == 0) {
+        if (ifInvalidPATH(path)) {
             return "";
         }
 
@@ -18,29 +18,41 @@ public class Util {
 
         Stack<String> stack = new Stack<String>();
 
-        for (String str : arr) {
-            if (str.equals("/")) {
-                continue;
-            }
-            if (str.equals("..")) {
-                if (!stack.isEmpty()) {
-                    stack.pop();
-                }
-            } else if (!str.equals(".") && !str.isEmpty()) {
-                stack.push(str);
-            }
-        }
+        fillStack(arr, stack);
 
         StringBuilder sb = new StringBuilder();
-        if (stack.isEmpty()) {
+        if (emptyStack(stack)) {
             return "/";
         }
 
         for (String str : stack) {
-            sb.append("/" + str);
+            sb.append("/").append(str);
         }
 
         return sb.toString();
+    }
+
+    private boolean emptyStack(Stack<String> stack) {
+        return stack.isEmpty();
+    }
+
+    private void fillStack(String[] arr, Stack<String> stack) {
+        for (String str : arr) {
+            if ("/".equals(str)) {
+                continue;
+            }
+            if ("..".equals(str)) {
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else if (!".".equals(str) && !str.isEmpty()) {
+                stack.push(str);
+            }
+        }
+    }
+
+    private boolean ifInvalidPATH(String path) {
+        return path == null || path.length() == 0;
     }
 
     public void createParentDirs(File file) throws IOException {

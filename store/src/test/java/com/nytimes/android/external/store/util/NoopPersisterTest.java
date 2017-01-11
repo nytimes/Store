@@ -11,7 +11,7 @@ public class NoopPersisterTest {
     private final BarCode barCode = new BarCode("key", "value");
 
     @Test
-    public void writeReadTest() throws Exception {
+    public void writeReadTest() {
 
         NoopPersister<String> persister = new NoopPersister<>();
         boolean success = persister.write(barCode, "foo").toBlocking().first();
@@ -21,7 +21,8 @@ public class NoopPersisterTest {
     }
 
     @Test
-    public void noopParserFuncTest() throws Exception {
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
+    public void noopParserFuncTest() {
         NoopParserFunc<String, String> noopParserFunc = new NoopParserFunc<>();
         String input = "foo";
         String output = (String) noopParserFunc.call(input);

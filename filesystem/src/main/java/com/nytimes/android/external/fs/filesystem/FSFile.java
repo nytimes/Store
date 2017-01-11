@@ -15,11 +15,11 @@ import static java.lang.String.format;
 class FSFile {
 
     private final Util util = new Util();
-    private final String path;
+    private final String pathValue;
     private final File file;
 
     FSFile(File root, String path) throws IOException {
-        this.path = path;
+        this.pathValue = path;
         this.file = new File(root, path);
         if (file.exists() && file.isDirectory()) {
             throw new FileNotFoundException(format("expecting a file at %s, instead found a directory", path));
@@ -42,7 +42,7 @@ class FSFile {
     }
 
     public String path() {
-        return path;
+        return pathValue;
     }
 
     public void write(BufferedSource source) throws IOException {
@@ -58,7 +58,7 @@ class FSFile {
                 throw new IOException("unable to move tmp file to " + file.getPath());
             }
         } catch (Exception e) {
-            throw new IOException("unable to write to file");
+            throw new IOException("unable to write to file", e);
 
         } finally {
             tmpFile.delete();
@@ -70,7 +70,7 @@ class FSFile {
         if (file.exists()) {
             return Okio.buffer(Okio.source(file));
         }
-        throw new FileNotFoundException(path);
+        throw new FileNotFoundException(pathValue);
     }
 }
 

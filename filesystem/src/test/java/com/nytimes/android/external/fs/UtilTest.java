@@ -17,7 +17,7 @@ public class UtilTest extends BaseTestCase {
     private final Util util = new Util();
 
     @Test
-    public void simplifyPathTest() {
+    public void testSimplifyPath() {
         assertThat(util.simplifyPath("/a/b/c/d")).isEqualTo("/a/b/c/d");
         assertThat(util.simplifyPath("/a/../b/")).isEqualTo("/b");
         assertThat(util.simplifyPath("/a/./b/c/../d")).isEqualTo("/a/b/d");

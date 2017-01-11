@@ -12,7 +12,7 @@ import rx.Observable;
  * Pass-through diskdao for stores that don't want to use persister
  */
 public class NoopPersister<Raw> implements Persister<Raw> {
-    private ConcurrentMap<BarCode, Raw> networkResponses = new ConcurrentHashMap<>();
+    private final ConcurrentMap<BarCode, Raw> networkResponses = new ConcurrentHashMap<>();
 
     @Override
     public Observable<Raw> read(BarCode barCode) {
