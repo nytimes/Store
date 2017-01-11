@@ -42,7 +42,8 @@ public class GsonSourceListParserTest {
         MockitoAnnotations.initMocks(this);
 
         Parser<BufferedSource, List<Foo>> parser =
-                GsonParserFactory.createSourceParser(new Gson(),new TypeToken<List<Foo>>() {}.getType());
+                GsonParserFactory.createSourceParser(new Gson(), new TypeToken<List<Foo>>() {
+                }.getType());
 
         Store<List<Foo>> simpleStore = ParsingStoreBuilder.<BufferedSource, List<Foo>>builder()
                 .persister(persister)

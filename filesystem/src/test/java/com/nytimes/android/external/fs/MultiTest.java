@@ -4,14 +4,17 @@ import com.google.common.collect.ImmutableMap;
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 import com.nytimes.android.external.fs.impl.BaseTestCase;
+
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
 import okio.BufferedSource;
 import okio.Okio;
-import org.junit.Test;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.createTempDir;

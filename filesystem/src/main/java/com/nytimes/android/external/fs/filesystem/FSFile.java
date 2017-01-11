@@ -57,8 +57,7 @@ class FSFile {
             if (!tmpFile.renameTo(file)) {
                 throw new IOException("unable to move tmp file to " + file.getPath());
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new IOException("unable to write to file");
 
         } finally {
