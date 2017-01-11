@@ -1,0 +1,31 @@
+apply plugin: 'checkstyle'
+preBuild.dependsOn('checkstyle')
+assemble.dependsOn('lint')
+check.dependsOn('checkstyle')
+
+
+configurations {
+    checksytleOverride
+}
+
+dependencies {
+    checksytleOverride('com.puppycrawl.tools:checkstyle:7.1.1')
+}
+
+tasks.withType(Checkstyle) {
+    checkstyleClasspath = project.configurations.checksytleOverride
+}
+
+
+task checkstyle(type: Checkstyle) {
+    configFile file("${project.rootDir}/checkstyle-ruleset.xml")
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = true
+    }
+
+    classpath = files()
+}
