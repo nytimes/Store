@@ -132,16 +132,25 @@ Our updated data flow now looks like this:
 ### Middleware - GsonSourceParser
 
 There is also a seperate middleware lib with parsers to help in cases where your fetcher is a Reader, BufferedSource or String and your parser is Gson:
-GsonReaderParser,
-GsonSourceParser,
-GsonStringParser.
+- GsonReaderParser
+- GsonSourceParser
+- GsonStringParser
 
+These can be accessed via a Factory class (GsonParserFactory).
 
 Our example can now be rewritten as:
 ```java
 Store<Article> Store = ParsingStoreBuilder.<BufferedSource, Article>builder()
                 .nonObservableFetcher(this::getResponse)
                 .parser(GsonParserFactory.createSourceParser(gson, Article.class))
+                .open();
+```
+
+In some cases you may need to parse a top level JSONArray, in which case you can provide a TypeToken.
+```java
+Store<List<Article>> Store = ParsingStoreBuilder.<BufferedSource, List<Article>>builder()
+                .nonObservableFetcher(this::getResponse)
+                .parser(GsonParserFactory.createSourceParser(gson, new TypeToken<List<Article>>() {}))
                 .open();
 ```
 
@@ -158,26 +167,26 @@ Now our data flow looks like:
  Ideally, data will be streamed from network to disk using either a BufferedSource or Reader as your network raw type (rather than String).
 
 ```java
-       Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
-               .nonObservableFetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
-               .persister(new Persister<BufferedSource>() {
-                 @Override
-                 public Observable<BufferedSource> read(BarCode barCode) {
-                   if (dataIsCached) {
-                     return Observable.fromCallable(() -> userImplementedCache.get(barCode));
-                   } else {
-                     return Observable.empty();
-                   }
-                 }
+Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
+           .nonObservableFetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
+           .persister(new Persister<BufferedSource>() {
+             @Override
+             public Observable<BufferedSource> read(BarCode barCode) {
+               if (dataIsCached) {
+                 return Observable.fromCallable(() -> userImplementedCache.get(barCode));
+               } else {
+                 return Observable.empty();
+               }
+             }
        
-                 @Override
-                 public Observable<Boolean> write(BarCode barCode, BufferedSource source) {
-                   userImplementedCache.save(barCode, source);
-                   return Observable.just(true);
-                 }
-               })
-               .parser(GsonParserFactory.createSourceParser(gson, String.class))
-               .open();
+             @Override
+             public Observable<Boolean> write(BarCode barCode, BufferedSource source) {
+               userImplementedCache.save(barCode, source);
+               return Observable.just(true);
+             }
+           })
+           .parser(GsonParserFactory.createSourceParser(gson, String.class))
+           .open();
 ```
 
 Stores don’t care how you’re storing or retrieving your data from disk. As a result, you can use stores with object storage or any database (Realm, SQLite, CouchDB, Firebase etc). The only requirement is that you can store and retrieve the data using the same type as your Fetcher. Technically there is nothing stopping you from implementing an in memory cache for the “persister” implementation and instead have 2 levels of in memory caching (one with inflated and one with deflated models, allowing for sharing of the “persister” cache data between stores).
