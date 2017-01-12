@@ -1,5 +1,7 @@
 package com.nytimes.android.external.cache;
 
+import android.support.annotation.Nullable;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
@@ -31,6 +33,7 @@ public interface LoadingCache<K, V> extends Cache<K, V>, Function<K, V> {
    *     value
    * @throws ExecutionError if an error was thrown while loading the value
    */
+  @Nullable
   V get(K key) throws ExecutionException;
 
   /**
@@ -57,6 +60,7 @@ public interface LoadingCache<K, V> extends Cache<K, V>, Function<K, V> {
    *     explained in the last paragraph above, this should be an unchecked exception only.)
    * @throws ExecutionError if an error was thrown while loading the value
    */
+  @Nullable
   V getUnchecked(K key);
 
   /**
@@ -92,6 +96,7 @@ public interface LoadingCache<K, V> extends Cache<K, V>, Function<K, V> {
    *     described in the documentation for {@link #getUnchecked}, {@code LoadingCache} should be
    *     used as a {@code Function} only with cache loaders that throw only unchecked exceptions.)
    */
+  @Nullable
   @Deprecated
   @Override
   V apply(K key);

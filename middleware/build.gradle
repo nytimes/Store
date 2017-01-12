@@ -36,6 +36,7 @@ dependencies {
     compile libraries.dagger
     compile libraries.okio
     compile libraries.gson
+    compile libraries.supportAnnotations
     testCompile libraries.mockito
     testCompile libraries.assertJ
     testCompile libraries.junit

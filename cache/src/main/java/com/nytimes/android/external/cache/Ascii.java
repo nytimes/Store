@@ -1,5 +1,7 @@
 package com.nytimes.android.external.cache;
 
+import android.support.annotation.NonNull;
+
 public final class Ascii {
 
     private Ascii() {
@@ -11,7 +13,8 @@ public final class Ascii {
      * characters} have been converted to lowercase. All other characters are copied without
      * modification.
      */
-    public static String toLowerCase(String string) {
+    @NonNull
+    public static String toLowerCase(@NonNull String string) {
         int length = string.length();
         for (int i = 0; i < length; i++) {
             if (isUpperCase(string.charAt(i))) {

@@ -16,11 +16,14 @@
 
 package com.nytimes.android.external.cache;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.Arrays;
 
 public final class MoreObjects {
 
-  public static <T> T firstNonNull( T first,  T second) {
+  public static <T> T firstNonNull(T first, T second) {
     return first != null ? first : Preconditions.checkNotNull(second);
   }
 
@@ -63,7 +66,8 @@ public final class MoreObjects {
    *     class name
    * @since 18.0 (since 2.0 as {@code Objects.toStringHelper()}).
    */
-  public static ToStringHelper toStringHelper(Object self) {
+  @NonNull
+  public static ToStringHelper toStringHelper(@NonNull Object self) {
     return new ToStringHelper(self.getClass().getSimpleName());
   }
 
@@ -105,14 +109,16 @@ public final class MoreObjects {
    */
   public static final class ToStringHelper {
     private final String className;
+    @NonNull
     private ValueHolder holderHead = new ValueHolder();
+    @NonNull
     private ValueHolder holderTail = holderHead;
     private boolean omitNullValues = false;
 
     /**
      * Use {@link MoreObjects#toStringHelper(Object)} to create an instance.
      */
-    private ToStringHelper(String className) {
+    private ToStringHelper(@NonNull String className) {
       this.className = Preconditions.checkNotNull(className);
     }
 
@@ -136,7 +142,8 @@ public final class MoreObjects {
      * is used, unless {@link #omitNullValues()} is called, in which case this
      * name/value pair will not be added.
      */
-    public ToStringHelper add(String name,  Object value) {
+    @NonNull
+    public ToStringHelper add(@NonNull String name, Object value) {
       return addHolder(name, value);
     }
 
@@ -194,7 +201,8 @@ public final class MoreObjects {
      *
      * @since 18.0 (since 11.0 as {@code Objects.ToStringHelper.add()}).
      */
-    public ToStringHelper add(String name, int value) {
+    @NonNull
+    public ToStringHelper add(@NonNull String name, int value) {
       return addHolder(name, String.valueOf(value));
     }
 
@@ -204,7 +212,8 @@ public final class MoreObjects {
      *
      * @since 18.0 (since 11.0 as {@code Objects.ToStringHelper.add()}).
      */
-    public ToStringHelper add(String name, long value) {
+    @NonNull
+    public ToStringHelper add(@NonNull String name, long value) {
       return addHolder(name, String.valueOf(value));
     }
 
@@ -214,7 +223,8 @@ public final class MoreObjects {
      * <p>It is strongly encouraged to use {@link #add(String, Object)} instead
      * and give value a readable name.
      */
-    public ToStringHelper addValue( Object value) {
+    @NonNull
+    public ToStringHelper addValue(Object value) {
       return addHolder(value);
     }
 
@@ -341,19 +351,22 @@ public final class MoreObjects {
       return builder.append('}').toString();
     }
 
+    @NonNull
     private ValueHolder addHolder() {
       ValueHolder valueHolder = new ValueHolder();
       holderTail = holderTail.next = valueHolder;
       return valueHolder;
     }
 
-    private ToStringHelper addHolder( Object value) {
+    @NonNull
+    private ToStringHelper addHolder(Object value) {
       ValueHolder valueHolder = addHolder();
       valueHolder.value = value;
       return this;
     }
 
-    private ToStringHelper addHolder(String name,  Object value) {
+    @NonNull
+    private ToStringHelper addHolder(@NonNull String name, Object value) {
       ValueHolder valueHolder = addHolder();
       valueHolder.value = value;
       valueHolder.name = Preconditions.checkNotNull(name);

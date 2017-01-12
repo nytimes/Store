@@ -2,6 +2,9 @@ package com.nytimes.android.external.cache;
 
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -30,11 +33,13 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     // TODO(lukes): with maybePropagateCancellation this is no longer really true.  Track down the
     // final few cases and eliminate their overrides of cancel()
 
+    @Nullable
     @Override public final V get() throws InterruptedException, ExecutionException {
       return super.get();
     }
 
-    @Override public final V get(long timeout, TimeUnit unit)
+    @Nullable
+    @Override public final V get(long timeout, @NonNull TimeUnit unit)
         throws InterruptedException, ExecutionException, TimeoutException {
       return super.get(timeout, unit);
     }
@@ -47,7 +52,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
       return super.isCancelled();
     }
 
-    @Override public final void addListener(Runnable listener, Executor executor) {
+    @Override public final void addListener(@NonNull Runnable listener, @NonNull Executor executor) {
       super.addListener(listener, executor);
     }
   }
@@ -100,6 +105,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     static final Waiter TOMBSTONE = new Waiter(false /* ignored param */);
 
 
+    @Nullable
     volatile Thread thread;
       volatile Waiter next;
 
@@ -140,7 +146,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    *   <li>The waiters list should be very short.
    * </ul>
    */
-  private void removeWaiter(Waiter node) {
+  private void removeWaiter(@NonNull Waiter node) {
     node.thread = null;  // mark as 'deleted'
     restart: while (true) {
       Waiter pred = null;
@@ -169,12 +175,14 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
 
   /** Listeners also form a stack through the {@link #listeners} field. */
   private static final class Listener {
+    @Nullable
     static final Listener TOMBSTONE = new Listener(null, null);
     final Runnable task;
     final Executor executor;
 
     // writes to next are made visible by subsequent CAS's on the listeners field
-      Listener next;
+    @Nullable
+    Listener next;
 
     Listener(Runnable task, Executor executor) {
       this.task = task;
@@ -189,10 +197,12 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
   private static final class Failure {
     static final Failure FALLBACK_INSTANCE = new Failure(
         new Throwable("Failure occurred while trying to finish a future.") {
+          @NonNull
           @Override public synchronized Throwable fillInStackTrace() {
             return this;  // no stack trace
           }
         });
+    @Nullable
     final Throwable exception;
 
     Failure(Throwable exception) {
@@ -297,8 +307,9 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    *     or during the call (optional but recommended).
    * @throws CancellationException {@inheritDoc}
    */
+  @Nullable
   @Override
-  public V get(long timeout, TimeUnit unit)
+  public V get(long timeout, @NonNull TimeUnit unit)
       throws InterruptedException, TimeoutException, ExecutionException {
     // NOTE: if timeout < 0, remainingNanos will be < 0 and we will fall into the while(true) loop
     // at the bottom and throw a timeoutexception.
@@ -380,6 +391,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    *     or during the call (optional but recommended).
    * @throws CancellationException {@inheritDoc}
    */
+  @Nullable
   @Override public V get() throws InterruptedException, ExecutionException {
     if (Thread.interrupted()) {
       throw new InterruptedException();
@@ -497,6 +509,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    * <p>Note: this method may be called speculatively.  There is no guarantee that the future will
    * be cancelled if this method is called.
    */
+  @NonNull
   private Throwable newCancellationCause() {
     return new CancellationException("Future.cancel() was called.");
   }
@@ -530,7 +543,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    * @since 10.0
    */
   @Override
-  public void addListener(Runnable listener, Executor executor) {
+  public void addListener(@NonNull Runnable listener, @NonNull Executor executor) {
     Preconditions.checkNotNull(listener, "Runnable was null.");
     Preconditions.checkNotNull(executor, "Executor was null.");
     Listener oldHead = listeners;
@@ -561,7 +574,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    * @param value the value to be used as the result
    * @return true if the attempt was accepted, completing the {@code Future}
    */
-  protected boolean set(  V value) {
+  protected boolean set(@Nullable V value) {
     Object valueToSet = value == null ? NULL : value;
     if (ATOMIC_HELPER.casValue(this, null, valueToSet)) {
       complete();
@@ -612,7 +625,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    *     cancelled or set.
    * @since 19.0
    */
-  protected boolean setFuture(ListenableFuture<? extends V> future) {
+  protected boolean setFuture(@NonNull ListenableFuture<? extends V> future) {
     Preconditions.checkNotNull(future);
     Object localValue = value;
     if (localValue == null) {
@@ -736,7 +749,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    * <p>This method should be used only when this future is completed. It is designed to be called
    * from {@code done}.
    */
-  final void maybePropagateCancellation(  Future<?> related) {
+  final void maybePropagateCancellation(@Nullable Future<?> related) {
     if (related != null & isCancelled()) {
       related.cancel(wasInterrupted());
     }
@@ -764,7 +777,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    * Submits the given runnable to the given {@link Executor} catching and logging all
    * {@linkplain RuntimeException runtime exceptions} thrown by the executor.
    */
-  private static void executeListener(Runnable runnable, Executor executor) {
+  private static void executeListener(@NonNull Runnable runnable, @NonNull Executor executor) {
     try {
       executor.execute(runnable);
     } catch (RuntimeException e) {
@@ -776,6 +789,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
   }
 
+  @NonNull
   static final CancellationException cancellationExceptionWithCause(
         String message,   Throwable cause) {
     CancellationException exception = new CancellationException(message);
@@ -829,27 +843,27 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
 
     @Override
-    void putThread(Waiter waiter, Thread newValue) {
+    void putThread(@NonNull Waiter waiter, Thread newValue) {
       waiterThreadUpdater.lazySet(waiter, newValue);
     }
 
     @Override
-    void putNext(Waiter waiter, Waiter newValue) {
+    void putNext(@NonNull Waiter waiter, Waiter newValue) {
       waiterNextUpdater.lazySet(waiter, newValue);
     }
 
     @Override
-    boolean casWaiters(AbstractFuture<?> future, Waiter expect, Waiter update) {
+    boolean casWaiters(@NonNull AbstractFuture<?> future, Waiter expect, Waiter update) {
       return waitersUpdater.compareAndSet(future, expect, update);
     }
 
     @Override
-    boolean casListeners(AbstractFuture<?> future, Listener expect, Listener update) {
+    boolean casListeners(@NonNull AbstractFuture<?> future, Listener expect, Listener update) {
       return listenersUpdater.compareAndSet(future, expect, update);
     }
 
     @Override
-    boolean casValue(AbstractFuture<?> future, Object expect, Object update) {
+    boolean casValue(@NonNull AbstractFuture<?> future, Object expect, Object update) {
       return valueUpdater.compareAndSet(future, expect, update);
     }
   }
@@ -862,17 +876,17 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    */
   private static final class SynchronizedHelper extends AtomicHelper {
     @Override
-    void putThread(Waiter waiter, Thread newValue) {
+    void putThread(@NonNull Waiter waiter, Thread newValue) {
       waiter.thread = newValue;
     }
 
     @Override
-    void putNext(Waiter waiter, Waiter newValue) {
+    void putNext(@NonNull Waiter waiter, Waiter newValue) {
       waiter.next = newValue;
     }
 
     @Override
-    boolean casWaiters(AbstractFuture<?> future, Waiter expect, Waiter update) {
+    boolean casWaiters(@NonNull AbstractFuture<?> future, Waiter expect, Waiter update) {
       synchronized (future) {
         if (future.waiters == expect) {
           future.waiters = update;
@@ -883,7 +897,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
 
     @Override
-    boolean casListeners(AbstractFuture<?> future, Listener expect, Listener update) {
+    boolean casListeners(@NonNull AbstractFuture<?> future, Listener expect, Listener update) {
       synchronized (future) {
         if (future.listeners == expect) {
           future.listeners = update;
@@ -894,7 +908,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
 
     @Override
-    boolean casValue(AbstractFuture<?> future, Object expect, Object update) {
+    boolean casValue(@NonNull AbstractFuture<?> future, Object expect, Object update) {
       synchronized (future) {
         if (future.value == expect) {
           future.value = update;

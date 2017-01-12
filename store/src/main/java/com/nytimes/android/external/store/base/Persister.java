@@ -1,5 +1,7 @@
 package com.nytimes.android.external.store.base;
 
+import android.support.annotation.NonNull;
+
 import com.nytimes.android.external.store.base.impl.BarCode;
 
 import rx.Observable;
@@ -16,11 +18,13 @@ public interface Persister<Raw> {
      *                If data is not available implementer needs to
      *                either return Observable.empty or throw an exception
      */
+    @NonNull
     Observable<Raw> read(final BarCode barCode);
 
     /**
      * @param barCode to use to store data to persister
      * @param raw     raw string to be stored
      */
+    @NonNull
     Observable<Boolean> write(final BarCode barCode, final Raw raw);
 }

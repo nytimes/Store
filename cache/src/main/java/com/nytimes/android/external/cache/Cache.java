@@ -1,6 +1,8 @@
 package com.nytimes.android.external.cache;
 
 
+import android.support.annotation.Nullable;
+
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
@@ -15,6 +17,7 @@ public interface Cache<K, V> {
    * @since 11.0
    */
 
+  @Nullable
   V getIfPresent(Object key);
 
   /**
@@ -33,6 +36,7 @@ public interface Cache<K, V> {
    *
    * @since 11.0
    */
+  @Nullable
   V get(K key, Callable<? extends V> valueLoader) throws ExecutionException;
 
   /**

@@ -89,11 +89,12 @@ public class RealStore<Parsed> implements Store<Parsed> {
         internalStore.clearMemory(barCode);
     }
 
-    protected Observable<Parsed> memory(BarCode id) {
+    protected Observable<Parsed> memory(@NonNull BarCode id) {
         return internalStore.memory(id);
     }
 
-    protected Observable<Parsed> disk(BarCode id) {
+    @NonNull
+    protected Observable<Parsed> disk(@NonNull BarCode id) {
         return internalStore.disk(id);
     }
 

@@ -3,9 +3,12 @@ package com.nytimes.android.external.cache;
 
 
 
+import android.support.annotation.Nullable;
+
 import java.util.NoSuchElementException;
 
 public abstract class AbstractSequentialIterator<T> extends UnmodifiableIterator<T> {
+  @Nullable
   private T nextOrNull;
 
   /**
@@ -22,6 +25,7 @@ public abstract class AbstractSequentialIterator<T> extends UnmodifiableIterator
    * {@link #next()} in order to compute the result of a <i>future</i> call to
    * {@code next()}.
    */
+  @Nullable
   protected abstract T computeNext(T previous);
 
   @Override
@@ -29,6 +33,7 @@ public abstract class AbstractSequentialIterator<T> extends UnmodifiableIterator
     return nextOrNull != null;
   }
 
+  @Nullable
   @Override
   public final T next() {
     if (!hasNext()) {

@@ -1,5 +1,7 @@
 package com.nytimes.android.external.cache;
 
+import android.support.annotation.Nullable;
+
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
@@ -16,6 +18,7 @@ public abstract class ForwardingCache<K, V> extends ForwardingObject implements 
   /**
    * @since 11.0
    */
+  @Nullable
   @Override
   public V getIfPresent(Object key) {
     return delegate().getIfPresent(key);
@@ -24,6 +27,7 @@ public abstract class ForwardingCache<K, V> extends ForwardingObject implements 
   /**
    * @since 11.0
    */
+  @Nullable
   @Override
   public V get(K key, Callable<? extends V> valueLoader) throws ExecutionException {
     return delegate().get(key, valueLoader);

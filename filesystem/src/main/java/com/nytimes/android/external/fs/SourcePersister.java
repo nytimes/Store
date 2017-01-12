@@ -22,7 +22,9 @@ import rx.Observable;
  */
 public class SourcePersister implements Persister<BufferedSource> {
 
+    @NonNull
     private final SourceFileReader sourceFileReader;
+    @NonNull
     private final SourceFileWriter sourceFileWriter;
 
     @Inject
@@ -31,19 +33,21 @@ public class SourcePersister implements Persister<BufferedSource> {
         sourceFileWriter = new SourceFileWriter(fileSystem);
     }
 
+    @NonNull
     @Override
-    public Observable<BufferedSource> read(final BarCode barCode) {
+    public Observable<BufferedSource> read(@NonNull final BarCode barCode) {
         return sourceFileReader.exists(barCode) ? sourceFileReader.read(barCode) : Observable.<BufferedSource>empty();
     }
 
+    @NonNull
     @Override
-    public Observable<Boolean> write(final BarCode barCode, final BufferedSource data) {
+    public Observable<Boolean> write(@NonNull final BarCode barCode, @NonNull final BufferedSource data) {
         return sourceFileWriter.write(barCode, data);
     }
 
 
     @NonNull
-    static String pathForBarcode(BarCode barCode) {
+    static String pathForBarcode(@NonNull BarCode barCode) {
         return barCode.getType() + barCode.getKey();
     }
 

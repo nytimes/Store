@@ -1,5 +1,7 @@
 package com.nytimes.android.external.store.middleware;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
 
@@ -19,7 +21,8 @@ public final class GsonParserFactory {
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * the provided {@link Gson} instance.
      */
-    public static <T> Parser<Reader, T> createReaderParser(Gson gson, Type type) {
+    @NonNull
+    public static <T> Parser<Reader, T> createReaderParser(@NonNull Gson gson, @NonNull Type type) {
         if (gson == null) {
             throw new IllegalArgumentException("gson cannot be null.");
         }
@@ -33,7 +36,8 @@ public final class GsonParserFactory {
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * a new default configured {@link Gson} instance.
      */
-    public static <T> Parser<Reader, T> createReaderParser(Type type) {
+    @NonNull
+    public static <T> Parser<Reader, T> createReaderParser(@NonNull Type type) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null.");
         }
@@ -44,7 +48,8 @@ public final class GsonParserFactory {
      * Returns a new Parser which parses from {@link BufferedSource} to the specified type, using
      * the provided {@link Gson} instance.
      */
-    public static <T> Parser<BufferedSource, T> createSourceParser(Gson gson, Type type) {
+    @NonNull
+    public static <T> Parser<BufferedSource, T> createSourceParser(@NonNull Gson gson, @NonNull Type type) {
         if (gson == null) {
             throw new IllegalArgumentException("gson cannot be null.");
         }
@@ -58,7 +63,8 @@ public final class GsonParserFactory {
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * a new default configured {@link Gson} instance.
      */
-    public static <T> Parser<BufferedSource, T> createSourceParser(Type type) {
+    @NonNull
+    public static <T> Parser<BufferedSource, T> createSourceParser(@NonNull Type type) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null.");
         }
@@ -69,7 +75,8 @@ public final class GsonParserFactory {
      * Returns a new Parser which parses from a String to the specified type, using
      * the provided {@link Gson} instance.
      */
-    public static <T> Parser<String, T> createStringParser(Gson gson, Type type) {
+    @NonNull
+    public static <T> Parser<String, T> createStringParser(@NonNull Gson gson, @NonNull Type type) {
         if (gson == null) {
             throw new IllegalArgumentException("gson cannot be null.");
         }
@@ -83,7 +90,8 @@ public final class GsonParserFactory {
      * Returns a new Parser which parses from a String to the specified type, using
      * a new default {@link Gson} instance.
      */
-    public static <T> Parser<String, T> createStringParser(Class<T> type) {
+    @NonNull
+    public static <T> Parser<String, T> createStringParser(@NonNull Class<T> type) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null.");
         }

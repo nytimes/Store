@@ -1,13 +1,14 @@
 package com.nytimes.android.external.cache;
 
 
-
+import android.support.annotation.NonNull;
 
 public final class SettableFuture<V> extends AbstractFuture.TrustedFuture<V> {
 
   /**
    * Creates a new {@code SettableFuture} in the default state.
    */
+  @NonNull
   public static <V> SettableFuture<V> create() {
     return new SettableFuture<V>();
   }
@@ -27,7 +28,7 @@ public final class SettableFuture<V> extends AbstractFuture.TrustedFuture<V> {
   }
 
   @Override
-  public boolean setFuture(ListenableFuture<? extends V> future) {
+  public boolean setFuture(@NonNull ListenableFuture<? extends V> future) {
     return super.setFuture(future);
   }
 }
