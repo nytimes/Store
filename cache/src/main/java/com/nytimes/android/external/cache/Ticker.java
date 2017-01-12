@@ -16,6 +16,8 @@
 
 package com.nytimes.android.external.cache;
 
+import android.support.annotation.NonNull;
+
 public abstract class Ticker {
   /**
    * Constructor for use by subclasses.
@@ -33,6 +35,7 @@ public abstract class Ticker {
    *
    * @since 10.0
    */
+  @NonNull
   public static Ticker systemTicker() {
     return SYSTEM_TICKER;
   }

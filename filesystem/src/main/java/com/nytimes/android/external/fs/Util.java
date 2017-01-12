@@ -1,5 +1,8 @@
 package com.nytimes.android.external.fs;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
@@ -8,7 +11,8 @@ import static dagger.internal.Preconditions.checkNotNull;
 
 public class Util {
 
-    public String simplifyPath(String path) {
+    @NonNull
+    public String simplifyPath(@NonNull String path) {
         if (ifInvalidPATH(path)) {
             return "";
         }
@@ -32,11 +36,11 @@ public class Util {
         return sb.toString();
     }
 
-    private boolean emptyStack(Stack<String> stack) {
+    private boolean emptyStack(@NonNull Stack<String> stack) {
         return stack.isEmpty();
     }
 
-    private void fillStack(String[] arr, Stack<String> stack) {
+    private void fillStack(@NonNull String[] arr, @NonNull Stack<String> stack) {
         for (String str : arr) {
             if ("/".equals(str)) {
                 continue;
@@ -51,11 +55,11 @@ public class Util {
         }
     }
 
-    private boolean ifInvalidPATH(String path) {
+    private boolean ifInvalidPATH(@Nullable String path) {
         return path == null || path.length() == 0;
     }
 
-    public void createParentDirs(File file) throws IOException {
+    public void createParentDirs(@NonNull File file) throws IOException {
         checkNotNull(file);
         File parent = file.getCanonicalFile().getParentFile();
         if (parent == null) {

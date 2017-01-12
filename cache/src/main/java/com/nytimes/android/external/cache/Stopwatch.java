@@ -16,6 +16,8 @@
 
 package com.nytimes.android.external.cache;
 
+import android.support.annotation.NonNull;
+
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -68,6 +70,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * @since 10.0
  */
 public final class Stopwatch {
+    @NonNull
     private final Ticker ticker;
     private boolean isRunning;
     private long elapsedNanos;
@@ -79,6 +82,7 @@ public final class Stopwatch {
      *
      * @since 15.0
      */
+    @NonNull
     public static Stopwatch createUnstarted() {
         return new Stopwatch();
     }
@@ -101,6 +105,7 @@ public final class Stopwatch {
      *
      * @since 15.0
      */
+    @NonNull
     public static Stopwatch createStarted() {
         return new Stopwatch().start();
     }
@@ -117,6 +122,7 @@ public final class Stopwatch {
      * @return this {@code Stopwatch} instance
      * @throws IllegalStateException if the stopwatch is already running.
      */
+    @NonNull
     public Stopwatch start() {
         checkState(!isRunning, "This stopwatch is already running.");
         isRunning = true;
@@ -131,6 +137,7 @@ public final class Stopwatch {
      * @return this {@code Stopwatch} instance
      * @throws IllegalStateException if the stopwatch is already stopped.
      */
+    @NonNull
     public Stopwatch stop() {
         long tick = ticker.read();
         checkState(isRunning, "This stopwatch is already stopped.");
@@ -159,6 +166,7 @@ public final class Stopwatch {
         return String.format(Locale.ROOT, "%.4g %s", value, abbreviate(unit));
     }
 
+    @NonNull
     private static TimeUnit chooseUnit(long nanos) {
         if (DAYS.convert(nanos, NANOSECONDS) > 0) {
             return DAYS;
@@ -181,7 +189,7 @@ public final class Stopwatch {
         return NANOSECONDS;
     }
 
-    private static String abbreviate(TimeUnit unit) {
+    private static String abbreviate(@NonNull TimeUnit unit) {
         switch (unit) {
             case NANOSECONDS:
                 return "ns";

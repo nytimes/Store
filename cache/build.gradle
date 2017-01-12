@@ -42,3 +42,7 @@ artifacts {
 
 apply from: rootProject.file("gradle/maven-push.gradle")
 //apply from: rootProject.file("gradle/checkstyle.gradle")
+
+dependencies {
+    compile libraries.supportAnnotations
+}

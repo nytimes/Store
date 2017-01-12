@@ -30,13 +30,16 @@ public class ParsingStoreBuilder<Raw, Parsed> {
 
     }
 
+    @NonNull
     public ParsingStoreBuilder<Raw, Parsed> fetcher(final @NonNull Fetcher<Raw> fetcher) {
         this.fetcher = fetcher;
         return this;
     }
 
+    @NonNull
     public ParsingStoreBuilder<Raw, Parsed> nonObservableFetcher(final @NonNull Func1<BarCode, Raw> fetcher) {
         this.fetcher = new Fetcher<Raw>() {
+            @NonNull
             @Override
             public Observable<Raw> fetch(final BarCode barCode) {
                 return Observable.fromCallable(new Callable<Raw>() {
@@ -51,19 +54,23 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         return this;
     }
 
+    @NonNull
     public ParsingStoreBuilder<Raw, Parsed> persister(final @NonNull Persister<Raw> persister) {
         this.persister = persister;
         return this;
     }
 
+    @NonNull
     public ParsingStoreBuilder<Raw, Parsed> persister(final @NonNull DiskRead<Raw> diskRead,
                                                       final @NonNull DiskWrite<Raw> diskWrite) {
         persister = new Persister<Raw>() {
+            @NonNull
             @Override
             public Observable<Raw> read(BarCode barCode) {
                 return diskRead.read(barCode);
             }
 
+            @NonNull
             @Override
             public Observable<Boolean> write(BarCode barCode, Raw raw) {
                 return diskWrite.write(barCode, raw);
@@ -72,25 +79,30 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         return this;
     }
 
+    @NonNull
     public ParsingStoreBuilder<Raw, Parsed> parser(final @NonNull Func1<Raw, Parsed> parser) {
         this.parser = parser;
         return this;
     }
 
+    @NonNull
     public ParsingStoreBuilder<Raw, Parsed> parser(final @NonNull Parser<Raw, Parsed> parser) {
         this.parser = parser;
         return this;
     }
 
+    @NonNull
     public static <Raw, Parsed> ParsingStoreBuilder<Raw, Parsed> builder() {
         return new ParsingStoreBuilder<>();
     }
 
+    @NonNull
     public ParsingStoreBuilder<Raw, Parsed> memory(Cache<BarCode, Observable<Parsed>> memCache) {
         this.memCache = memCache;
         return this;
     }
 
+    @NonNull
     public Store<Parsed> open() {
         if (persister == null) {
             persister = new NoopPersister<>();

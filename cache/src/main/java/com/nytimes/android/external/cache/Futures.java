@@ -1,6 +1,9 @@
 package com.nytimes.android.external.cache;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -15,7 +18,8 @@ public final class Futures {
     }
 
 
-    public static <V> ListenableFuture<V> immediateFuture(  V value) {
+    @Nullable
+    public static <V> ListenableFuture<V> immediateFuture(@Nullable V value) {
         if (value == null) {
             Futures.ImmediateSuccessfulFuture typedNull = Futures.ImmediateSuccessfulFuture.NULL;
             return typedNull;
@@ -25,23 +29,25 @@ public final class Futures {
     }
 
 
+    @NonNull
     public static <V> ListenableFuture<V> immediateFailedFuture(Throwable throwable) {
         Preconditions.checkNotNull(throwable);
         return new Futures.ImmediateFailedFuture(throwable);
     }
 
-    public static <I, O> ListenableFuture<O> transform(ListenableFuture<I> input, Function<? super I, ? extends O> function) {
+    @NonNull
+    public static <I, O> ListenableFuture<O> transform(@NonNull ListenableFuture<I> input, Function<? super I, ? extends O> function) {
         Preconditions.checkNotNull(function);
         Futures.ChainingFuture output = new Futures.ChainingFuture(input, function);
         input.addListener(output, DirectExecutor.INSTANCE);
         return output;
     }
 
-    public static <V, X extends Exception> V getChecked(Future<V> future, Class<X> exceptionClass) throws X {
+    public static <V, X extends Exception> V getChecked(@NonNull Future<V> future, Class<X> exceptionClass) throws X {
         return FuturesGetChecked.getChecked(future, exceptionClass);
     }
 
-    public static <V, X extends Exception> V getChecked(Future<V> future, Class<X> exceptionClass, long timeout, TimeUnit unit) throws X {
+    public static <V, X extends Exception> V getChecked(@NonNull Future<V> future, Class<X> exceptionClass, long timeout, @NonNull TimeUnit unit) throws X {
         return FuturesGetChecked.getChecked(future, exceptionClass, timeout, unit);
     }
 
@@ -52,7 +58,7 @@ public final class Futures {
             super(inputFuture, function);
         }
 
-        void doTransform(Function<? super I, ? extends O> function, I input) {
+        void doTransform(@NonNull Function<? super I, ? extends O> function, I input) {
             this.set(function.apply(input));
         }
     }
@@ -63,8 +69,10 @@ public final class Futures {
         // In theory, this field might not be visible to a cancel() call in certain circumstances. For
         // details, see the comments on the fields of TimeoutFuture.
 
+        @Nullable
         ListenableFuture<? extends I> inputFuture;
 
+        @Nullable
         F function;
 
         AbstractChainingFuture(ListenableFuture<? extends I> inputFuture, F function) {
@@ -126,6 +134,7 @@ public final class Futures {
             this.thrown = thrown;
         }
 
+        @NonNull
         public V get() throws ExecutionException {
             throw new ExecutionException(this.thrown);
         }
@@ -133,6 +142,7 @@ public final class Futures {
 
 
     private static class ImmediateSuccessfulFuture<V> extends Futures.ImmediateFuture<V> {
+        @Nullable
         static final Futures.ImmediateSuccessfulFuture<Object> NULL = new Futures.ImmediateSuccessfulFuture((Object) null);
 
         private final V value;
@@ -153,7 +163,7 @@ public final class Futures {
         private ImmediateFuture() {
         }
 
-        public void addListener(Runnable listener, Executor executor) {
+        public void addListener(@NonNull Runnable listener, @NonNull Executor executor) {
             Preconditions.checkNotNull(listener, "Runnable was null.");
             Preconditions.checkNotNull(executor, "Executor was null.");
 
@@ -171,7 +181,7 @@ public final class Futures {
 
         public abstract V get() throws ExecutionException;
 
-        public V get(long timeout, TimeUnit unit) throws ExecutionException {
+        public V get(long timeout, @NonNull TimeUnit unit) throws ExecutionException {
             Preconditions.checkNotNull(unit);
             return this.get();
         }

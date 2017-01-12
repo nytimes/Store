@@ -5,7 +5,10 @@
 
 package com.nytimes.android.external.cache;
 
+import android.support.annotation.Nullable;
+
 public interface Function<F, T> {
+    @Nullable
     T apply(F var1);
 
     boolean equals(Object var1);

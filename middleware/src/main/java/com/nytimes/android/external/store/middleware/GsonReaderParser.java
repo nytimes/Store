@@ -1,5 +1,7 @@
 package com.nytimes.android.external.store.middleware;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
 
@@ -20,7 +22,7 @@ public class GsonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     }
 
     @Override
-    public Parsed call(Reader reader) {
+    public Parsed call(@NonNull Reader reader) {
         return gson.fromJson(reader, type);
     }
 }

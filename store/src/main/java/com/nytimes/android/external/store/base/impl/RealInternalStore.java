@@ -1,6 +1,7 @@
 package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
@@ -95,6 +96,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     private Observable<Parsed> cache(@NonNull final BarCode barCode) {
         try {
             return memCache.get(barCode, new Callable<Observable<Parsed>>() {
+                @NonNull
                 @Override
                 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
                 public Observable<Parsed> call() throws Exception {
@@ -141,6 +143,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      */
     public Observable<Parsed> fetch(@NonNull final BarCode barCode) {
         return Observable.defer(new Func0<Observable<Parsed>>() {
+            @Nullable
             @Override
             public Observable<Parsed> call() {
                 return fetchAndPersist(barCode);
@@ -158,9 +161,11 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @param barCode resource identifier
      * @return observable that emits a {@link Parsed} value
      */
+    @Nullable
     Observable<Parsed> fetchAndPersist(@NonNull final BarCode barCode) {
         try {
             return inFlightRequests.get(barCode, new Callable<Observable<Parsed>>() {
+                @NonNull
                 @Override
                 public Observable<Parsed> call() {
                     return response(barCode);
@@ -181,6 +186,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                         //Log.i(TAG,"writing and then reading from Persister");
                         return persister().write(barCode, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
+                                    @NonNull
                                     @Override
                                     public Observable<Parsed> call(Boolean aBoolean) {
                                         return disk(barCode);
@@ -212,7 +218,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return
      */
-    public Observable<Parsed> stream(BarCode id) {
+    public Observable<Parsed> stream(@NonNull BarCode id) {
 
         Observable<Parsed> stream = subject.asObservable();
 

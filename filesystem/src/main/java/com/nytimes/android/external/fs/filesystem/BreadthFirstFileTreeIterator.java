@@ -19,6 +19,9 @@ package com.nytimes.android.external.fs.filesystem;
 
 //package org.jpublish.util;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -35,7 +38,9 @@ import java.util.Stack;
 class BreadthFirstFileTreeIterator implements Iterator {
     private int currentIndex = 0;
     private File[] currentList;
+    @Nullable
     private File nextFile;
+    @NonNull
     private final Stack directories;
     private boolean endOfTree = false;
 
@@ -45,7 +50,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @param root The root directory
      */
 
-    BreadthFirstFileTreeIterator(File root) {
+    BreadthFirstFileTreeIterator(@NonNull File root) {
         this.currentList = root.listFiles();
         this.directories = new Stack();
     }
@@ -68,6 +73,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @return The next element in the iteration
      */
 
+    @Nullable
     public Object next() {
         if (endOfTree) {
             throw new NoSuchElementException();
@@ -104,6 +110,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @return The next file
      */
 
+    @Nullable
     protected File getNextFile() {
         if (nextFile == null) {
             nextFile = findNextFile();
@@ -117,6 +124,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @return The next file
      */
 
+    @Nullable
     protected File findNextFile() {
         while (currentIndex < currentList.length) {
             if (currentList[currentIndex].isDirectory()) {

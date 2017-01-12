@@ -1,5 +1,8 @@
 package com.nytimes.android.external.fs.filesystem;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.nytimes.android.external.cache.CacheLoader;
 import com.nytimes.android.external.cache.LoadingCache;
 import com.nytimes.android.external.fs.Util;
@@ -24,16 +27,19 @@ import static java.lang.String.format;
 class FileSystemImpl implements FileSystem {
 
     private final Util util = new Util();
+    @NonNull
     private final LoadingCache<String, FSFile> files;
+    @NonNull
     private final File root;
 
-    FileSystemImpl(final File root) throws IOException {
+    FileSystemImpl(@NonNull final File root) throws IOException {
         this.root = root;
 
         this.files = newBuilder().maximumSize(20)
                 .build(new CacheLoader<String, FSFile>() {
+                    @NonNull
                     @Override
-                    public FSFile load(String path) throws IOException {
+                    public FSFile load(@NonNull String path) throws IOException {
                         return new FSFile(root, path);
                     }
                 });
@@ -41,23 +47,25 @@ class FileSystemImpl implements FileSystem {
         util.createParentDirs(root);
     }
 
+    @NonNull
     @Override
-    public BufferedSource read(String path) throws FileNotFoundException {
+    public BufferedSource read(@NonNull String path) throws FileNotFoundException {
         return getFile(path).source();
     }
 
     @Override
-    public void write(String path, BufferedSource source) throws IOException {
+    public void write(@NonNull String path, BufferedSource source) throws IOException {
         getFile(path).write(source);
     }
 
     @Override
-    public void delete(String path) throws IOException {
+    public void delete(@NonNull String path) throws IOException {
         getFile(path).delete();
     }
 
+    @NonNull
     @Override
-    public Collection<String> list(String directory) throws FileNotFoundException {
+    public Collection<String> list(@NonNull String directory) throws FileNotFoundException {
 
         Collection<FSFile> foundFiles = findFiles(directory);
         Collection<String> names = new ArrayList<>(foundFiles.size());
@@ -69,7 +77,7 @@ class FileSystemImpl implements FileSystem {
     }
 
     @Override
-    public void deleteAll(String directory) throws FileNotFoundException {
+    public void deleteAll(@NonNull String directory) throws FileNotFoundException {
 
         Collection<FSFile> foundFiles = findFiles(directory);
         Iterator<FSFile> iterator = foundFiles.iterator();
@@ -79,19 +87,22 @@ class FileSystemImpl implements FileSystem {
     }
 
     @Override
-    public boolean exists(String path) {
+    public boolean exists(@NonNull String path) {
         return getFile(path).exists();
     }
 
-    private FSFile getFile(String path) {
+    @Nullable
+    private FSFile getFile(@NonNull String path) {
         return files.getUnchecked(cleanPath(path));
     }
 
-    private String cleanPath(String dirty) {
+    @NonNull
+    private String cleanPath(@NonNull String dirty) {
         return util.simplifyPath(dirty);
     }
 
-    private Collection<FSFile> findFiles(String path) throws FileNotFoundException {
+    @NonNull
+    private Collection<FSFile> findFiles(@NonNull String path) throws FileNotFoundException {
 
         File searchRoot = new File(root, util.simplifyPath(path));
         if (searchRoot.exists() && searchRoot.isFile()) {

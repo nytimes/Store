@@ -1,5 +1,7 @@
 package com.nytimes.android.external.store.middleware;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
 
@@ -34,7 +36,7 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
     }
 
     @Override
-    public Parsed call(BufferedSource source) {
+    public Parsed call(@NonNull BufferedSource source) {
         try (InputStreamReader reader = new InputStreamReader(source.inputStream())) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {

@@ -12,5 +12,6 @@ import rx.Observable;
  */
 public interface InternalStore<Parsed> extends Store<Parsed> {
     Observable<Parsed> memory(@NonNull final BarCode barCode);
+    @NonNull
     Observable<Parsed> disk(@NonNull final BarCode barCode);
 }
