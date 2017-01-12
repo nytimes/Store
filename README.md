@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=master)](https://travis-ci.org/NYTimes/Store)
+
+
 # Store
 
 Android library for async data loading from multiple sources
