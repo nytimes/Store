@@ -7,6 +7,8 @@ import com.squareup.moshi.Moshi;
 
 import java.lang.reflect.Type;
 
+import okio.BufferedSource;
+
 /**
  * Factory which returns various Moshi {@link Parser} implementations.
  */
@@ -22,10 +24,10 @@ public final class MoshiParserFactory {
     @NonNull
     public static <T> Parser<String, T> createStringParser(@NonNull Moshi moshi, @NonNull Type type) {
         if (moshi == null) {
-            throw new IllegalArgumentException("moshi cannot be null");
+            throw new IllegalArgumentException("moshi cannot be null.");
         }
         if (type == null) {
-            throw new IllegalArgumentException("type cannot be null");
+            throw new IllegalArgumentException("type cannot be null.");
         }
         return new MoshiStringParser<>(moshi, type);
     }
@@ -37,5 +39,29 @@ public final class MoshiParserFactory {
     @NonNull
     public static <T> Parser<String, T> createStringParser(@NonNull Class<T> type) {
         return createStringParser(new Moshi.Builder().build(), type);
+    }
+
+    /**
+     * Returns a new Parser which parses from {@link BufferedSource} to the specified type, using
+     * the provided {@link Moshi} instance.
+     */
+    @NonNull
+    public static <T> Parser<BufferedSource, T> createSourceParser(@NonNull Moshi moshi, @NonNull Type type) {
+        if (moshi == null) {
+            throw new IllegalArgumentException("moshi cannot be null.");
+        }
+        if (type == null) {
+            throw new IllegalArgumentException("type cannot be null.");
+        }
+        return new MoshiSourceParser<>(moshi, type);
+    }
+
+    /**
+     * Returns a new Parser which parses from {@link BufferedSource} to the specified type, using
+     * a new default configured {@link Moshi} instance.
+     */
+    @NonNull
+    public static <T> Parser<BufferedSource, T> createSourceParser(@NonNull Type type) {
+        return createSourceParser(new Moshi.Builder().build(), type);
     }
 }

@@ -1,6 +1,7 @@
 package com.nytimes.android.external.store.middleware.moshi;
 
 import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
@@ -13,24 +14,30 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+
+import okio.BufferedSource;
+import okio.Okio;
 import rx.Observable;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class MoshiStringParserStoreTest {
+public class MoshiSourceParserTest {
 
     private static final String KEY = "key";
-    private static final String source =
+    private static final String sourceString =
             "{\"number\":123,\"string\":\"abc\",\"bars\":[{\"string\":\"def\"},{\"string\":\"ghi\"}]}";
 
     @Mock
-    Fetcher<String> fetcher;
+    Fetcher<BufferedSource> fetcher;
     @Mock
-    Persister<String> persister;
+    Persister<BufferedSource> persister;
 
     private final BarCode barCode = new BarCode("value", KEY);
 
@@ -38,23 +45,29 @@ public class MoshiStringParserStoreTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        BufferedSource bufferedSource = source(sourceString);
+        assertNotNull(bufferedSource);
+
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(source));
+                .thenReturn(Observable.just(bufferedSource));
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<String>empty())
-                .thenReturn(Observable.just(source));
+                .thenReturn(Observable.<BufferedSource>empty())
+                .thenReturn(Observable.just(bufferedSource));
 
-        when(persister.write(barCode, source))
+        when(persister.write(barCode, bufferedSource))
                 .thenReturn(Observable.just(true));
     }
 
     @Test
-    public void testMoshiString() {
-        Store<Foo> store = ParsingStoreBuilder.<String, Foo>builder()
+    public void testSourceParser() throws Exception {
+
+        Parser<BufferedSource, Foo> parser = MoshiParserFactory.createSourceParser(Foo.class);
+
+        Store<Foo> store = ParsingStoreBuilder.<BufferedSource, Foo>builder()
                 .persister(persister)
                 .fetcher(fetcher)
-                .parser(MoshiParserFactory.createStringParser(Foo.class))
+                .parser(parser)
                 .open();
 
         Foo result = store.get(barCode).toBlocking().first();
@@ -66,23 +79,28 @@ public class MoshiStringParserStoreTest {
         assertEquals(result.bars.get(1).string, "ghi");
 
         verify(fetcher, times(1)).fetch(barCode);
+
     }
 
     @Test
     public void testInvalidArgumentsInFactory() {
         try {
-            MoshiParserFactory.createStringParser(null, Foo.class);
+            MoshiParserFactory.createSourceParser(null, Foo.class);
             fail();
         } catch (IllegalArgumentException expected) {
             assertEquals("moshi cannot be null.", expected.getMessage());
         }
 
         try {
-            MoshiParserFactory.createStringParser(new Moshi.Builder().build(), null);
+            MoshiParserFactory.createSourceParser(new Moshi.Builder().build(), null);
             fail();
         } catch (IllegalArgumentException expected) {
             assertEquals("type cannot be null.", expected.getMessage());
         }
+    }
+
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(Charset.defaultCharset()))));
     }
 
 }
