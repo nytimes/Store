@@ -26,11 +26,13 @@ android {
 
     lintOptions {
         abortOnError true
+        disable 'InvalidPackage'
     }
 }
 
 dependencies {
     compile project(path: ':store')
+    compile libraries.moshi
     compile libraries.rxJava
     compile libraries.dagger
     compile libraries.supportAnnotations
