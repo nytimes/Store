@@ -9,14 +9,15 @@ import com.nytimes.android.external.store.middleware.moshi.data.Foo;
 import com.squareup.moshi.Moshi;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import rx.Observable;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,9 @@ public class MoshiStringParserStoreTest {
     private static final String KEY = "key";
     private static final String source =
             "{\"number\":123,\"string\":\"abc\",\"bars\":[{\"string\":\"def\"},{\"string\":\"ghi\"}]}";
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     Fetcher<String> fetcher;
@@ -69,20 +73,15 @@ public class MoshiStringParserStoreTest {
     }
 
     @Test
-    public void testInvalidArgumentsInFactory() {
-        try {
-            MoshiParserFactory.createStringParser(null, Foo.class);
-            fail();
-        } catch (IllegalArgumentException expected) {
-            assertEquals("moshi cannot be null.", expected.getMessage());
-        }
+    public void testNullMoshi() {
+        expectedException.expect(NullPointerException.class);
+        MoshiParserFactory.createStringParser(null, Foo.class);
+    }
 
-        try {
-            MoshiParserFactory.createStringParser(new Moshi.Builder().build(), null);
-            fail();
-        } catch (IllegalArgumentException expected) {
-            assertEquals("type cannot be null.", expected.getMessage());
-        }
+    @Test
+    public void testNullType() {
+        expectedException.expect(NullPointerException.class);
+        MoshiParserFactory.createStringParser(new Moshi.Builder().build(), null);
     }
 
 }
