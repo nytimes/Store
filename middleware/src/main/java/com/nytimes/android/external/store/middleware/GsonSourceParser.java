@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 import okio.BufferedSource;
 
+import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
+
 /**
  * Parser to be used when going from a BufferedSource to any Parsed Type
  * example usage:
@@ -31,6 +33,8 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
 
     @Inject
     public GsonSourceParser(Gson gson, Type type) {
+        checkNotNull(gson, "Gson can't be null");
+        checkNotNull(type, "Type can't be null");
         this.gson = gson;
         this.type = type;
     }
