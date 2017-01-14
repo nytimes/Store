@@ -57,6 +57,9 @@ dependencies {
     compile 'com.nytimes.android:store:1.0.2'
     compile 'com.nytimes.android:middleware:1.0.2'
     compile 'com.nytimes.android:filesystem:1.0.2'
+
+    compile project(path: ':store-annotations')
+
     retrolambdaConfig libraries.retrolambda
     compile libraries.rxAndroid
 
