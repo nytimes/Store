@@ -19,6 +19,15 @@ public final class GsonParserFactory {
 
     /**
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
+     * a new default configured {@link Gson} instance.
+     */
+    @NonNull
+    public static <T> Parser<Reader, T> createReaderParser(@NonNull Type type) {
+        return createReaderParser(new Gson(), type);
+    }
+
+    /**
+     * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * the provided {@link Gson} instance.
      */
     @NonNull
@@ -31,8 +40,8 @@ public final class GsonParserFactory {
      * a new default configured {@link Gson} instance.
      */
     @NonNull
-    public static <T> Parser<Reader, T> createReaderParser(@NonNull Type type) {
-        return new GsonReaderParser<>(new Gson(), type);
+    public static <T> Parser<BufferedSource, T> createSourceParser(@NonNull Type type) {
+        return createSourceParser(new Gson(), type);
     }
 
     /**
@@ -45,12 +54,12 @@ public final class GsonParserFactory {
     }
 
     /**
-     * Returns a new Parser which parses from {@link Reader} to the specified type, using
-     * a new default configured {@link Gson} instance.
+     * Returns a new Parser which parses from a String to the specified type, using
+     * a new default {@link Gson} instance.
      */
     @NonNull
-    public static <T> Parser<BufferedSource, T> createSourceParser(@NonNull Type type) {
-        return new GsonSourceParser<>(new Gson(), type);
+    public static <T> Parser<String, T> createStringParser(@NonNull Class<T> type) {
+        return createStringParser(new Gson(), type);
     }
 
     /**
@@ -60,15 +69,6 @@ public final class GsonParserFactory {
     @NonNull
     public static <T> Parser<String, T> createStringParser(@NonNull Gson gson, @NonNull Type type) {
         return new GsonStringParser<>(gson, type);
-    }
-
-    /**
-     * Returns a new Parser which parses from a String to the specified type, using
-     * a new default {@link Gson} instance.
-     */
-    @NonNull
-    public static <T> Parser<String, T> createStringParser(@NonNull Class<T> type) {
-        return new GsonStringParser<>(new Gson(), type);
     }
 
 }
