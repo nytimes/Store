@@ -27,44 +27,44 @@ public class GsonParserFactoryTest {
     }
 
     @Test
-    public void shouldCreateParsersProperly() throws Exception {
+    public void shouldCreateParsersProperly() {
         GsonParserFactory.createReaderParser(gson, type);
         GsonParserFactory.createSourceParser(gson, type);
         GsonParserFactory.createStringParser(gson, type);
     }
 
     @Test
-    public void should_ThrowException_When_CreatingReaderWithNullType() throws Exception {
+    public void shouldThrowExceptionWhenCreatingReaderWithNullType() {
         expectedException.expect(NullPointerException.class);
         GsonParserFactory.createReaderParser(gson, null);
     }
 
     @Test
-    public void should_ThrowException_When_CreatingReaderWithNullGson() throws Exception {
+    public void shouldThrowExceptionWhenCreatingReaderWithNullGson() {
         expectedException.expect(NullPointerException.class);
         GsonParserFactory.createReaderParser(null, type);
     }
 
     @Test
-    public void should_ThrowException_When_CreatingSourceWithNullType() throws Exception {
+    public void shouldThrowExceptionWhenCreatingSourceWithNullType() {
         expectedException.expect(NullPointerException.class);
         GsonParserFactory.createSourceParser(gson, null);
     }
 
     @Test
-    public void should_ThrowException_When_CreatingSourceWithNullGson() throws Exception {
+    public void shouldThrowExceptionWhenCreatingSourceWithNullGson() {
         expectedException.expect(NullPointerException.class);
         GsonParserFactory.createSourceParser(null, type);
     }
 
     @Test
-    public void should_ThrowException_When_CreatingStringWithNullType() throws Exception {
+    public void shouldThrowExceptionWhenCreatingStringWithNullType() {
         expectedException.expect(NullPointerException.class);
         GsonParserFactory.createStringParser(gson, null);
     }
 
     @Test
-    public void should_ThrowException_When_CreatingStringWithNullGson() throws Exception {
+    public void shouldThrowExceptionWhenCreatingStringWithNullGson() {
         expectedException.expect(NullPointerException.class);
         GsonParserFactory.createStringParser(null, type);
     }
