@@ -3,6 +3,7 @@ package com.nytimes.android.external.store.middleware.jackson;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
@@ -39,20 +40,20 @@ public class JacksonStringParserStoreTest {
     @Mock
     Persister<String> persister;
 
-    private final BarCode barCode = new BarCode("value", KEY);
+    private final IBarCode IBarCode = new BarCode("value", KEY);
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(fetcher.fetch(barCode))
+        when(fetcher.fetch(IBarCode))
                 .thenReturn(Observable.just(source));
 
-        when(persister.read(barCode))
+        when(persister.read(IBarCode))
                 .thenReturn(Observable.<String>empty())
                 .thenReturn(Observable.just(source));
 
-        when(persister.write(barCode, source))
+        when(persister.write(IBarCode, source))
                 .thenReturn(Observable.just(true));
     }
 
@@ -64,11 +65,11 @@ public class JacksonStringParserStoreTest {
                 .parser(JacksonParserFactory.createStringParser(Foo.class))
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(IBarCode).toBlocking().first();
 
         validateFoo(result);
 
-        verify(fetcher, times(1)).fetch(barCode);
+        verify(fetcher, times(1)).fetch(IBarCode);
     }
 
     @Test
@@ -83,11 +84,11 @@ public class JacksonStringParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(IBarCode).toBlocking().first();
 
         validateFoo(result);
 
-        verify(fetcher, times(1)).fetch(barCode);
+        verify(fetcher, times(1)).fetch(IBarCode);
     }
 
     private void validateFoo(Foo foo) {

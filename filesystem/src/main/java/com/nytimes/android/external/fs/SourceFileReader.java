@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskRead;
-import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.IBarCode;
 
 import java.io.FileNotFoundException;
 import java.util.concurrent.Callable;
@@ -27,17 +27,17 @@ public class SourceFileReader implements DiskRead<BufferedSource> {
 
     @NonNull
     @Override
-    public Observable<BufferedSource> read(@NonNull final BarCode barCode) {
+    public Observable<BufferedSource> read(@NonNull final IBarCode IBarCode) {
         return Observable.fromCallable(new Callable<BufferedSource>() {
             @NonNull
             @Override
             public BufferedSource call() throws FileNotFoundException {
-                return fileSystem.read(pathForBarcode(barCode));
+                return fileSystem.read(pathForBarcode(IBarCode));
             }
         });
     }
 
-    public boolean exists(@NonNull BarCode barCode) {
-        return fileSystem.exists(pathForBarcode(barCode));
+    public boolean exists(@NonNull IBarCode IBarCode) {
+        return fileSystem.exists(pathForBarcode(IBarCode));
     }
 }

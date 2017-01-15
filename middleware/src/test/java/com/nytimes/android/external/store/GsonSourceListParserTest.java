@@ -3,6 +3,7 @@ package com.nytimes.android.external.store;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
@@ -35,7 +36,7 @@ public class GsonSourceListParserTest {
     @Mock
     Persister<BufferedSource> persister;
 
-    private final BarCode barCode = new BarCode("value", KEY);
+    private final IBarCode IBarCode = new BarCode("value", KEY);
 
     @Test
     public void testSimple() {
@@ -61,22 +62,22 @@ public class GsonSourceListParserTest {
 
         BufferedSource source = source(sourceData);
         Observable<BufferedSource> value = Observable.just(source);
-        when(fetcher.fetch(barCode))
+        when(fetcher.fetch(IBarCode))
                 .thenReturn(value);
 
-        when(persister.read(barCode))
+        when(persister.read(IBarCode))
                 .thenReturn(Observable.<BufferedSource>empty())
                 .thenReturn(value);
 
-        when(persister.write(barCode, source))
+        when(persister.write(IBarCode, source))
                 .thenReturn(Observable.just(true));
 
-        List<Foo> result = simpleStore.get(barCode).toBlocking().first();
+        List<Foo> result = simpleStore.get(IBarCode).toBlocking().first();
         assertThat(result.get(0).value).isEqualTo("a");
         assertThat(result.get(1).value).isEqualTo("b");
         assertThat(result.get(2).value).isEqualTo("c");
 
-        verify(fetcher, times(1)).fetch(barCode);
+        verify(fetcher, times(1)).fetch(IBarCode);
     }
 
     private static BufferedSource source(String data) {

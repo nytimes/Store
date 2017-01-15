@@ -1,5 +1,6 @@
 package com.nytimes.android.external.store.util;
 
+import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
 import org.junit.Test;
@@ -8,15 +9,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NoopPersisterTest {
 
-    private final BarCode barCode = new BarCode("key", "value");
+    private final IBarCode IBarCode = new BarCode("key", "value");
 
     @Test
     public void writeReadTest() {
 
         NoopPersister<String> persister = new NoopPersister<>();
-        boolean success = persister.write(barCode, "foo").toBlocking().first();
+        boolean success = persister.write(IBarCode, "foo").toBlocking().first();
         assertThat(success).isTrue();
-        String rawValue = persister.read(barCode).toBlocking().first();
+        String rawValue = persister.read(IBarCode).toBlocking().first();
         assertThat(rawValue).isEqualTo("foo");
     }
 

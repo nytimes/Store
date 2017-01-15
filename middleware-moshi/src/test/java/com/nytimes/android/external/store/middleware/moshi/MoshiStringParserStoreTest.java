@@ -1,6 +1,7 @@
 package com.nytimes.android.external.store.middleware.moshi;
 
 import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
@@ -36,20 +37,20 @@ public class MoshiStringParserStoreTest {
     @Mock
     Persister<String> persister;
 
-    private final BarCode barCode = new BarCode("value", KEY);
+    private final IBarCode IBarCode = new BarCode("value", KEY);
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(fetcher.fetch(barCode))
+        when(fetcher.fetch(IBarCode))
                 .thenReturn(Observable.just(source));
 
-        when(persister.read(barCode))
+        when(persister.read(IBarCode))
                 .thenReturn(Observable.<String>empty())
                 .thenReturn(Observable.just(source));
 
-        when(persister.write(barCode, source))
+        when(persister.write(IBarCode, source))
                 .thenReturn(Observable.just(true));
     }
 
@@ -61,7 +62,7 @@ public class MoshiStringParserStoreTest {
                 .parser(MoshiParserFactory.createStringParser(Foo.class))
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(IBarCode).toBlocking().first();
 
         assertEquals(result.number, 123);
         assertEquals(result.string, "abc");
@@ -69,7 +70,7 @@ public class MoshiStringParserStoreTest {
         assertEquals(result.bars.get(0).string, "def");
         assertEquals(result.bars.get(1).string, "ghi");
 
-        verify(fetcher, times(1)).fetch(barCode);
+        verify(fetcher, times(1)).fetch(IBarCode);
     }
 
     @Test

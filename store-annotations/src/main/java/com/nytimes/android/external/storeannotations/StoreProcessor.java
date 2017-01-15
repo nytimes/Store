@@ -1,5 +1,7 @@
 package com.nytimes.android.external.storeannotations;
 
+import com.nytimes.android.external.store.base.BuildStore;
+
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -16,7 +18,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-@SupportedAnnotationTypes("com.nytimes.android.external.storeannotations.BuildStore")
+@SupportedAnnotationTypes("com.nytimes.android.external.store.base.BuildStore")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class StoreProcessor extends AbstractProcessor {
 
@@ -46,8 +48,8 @@ public class StoreProcessor extends AbstractProcessor {
             TypeElement typeElement = (TypeElement) annotatedElement;
 
             try {
-                FactoryAnnotatedClass annotatedClass =
-                        new FactoryAnnotatedClass(typeElement, processingEnv); // throws IllegalArgumentException
+                WorkDoer annotatedClass =
+                        new WorkDoer(typeElement, processingEnv); // throws IllegalArgumentException
 
             } catch (IllegalArgumentException e) {
 

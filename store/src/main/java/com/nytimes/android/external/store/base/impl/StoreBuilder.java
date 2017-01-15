@@ -6,6 +6,7 @@ import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
@@ -24,7 +25,7 @@ import rx.functions.Func1;
 public class StoreBuilder<T> {
     private Fetcher<T> fetcher;
     private Persister<T> persister;
-    private Cache<BarCode, Observable<T>> memCache;
+    private Cache<IBarCode, Observable<T>> memCache;
 
     @NonNull
     public static <Raw> StoreBuilder<Raw> builder() {
@@ -38,16 +39,16 @@ public class StoreBuilder<T> {
     }
 
     @NonNull
-    public StoreBuilder<T> nonObservableFetcher(final @NonNull Func1<BarCode, T> fetcher) {
+    public StoreBuilder<T> nonObservableFetcher(final @NonNull Func1<IBarCode, T> fetcher) {
         this.fetcher = new Fetcher<T>() {
             @NonNull
             @Override
-            public Observable<T> fetch(final BarCode barCode) {
+            public Observable<T> fetch(final IBarCode IBarCode) {
                 return Observable.fromCallable(new Callable<T>() {
                     @SuppressWarnings("all")
                     @Override
                     public T call() throws Exception {
-                        return fetcher.call(barCode);
+                        return fetcher.call(IBarCode);
                     }
                 });
             }
@@ -67,21 +68,21 @@ public class StoreBuilder<T> {
         persister = new Persister<T>() {
             @NonNull
             @Override
-            public Observable<T> read(BarCode barCode) {
-                return diskRead.read(barCode);
+            public Observable<T> read(IBarCode IBarCode) {
+                return diskRead.read(IBarCode);
             }
 
             @NonNull
             @Override
-            public Observable<Boolean> write(BarCode barCode, T t) {
-                return diskWrite.write(barCode, t);
+            public Observable<Boolean> write(IBarCode IBarCode, T t) {
+                return diskWrite.write(IBarCode, t);
             }
         };
         return this;
     }
 
     @NonNull
-    public StoreBuilder<T> memory(Cache<BarCode, Observable<T>> memCache) {
+    public StoreBuilder<T> memory(Cache<IBarCode, Observable<T>> memCache) {
         this.memCache = memCache;
         return this;
     }

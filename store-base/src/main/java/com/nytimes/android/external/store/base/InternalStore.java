@@ -2,8 +2,6 @@ package com.nytimes.android.external.store.base;
 
 import android.support.annotation.NonNull;
 
-import com.nytimes.android.external.store.base.impl.BarCode;
-
 import rx.Observable;
 
 /**
@@ -11,7 +9,7 @@ import rx.Observable;
  * directly from memory or from disk.
  */
 public interface InternalStore<Parsed> extends Store<Parsed> {
-    Observable<Parsed> memory(@NonNull final BarCode barCode);
+    Observable<Parsed> memory(@NonNull final IBarCode IBarCode);
     @NonNull
-    Observable<Parsed> disk(@NonNull final BarCode barCode);
+    Observable<Parsed> disk(@NonNull final IBarCode IBarCode);
 }

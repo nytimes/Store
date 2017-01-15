@@ -2,6 +2,8 @@ package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
 
+import com.nytimes.android.external.store.base.IBarCode;
+
 import java.io.Serializable;
 
 /**
@@ -12,29 +14,14 @@ import java.io.Serializable;
  * and {@link com.nytimes.android.external.store.base.Persister  Persister}
  **/
 
-public final class BarCode implements Serializable {
-    @NonNull
-    private final String key;
-    @NonNull
-    private final String type;
+public final class BarCode  extends IBarCode implements Serializable {
 
     public BarCode(@NonNull String type, @NonNull String key) {
-        this.key = key;
-        this.type = type;
+        super(type, key);
     }
 
     @NonNull
-    public String getKey() {
-        return key;
-    }
-
-    @NonNull
-    public String getType() {
-        return type;
-    }
-
-    @NonNull
-    public static BarCode empty() {
+    public static IBarCode empty() {
         return new BarCode("", "");
     }
 }

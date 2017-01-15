@@ -36,6 +36,7 @@ android {
 
 dependencies {
     compile project(path: ':cache')
+    compile project(path: ':store-base')
     compile libraries.rxJava
     compile libraries.supportAnnotations
 

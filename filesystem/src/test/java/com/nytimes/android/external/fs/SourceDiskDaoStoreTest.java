@@ -3,6 +3,7 @@ package com.nytimes.android.external.fs;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
@@ -31,7 +32,7 @@ public class SourceDiskDaoStoreTest {
     @Mock
     SourcePersister diskDAO;
 
-    private final BarCode barCode = new BarCode("value", KEY);
+    private final IBarCode IBarCode = new BarCode("value", KEY);
 
     @Test
     public void testSimple() {
@@ -44,28 +45,28 @@ public class SourceDiskDaoStoreTest {
                 .open();
 
         Foo foo = new Foo();
-        foo.bar = barCode.getKey();
+        foo.bar = IBarCode.getKey();
 
         String sourceData = new Gson().toJson(foo);
 
 
         BufferedSource source = source(sourceData);
         Observable<BufferedSource> value = Observable.just(source);
-        when(fetcher.fetch(barCode))
+        when(fetcher.fetch(IBarCode))
                 .thenReturn(value);
 
-        when(diskDAO.read(barCode))
+        when(diskDAO.read(IBarCode))
                 .thenReturn(Observable.<BufferedSource>empty())
                 .thenReturn(value);
 
-        when(diskDAO.write(barCode, source))
+        when(diskDAO.write(IBarCode, source))
                 .thenReturn(Observable.just(true));
 
-        Foo result = simpleStore.get(barCode).toBlocking().first();
+        Foo result = simpleStore.get(IBarCode).toBlocking().first();
         assertThat(result.bar).isEqualTo(KEY);
-        result = simpleStore.get(barCode).toBlocking().first();
+        result = simpleStore.get(IBarCode).toBlocking().first();
         assertThat(result.bar).isEqualTo(KEY);
-        verify(fetcher, times(1)).fetch(barCode);
+        verify(fetcher, times(1)).fetch(IBarCode);
     }
 
     private static BufferedSource source(String data) {

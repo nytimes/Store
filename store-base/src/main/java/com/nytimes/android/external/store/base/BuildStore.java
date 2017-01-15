@@ -1,4 +1,4 @@
-package com.nytimes.android.external.storeannotations;
+package com.nytimes.android.external.store.base;
 
 
 import java.lang.annotation.ElementType;
