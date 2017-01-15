@@ -1,1 +1,1 @@
-include ':app', ':store', ':middleware', ':cache', ':filesystem', ':middleware-moshi'
+include ':app', ':store', ':middleware', ':cache', ':filesystem', ':middleware-moshi', ':middleware-jackson'
