@@ -34,10 +34,7 @@ import rx.subjects.BehaviorSubject;
 @SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
 final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
-
-    public static final String TAG = RealInternalStore.class.getSimpleName();
     Cache<BarCode, Observable<Parsed>> inFlightRequests;
-
     Cache<BarCode, Observable<Parsed>> memCache;
 
     private Fetcher<Raw> fetcher;
@@ -45,9 +42,9 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     private Func1<Raw, Parsed> parser;
     private BehaviorSubject<Parsed> subject;
 
-    public RealInternalStore(Fetcher<Raw> fetcher,
-                             Persister<Raw> persister,
-                             Func1<Raw, Parsed> parser) {
+    RealInternalStore(Fetcher<Raw> fetcher,
+                      Persister<Raw> persister,
+                      Func1<Raw, Parsed> parser) {
         memCache = CacheBuilder.newBuilder()
                 .maximumSize(getCacheSize())
                 .expireAfterAccess(getCacheTTL(), TimeUnit.SECONDS)
@@ -56,10 +53,10 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     }
 
 
-    public RealInternalStore(Fetcher<Raw> fetcher,
-                             Persister<Raw> persister,
-                             Func1<Raw, Parsed> parser,
-                             Cache<BarCode, Observable<Parsed>> memCache) {
+    RealInternalStore(Fetcher<Raw> fetcher,
+                      Persister<Raw> persister,
+                      Func1<Raw, Parsed> parser,
+                      Cache<BarCode, Observable<Parsed>> memCache) {
         init(fetcher, persister, parser, memCache);
     }
 
