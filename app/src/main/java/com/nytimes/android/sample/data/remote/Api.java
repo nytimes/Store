@@ -3,14 +3,13 @@ package com.nytimes.android.sample.data.remote;
 import com.nytimes.android.external.storeannotations.BuildStore;
 import com.nytimes.android.sample.data.model.RedditData;
 
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
-@BuildStore(apiFactory = "Object.class")
+@BuildStore
 public interface Api {
 
     @GET("r/{subredditName}/new/.json")
