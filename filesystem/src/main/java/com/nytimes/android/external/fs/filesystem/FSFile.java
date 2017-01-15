@@ -53,11 +53,11 @@ class FSFile {
     public void write(BufferedSource source) throws IOException {
 
         File tmpFile = File.createTempFile("new", "tmp", file.getParentFile());
+        BufferedSink sink = null;
         try {
 
-            BufferedSink sink = Okio.buffer(Okio.sink(tmpFile));
+            sink = Okio.buffer(Okio.sink(tmpFile));
             sink.writeAll(source);
-            sink.close();
 
             if (!tmpFile.renameTo(file)) {
                 throw new IOException("unable to move tmp file to " + file.getPath());
@@ -67,6 +67,9 @@ class FSFile {
 
         } finally {
             tmpFile.delete();
+            if (sink != null) {
+                sink.close();
+            }
         }
     }
 
