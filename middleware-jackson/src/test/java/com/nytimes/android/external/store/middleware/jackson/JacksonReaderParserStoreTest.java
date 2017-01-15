@@ -17,11 +17,9 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.Charset;
+import java.io.Reader;
+import java.io.StringReader;
 
-import okio.BufferedSource;
-import okio.Okio;
 import rx.Observable;
 
 import static org.junit.Assert.assertEquals;
@@ -30,7 +28,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class JacksonSourceParserStoreTest {
+public class JacksonReaderParserStoreTest {
 
     private static final String KEY = "key";
     private static final String sourceString =
@@ -40,9 +38,9 @@ public class JacksonSourceParserStoreTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
-    Fetcher<BufferedSource> fetcher;
+    Fetcher<Reader> fetcher;
     @Mock
-    Persister<BufferedSource> persister;
+    Persister<Reader> persister;
 
     private final BarCode barCode = new BarCode("value", KEY);
 
@@ -50,24 +48,22 @@ public class JacksonSourceParserStoreTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        BufferedSource bufferedSource = source(sourceString);
-        assertNotNull(bufferedSource);
-
+        Reader source = new StringReader(sourceString);
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(bufferedSource));
+                .thenReturn(Observable.just(source));
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<BufferedSource>empty())
-                .thenReturn(Observable.just(bufferedSource));
+                .thenReturn(Observable.<Reader>empty())
+                .thenReturn(Observable.just(source));
 
-        when(persister.write(barCode, bufferedSource))
+        when(persister.write(barCode, source))
                 .thenReturn(Observable.just(true));
     }
 
     @Test
-    public void testDefaultJacksonSourceParser() {
-        Parser<BufferedSource, Foo> parser = JacksonParserFactory.createSourceParser(Foo.class);
-        Store<Foo> store = ParsingStoreBuilder.<BufferedSource, Foo>builder()
+    public void testDefaultJacksonReaderParser() {
+        Parser<Reader, Foo> parser = JacksonParserFactory.createReaderParser(Foo.class);
+        Store<Foo> store = ParsingStoreBuilder.<Reader, Foo>builder()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)
@@ -81,12 +77,12 @@ public class JacksonSourceParserStoreTest {
     }
 
     @Test
-    public void testCustomJsonFactorySourceParser() {
+    public void testCustomJsonFactoryReaderParser() {
         JsonFactory jsonFactory = new JsonFactory();
 
-        Parser<BufferedSource, Foo> parser = JacksonParserFactory.createSourceParser(jsonFactory, Foo.class);
+        Parser<Reader, Foo> parser = JacksonParserFactory.createReaderParser(jsonFactory, Foo.class);
 
-        Store<Foo> store = ParsingStoreBuilder.<BufferedSource, Foo>builder()
+        Store<Foo> store = ParsingStoreBuilder.<Reader, Foo>builder()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)
@@ -111,29 +107,25 @@ public class JacksonSourceParserStoreTest {
     @Test
     public void testNullJsonFactory() {
         expectedException.expect(NullPointerException.class);
-        JacksonParserFactory.createStringParser((JsonFactory) null, Foo.class);
+        JacksonParserFactory.createReaderParser((JsonFactory) null, Foo.class);
     }
 
     @Test
     public void testNullTypeWithValidJsonFactory() {
         expectedException.expect(NullPointerException.class);
-        JacksonParserFactory.createStringParser(new JsonFactory(), null);
+        JacksonParserFactory.createReaderParser(new JsonFactory(), null);
     }
 
     @Test
     public void testNullObjectMapper() {
         expectedException.expect(NullPointerException.class);
-        JacksonParserFactory.createStringParser((ObjectMapper) null, Foo.class);
+        JacksonParserFactory.createReaderParser((ObjectMapper) null, Foo.class);
     }
 
     @Test
     public void testNullType() {
         expectedException.expect(NullPointerException.class);
         JacksonParserFactory.createStringParser(null);
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(Charset.defaultCharset()))));
     }
 
 }
