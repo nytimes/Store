@@ -60,17 +60,6 @@ public class FactoryAnnotatedClass {
             }
         }
 
-        // Get the full QualifiedTypeName
-        try {
-            Class<?> clazz = annotation.apiFactory();
-            qualifiedSuperClassName = clazz.getCanonicalName();
-            simpleTypeName = clazz.getSimpleName();
-        } catch (MirroredTypeException mte) {
-            DeclaredType classTypeMirror = (DeclaredType) mte.getTypeMirror();
-            TypeElement classTypeElement = (TypeElement) classTypeMirror.asElement();
-            qualifiedSuperClassName = classTypeElement.getQualifiedName().toString();
-            simpleTypeName = classTypeElement.getSimpleName().toString();
-        }
     }
 
     /**
