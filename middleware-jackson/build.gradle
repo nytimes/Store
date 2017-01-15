@@ -35,6 +35,7 @@ dependencies {
     compile libraries.jacksonCore
     compile libraries.jacksonDatabind
     compile libraries.rxJava
+    compile libraries.okio
     compile libraries.dagger
     compile libraries.supportAnnotations
     testCompile libraries.mockito
