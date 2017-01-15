@@ -17,8 +17,9 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 @SupportedAnnotationTypes("com.nytimes.android.external.storeannotations.BuildStore")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class StoreProcessor extends AbstractProcessor {
+
     private Types typeUtils;
     private Elements elementUtils;
     private Filer filer;
@@ -37,12 +38,9 @@ public class StoreProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
 
-
-
-
         for (Element annotatedElement : roundEnvironment.getElementsAnnotatedWith(BuildStore.class)) {
 
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,"found our annotation");
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "found our annotation");
 
             // We can cast it, because we know that it of ElementKind.CLASS
             TypeElement typeElement = (TypeElement) annotatedElement;
@@ -54,11 +52,10 @@ public class StoreProcessor extends AbstractProcessor {
             } catch (IllegalArgumentException e) {
 
 
-
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,"FOO error:" + e.getMessage());
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING,"FOO error:" + e.getMessage());
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,"FOO error:" + e.getMessage());
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.OTHER,"FOO error:" + e.getMessage());
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "FOO error:" + e.getMessage());
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "FOO error:" + e.getMessage());
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO error:" + e.getMessage());
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.OTHER, "FOO error:" + e.getMessage());
 
                 // @Factory.id() is empty
 //                error(typeElement, e.getMessage());
@@ -69,6 +66,8 @@ public class StoreProcessor extends AbstractProcessor {
 //        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,"START of PROCESS");
             return false;
         }
+
         return false;
     }
+
 }

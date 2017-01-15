@@ -6,14 +6,13 @@ dependencies {
     compile libraries.slf4jTesting
     compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
     compile 'com.squareup:javapoet:1.8.0'
-
-
 }
 
 tasks.withType(JavaCompile) {
         sourceCompatibility = '1.7'
         targetCompatibility = '1.7'
-    }
+}
+
 
 jar {
     from ('./src/main') {
