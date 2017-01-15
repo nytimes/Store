@@ -11,6 +11,8 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopPersister;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import rx.Observable;
@@ -21,9 +23,10 @@ import rx.functions.Func1;
  */
 @SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
 public class ParsingStoreBuilder<Raw, Parsed> {
+
+    private final List<Parser> parsers = new ArrayList<>();
     private Fetcher<Raw> fetcher;
     private Persister<Raw> persister;
-    private Func1<Raw, Parsed> parser;
     private Cache<BarCode, Observable<Parsed>> memCache;
 
     public ParsingStoreBuilder() {
@@ -81,13 +84,22 @@ public class ParsingStoreBuilder<Raw, Parsed> {
 
     @NonNull
     public ParsingStoreBuilder<Raw, Parsed> parser(final @NonNull Func1<Raw, Parsed> parser) {
-        this.parser = parser;
+        this.parsers.clear();
+        this.parsers.add((Parser<Raw, Parsed>) parser);
         return this;
     }
 
     @NonNull
     public ParsingStoreBuilder<Raw, Parsed> parser(final @NonNull Parser<Raw, Parsed> parser) {
-        this.parser = parser;
+        this.parsers.clear();
+        this.parsers.add(parser);
+        return this;
+    }
+
+    @NonNull
+    public ParsingStoreBuilder<Raw, Parsed> parsers(final @NonNull List<Parser> parsers) {
+        this.parsers.clear();
+        this.parsers.addAll(parsers);
         return this;
     }
 
@@ -107,15 +119,16 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         if (persister == null) {
             persister = new NoopPersister<>();
         }
-        if (parser == null) {
-            throw new IllegalArgumentException("Parser cannot be null");
-        }
+
+        Parser<Raw, Parsed> multiParser = new MultiParser<>(parsers);
         RealInternalStore<Raw, Parsed> realInternalStore;
+
         if (memCache == null) {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, parser);
+            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser);
         } else {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, parser, memCache);
+            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, memCache);
         }
+
         return new RealStore<>(realInternalStore);
     }
 }
