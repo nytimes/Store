@@ -1,13 +1,12 @@
 allprojects {
     repositories {
+        mavenLocal()
         maven {
-            url 'https://maven.em.nytimes.com/content/repositories/android-snapshots/'
+            url 'https://plugins.gradle.org/m2/'
         }
+
         maven {
-            url 'https://maven.em.nytimes.com/content/repositories/android-thirdparty-releases/'
-        }
-        maven {
-            url 'http://maven.localytics.com/public'
+            url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
         }
         jcenter()
     }
