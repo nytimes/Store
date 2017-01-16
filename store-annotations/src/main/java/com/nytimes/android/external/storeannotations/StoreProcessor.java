@@ -42,15 +42,12 @@ public class StoreProcessor extends AbstractProcessor {
 
         for (Element annotatedElement : roundEnvironment.getElementsAnnotatedWith(BuildStore.class)) {
 
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "found our annotation");
 
             // We can cast it, because we know that it of ElementKind.CLASS
             TypeElement typeElement = (TypeElement) annotatedElement;
 
             try {
-                WorkDoer annotatedClass =
-                        new WorkDoer(typeElement, processingEnv); // throws IllegalArgumentException
-
+                new Generator(typeElement, processingEnv).writeFiles(); // throws IllegalArgumentException
             } catch (IllegalArgumentException e) {
 
 
@@ -59,13 +56,9 @@ public class StoreProcessor extends AbstractProcessor {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO error:" + e.getMessage());
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.OTHER, "FOO error:" + e.getMessage());
 
-                // @Factory.id() is empty
-//                error(typeElement, e.getMessage());
+
                 return true;
             }
-
-
-//        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,"START of PROCESS");
             return false;
         }
 

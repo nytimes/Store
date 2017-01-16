@@ -1,7 +1,7 @@
 package com.nytimes.android.external.storeannotations;
 
-import com.nytimes.android.external.store.base.BuildStore;
 import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.BuildStore;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -23,15 +23,18 @@ import javax.tools.JavaFileObject;
 
 import retrofit2.http.GET;
 
-public class WorkDoer {
+public class Generator {
 
-    private TypeElement annotatedClassElement;
-    private String qualifiedSuperClassName;
-    private String simpleTypeName;
-    private String id;
+    private TypeElement classElement;
+    private final ProcessingEnvironment env;
 
-    public WorkDoer(TypeElement classElement, ProcessingEnvironment env) throws IllegalArgumentException {
-        this.annotatedClassElement = classElement;
+
+    public Generator(TypeElement classElement, ProcessingEnvironment env) throws IllegalArgumentException {
+        this.classElement = classElement;
+        this.env = env;
+    }
+
+    void writeFiles() {
         BuildStore annotation = classElement.getAnnotation(BuildStore.class);
         env.getMessager().printMessage(Diagnostic.Kind.WARNING, "class has annotation");
 
@@ -48,9 +51,11 @@ public class WorkDoer {
                 ExecutableElement realMethod = (ExecutableElement) method;
                 List<? extends VariableElement> enclosedElements = realMethod.getParameters();
 
-                String className = realMethod.getSimpleName() + "Barcode";
+                String className = capitalize(realMethod.getSimpleName().toString()) + "Barcode";
 
-
+                TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .superclass(BarCode.class);
                 MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC);
 
@@ -58,17 +63,12 @@ public class WorkDoer {
                 for (VariableElement parameter : enclosedElements) {
                     parameter.asType();
 
-                    constructorBuilder.addParameter(TypeName.get(parameter.asType()), parameter.getSimpleName().toString());
+                    generateProperty(classBuilder, constructorBuilder, parameter);
                 }
 
 
-                TypeSpec classInstance = TypeSpec.classBuilder(className)
-                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .superclass(BarCode.class)
-                        .addMethod(constructorBuilder.build())
-                        .build();
-
-                JavaFile javaFile = JavaFile.builder("com.nytimes.android.store.generated", classInstance)
+                classBuilder.addMethod(constructorBuilder.build());
+                JavaFile javaFile = JavaFile.builder("com.nytimes.android.store.generated", classBuilder.build())
                         .build();
 
 
@@ -90,40 +90,25 @@ public class WorkDoer {
                 }
             }
         }
-
     }
 
-    /**
-     * Get the id as specified in {@link Factory#id()}.
-     * return the id
-     */
-    public String getId() {
-        return id;
+    private void generateProperty(TypeSpec.Builder classBuilder, MethodSpec.Builder constructorBuilder, VariableElement parameter) {
+        TypeName type = TypeName.get(parameter.asType());
+        String name = parameter.getSimpleName().toString();
+        classBuilder.addField(type, name, Modifier.PRIVATE, Modifier.FINAL);
+        constructorBuilder.addParameter(type, name);
+        constructorBuilder.addStatement("this." + name + " = " + name);
+        MethodSpec.Builder getter = MethodSpec.methodBuilder("get" + capitalize(name))
+                .addModifiers(Modifier.PUBLIC)
+                .returns(type)
+                .addStatement("return " +name);
+        classBuilder.addMethod(getter.build());
     }
 
-    /**
-     * Get the full qualified name of the type specified in  {@link Factory#type()}.
-     *
-     * @return qualified name
-     */
-    public String getQualifiedFactoryGroupName() {
-        return qualifiedSuperClassName;
+    public static String capitalize(String s) {
+        if (s.length() == 0) return s;
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
 
-    /**
-     * Get the simple name of the type specified in  {@link Factory#type()}.
-     *
-     * @return qualified name
-     */
-    public String getSimpleFactoryGroupName() {
-        return simpleTypeName;
-    }
-
-    /**
-     * The original element that was annotated with @Factory
-     */
-    public TypeElement getTypeElement() {
-        return annotatedClassElement;
-    }
 }
