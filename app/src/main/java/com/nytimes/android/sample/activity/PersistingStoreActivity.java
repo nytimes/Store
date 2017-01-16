@@ -10,9 +10,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nytimes.android.external.fs.SourcePersisterFactory;
-import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.BaseBarcode;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
 import com.nytimes.android.sample.BuildConfig;
@@ -68,7 +69,7 @@ public class PersistingStoreActivity extends AppCompatActivity {
     }
 
     public void loadPosts() {
-        BarCode awwRequest = new com.nytimes.android.external.store.base.impl.BarCode(RedditData.class.getSimpleName(), "aww");
+        BaseBarcode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
         provideRedditStore()
                 .get(awwRequest)
                 .flatMap(this::sanitizeData)
@@ -103,7 +104,7 @@ public class PersistingStoreActivity extends AppCompatActivity {
         return SourcePersisterFactory.create(getApplicationContext().getCacheDir());
     }
 
-    private Observable<BufferedSource> fetcher(BarCode barCode) {
+    private Observable<BufferedSource> fetcher(BaseBarcode barCode) {
         return provideRetrofit().fetchSubredditForPersister(barCode.getKey(), "10")
                 .map(responseBody -> responseBody.source());
     }

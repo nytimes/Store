@@ -3,6 +3,7 @@ package com.nytimes.android.external.store.base.impl;
 import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.cache.Cache;
+import com.nytimes.android.external.store.base.BaseBarcode;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.Fetcher;
@@ -27,7 +28,7 @@ public class ParsingStoreBuilder<Raw, Parsed> {
     private final List<Parser> parsers = new ArrayList<>();
     private Fetcher<Raw> fetcher;
     private Persister<Raw> persister;
-    private Cache<com.nytimes.android.external.store.base.BarCode, Observable<Parsed>> memCache;
+    private Cache<BaseBarcode, Observable<Parsed>> memCache;
 
     public ParsingStoreBuilder() {
 
@@ -41,12 +42,12 @@ public class ParsingStoreBuilder<Raw, Parsed> {
 
     @NonNull
     public ParsingStoreBuilder<Raw, Parsed> nonObservableFetcher(
-            final @NonNull Func1<com.nytimes.android.external.store.base.BarCode, Raw> fetcher) {
+            final @NonNull Func1<BaseBarcode, Raw> fetcher) {
         this.fetcher = new Fetcher<Raw>() {
             @NonNull
             @Override
             public Observable<Raw> fetch(
-                    final com.nytimes.android.external.store.base.BarCode barCode) {
+                    final BaseBarcode barCode) {
                 return Observable.fromCallable(new Callable<Raw>() {
                     @Override
                     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
@@ -71,14 +72,14 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         persister = new Persister<Raw>() {
             @NonNull
             @Override
-            public Observable<Raw> read(com.nytimes.android.external.store.base.BarCode barCode) {
+            public Observable<Raw> read(BaseBarcode barCode) {
                 return diskRead.read(barCode);
             }
 
             @NonNull
             @Override
             public Observable<Boolean> write(
-                    com.nytimes.android.external.store.base.BarCode barCode, Raw raw) {
+                    BaseBarcode barCode, Raw raw) {
                 return diskWrite.write(barCode, raw);
             }
         };
@@ -113,7 +114,7 @@ public class ParsingStoreBuilder<Raw, Parsed> {
 
     @NonNull
     public ParsingStoreBuilder<Raw, Parsed> memory(
-            Cache<com.nytimes.android.external.store.base.BarCode, Observable<Parsed>> memCache) {
+            Cache<BaseBarcode, Observable<Parsed>> memCache) {
         this.memCache = memCache;
         return this;
     }

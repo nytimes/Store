@@ -17,12 +17,12 @@ public interface Persister<Raw> {
      *                either return Observable.empty or throw an exception
      */
     @NonNull
-    Observable<Raw> read(final BarCode barCode);
+    Observable<Raw> read(final BaseBarcode barCode);
 
     /**
      * @param barCode to use to store data to persister
      * @param raw     raw string to be stored
      */
     @NonNull
-    Observable<Boolean> write(final BarCode barCode, final Raw raw);
+    Observable<Boolean> write(final BaseBarcode barCode, final Raw raw);
 }

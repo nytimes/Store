@@ -1,6 +1,6 @@
 package com.nytimes.android.external.store.base.impl;
 
-import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.BaseBarcode;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.util.ParserException;
 
@@ -23,16 +23,16 @@ public class MultiParserTest {
         }
     };
 
-    private static final Parser<String, BarCode> PARSER_2 = new Parser<String, BarCode>() {
+    private static final Parser<String, BaseBarcode> PARSER_2 = new Parser<String, BaseBarcode>() {
         @Override
-        public BarCode call(String value) {
-            return new com.nytimes.android.external.store.base.impl.BarCode(value, "KEY");
+        public BaseBarcode call(String value) {
+            return new BarCode(value, "KEY");
         }
     };
 
-    private static final Parser<BarCode, UUID> PARSER_3 = new Parser<BarCode, UUID>() {
+    private static final Parser<BaseBarcode, UUID> PARSER_3 = new Parser<BaseBarcode, UUID>() {
         @Override
-        public UUID call(BarCode barCode) {
+        public UUID call(BaseBarcode barCode) {
             return UUID.randomUUID();
         }
     };

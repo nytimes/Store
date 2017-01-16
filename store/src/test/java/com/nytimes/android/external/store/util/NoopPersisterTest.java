@@ -1,6 +1,7 @@
 package com.nytimes.android.external.store.util;
 
-import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.BaseBarcode;
+import com.nytimes.android.external.store.base.impl.BarCode;
 
 import org.junit.Test;
 
@@ -8,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NoopPersisterTest {
 
-    private final BarCode barCode = new com.nytimes.android.external.store.base.impl.BarCode("key", "value");
+    private final BaseBarcode barCode = new BarCode("key", "value");
 
     @Test
     public void writeReadTest() {

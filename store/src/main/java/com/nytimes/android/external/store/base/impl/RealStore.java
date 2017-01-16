@@ -3,7 +3,7 @@ package com.nytimes.android.external.store.base.impl;
 import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.cache.Cache;
-import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.BaseBarcode;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Parser;
@@ -42,20 +42,20 @@ public class RealStore<Parsed> implements Store<Parsed> {
 
     public <Raw> RealStore(Fetcher<Raw> fetcher,
                            Persister<Raw> persister,
-                           Func1<Raw, Parsed> parser, Cache<BarCode, Observable<Parsed>> memCache) {
+                           Func1<Raw, Parsed> parser, Cache<BaseBarcode, Observable<Parsed>> memCache) {
         internalStore = new RealInternalStore<>(fetcher, persister, parser, memCache);
     }
 
 
     public <Raw> RealStore(Fetcher<Raw> fetcher,
                            Persister<Raw> persister,
-                           Cache<BarCode, Observable<Parsed>> memCache) {
+                           Cache<BaseBarcode, Observable<Parsed>> memCache) {
         internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Parsed>(), memCache);
     }
 
 
     @Override
-    public Observable<Parsed> get(@NonNull final BarCode barCode) {
+    public Observable<Parsed> get(@NonNull final BaseBarcode barCode) {
         return internalStore.get(barCode);
     }
 
@@ -66,12 +66,12 @@ public class RealStore<Parsed> implements Store<Parsed> {
      * @return data from fetch and store it in memory and persister
      */
     @Override
-    public Observable<Parsed> fetch(@NonNull final BarCode barCode) {
+    public Observable<Parsed> fetch(@NonNull final BaseBarcode barCode) {
         return internalStore.fetch(barCode);
     }
 
     @Override
-    public Observable<Parsed> stream(BarCode id) {
+    public Observable<Parsed> stream(BaseBarcode id) {
         return internalStore.stream(id);
     }
 
@@ -86,16 +86,16 @@ public class RealStore<Parsed> implements Store<Parsed> {
      * @param barCode of data to clear
      */
     @Override
-    public void clearMemory(@NonNull final BarCode barCode) {
+    public void clearMemory(@NonNull final BaseBarcode barCode) {
         internalStore.clearMemory(barCode);
     }
 
-    protected Observable<Parsed> memory(@NonNull BarCode id) {
+    protected Observable<Parsed> memory(@NonNull BaseBarcode id) {
         return internalStore.memory(id);
     }
 
     @NonNull
-    protected Observable<Parsed> disk(@NonNull BarCode id) {
+    protected Observable<Parsed> disk(@NonNull BaseBarcode id) {
         return internalStore.disk(id);
     }
 

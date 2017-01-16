@@ -3,7 +3,7 @@ package com.nytimes.android.external.store.base.impl;
 import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.cache.Cache;
-import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.BaseBarcode;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.Fetcher;
@@ -25,7 +25,7 @@ import rx.functions.Func1;
 public class StoreBuilder<T> {
     private Fetcher<T> fetcher;
     private Persister<T> persister;
-    private Cache<BarCode, Observable<T>> memCache;
+    private Cache<BaseBarcode, Observable<T>> memCache;
 
     @NonNull
     public static <Raw> StoreBuilder<Raw> builder() {
@@ -39,11 +39,11 @@ public class StoreBuilder<T> {
     }
 
     @NonNull
-    public StoreBuilder<T> nonObservableFetcher(final @NonNull Func1<BarCode, T> fetcher) {
+    public StoreBuilder<T> nonObservableFetcher(final @NonNull Func1<BaseBarcode, T> fetcher) {
         this.fetcher = new Fetcher<T>() {
             @NonNull
             @Override
-            public Observable<T> fetch(final BarCode barCode) {
+            public Observable<T> fetch(final BaseBarcode barCode) {
                 return Observable.fromCallable(new Callable<T>() {
                     @SuppressWarnings("all")
                     @Override
@@ -68,13 +68,13 @@ public class StoreBuilder<T> {
         persister = new Persister<T>() {
             @NonNull
             @Override
-            public Observable<T> read(BarCode barCode) {
+            public Observable<T> read(BaseBarcode barCode) {
                 return diskRead.read(barCode);
             }
 
             @NonNull
             @Override
-            public Observable<Boolean> write(BarCode barCode, T t) {
+            public Observable<Boolean> write(BaseBarcode barCode, T t) {
                 return diskWrite.write(barCode, t);
             }
         };
@@ -82,7 +82,7 @@ public class StoreBuilder<T> {
     }
 
     @NonNull
-    public StoreBuilder<T> memory(Cache<BarCode, Observable<T>> memCache) {
+    public StoreBuilder<T> memory(Cache<BaseBarcode, Observable<T>> memCache) {
         this.memCache = memCache;
         return this;
     }

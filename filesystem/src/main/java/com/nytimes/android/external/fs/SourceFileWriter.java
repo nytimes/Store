@@ -3,7 +3,7 @@ package com.nytimes.android.external.fs;
 import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.fs.filesystem.FileSystem;
-import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.BaseBarcode;
 import com.nytimes.android.external.store.base.DiskWrite;
 
 import java.util.concurrent.Callable;
@@ -28,7 +28,7 @@ public class SourceFileWriter implements DiskWrite<BufferedSource> {
 
     @NonNull
     @Override
-    public Observable<Boolean> write(@NonNull final BarCode barCode, @NonNull final BufferedSource data) {
+    public Observable<Boolean> write(@NonNull final BaseBarcode barCode, @NonNull final BufferedSource data) {
         return Observable.fromCallable(new Callable<Boolean>() {
             @NonNull
             @Override

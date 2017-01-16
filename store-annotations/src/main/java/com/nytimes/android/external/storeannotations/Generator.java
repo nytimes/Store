@@ -1,6 +1,6 @@
 package com.nytimes.android.external.storeannotations;
 
-import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.BaseBarcode;
 import com.nytimes.android.external.store.base.BuildStore;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -55,7 +55,7 @@ public class Generator {
 
                 TypeSpec.Builder classBuilder = TypeSpec.classBuilder(className)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .superclass(BarCode.class);
+                        .superclass(BaseBarcode.class);
                 MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC);
 

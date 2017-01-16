@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
+import com.nytimes.android.external.store.base.BaseBarcode;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
@@ -35,8 +35,8 @@ import rx.subjects.BehaviorSubject;
 @SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
 final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
-    Cache<BarCode, Observable<Parsed>> inFlightRequests;
-    Cache<BarCode, Observable<Parsed>> memCache;
+    Cache<BaseBarcode, Observable<Parsed>> inFlightRequests;
+    Cache<BaseBarcode, Observable<Parsed>> memCache;
 
     private Fetcher<Raw> fetcher;
     private Persister<Raw> persister;
@@ -57,14 +57,14 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     RealInternalStore(Fetcher<Raw> fetcher,
                       Persister<Raw> persister,
                       Func1<Raw, Parsed> parser,
-                      Cache<BarCode, Observable<Parsed>> memCache) {
+                      Cache<BaseBarcode, Observable<Parsed>> memCache) {
         init(fetcher, persister, parser, memCache);
     }
 
     private void init(Fetcher<Raw> fetcher,
                       Persister<Raw> persister,
                       Func1<Raw, Parsed> parser,
-                      Cache<BarCode, Observable<Parsed>> memCache) {
+                      Cache<BaseBarcode, Observable<Parsed>> memCache) {
         this.fetcher = fetcher;
         this.persister = persister;
         this.parser = parser;
@@ -81,7 +81,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @param barCode
      * @return an observable from the first data source that is available
      */
-    public Observable<Parsed> get(@NonNull final BarCode barCode) {
+    public Observable<Parsed> get(@NonNull final BaseBarcode barCode) {
         return Observable.concat(
                 cache(barCode),
                 fetch(barCode)
@@ -91,7 +91,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     /**
      * @return data from memory
      */
-    private Observable<Parsed> cache(@NonNull final BarCode barCode) {
+    private Observable<Parsed> cache(@NonNull final BaseBarcode barCode) {
         try {
             return memCache.get(barCode, new Callable<Observable<Parsed>>() {
                 @NonNull
@@ -109,19 +109,19 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
 
     @Override
-    public Observable<Parsed> memory(@NonNull BarCode barCode) {
+    public Observable<Parsed> memory(@NonNull BaseBarcode barCode) {
         Observable<Parsed> cachedValue = memCache.getIfPresent(barCode);
         return cachedValue == null ? Observable.<Parsed>empty() : cachedValue;
     }
 
     /**
      * Fetch data from persister and update memory after. If an error occurs, emit and empty observable
-     * so that the concat call in {@link #get(BarCode)} moves on to {@link #fetch(BarCode)}
+     * so that the concat call in {@link #get(BaseBarcode)} moves on to {@link #fetch(BaseBarcode)}
      *
      * @param barCode
      * @return
      */
-    public Observable<Parsed> disk(@NonNull final BarCode barCode) {
+    public Observable<Parsed> disk(@NonNull final BaseBarcode barCode) {
         return persister().read(barCode)
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
                 .map(parser)
@@ -139,7 +139,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return data from fetch and store it in memory and persister
      */
-    public Observable<Parsed> fetch(@NonNull final BarCode barCode) {
+    public Observable<Parsed> fetch(@NonNull final BaseBarcode barCode) {
         return Observable.defer(new Func0<Observable<Parsed>>() {
             @Nullable
             @Override
@@ -160,7 +160,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @return observable that emits a {@link Parsed} value
      */
     @Nullable
-    Observable<Parsed> fetchAndPersist(@NonNull final BarCode barCode) {
+    Observable<Parsed> fetchAndPersist(@NonNull final BaseBarcode barCode) {
         try {
             return inFlightRequests.get(barCode, new Callable<Observable<Parsed>>() {
                 @NonNull
@@ -175,7 +175,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     }
 
     @NonNull
-    Observable<Parsed> response(@NonNull final BarCode barCode) {
+    Observable<Parsed> response(@NonNull final BaseBarcode barCode) {
         return fetcher()
                 .fetch(barCode)
                 .flatMap(new Func1<Raw, Observable<Parsed>>() {
@@ -216,7 +216,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return
      */
-    public Observable<Parsed> stream(@NonNull BarCode id) {
+    public Observable<Parsed> stream(@NonNull BaseBarcode id) {
 
         Observable<Parsed> stream = subject.asObservable();
 
@@ -234,7 +234,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @param barCode
      * @param data
      */
-    void updateMemory(@NonNull final BarCode barCode, final Parsed data) {
+    void updateMemory(@NonNull final BaseBarcode barCode, final Parsed data) {
         memCache.put(barCode, Observable.just(data));
     }
 
@@ -247,7 +247,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @param barCode of data to clear
      */
-    public void clearMemory(@NonNull final BarCode barCode) {
+    public void clearMemory(@NonNull final BaseBarcode barCode) {
         memCache.invalidate(barCode);
     }
 
