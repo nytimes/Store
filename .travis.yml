@@ -8,7 +8,7 @@ android:
   - build-tools-24.0.2
   - android-24
   - extra-android-m2repository
-  - extra-android-support
+  - extra-android-support-24.1.1
 script:
 - ./gradlew check --stacktrace
 branches:
