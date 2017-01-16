@@ -6,5 +6,5 @@ import rx.Observable;
 
 public interface DiskRead<Raw> {
     @NonNull
-    Observable<Raw> read(IBarCode IBarCode);
+    Observable<Raw> read(BarCode barCode);
 }

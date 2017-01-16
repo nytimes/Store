@@ -1,7 +1,7 @@
 package com.nytimes.android.external.storeannotations;
 
 import com.nytimes.android.external.store.base.BuildStore;
-import com.nytimes.android.external.store.base.IBarCode;
+import com.nytimes.android.external.store.base.BarCode;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -64,7 +64,7 @@ public class WorkDoer {
 
                 TypeSpec classInstance = TypeSpec.classBuilder(className)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .superclass(IBarCode.class)
+                        .superclass(BarCode.class)
                         .addMethod(constructorBuilder.build())
                         .build();
 

@@ -1,10 +1,9 @@
 package com.nytimes.android.external.store;
 
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
-import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.RealStore;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.util.NoopPersister;
@@ -31,7 +30,7 @@ public class StoreTest {
     Fetcher<String> fetcher;
     @Mock
     Persister<String> persister;
-    private final IBarCode IBarCode = new BarCode("key", "value");
+    private final BarCode barCode = new com.nytimes.android.external.store.base.impl.BarCode("key", "value");
 
     @Before
     public void setUp() {
@@ -47,22 +46,22 @@ public class StoreTest {
                 .open();
 
 
-        when(fetcher.fetch(IBarCode))
+        when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));
 
-        when(persister.read(IBarCode))
+        when(persister.read(barCode))
                 .thenReturn(Observable.<String>empty())
                 .thenReturn(Observable.just(DISK));
 
-        when(persister.write(IBarCode, NETWORK))
+        when(persister.write(barCode, NETWORK))
                 .thenReturn(Observable.just(true));
 
-        String value = simpleStore.get(IBarCode).toBlocking().first();
+        String value = simpleStore.get(barCode).toBlocking().first();
 
         assertThat(value).isEqualTo(DISK);
-        value = simpleStore.get(IBarCode).toBlocking().first();
+        value = simpleStore.get(barCode).toBlocking().first();
         assertThat(value).isEqualTo(DISK);
-        verify(fetcher, times(1)).fetch(IBarCode);
+        verify(fetcher, times(1)).fetch(barCode);
     }
     @Test
     public void testSubclass() {
@@ -70,19 +69,19 @@ public class StoreTest {
         Store<String> simpleStore = new SampleStore(fetcher, persister);
         simpleStore.clearMemory();
 
-        when(fetcher.fetch(IBarCode))
+        when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));
 
-        when(persister.read(IBarCode))
+        when(persister.read(barCode))
                 .thenReturn(Observable.<String>empty())
                 .thenReturn(Observable.just(DISK));
-        when(persister.write(IBarCode, NETWORK)).thenReturn(Observable.just(true));
+        when(persister.write(barCode, NETWORK)).thenReturn(Observable.just(true));
 
-        String value = simpleStore.get(IBarCode).toBlocking().first();
+        String value = simpleStore.get(barCode).toBlocking().first();
         assertThat(value).isEqualTo(DISK);
-        value = simpleStore.get(IBarCode).toBlocking().first();
+        value = simpleStore.get(barCode).toBlocking().first();
         assertThat(value).isEqualTo(DISK);
-        verify(fetcher, times(1)).fetch(IBarCode);
+        verify(fetcher, times(1)).fetch(barCode);
     }
 
 
@@ -93,20 +92,20 @@ public class StoreTest {
         Store<String> simpleStore = new RealStore<>(fetcher, persister);
         simpleStore.clearMemory();
 
-        when(fetcher.fetch(IBarCode))
+        when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));
 
-        String value = simpleStore.get(IBarCode).toBlocking().first();
-        verify(fetcher, times(1)).fetch(IBarCode);
-        verify(persister, times(1)).write(IBarCode, NETWORK);
-        verify(persister, times(2)).read(IBarCode);
+        String value = simpleStore.get(barCode).toBlocking().first();
+        verify(fetcher, times(1)).fetch(barCode);
+        verify(persister, times(1)).write(barCode, NETWORK);
+        verify(persister, times(2)).read(barCode);
         assertThat(value).isEqualTo(NETWORK);
 
 
-        value = simpleStore.get(IBarCode).toBlocking().first();
-        verify(persister, times(2)).read(IBarCode);
-        verify(persister, times(1)).write(IBarCode, NETWORK);
-        verify(fetcher, times(1)).fetch(IBarCode);
+        value = simpleStore.get(barCode).toBlocking().first();
+        verify(persister, times(2)).read(barCode);
+        verify(persister, times(1)).write(barCode, NETWORK);
+        verify(fetcher, times(1)).fetch(barCode);
 
         assertThat(value).isEqualTo(NETWORK);
     }

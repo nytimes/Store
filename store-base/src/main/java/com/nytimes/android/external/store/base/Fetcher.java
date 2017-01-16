@@ -12,9 +12,9 @@ import rx.Observable;
 public interface Fetcher<Raw> {
 
     /**
-     * @param IBarCode Container with Key and Type used as a request param
+     * @param barCode Container with Key and Type used as a request param
      * @return Observable that emits {@link Raw} data
      */
     @NonNull
-    Observable<Raw> fetch(IBarCode IBarCode);
+    Observable<Raw> fetch(BarCode barCode);
 }

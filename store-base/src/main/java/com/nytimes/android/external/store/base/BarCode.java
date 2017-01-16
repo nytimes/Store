@@ -2,18 +2,18 @@ package com.nytimes.android.external.store.base;
 
 import android.support.annotation.NonNull;
 
-public abstract class IBarCode {
+public abstract class BarCode {
     @NonNull
     private final String key;
     @NonNull
     private final String type;
 
-    public IBarCode(@NonNull String type, @NonNull String key) {
+    public BarCode(@NonNull String type, @NonNull String key) {
         this.key = key;
         this.type = type;
     }
 
-    public IBarCode() {
+    public BarCode() {
         key="";
         type="";
     }

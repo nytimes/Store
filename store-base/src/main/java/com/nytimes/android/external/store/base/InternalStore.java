@@ -9,7 +9,7 @@ import rx.Observable;
  * directly from memory or from disk.
  */
 public interface InternalStore<Parsed> extends Store<Parsed> {
-    Observable<Parsed> memory(@NonNull final IBarCode IBarCode);
+    Observable<Parsed> memory(@NonNull final BarCode barCode);
     @NonNull
-    Observable<Parsed> disk(@NonNull final IBarCode IBarCode);
+    Observable<Parsed> disk(@NonNull final BarCode barCode);
 }

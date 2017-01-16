@@ -1,10 +1,9 @@
 package com.nytimes.android.external.fs;
 
 import com.google.gson.Gson;
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.Store;
-import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonSourceParser;
 
@@ -33,7 +32,7 @@ public class SourceFilerReaderWriterStoreTest {
     @Mock
     SourceFileWriter fileWriter;
 
-    private final IBarCode IBarCode = new BarCode("value", KEY);
+    private final BarCode barCode = new com.nytimes.android.external.store.base.impl.BarCode("value", KEY);
 
     @Test
     public void testSimple() {
@@ -46,27 +45,27 @@ public class SourceFilerReaderWriterStoreTest {
                 .open();
 
         Foo foo = new Foo();
-        foo.bar = IBarCode.getKey();
+        foo.bar = barCode.getKey();
 
         String sourceData = new Gson().toJson(foo);
 
         BufferedSource source = source(sourceData);
         Observable<BufferedSource> value = Observable.just(source);
-        when(fetcher.fetch(IBarCode))
+        when(fetcher.fetch(barCode))
                 .thenReturn(value);
 
-        when(fileReader.read(IBarCode))
+        when(fileReader.read(barCode))
                 .thenReturn(Observable.<BufferedSource>empty())
                 .thenReturn(value);
 
-        when(fileWriter.write(IBarCode, source))
+        when(fileWriter.write(barCode, source))
                 .thenReturn(Observable.just(true));
 
-        Foo result = simpleStore.get(IBarCode).toBlocking().first();
+        Foo result = simpleStore.get(barCode).toBlocking().first();
         assertThat(result.bar).isEqualTo(KEY);
-        result = simpleStore.get(IBarCode).toBlocking().first();
+        result = simpleStore.get(barCode).toBlocking().first();
         assertThat(result.bar).isEqualTo(KEY);
-        verify(fetcher, times(1)).fetch(IBarCode);
+        verify(fetcher, times(1)).fetch(barCode);
     }
 
     private static BufferedSource source(String data) {

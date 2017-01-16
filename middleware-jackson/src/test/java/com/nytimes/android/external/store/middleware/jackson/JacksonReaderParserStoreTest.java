@@ -3,11 +3,10 @@ package com.nytimes.android.external.store.middleware.jackson;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.IBarCode;
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
-import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.jackson.data.Foo;
 
@@ -43,21 +42,21 @@ public class JacksonReaderParserStoreTest {
     @Mock
     Persister<Reader> persister;
 
-    private final IBarCode IBarCode = new BarCode("value", KEY);
+    private final BarCode barCode = new com.nytimes.android.external.store.base.impl.BarCode("value", KEY);
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         Reader source = new StringReader(sourceString);
-        when(fetcher.fetch(IBarCode))
+        when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(source));
 
-        when(persister.read(IBarCode))
+        when(persister.read(barCode))
                 .thenReturn(Observable.<Reader>empty())
                 .thenReturn(Observable.just(source));
 
-        when(persister.write(IBarCode, source))
+        when(persister.write(barCode, source))
                 .thenReturn(Observable.just(true));
     }
 
@@ -70,11 +69,11 @@ public class JacksonReaderParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(IBarCode).toBlocking().first();
+        Foo result = store.get(barCode).toBlocking().first();
 
         validateFoo(result);
 
-        verify(fetcher, times(1)).fetch(IBarCode);
+        verify(fetcher, times(1)).fetch(barCode);
     }
 
     @Test
@@ -89,11 +88,11 @@ public class JacksonReaderParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(IBarCode).toBlocking().first();
+        Foo result = store.get(barCode).toBlocking().first();
 
         validateFoo(result);
 
-        verify(fetcher, times(1)).fetch(IBarCode);
+        verify(fetcher, times(1)).fetch(barCode);
     }
 
     private void validateFoo(Foo foo) {

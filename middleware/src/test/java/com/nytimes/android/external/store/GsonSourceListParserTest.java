@@ -2,12 +2,11 @@ package com.nytimes.android.external.store;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
-import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
 
@@ -36,7 +35,7 @@ public class GsonSourceListParserTest {
     @Mock
     Persister<BufferedSource> persister;
 
-    private final IBarCode IBarCode = new BarCode("value", KEY);
+    private final BarCode barCode = new com.nytimes.android.external.store.base.impl.BarCode("value", KEY);
 
     @Test
     public void testSimple() {
@@ -62,22 +61,22 @@ public class GsonSourceListParserTest {
 
         BufferedSource source = source(sourceData);
         Observable<BufferedSource> value = Observable.just(source);
-        when(fetcher.fetch(IBarCode))
+        when(fetcher.fetch(barCode))
                 .thenReturn(value);
 
-        when(persister.read(IBarCode))
+        when(persister.read(barCode))
                 .thenReturn(Observable.<BufferedSource>empty())
                 .thenReturn(value);
 
-        when(persister.write(IBarCode, source))
+        when(persister.write(barCode, source))
                 .thenReturn(Observable.just(true));
 
-        List<Foo> result = simpleStore.get(IBarCode).toBlocking().first();
+        List<Foo> result = simpleStore.get(barCode).toBlocking().first();
         assertThat(result.get(0).value).isEqualTo("a");
         assertThat(result.get(1).value).isEqualTo("b");
         assertThat(result.get(2).value).isEqualTo("c");
 
-        verify(fetcher, times(1)).fetch(IBarCode);
+        verify(fetcher, times(1)).fetch(barCode);
     }
 
     private static BufferedSource source(String data) {

@@ -12,17 +12,17 @@ import rx.Observable;
 public interface Persister<Raw> {
 
     /**
-     * @param IBarCode to use to get data from persister
+     * @param barCode to use to get data from persister
      *                If data is not available implementer needs to
      *                either return Observable.empty or throw an exception
      */
     @NonNull
-    Observable<Raw> read(final IBarCode IBarCode);
+    Observable<Raw> read(final BarCode barCode);
 
     /**
-     * @param IBarCode to use to store data to persister
+     * @param barCode to use to store data to persister
      * @param raw     raw string to be stored
      */
     @NonNull
-    Observable<Boolean> write(final IBarCode IBarCode, final Raw raw);
+    Observable<Boolean> write(final BarCode barCode, final Raw raw);
 }

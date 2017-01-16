@@ -1,11 +1,10 @@
 package com.nytimes.android.external.store;
 
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.IBarCode;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
-import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 
 import org.junit.Test;
@@ -31,7 +30,7 @@ public class StoreWithParserTest {
     @Mock
     Parser<String, String> parser;
 
-    private final IBarCode IBarCode = new BarCode("key", "value");
+    private final BarCode barCode = new com.nytimes.android.external.store.base.impl.BarCode("key", "value");
 
     @Test
     public void testSimple() {
@@ -44,23 +43,23 @@ public class StoreWithParserTest {
                 .parser(parser)
                 .open();
 
-        when(fetcher.fetch(IBarCode))
+        when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));
 
-        when(persister.read(IBarCode))
+        when(persister.read(barCode))
                 .thenReturn(Observable.<String>empty())
                 .thenReturn(Observable.just(DISK));
 
-        when(persister.write(IBarCode, NETWORK))
+        when(persister.write(barCode, NETWORK))
                 .thenReturn(Observable.just(true));
 
-        when(parser.call(DISK)).thenReturn(IBarCode.getKey());
+        when(parser.call(DISK)).thenReturn(barCode.getKey());
 
-        String value = simpleStore.get(IBarCode).toBlocking().first();
-        assertThat(value).isEqualTo(IBarCode.getKey());
-        value = simpleStore.get(IBarCode).toBlocking().first();
-        assertThat(value).isEqualTo(IBarCode.getKey());
-        verify(fetcher, times(1)).fetch(IBarCode);
+        String value = simpleStore.get(barCode).toBlocking().first();
+        assertThat(value).isEqualTo(barCode.getKey());
+        value = simpleStore.get(barCode).toBlocking().first();
+        assertThat(value).isEqualTo(barCode.getKey());
+        verify(fetcher, times(1)).fetch(barCode);
     }
 
     @Test
@@ -69,22 +68,22 @@ public class StoreWithParserTest {
 
         Store<String> simpleStore = new SampleParsingStore(fetcher, persister, parser);
 
-        when(fetcher.fetch(IBarCode))
+        when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));
 
-        when(persister.read(IBarCode))
+        when(persister.read(barCode))
                 .thenReturn(Observable.<String>empty())
                 .thenReturn(Observable.just(DISK));
 
-        when(persister.write(IBarCode, NETWORK))
+        when(persister.write(barCode, NETWORK))
                 .thenReturn(Observable.just(true));
 
-        when(parser.call(DISK)).thenReturn(IBarCode.getKey());
+        when(parser.call(DISK)).thenReturn(barCode.getKey());
 
-        String value = simpleStore.get(IBarCode).toBlocking().first();
-        assertThat(value).isEqualTo(IBarCode.getKey());
-        value = simpleStore.get(IBarCode).toBlocking().first();
-        assertThat(value).isEqualTo(IBarCode.getKey());
-        verify(fetcher, times(1)).fetch(IBarCode);
+        String value = simpleStore.get(barCode).toBlocking().first();
+        assertThat(value).isEqualTo(barCode.getKey());
+        value = simpleStore.get(barCode).toBlocking().first();
+        assertThat(value).isEqualTo(barCode.getKey());
+        verify(fetcher, times(1)).fetch(barCode);
     }
 }
