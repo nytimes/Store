@@ -261,22 +261,32 @@ Since this is android, we have split Store into 4 artifacts:
 + **Cache** Cache extracted from Guava (~200 methods) 
 
 	```groovy
-	compile 'com.nytimes.android:cache:1.0.2'
+	compile 'com.nytimes.android:cache:1.0.3'
 	```
 + **Store** This contains only Store classes and has a dependecy on RxJava + the above cache.  
 
 	```groovy
-	compile 'com.nytimes.android:store:1.0.2'
+	compile 'com.nytimes.android:store:1.0.3'
 	```
 + **Middleware** Sample gson parsers, (feel free to create more and open PRs) 
 
 	```groovy
-	compile 'com.nytimes.android:middleware:1.0.2'
+	compile 'com.nytimes.android:middleware:1.0.3'
 	```
+	+ **Middleware-Jackson** Sample gson parsers, (feel free to create more and open PRs)
+
+    ```groovy
+    compile 'com.nytimes.android:middleware:-jackson1.0.3'
+    ```
+    + **Middleware-Moshi** Sample gson parsers, (feel free to create more and open PRs)
+
+        ```groovy
+        compile 'com.nytimes.android:middleware-moshi:1.0.3'
+        ```
 + **File System** Persistence Library built using OKIO Source/Sink + Middleware for streaming from Network to FileSystem 
 
 	```groovy
-	compile 'com.nytimes.android:filesystem:1.0.2'
+	compile 'com.nytimes.android:filesystem:1.0.3'
 	```
 
 
