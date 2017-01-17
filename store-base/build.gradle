@@ -3,7 +3,8 @@ apply plugin: 'java'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile libraries.rxJava
-    compile libraries.supportAnnotations
+    compile group: 'com.intellij', name: 'annotations', version: '9.0.4'
+
 }
 
 sourceCompatibility = "1.7"

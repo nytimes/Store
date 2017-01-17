@@ -1,6 +1,6 @@
 package com.nytimes.android.external.store.base;
 
-import android.support.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import rx.Observable;
 
@@ -10,6 +10,6 @@ public interface DiskWrite<Raw> {
      *                If data is not available implementer needs to
      *                either return Observable.empty or throw an exception
      */
-    @NonNull
-    Observable<Boolean> write(BaseBarcode barCode, Raw raw);
+    @NotNull
+    Observable<Boolean> write(BarCode barCode, Raw raw);
 }

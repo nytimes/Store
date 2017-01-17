@@ -59,7 +59,7 @@ dependencies {
 
 
     apt project(path: ':store-annotations')
-    compile project(path: ':store-base')
+//    compile project(path: ':store-base')
 
     retrolambdaConfig libraries.retrolambda
     compile libraries.rxAndroid

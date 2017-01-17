@@ -1,6 +1,6 @@
 package com.nytimes.android.external.store.base;
 
-import android.support.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import rx.Observable;
 
@@ -15,6 +15,6 @@ public interface Fetcher<Raw> {
      * @param barCode Container with Key and Type used as a request param
      * @return Observable that emits {@link Raw} data
      */
-    @NonNull
-    Observable<Raw> fetch(BaseBarcode barCode);
+    @NotNull
+    Observable<Raw> fetch(BarCode barCode);
 }
