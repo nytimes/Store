@@ -26,17 +26,21 @@ public class StoreBuilder<T> {
     private Persister<T> persister;
     private Cache<BarCode, Observable<T>> memCache;
 
+    @NonNull
     public static <Raw> StoreBuilder<Raw> builder() {
         return new StoreBuilder<>();
     }
 
+    @NonNull
     public StoreBuilder<T> fetcher(final @NonNull Fetcher<T> fetcher) {
         this.fetcher = fetcher;
         return this;
     }
 
+    @NonNull
     public StoreBuilder<T> nonObservableFetcher(final @NonNull Func1<BarCode, T> fetcher) {
         this.fetcher = new Fetcher<T>() {
+            @NonNull
             @Override
             public Observable<T> fetch(final BarCode barCode) {
                 return Observable.fromCallable(new Callable<T>() {
@@ -51,19 +55,23 @@ public class StoreBuilder<T> {
         return this;
     }
 
+    @NonNull
     public StoreBuilder<T> persister(final @NonNull Persister<T> persister) {
         this.persister = persister;
         return this;
     }
 
+    @NonNull
     public StoreBuilder<T> persister(final @NonNull DiskRead<T> diskRead,
                                      final @NonNull DiskWrite<T> diskWrite) {
         persister = new Persister<T>() {
+            @NonNull
             @Override
             public Observable<T> read(BarCode barCode) {
                 return diskRead.read(barCode);
             }
 
+            @NonNull
             @Override
             public Observable<Boolean> write(BarCode barCode, T t) {
                 return diskWrite.write(barCode, t);
@@ -72,11 +80,13 @@ public class StoreBuilder<T> {
         return this;
     }
 
+    @NonNull
     public StoreBuilder<T> memory(Cache<BarCode, Observable<T>> memCache) {
         this.memCache = memCache;
         return this;
     }
 
+    @NonNull
     public Store<T> open() {
         if (persister == null) {
             persister = new NoopPersister<>();

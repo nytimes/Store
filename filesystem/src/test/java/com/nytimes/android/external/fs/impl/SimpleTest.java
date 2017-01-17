@@ -3,14 +3,17 @@ package com.nytimes.android.external.fs.impl;
 
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import okio.BufferedSource;
 import okio.Okio;
-import org.junit.Before;
-import org.junit.Test;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.createTempDir;
@@ -52,7 +55,7 @@ public class SimpleTest extends BaseTestCase {
     }
 
     @Test
-    public void deleteWhileReading() throws IOException {
+    public void testDeleteWhileReading() throws IOException {
 
         fileSystem.write("/boo", source(testString1));
         BufferedSource source = fileSystem.read("/boo");
@@ -72,7 +75,7 @@ public class SimpleTest extends BaseTestCase {
         fileSystem.delete("/boo"); // now delete the file
 
         assertThat(fileSystem.exists("/boo")).isFalse(); // exists() should say it's gone even though
-                                                // we still have a source to it
+        // we still have a source to it
         fileSystem.write("/boo", source(testString2)); // and now un-delete it by writing a new version
         assertThat(fileSystem.exists("/boo")).isTrue(); // exists() should say it's back
         BufferedSource source2 = fileSystem.read("/boo"); // open another source and hang onto it

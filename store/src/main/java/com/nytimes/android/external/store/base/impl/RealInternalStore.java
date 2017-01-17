@@ -1,7 +1,7 @@
 package com.nytimes.android.external.store.base.impl;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
@@ -34,10 +34,7 @@ import rx.subjects.BehaviorSubject;
 @SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
 final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
-
-    public static final String TAG = RealInternalStore.class.getSimpleName();
     Cache<BarCode, Observable<Parsed>> inFlightRequests;
-
     Cache<BarCode, Observable<Parsed>> memCache;
 
     private Fetcher<Raw> fetcher;
@@ -45,9 +42,9 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     private Func1<Raw, Parsed> parser;
     private BehaviorSubject<Parsed> subject;
 
-    public RealInternalStore(Fetcher<Raw> fetcher,
-                             Persister<Raw> persister,
-                             Func1<Raw, Parsed> parser) {
+    RealInternalStore(Fetcher<Raw> fetcher,
+                      Persister<Raw> persister,
+                      Func1<Raw, Parsed> parser) {
         memCache = CacheBuilder.newBuilder()
                 .maximumSize(getCacheSize())
                 .expireAfterAccess(getCacheTTL(), TimeUnit.SECONDS)
@@ -56,10 +53,10 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     }
 
 
-    public RealInternalStore(Fetcher<Raw> fetcher,
-                             Persister<Raw> persister,
-                             Func1<Raw, Parsed> parser,
-                             Cache<BarCode, Observable<Parsed>> memCache) {
+    RealInternalStore(Fetcher<Raw> fetcher,
+                      Persister<Raw> persister,
+                      Func1<Raw, Parsed> parser,
+                      Cache<BarCode, Observable<Parsed>> memCache) {
         init(fetcher, persister, parser, memCache);
     }
 
@@ -96,7 +93,9 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     private Observable<Parsed> cache(@NonNull final BarCode barCode) {
         try {
             return memCache.get(barCode, new Callable<Observable<Parsed>>() {
+                @NonNull
                 @Override
+                @SuppressWarnings("PMD.SignatureDeclareThrowsException")
                 public Observable<Parsed> call() throws Exception {
                     return disk(barCode);
                 }
@@ -141,6 +140,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      */
     public Observable<Parsed> fetch(@NonNull final BarCode barCode) {
         return Observable.defer(new Func0<Observable<Parsed>>() {
+            @Nullable
             @Override
             public Observable<Parsed> call() {
                 return fetchAndPersist(barCode);
@@ -158,9 +158,11 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @param barCode resource identifier
      * @return observable that emits a {@link Parsed} value
      */
+    @Nullable
     Observable<Parsed> fetchAndPersist(@NonNull final BarCode barCode) {
         try {
             return inFlightRequests.get(barCode, new Callable<Observable<Parsed>>() {
+                @NonNull
                 @Override
                 public Observable<Parsed> call() {
                     return response(barCode);
@@ -181,6 +183,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                         //Log.i(TAG,"writing and then reading from Persister");
                         return persister().write(barCode, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
+                                    @NonNull
                                     @Override
                                     public Observable<Parsed> call(Boolean aBoolean) {
                                         return disk(barCode);
@@ -212,7 +215,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return
      */
-    public Observable<Parsed> stream(BarCode id) {
+    public Observable<Parsed> stream(@NonNull BarCode id) {
 
         Observable<Parsed> stream = subject.asObservable();
 

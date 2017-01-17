@@ -13,7 +13,9 @@ import java.io.Serializable;
  **/
 
 public final class BarCode implements Serializable {
+    @NonNull
     private final String key;
+    @NonNull
     private final String type;
 
     public BarCode(@NonNull String type, @NonNull String key) {
@@ -21,15 +23,18 @@ public final class BarCode implements Serializable {
         this.type = type;
     }
 
+    @NonNull
     public String getKey() {
         return key;
     }
 
+    @NonNull
     public String getType() {
         return type;
     }
 
+    @NonNull
     public static BarCode empty() {
-        return new BarCode("","");
+        return new BarCode("", "");
     }
 }

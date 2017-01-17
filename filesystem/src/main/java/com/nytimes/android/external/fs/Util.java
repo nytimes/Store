@@ -1,5 +1,8 @@
 package com.nytimes.android.external.fs;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
@@ -8,8 +11,9 @@ import static dagger.internal.Preconditions.checkNotNull;
 
 public class Util {
 
-    public String simplifyPath(String path) {
-        if (path == null || path.length() == 0) {
+    @NonNull
+    public String simplifyPath(@NonNull String path) {
+        if (ifInvalidPATH(path)) {
             return "";
         }
 
@@ -18,32 +22,44 @@ public class Util {
 
         Stack<String> stack = new Stack<String>();
 
-        for (String str : arr) {
-            if(str.equals("/")){
-                continue;
-            }
-            if (str.equals("..")) {
-                if (!stack.isEmpty()) {
-                    stack.pop();
-                }
-            } else if (!str.equals(".") && !str.isEmpty()) {
-                stack.push(str);
-            }
-        }
+        fillStack(arr, stack);
 
         StringBuilder sb = new StringBuilder();
-        if (stack.isEmpty()) {
+        if (emptyStack(stack)) {
             return "/";
         }
 
         for (String str : stack) {
-            sb.append("/" + str);
+            sb.append("/").append(str);
         }
 
         return sb.toString();
     }
 
-    public void createParentDirs(File file) throws IOException {
+    private boolean emptyStack(@NonNull Stack<String> stack) {
+        return stack.isEmpty();
+    }
+
+    private void fillStack(@NonNull String[] arr, @NonNull Stack<String> stack) {
+        for (String str : arr) {
+            if ("/".equals(str)) {
+                continue;
+            }
+            if ("..".equals(str)) {
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else if (!".".equals(str) && !str.isEmpty()) {
+                stack.push(str);
+            }
+        }
+    }
+
+    private boolean ifInvalidPATH(@Nullable String path) {
+        return path == null || path.length() == 0;
+    }
+
+    public void createParentDirs(@NonNull File file) throws IOException {
         checkNotNull(file);
         File parent = file.getCanonicalFile().getParentFile();
         if (parent == null) {

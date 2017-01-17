@@ -1,5 +1,7 @@
 package com.nytimes.android.external.fs.filesystem;
 
+import android.support.annotation.NonNull;
+
 import com.nytimes.android.external.fs.Util;
 
 import java.io.File;
@@ -15,11 +17,13 @@ import static java.lang.String.format;
 class FSFile {
 
     private final Util util = new Util();
-    private final String path;
+    @NonNull
+    private final String pathValue;
+    @NonNull
     private final File file;
 
-    FSFile(File root, String path) throws IOException {
-        this.path = path;
+    FSFile(File root, @NonNull String path) throws IOException {
+        this.pathValue = path;
         this.file = new File(root, path);
         if (file.exists() && file.isDirectory()) {
             throw new FileNotFoundException(format("expecting a file at %s, instead found a directory", path));
@@ -41,37 +45,41 @@ class FSFile {
         }
     }
 
+    @NonNull
     public String path() {
-        return path;
+        return pathValue;
     }
 
     public void write(BufferedSource source) throws IOException {
 
         File tmpFile = File.createTempFile("new", "tmp", file.getParentFile());
+        BufferedSink sink = null;
         try {
 
-            BufferedSink sink = Okio.buffer(Okio.sink(tmpFile));
+            sink = Okio.buffer(Okio.sink(tmpFile));
             sink.writeAll(source);
-            sink.close();
 
             if (!tmpFile.renameTo(file)) {
                 throw new IOException("unable to move tmp file to " + file.getPath());
             }
-        }
-        catch (Exception e){
-            throw new IOException("unable to write to file");
+        } catch (Exception e) {
+            throw new IOException("unable to write to file", e);
 
         } finally {
             tmpFile.delete();
+            if (sink != null) {
+                sink.close();
+            }
         }
     }
 
 
+    @NonNull
     public BufferedSource source() throws FileNotFoundException {
         if (file.exists()) {
             return Okio.buffer(Okio.source(file));
         }
-        throw new FileNotFoundException(path);
+        throw new FileNotFoundException(pathValue);
     }
 }
 

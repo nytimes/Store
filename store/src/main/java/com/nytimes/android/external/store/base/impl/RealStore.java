@@ -23,7 +23,7 @@ public class RealStore<Parsed> implements Store<Parsed> {
     }
 
     public RealStore(Fetcher<Parsed> fetcher) {
-        internalStore = new RealInternalStore<>(fetcher,new NoopPersister<Parsed>(),
+        internalStore = new RealInternalStore<>(fetcher, new NoopPersister<Parsed>(),
                 new NoopParserFunc<Parsed, Parsed>());
     }
 
@@ -46,13 +46,11 @@ public class RealStore<Parsed> implements Store<Parsed> {
     }
 
 
-
     public <Raw> RealStore(Fetcher<Raw> fetcher,
-             Persister<Raw> persister,
-             Cache<BarCode, Observable<Parsed>> memCache) {
-        internalStore= new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Parsed>(), memCache);
+                           Persister<Raw> persister,
+                           Cache<BarCode, Observable<Parsed>> memCache) {
+        internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Parsed>(), memCache);
     }
-
 
 
     @Override
@@ -91,11 +89,12 @@ public class RealStore<Parsed> implements Store<Parsed> {
         internalStore.clearMemory(barCode);
     }
 
-    protected Observable<Parsed> memory(BarCode id) {
+    protected Observable<Parsed> memory(@NonNull BarCode id) {
         return internalStore.memory(id);
     }
 
-    protected Observable<Parsed> disk(BarCode id) {
+    @NonNull
+    protected Observable<Parsed> disk(@NonNull BarCode id) {
         return internalStore.disk(id);
     }
 

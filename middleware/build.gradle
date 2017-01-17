@@ -36,6 +36,7 @@ dependencies {
     compile libraries.dagger
     compile libraries.okio
     compile libraries.gson
+    compile libraries.supportAnnotations
     testCompile libraries.mockito
     testCompile libraries.assertJ
     testCompile libraries.junit
@@ -53,4 +54,5 @@ artifacts {
     archives sourcesJar
 }
 apply from: rootProject.file("gradle/maven-push.gradle")
-
+apply from: rootProject.file("gradle/checkstyle.gradle")
+apply from: rootProject.file("gradle/pmd.gradle")

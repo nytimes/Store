@@ -1,12 +1,13 @@
 package com.nytimes.android.external.store;
 
 import com.google.gson.Gson;
-import com.nytimes.android.external.store.middleware.GsonSourceParser;
 import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.middleware.GsonParserFactory;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,7 +38,7 @@ public class GenericParserStoreTest {
     public void testSimple() {
         MockitoAnnotations.initMocks(this);
 
-        GsonSourceParser<Foo> parser = new GsonSourceParser<>(new Gson(), Foo.class);
+        Parser<BufferedSource, Foo> parser = GsonParserFactory.createSourceParser(new Gson(), Foo.class);
 
         Store<Foo> simpleStore = ParsingStoreBuilder.<BufferedSource, Foo>builder()
                 .persister(persister)

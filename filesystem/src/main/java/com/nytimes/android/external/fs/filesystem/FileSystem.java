@@ -1,5 +1,7 @@
 package com.nytimes.android.external.fs.filesystem;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,6 +49,7 @@ public interface FileSystem {
      * @return a {@link BufferedSource} to read - Caller must close it!
      * @throws FileNotFoundException
      */
+    @NonNull
     BufferedSource read(String path) throws FileNotFoundException;
 
     /**
@@ -79,6 +82,7 @@ public interface FileSystem {
     /**
      * list all files under a given directory, recursively.
      */
+    @NonNull
     Collection<String> list(String path) throws FileNotFoundException;
 
     /**

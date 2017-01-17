@@ -35,6 +35,7 @@ dependencies {
     compile libraries.gson
 
     compile libraries.rxJava
+    compile libraries.supportAnnotations
     compile project(path: ':cache')
     compile project(path: ':store')
     compile project(path: ':middleware')
@@ -44,5 +45,7 @@ dependencies {
     testCompile libraries.robolectric
 }
 apply from: rootProject.file("gradle/maven-push.gradle")
+apply from: rootProject.file("gradle/checkstyle.gradle")
+apply from: rootProject.file("gradle/pmd.gradle")
 
 
