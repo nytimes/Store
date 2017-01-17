@@ -8,7 +8,7 @@ Releasing
  5. `./gradlew clean uploadArchives`.
  6. Visit [Sonatype Nexus](https://oss.sonatype.org/) and promote the artifact.
  7. `git tag -a X.Y.X -m "Version X.Y.Z"` (where X.Y.Z is the new version)
- 8. Update the `gradle.properties` to the next SNAPSHOT version.
+ 8. Update the top level `build.gradle` to the next SNAPSHOT version.
  9. `git commit -am "Prepare next development version."`
  10. `git push && git push --tags`
  11. Update the two sample modules to point to the newly released version.
