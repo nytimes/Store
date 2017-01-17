@@ -15,7 +15,6 @@ tasks.withType(JavaCompile) {
         targetCompatibility = '1.7'
 }
 
-
 jar {
     from ('./src/main') {
         include 'META-INF/services/javax.annotation.processing.Processor'

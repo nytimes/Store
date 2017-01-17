@@ -16,7 +16,6 @@ import rx.Observable;
 
 import static com.nytimes.android.external.fs.SourcePersister.pathForBarcode;
 
-
 public class SourceFileReader implements DiskRead<BufferedSource> {
 
     final FileSystem fileSystem;

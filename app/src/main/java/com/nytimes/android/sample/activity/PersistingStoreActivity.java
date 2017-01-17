@@ -75,7 +75,8 @@ public class PersistingStoreActivity extends AppCompatActivity {
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showPosts, throwable -> {});
+                .subscribe(this::showPosts, throwable -> {
+                });
     }
 
     private void showPosts(List<Post> posts) {
@@ -92,10 +93,10 @@ public class PersistingStoreActivity extends AppCompatActivity {
     }
 
     private Store<RedditData> provideRedditStore() {
-        return ParsingStoreBuilder.<BufferedSource,RedditData>builder()
+        return ParsingStoreBuilder.<BufferedSource, RedditData>builder()
                 .fetcher(this::fetcher)
                 .persister(persister)
-                .parser(GsonParserFactory.createSourceParser(provideGson(),RedditData.class))
+                .parser(GsonParserFactory.createSourceParser(provideGson(), RedditData.class))
                 .open();
     }
 

@@ -41,27 +41,17 @@ public class StoreProcessor extends AbstractProcessor {
 
 
         for (Element annotatedElement : roundEnvironment.getElementsAnnotatedWith(BuildStore.class)) {
-
-
             // We can cast it, because we know that it of ElementKind.CLASS
             TypeElement typeElement = (TypeElement) annotatedElement;
 
             try {
-                new Generator(typeElement, processingEnv).writeFiles(); // throws IllegalArgumentException
+                new Generator(typeElement, processingEnv).generateFiles(); // throws IllegalArgumentException
             } catch (IllegalArgumentException e) {
-
-
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "FOO error:" + e.getMessage());
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "FOO error:" + e.getMessage());
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO error:" + e.getMessage());
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.OTHER, "FOO error:" + e.getMessage());
-
-
                 return true;
             }
             return false;
         }
-
         return false;
     }
 

@@ -41,6 +41,9 @@ public class Generator {
 
     private TypeElement classElement;
     private final ProcessingEnvironment env;
+    private String packageName = "com.nytimes.android.external.store.base";
+    private String persisterName = "Persister";
+    private String storeName = "Store";
 
 
     public Generator(TypeElement classElement, ProcessingEnvironment env) throws IllegalArgumentException {
@@ -48,75 +51,90 @@ public class Generator {
         this.env = env;
     }
 
-    void writeFiles() {
+    void generateFiles() {
         env.getMessager().printMessage(Diagnostic.Kind.WARNING, "class has annotation");
 
-        List<? extends Element> methods = classElement.getEnclosedElements();
+        List<? extends Element> methods = getMethods();
 
-        String moduleClassName = classElement.getSimpleName() + "Module";
-        TypeSpec.Builder moduleClassBuilder = TypeSpec.classBuilder(moduleClassName)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addAnnotation(Module.class);
+        String moduleClassName = getModuleName();
+        TypeSpec.Builder moduleClassBuilder = createModuleClassBuilder(moduleClassName);
         for (Element method : methods) {
-            env.getMessager().printMessage(Diagnostic.Kind.WARNING, "we have methods");
 
-            Annotation getAnnotation = method.getAnnotation(GET.class);
-            Annotation persister = method.getAnnotation(Persister.class);
-            Annotation persisterFile = method.getAnnotation(PersisterFile.class);
-            if (getAnnotation != null) {
-
-                ExecutableElement realMethod = (ExecutableElement) method;
-                List<? extends VariableElement> enclosedElements = realMethod.getParameters();
-
-                String className = capitalize(realMethod.getSimpleName().toString());
-
-                String barcodeClassName = className + "BarCode";
-                TypeSpec.Builder barcodeClassBuilder = TypeSpec.classBuilder(barcodeClassName)
-                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                        .superclass(BarCode.class);
-
-
-
-
-               if(persister!=null){
-                  moduleClassBuilder= generateProvidesMethod(realMethod,
-                           capitalize(realMethod.getSimpleName().toString()), moduleClassBuilder);
-               }
-
-                if(persisterFile!=null){
-                    moduleClassBuilder= generateProvidesMethodWithFile(realMethod,
-                            capitalize(realMethod.getSimpleName().toString()), moduleClassBuilder);
-                }
-
-
-                MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
-                        .addModifiers(Modifier.PUBLIC);
-
-
-                for (VariableElement parameter : enclosedElements) {
-                    parameter.asType();
-
-                    generateProperty(barcodeClassBuilder, constructorBuilder, parameter);
-                }
-
-
-                barcodeClassBuilder.addMethod(constructorBuilder.build());
-                JavaFile barcodeFile = JavaFile.builder("com.nytimes.android.store.generated", barcodeClassBuilder.build())
-                        .build();
-
-
-
-                writeFile( barcodeClassName, barcodeFile);
+            Annotations annotations = new Annotations(method).invoke();
+            Annotation persister = annotations.persisterAnnototation();
+            Annotation persisterFile = annotations.persisterFileAnnotation();
+            if (annotations.getAnnotation != null) {
+                moduleClassBuilder = generateForEachGetMethod(
+                        moduleClassBuilder, (ExecutableElement) method, persister, persisterFile);
             }
         }
 
-        JavaFile moduleFile = JavaFile.builder("com.nytimes.android.store.generated", moduleClassBuilder.build())
-                .build();
-        writeFile( moduleClassName, moduleFile);
+        writeFile(moduleClassName, moduleClassBuilder);
 
     }
 
-    private void writeFile(String className, JavaFile file) {
+    private void writeFile(String moduleClassName, TypeSpec.Builder moduleClassBuilder) {
+        JavaFile moduleFile = JavaFile.builder("com.nytimes.android.store.generated", moduleClassBuilder.build())
+                .build();
+        writeOut(moduleClassName, moduleFile);
+    }
+
+    private TypeSpec.Builder generateForEachGetMethod(TypeSpec.Builder moduleClassBuilder, ExecutableElement realMethod, Annotation persister, Annotation persisterFile) {
+        List<? extends VariableElement> methodParams = realMethod.getParameters();
+
+        String className = methodName(realMethod);
+
+        String barcodeClassName = className + "BarCode";
+        TypeSpec.Builder barcodeClassBuilder = TypeSpec.classBuilder(barcodeClassName)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .superclass(BarCode.class);
+
+
+        if (persister != null) {
+            moduleClassBuilder = generateProvidesMethod(realMethod, methodName(realMethod), moduleClassBuilder);
+        }
+
+        if (persisterFile != null) {
+            moduleClassBuilder = generateProvidesMethodWithFile(realMethod,
+                    methodName(realMethod), moduleClassBuilder);
+        }
+
+
+        MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC);
+
+
+        for (VariableElement parameter : methodParams) {
+            parameter.asType();
+
+            generateProperty(barcodeClassBuilder, constructorBuilder, parameter);
+        }
+
+
+        barcodeClassBuilder.addMethod(constructorBuilder.build());
+        writeFile(barcodeClassName, barcodeClassBuilder);
+        return moduleClassBuilder;
+    }
+
+    private String methodName(ExecutableElement realMethod) {
+        return capitalize(realMethod.getSimpleName().toString());
+    }
+
+    private TypeSpec.Builder createModuleClassBuilder(String moduleClassName) {
+        return TypeSpec.classBuilder(moduleClassName)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addAnnotation(Module.class);
+    }
+
+    private String getModuleName() {
+        return classElement.getSimpleName() + "Module";
+    }
+
+    private List<? extends Element> getMethods() {
+        return classElement.getEnclosedElements();
+    }
+
+    private void writeOut(String className, JavaFile file) {
         try { // write the file
             JavaFileObject source = env.getFiler().createSourceFile("com.nytimes.android.store.generated." + className);
             Writer writer = source.openWriter();
@@ -129,50 +147,40 @@ public class Generator {
         }
     }
 
-    private TypeSpec.Builder generateProvidesMethod(ExecutableElement realMethod, String className, TypeSpec.Builder moduleClassBuilder) {
-        ClassName persist = ClassName.get("com.nytimes.android.external.store.base", "Persister");
-        ClassName store = ClassName.get("com.nytimes.android.external.store.base", "Store");
+    private TypeSpec.Builder generateProvidesMethod(ExecutableElement method, String className, TypeSpec.Builder classBuilder) {
 
-        TypeMirror returnType = realMethod.getReturnType();
+        ClassName persist = ClassName.get(packageName, persisterName);
+        ClassName store = ClassName.get(packageName, storeName);
 
-        TypeName genericReturnType = TypeName.get(getGenericType(returnType));
-
-
+        TypeName genericReturnType = TypeName.get(getGenericType(method.getReturnType()));
         TypeName persister = ParameterizedTypeName.get(persist, genericReturnType);
         TypeName storeReturn = ParameterizedTypeName.get(store, genericReturnType);
-        env.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO" +className);
-        MethodSpec.Builder providesMethod = MethodSpec.methodBuilder("provide" + className + "Store")
-                .addParameter(TypeName.get(classElement.asType()), classElement.getSimpleName().toString().toLowerCase())
-                .addParameter(persister,"persister")
-                .addModifiers(Modifier.PUBLIC)
-                .addStatement("return null")
-                .addAnnotation(Provides.class)
-                .addAnnotation(Singleton.class)
-                .returns(storeReturn);
+
+//        env.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO" + className);
+        MethodSpec.Builder providesMethod = providesMethodBuilder(className, storeReturn)
+                .addParameter(persister, "persister");
+        return classBuilder.addMethod(providesMethod.build());
+    }
+
+
+    private TypeSpec.Builder generateProvidesMethodWithFile(ExecutableElement method, String className, TypeSpec.Builder moduleClassBuilder) {
+        ClassName store = ClassName.get(packageName, storeName);
+        TypeName genericReturnType = TypeName.get(getGenericType(method.getReturnType()));
+        TypeName storeReturn = ParameterizedTypeName.get(store, genericReturnType);
+//        env.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO" + genericReturnType.toString());
+        MethodSpec.Builder providesMethod = providesMethodBuilder(className, storeReturn)
+                .addParameter(String.class, "fileName");
         return moduleClassBuilder.addMethod(providesMethod.build());
     }
 
-    private TypeSpec.Builder generateProvidesMethodWithFile(ExecutableElement realMethod, String className, TypeSpec.Builder moduleClassBuilder) {
-        ClassName persist = ClassName.get("com.nytimes.android.external.store.base", "Persister");
-        ClassName store = ClassName.get("com.nytimes.android.external.store.base", "Store");
-
-        TypeMirror returnType = realMethod.getReturnType();
-
-        TypeName genericReturnType = TypeName.get(getGenericType(returnType));
-
-
-        TypeName persister = ParameterizedTypeName.get(persist, genericReturnType);
-        TypeName storeReturn = ParameterizedTypeName.get(store, genericReturnType);
-        env.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO" +className);
-        MethodSpec.Builder providesMethod = MethodSpec.methodBuilder("provide" + className + "Store")
+    private MethodSpec.Builder providesMethodBuilder(String className, TypeName storeReturn) {
+        return MethodSpec.methodBuilder("provide" + className + "Store")
                 .addParameter(TypeName.get(classElement.asType()), classElement.getSimpleName().toString().toLowerCase())
-                .addParameter(String.class, "fileName")
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement("return null")
                 .addAnnotation(Provides.class)
                 .addAnnotation(Singleton.class)
                 .returns(storeReturn);
-        return moduleClassBuilder.addMethod(providesMethod.build());
     }
 
     private void generateProperty(TypeSpec.Builder classBuilder, MethodSpec.Builder constructorBuilder, VariableElement parameter) {
@@ -184,7 +192,7 @@ public class Generator {
         MethodSpec.Builder getter = MethodSpec.methodBuilder("get" + capitalize(name))
                 .addModifiers(Modifier.PUBLIC)
                 .returns(type)
-                .addStatement("return " +name);
+                .addStatement("return " + name);
         classBuilder.addMethod(getter.build());
     }
 
@@ -194,45 +202,41 @@ public class Generator {
     }
 
 
-    public static TypeMirror getGenericType(final TypeMirror type)
-    {
-        final TypeMirror[] result = { null };
+    private static TypeMirror getGenericType(final TypeMirror type) {
+        final TypeMirror[] result = {null};
 
-        type.accept(new SimpleTypeVisitor6<Void, Void>()
-        {
+        type.accept(new SimpleTypeVisitor6<Void, Void>() {
             @Override
-            public Void visitDeclared(DeclaredType declaredType, Void v)
-            {
+            public Void visitDeclared(DeclaredType declaredType, Void v) {
                 List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
-                if (!typeArguments.isEmpty())
-                {
+                if (!typeArguments.isEmpty()) {
                     result[0] = typeArguments.get(0);
                 }
                 return null;
             }
+
             @Override
-            public Void visitPrimitive(PrimitiveType primitiveType, Void v)
-            {
+            public Void visitPrimitive(PrimitiveType primitiveType, Void v) {
                 return null;
             }
+
             @Override
-            public Void visitArray(ArrayType arrayType, Void v)
-            {
+            public Void visitArray(ArrayType arrayType, Void v) {
                 return null;
             }
+
             @Override
-            public Void visitTypeVariable(TypeVariable typeVariable, Void v)
-            {
+            public Void visitTypeVariable(TypeVariable typeVariable, Void v) {
                 return null;
             }
+
             @Override
-            public Void visitError(ErrorType errorType, Void v)
-            {
+            public Void visitError(ErrorType errorType, Void v) {
                 return null;
             }
+
             @Override
-            protected Void defaultAction(TypeMirror typeMirror, Void v)
-            {
+            protected Void defaultAction(TypeMirror typeMirror, Void v) {
                 throw new UnsupportedOperationException();
             }
         }, null);
@@ -240,4 +244,33 @@ public class Generator {
         return result[0];
     }
 
+    private static class Annotations {
+        private Element method;
+        private Annotation getAnnotation;
+        private Annotation persister;
+        private Annotation persisterFile;
+
+        public Annotations(Element method) {
+            this.method = method;
+        }
+
+        public Annotation getAnnotation() {
+            return getAnnotation;
+        }
+
+        public Annotation persisterAnnototation() {
+            return persister;
+        }
+
+        public Annotation persisterFileAnnotation() {
+            return persisterFile;
+        }
+
+        public Annotations invoke() {
+            getAnnotation = method.getAnnotation(GET.class);
+            persister = method.getAnnotation(Persister.class);
+            persisterFile = method.getAnnotation(PersisterFile.class);
+            return this;
+        }
+    }
 }
