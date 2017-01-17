@@ -2,8 +2,8 @@ package com.nytimes.android.external.store.util;
 
 import android.support.annotation.NonNull;
 
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

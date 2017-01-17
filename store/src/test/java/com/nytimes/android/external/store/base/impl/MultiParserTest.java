@@ -1,5 +1,6 @@
 package com.nytimes.android.external.store.base.impl;
 
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.util.ParserException;
 

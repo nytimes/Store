@@ -1,6 +1,6 @@
 package com.nytimes.android.external.store.util;
 
-import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.BarCode;
 
 import org.junit.Test;
 

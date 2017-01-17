@@ -2,11 +2,11 @@ package com.nytimes.android.external.store;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
-import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
 

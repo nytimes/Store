@@ -52,11 +52,15 @@ dependencies {
     provided "org.immutables:gson:2.1.16" // for annotations
 
     testCompile 'junit:junit:4.12'
-//    compile project(path: ':store')
-//    compile project(path: ':cache')
-    compile 'com.nytimes.android:store:1.0.2'
-    compile 'com.nytimes.android:middleware:1.0.2'
-    compile 'com.nytimes.android:filesystem:1.0.2'
+    compile project(path: ':store')
+    compile project(path: ':cache')
+    compile project(path: ':middleware')
+    compile project(path: ':filesystem')
+
+
+    apt project(path: ':store-annotations')
+//    compile project(path: ':store-base')
+
     retrolambdaConfig libraries.retrolambda
     compile libraries.rxAndroid
 

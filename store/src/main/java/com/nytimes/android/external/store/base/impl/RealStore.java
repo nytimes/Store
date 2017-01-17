@@ -3,6 +3,7 @@ package com.nytimes.android.external.store.base.impl;
 import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.cache.Cache;
+import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Parser;
