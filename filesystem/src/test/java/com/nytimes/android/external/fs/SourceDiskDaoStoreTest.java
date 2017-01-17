@@ -31,7 +31,7 @@ public class SourceDiskDaoStoreTest {
     @Mock
     SourcePersister diskDAO;
 
-    private final BarCode barCode = new com.nytimes.android.external.store.base.impl.BarCode("value", KEY);
+    private final BarCode barCode = new BarCode("value", KEY);
 
     @Test
     public void testSimple() {

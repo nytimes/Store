@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
-import com.nytimes.android.external.store.base.*;
 import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.InternalStore;
+import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
 
 import java.util.concurrent.Callable;
@@ -89,7 +91,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     /**
      * @return data from memory
      */
-    private Observable<Parsed> cache(@NonNull final com.nytimes.android.external.store.base.BarCode barCode) {
+    private Observable<Parsed> cache(@NonNull final BarCode barCode) {
         try {
             return memCache.get(barCode, new Callable<Observable<Parsed>>() {
                 @NonNull

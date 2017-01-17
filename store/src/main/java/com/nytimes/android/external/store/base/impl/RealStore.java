@@ -3,8 +3,12 @@ package com.nytimes.android.external.store.base.impl;
 import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.cache.Cache;
-import com.nytimes.android.external.store.base.*;
 import com.nytimes.android.external.store.base.BarCode;
+import com.nytimes.android.external.store.base.Fetcher;
+import com.nytimes.android.external.store.base.InternalStore;
+import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
@@ -67,7 +71,7 @@ public class RealStore<Parsed> implements Store<Parsed> {
     }
 
     @Override
-    public Observable<Parsed> stream(com.nytimes.android.external.store.base.BarCode id) {
+    public Observable<Parsed> stream(BarCode id) {
         return internalStore.stream(id);
     }
 

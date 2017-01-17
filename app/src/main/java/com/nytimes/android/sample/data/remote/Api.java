@@ -1,6 +1,8 @@
 package com.nytimes.android.sample.data.remote;
 
-import com.nytimes.android.external.store.base.BuildStore;
+import com.nytimes.android.external.store.base.annotation.BuildStore;
+import com.nytimes.android.external.store.base.annotation.Persister;
+import com.nytimes.android.external.store.base.annotation.PersisterFile;
 import com.nytimes.android.sample.data.model.RedditData;
 
 import okhttp3.ResponseBody;
@@ -10,13 +12,16 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 @BuildStore
+
 public interface Api {
 
     @GET("r/{subredditName}/new/.json")
+    @Persister
     Observable<RedditData> fetchSubreddit(@Path("subredditName") String subredditName,
                                           @Query("limit") String limit);
 
     @GET("r/{subredditName}/new/.json")
+    @PersisterFile
     Observable<ResponseBody> fetchSubredditForPersister(@Path("subredditName") String subredditName,
                                                         @Query("limit") String limit);
 }

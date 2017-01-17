@@ -1,6 +1,6 @@
 package com.nytimes.android.external.storeannotations;
 
-import com.nytimes.android.external.store.base.BuildStore;
+import com.nytimes.android.external.store.base.annotation.BuildStore;
 
 import java.util.Set;
 
@@ -18,7 +18,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-@SupportedAnnotationTypes("com.nytimes.android.external.store.base.BuildStore")
+@SupportedAnnotationTypes("com.nytimes.android.external.store.base.annotation.BuildStore")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class StoreProcessor extends AbstractProcessor {
 
