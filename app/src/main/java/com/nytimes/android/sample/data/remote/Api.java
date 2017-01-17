@@ -12,7 +12,6 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 @BuildStore
-
 public interface Api {
 
     @GET("r/{subredditName}/new/.json")
