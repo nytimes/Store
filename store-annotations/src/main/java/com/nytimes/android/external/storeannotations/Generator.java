@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.inject.Singleton;
@@ -39,16 +40,66 @@ import retrofit2.http.GET;
 
 public class Generator {
 
-    private TypeElement classElement;
+    private static final String TARGET_PACKAGE = "com.nytimes.android.store.generated";
+    private static final String PACKAGE_NAME = "com.nytimes.android.external.store.base";
+    private static final String PERSISTER_NAME = "Persister";
+    private static final String STORE_NAME = "Store";
     private final ProcessingEnvironment env;
-    private String packageName = "com.nytimes.android.external.store.base";
-    private String persisterName = "Persister";
-    private String storeName = "Store";
+    private final TypeElement classElement;
 
 
     public Generator(TypeElement classElement, ProcessingEnvironment env) throws IllegalArgumentException {
         this.classElement = classElement;
         this.env = env;
+    }
+
+    public static String capitalize(String s) {
+        if (s.length() == 0) {
+            return s;
+        }
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    private static TypeMirror getGenericType(final TypeMirror type) {
+        final TypeMirror[] result = {null};
+
+        type.accept(new SimpleTypeVisitor6<Void, Void>() {
+            @Override
+            public Void visitDeclared(DeclaredType declaredType, Void v) {
+                List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+                if (!typeArguments.isEmpty()) {
+                    result[0] = typeArguments.get(0);
+                }
+                return null;
+            }
+
+            @Override
+            public Void visitPrimitive(PrimitiveType primitiveType, Void v) {
+                return null;
+            }
+
+            @Override
+            public Void visitArray(ArrayType arrayType, Void v) {
+                return null;
+            }
+
+            @Override
+            public Void visitTypeVariable(TypeVariable typeVariable, Void v) {
+                return null;
+            }
+
+            @Override
+            public Void visitError(ErrorType errorType, Void v) {
+                return null;
+            }
+
+            @Override
+            protected Void defaultAction(TypeMirror typeMirror, Void v) {
+                throw new UnsupportedOperationException();
+            }
+        }, null);
+
+        return result[0];
     }
 
     void generateFiles() {
@@ -74,12 +125,14 @@ public class Generator {
     }
 
     private void writeFile(String moduleClassName, TypeSpec.Builder moduleClassBuilder) {
-        JavaFile moduleFile = JavaFile.builder("com.nytimes.android.store.generated", moduleClassBuilder.build())
+        JavaFile moduleFile = JavaFile.builder(TARGET_PACKAGE, moduleClassBuilder.build())
                 .build();
         writeOut(moduleClassName, moduleFile);
     }
 
-    private TypeSpec.Builder generateForEachGetMethod(TypeSpec.Builder moduleClassBuilder, ExecutableElement realMethod, Annotation persister, Annotation persisterFile) {
+    private TypeSpec.Builder generateForEachGetMethod(TypeSpec.Builder moduleClassBuilder,
+                                                      ExecutableElement realMethod, Annotation persister,
+                                                      Annotation persisterFile) {
         List<? extends VariableElement> methodParams = realMethod.getParameters();
 
         String className = methodName(realMethod);
@@ -136,7 +189,7 @@ public class Generator {
 
     private void writeOut(String className, JavaFile file) {
         try { // write the file
-            JavaFileObject source = env.getFiler().createSourceFile("com.nytimes.android.store.generated." + className);
+            JavaFileObject source = env.getFiler().createSourceFile(TARGET_PACKAGE + "." + className);
             Writer writer = source.openWriter();
             writer.write(file.toString());
             writer.flush();
@@ -147,10 +200,11 @@ public class Generator {
         }
     }
 
-    private TypeSpec.Builder generateProvidesMethod(ExecutableElement method, String className, TypeSpec.Builder classBuilder) {
+    private TypeSpec.Builder generateProvidesMethod(ExecutableElement method, String className,
+                                                    TypeSpec.Builder classBuilder) {
 
-        ClassName persist = ClassName.get(packageName, persisterName);
-        ClassName store = ClassName.get(packageName, storeName);
+        ClassName persist = ClassName.get(PACKAGE_NAME, PERSISTER_NAME);
+        ClassName store = ClassName.get(PACKAGE_NAME, STORE_NAME);
 
         TypeName genericReturnType = TypeName.get(getGenericType(method.getReturnType()));
         TypeName persister = ParameterizedTypeName.get(persist, genericReturnType);
@@ -158,13 +212,13 @@ public class Generator {
 
 //        env.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO" + className);
         MethodSpec.Builder providesMethod = providesMethodBuilder(className, storeReturn)
-                .addParameter(persister, "persister");
+                .addParameter(persister, PERSISTER_NAME.toLowerCase(Locale.US));
         return classBuilder.addMethod(providesMethod.build());
     }
 
-
-    private TypeSpec.Builder generateProvidesMethodWithFile(ExecutableElement method, String className, TypeSpec.Builder moduleClassBuilder) {
-        ClassName store = ClassName.get(packageName, storeName);
+    private TypeSpec.Builder generateProvidesMethodWithFile(ExecutableElement method, String className,
+                                                            TypeSpec.Builder moduleClassBuilder) {
+        ClassName store = ClassName.get(PACKAGE_NAME, STORE_NAME);
         TypeName genericReturnType = TypeName.get(getGenericType(method.getReturnType()));
         TypeName storeReturn = ParameterizedTypeName.get(store, genericReturnType);
 //        env.getMessager().printMessage(Diagnostic.Kind.WARNING, "FOO" + genericReturnType.toString());
@@ -175,7 +229,8 @@ public class Generator {
 
     private MethodSpec.Builder providesMethodBuilder(String className, TypeName storeReturn) {
         return MethodSpec.methodBuilder("provide" + className + "Store")
-                .addParameter(TypeName.get(classElement.asType()), classElement.getSimpleName().toString().toLowerCase())
+                .addParameter(TypeName.get(classElement.asType()), classElement.getSimpleName()
+                        .toString().toLowerCase(Locale.US))
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement("return null")
                 .addAnnotation(Provides.class)
@@ -183,7 +238,8 @@ public class Generator {
                 .returns(storeReturn);
     }
 
-    private void generateProperty(TypeSpec.Builder classBuilder, MethodSpec.Builder constructorBuilder, VariableElement parameter) {
+    private void generateProperty(TypeSpec.Builder classBuilder, MethodSpec.Builder constructorBuilder,
+                                  VariableElement parameter) {
         TypeName type = TypeName.get(parameter.asType());
         String name = parameter.getSimpleName().toString();
         classBuilder.addField(type, name, Modifier.PRIVATE, Modifier.FINAL);
@@ -196,56 +252,8 @@ public class Generator {
         classBuilder.addMethod(getter.build());
     }
 
-    public static String capitalize(String s) {
-        if (s.length() == 0) return s;
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
-    }
-
-
-    private static TypeMirror getGenericType(final TypeMirror type) {
-        final TypeMirror[] result = {null};
-
-        type.accept(new SimpleTypeVisitor6<Void, Void>() {
-            @Override
-            public Void visitDeclared(DeclaredType declaredType, Void v) {
-                List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
-                if (!typeArguments.isEmpty()) {
-                    result[0] = typeArguments.get(0);
-                }
-                return null;
-            }
-
-            @Override
-            public Void visitPrimitive(PrimitiveType primitiveType, Void v) {
-                return null;
-            }
-
-            @Override
-            public Void visitArray(ArrayType arrayType, Void v) {
-                return null;
-            }
-
-            @Override
-            public Void visitTypeVariable(TypeVariable typeVariable, Void v) {
-                return null;
-            }
-
-            @Override
-            public Void visitError(ErrorType errorType, Void v) {
-                return null;
-            }
-
-            @Override
-            protected Void defaultAction(TypeMirror typeMirror, Void v) {
-                throw new UnsupportedOperationException();
-            }
-        }, null);
-
-        return result[0];
-    }
-
     private static class Annotations {
-        private Element method;
+        private final Element method;
         private Annotation getAnnotation;
         private Annotation persister;
         private Annotation persisterFile;

@@ -19,3 +19,33 @@ jar {
         include 'META-INF/services/javax.annotation.processing.Processor'
     }
 }
+
+
+// todo clean this up 
+apply plugin: 'checkstyle'
+configurations {
+    checksytleOverride
+}
+
+dependencies {
+    checksytleOverride('com.puppycrawl.tools:checkstyle:7.1.1')
+}
+
+tasks.withType(Checkstyle) {
+    checkstyleClasspath = project.configurations.checksytleOverride
+}
+
+
+task checkstyle(type: Checkstyle) {
+    configFile file("${project.rootDir}/checkstyle-ruleset.xml")
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = true
+    }
+
+    classpath = files()
+}
+//apply from: rootProject.file("gradle/pmd.gradle")
