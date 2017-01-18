@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
 /**
- * a {@link com.nytimes.android.external.store.base.impl.StoreBuilder StoreBuilder}
+ * a  StoreBuilder}
  * will return an instance of a store
  * <p>
  * A {@link Store  Store} can
@@ -23,7 +23,7 @@ public interface Store<T> {
     Observable<T> get(@NotNull BarCode barCode);
 
     /**
-     * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
+     * Return an Observable of T for requested Barcode skipping Memory and Disk Cache
      */
     Observable<T> fetch(@NotNull BarCode barCode);
 

@@ -1,7 +1,5 @@
 package com.nytimes.android.external.store.base.impl;
 
-import android.support.annotation.NonNull;
-
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.BarCode;
 import com.nytimes.android.external.store.base.DiskRead;
@@ -11,6 +9,8 @@ import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopPersister;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +34,17 @@ public class ParsingStoreBuilder<Raw, Parsed> {
 
     }
 
-    @NonNull
-    public ParsingStoreBuilder<Raw, Parsed> fetcher(final @NonNull Fetcher<Raw> fetcher) {
+    @NotNull
+    public ParsingStoreBuilder<Raw, Parsed> fetcher(final @NotNull Fetcher<Raw> fetcher) {
         this.fetcher = fetcher;
         return this;
     }
 
-    @NonNull
+    @NotNull
     public ParsingStoreBuilder<Raw, Parsed> nonObservableFetcher(
-            final @NonNull Func1<BarCode, Raw> fetcher) {
+            final @NotNull Func1<BarCode, Raw> fetcher) {
         this.fetcher = new Fetcher<Raw>() {
-            @NonNull
+            @NotNull
             @Override
             public Observable<Raw> fetch(
                     final BarCode barCode) {
@@ -60,23 +60,23 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         return this;
     }
 
-    @NonNull
-    public ParsingStoreBuilder<Raw, Parsed> persister(final @NonNull Persister<Raw> persister) {
+    @NotNull
+    public ParsingStoreBuilder<Raw, Parsed> persister(final @NotNull Persister<Raw> persister) {
         this.persister = persister;
         return this;
     }
 
-    @NonNull
-    public ParsingStoreBuilder<Raw, Parsed> persister(final @NonNull DiskRead<Raw> diskRead,
-                                                      final @NonNull DiskWrite<Raw> diskWrite) {
+    @NotNull
+    public ParsingStoreBuilder<Raw, Parsed> persister(final @NotNull DiskRead<Raw> diskRead,
+                                                      final @NotNull DiskWrite<Raw> diskWrite) {
         persister = new Persister<Raw>() {
-            @NonNull
+            @NotNull
             @Override
             public Observable<Raw> read(BarCode barCode) {
                 return diskRead.read(barCode);
             }
 
-            @NonNull
+            @NotNull
             @Override
             public Observable<Boolean> write(
                     BarCode barCode, Raw raw) {
@@ -86,40 +86,40 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         return this;
     }
 
-    @NonNull
-    public ParsingStoreBuilder<Raw, Parsed> parser(final @NonNull Func1<Raw, Parsed> parser) {
+    @NotNull
+    public ParsingStoreBuilder<Raw, Parsed> parser(final @NotNull Func1<Raw, Parsed> parser) {
         this.parsers.clear();
         this.parsers.add((Parser<Raw, Parsed>) parser);
         return this;
     }
 
-    @NonNull
-    public ParsingStoreBuilder<Raw, Parsed> parser(final @NonNull Parser<Raw, Parsed> parser) {
+    @NotNull
+    public ParsingStoreBuilder<Raw, Parsed> parser(final @NotNull Parser<Raw, Parsed> parser) {
         this.parsers.clear();
         this.parsers.add(parser);
         return this;
     }
 
-    @NonNull
-    public ParsingStoreBuilder<Raw, Parsed> parsers(final @NonNull List<Parser> parsers) {
+    @NotNull
+    public ParsingStoreBuilder<Raw, Parsed> parsers(final @NotNull List<Parser> parsers) {
         this.parsers.clear();
         this.parsers.addAll(parsers);
         return this;
     }
 
-    @NonNull
+    @NotNull
     public static <Raw, Parsed> ParsingStoreBuilder<Raw, Parsed> builder() {
         return new ParsingStoreBuilder<>();
     }
 
-    @NonNull
+    @NotNull
     public ParsingStoreBuilder<Raw, Parsed> memory(
             Cache<BarCode, Observable<Parsed>> memCache) {
         this.memCache = memCache;
         return this;
     }
 
-    @NonNull
+    @NotNull
     public Store<Parsed> open() {
         if (persister == null) {
             persister = new NoopPersister<>();

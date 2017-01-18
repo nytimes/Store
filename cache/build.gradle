@@ -1,48 +1,17 @@
-apply plugin: 'com.android.library'
-apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'java'
 
 group = GROUP
 version = VERSION_NAME
 
-android {
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
-    defaultConfig {
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
-    }
-
-    buildTypes {
-        debug {
-            minifyEnabled false
-            zipAlignEnabled false
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    lintOptions {
-        abortOnError false
-        disable 'InvalidPackage'
-    }
-}
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-apply from: rootProject.file("gradle/maven-push.gradle")
-//apply from: rootProject.file("gradle/checkstyle.gradle")
 
 dependencies {
-    compile libraries.supportAnnotations
+    compile group: 'com.intellij', name: 'annotations', version: '9.0.4'
 }
+
+
+apply from: rootProject.file("gradle/maven-push.gradle")
+apply from: rootProject.file("gradle/checkstyle.gradle")
+apply from: rootProject.file("gradle/pmd.gradle")

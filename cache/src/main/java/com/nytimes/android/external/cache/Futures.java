@@ -1,8 +1,8 @@
 package com.nytimes.android.external.cache;
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.CancellationException;
@@ -29,25 +29,25 @@ public final class Futures {
     }
 
 
-    @NonNull
+    @NotNull
     public static <V> ListenableFuture<V> immediateFailedFuture(Throwable throwable) {
         Preconditions.checkNotNull(throwable);
         return new Futures.ImmediateFailedFuture(throwable);
     }
 
-    @NonNull
-    public static <I, O> ListenableFuture<O> transform(@NonNull ListenableFuture<I> input, Function<? super I, ? extends O> function) {
+    @NotNull
+    public static <I, O> ListenableFuture<O> transform(@NotNull ListenableFuture<I> input, Function<? super I, ? extends O> function) {
         Preconditions.checkNotNull(function);
         Futures.ChainingFuture output = new Futures.ChainingFuture(input, function);
         input.addListener(output, DirectExecutor.INSTANCE);
         return output;
     }
 
-    public static <V, X extends Exception> V getChecked(@NonNull Future<V> future, Class<X> exceptionClass) throws X {
+    public static <V, X extends Exception> V getChecked(@NotNull Future<V> future, Class<X> exceptionClass) throws X {
         return FuturesGetChecked.getChecked(future, exceptionClass);
     }
 
-    public static <V, X extends Exception> V getChecked(@NonNull Future<V> future, Class<X> exceptionClass, long timeout, @NonNull TimeUnit unit) throws X {
+    public static <V, X extends Exception> V getChecked(@NotNull Future<V> future, Class<X> exceptionClass, long timeout, @NotNull TimeUnit unit) throws X {
         return FuturesGetChecked.getChecked(future, exceptionClass, timeout, unit);
     }
 
@@ -58,7 +58,7 @@ public final class Futures {
             super(inputFuture, function);
         }
 
-        void doTransform(@NonNull Function<? super I, ? extends O> function, I input) {
+        void doTransform(@NotNull Function<? super I, ? extends O> function, I input) {
             this.set(function.apply(input));
         }
     }
@@ -134,7 +134,7 @@ public final class Futures {
             this.thrown = thrown;
         }
 
-        @NonNull
+        @NotNull
         public V get() throws ExecutionException {
             throw new ExecutionException(this.thrown);
         }
@@ -163,7 +163,7 @@ public final class Futures {
         private ImmediateFuture() {
         }
 
-        public void addListener(@NonNull Runnable listener, @NonNull Executor executor) {
+        public void addListener(@NotNull Runnable listener, @NotNull Executor executor) {
             Preconditions.checkNotNull(listener, "Runnable was null.");
             Preconditions.checkNotNull(executor, "Executor was null.");
 
@@ -181,7 +181,7 @@ public final class Futures {
 
         public abstract V get() throws ExecutionException;
 
-        public V get(long timeout, @NonNull TimeUnit unit) throws ExecutionException {
+        public V get(long timeout, @NotNull TimeUnit unit) throws ExecutionException {
             Preconditions.checkNotNull(unit);
             return this.get();
         }

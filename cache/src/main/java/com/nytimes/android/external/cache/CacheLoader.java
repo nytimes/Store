@@ -1,7 +1,8 @@
 package com.nytimes.android.external.cache;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -27,14 +28,14 @@ public abstract class CacheLoader<K, V> {
 
 
   @Nullable
-  public ListenableFuture<V> reload(@NonNull K key, @NonNull V oldValue) throws Exception {
+  public ListenableFuture<V> reload(@NotNull K key, @NotNull V oldValue) throws Exception {
     Preconditions.checkNotNull(key);
     Preconditions.checkNotNull(oldValue);
     return Futures.immediateFuture(load(key));
   }
 
 
-  @NonNull
+  @NotNull
   public Map<K, V> loadAll(Iterable<? extends K> keys) throws Exception {
     // This will be caught by getAll(), causing it to fall back to multiple calls to
     // LoadingCache.get
@@ -49,8 +50,8 @@ public abstract class CacheLoader<K, V> {
    * @param function the function to be used for loading values; must never return {@code null}
    * @return a cache loader that loads values by passing each key to {@code function}
    */
-  @NonNull
-  public static <K, V> CacheLoader<K, V> from(@NonNull Function<K, V> function) {
+  @NotNull
+  public static <K, V> CacheLoader<K, V> from(@NotNull Function<K, V> function) {
     return new FunctionToCacheLoader<K, V>(function);
   }
 
@@ -58,13 +59,13 @@ public abstract class CacheLoader<K, V> {
       extends CacheLoader<K, V> implements Serializable {
     private final Function<K, V> computingFunction;
 
-    public FunctionToCacheLoader(@NonNull Function<K, V> computingFunction) {
+    public FunctionToCacheLoader(@NotNull Function<K, V> computingFunction) {
       this.computingFunction = Preconditions.checkNotNull(computingFunction);
     }
 
     @Nullable
     @Override
-    public V load(@NonNull K key) {
+    public V load(@NotNull K key) {
       return computingFunction.apply(Preconditions.checkNotNull(key));
     }
 
@@ -80,8 +81,8 @@ public abstract class CacheLoader<K, V> {
    * @return a cache loader that loads values by calling {@link Supplier#get}, irrespective of the
    *     key
    */
-  @NonNull
-  public static <V> CacheLoader<Object, V> from(@NonNull Supplier<V> supplier) {
+  @NotNull
+  public static <V> CacheLoader<Object, V> from(@NotNull Supplier<V> supplier) {
     return new SupplierToCacheLoader<V>(supplier);
   }
 
@@ -90,13 +91,13 @@ public abstract class CacheLoader<K, V> {
       extends CacheLoader<Object, V> implements Serializable {
     private final Supplier<V> computingSupplier;
 
-    public SupplierToCacheLoader(@NonNull Supplier<V> computingSupplier) {
+    public SupplierToCacheLoader(@NotNull Supplier<V> computingSupplier) {
       this.computingSupplier = Preconditions.checkNotNull(computingSupplier);
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public V load(@NonNull Object key) {
+    public V load(@NotNull Object key) {
       Preconditions.checkNotNull(key);
       return computingSupplier.get();
     }

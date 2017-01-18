@@ -1,5 +1,4 @@
-apply plugin: 'com.android.library'
-apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'java'
 
 group = GROUP
 version = VERSION_NAME
@@ -8,37 +7,11 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 
-android {
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
-
-    defaultConfig {
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
-    }
-
-    buildTypes {
-        debug {
-            minifyEnabled false
-            zipAlignEnabled false
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    lintOptions {
-        abortOnError false
-        disable 'InvalidPackage'
-    }
-}
-
 dependencies {
     compile project(path: ':cache')
     compile project(path: ':store-base')
     compile libraries.rxJava
-    compile libraries.supportAnnotations
+    compile group: 'com.intellij', name: 'annotations', version: '9.0.4'
 
     testCompile libraries.mockito
     testCompile libraries.assertJ
@@ -46,16 +19,6 @@ dependencies {
     testCompile libraries.robolectric
 }
 
-
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-}
 apply from: rootProject.file("gradle/maven-push.gradle")
 apply from: rootProject.file("gradle/checkstyle.gradle")
 apply from: rootProject.file("gradle/pmd.gradle")

@@ -1,7 +1,5 @@
 package com.nytimes.android.external.store.base.impl;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
@@ -10,6 +8,9 @@ import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
@@ -81,7 +82,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @param barCode
      * @return an observable from the first data source that is available
      */
-    public Observable<Parsed> get(@NonNull final BarCode barCode) {
+    public Observable<Parsed> get(@NotNull final BarCode barCode) {
         return Observable.concat(
                 cache(barCode),
                 fetch(barCode)
@@ -91,10 +92,10 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     /**
      * @return data from memory
      */
-    private Observable<Parsed> cache(@NonNull final BarCode barCode) {
+    private Observable<Parsed> cache(@NotNull final BarCode barCode) {
         try {
             return memCache.get(barCode, new Callable<Observable<Parsed>>() {
-                @NonNull
+                @NotNull
                 @Override
                 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
                 public Observable<Parsed> call() throws Exception {
@@ -109,7 +110,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
 
     @Override
-    public Observable<Parsed> memory(@NonNull BarCode barCode) {
+    public Observable<Parsed> memory(@NotNull BarCode barCode) {
         Observable<Parsed> cachedValue = memCache.getIfPresent(barCode);
         return cachedValue == null ? Observable.<Parsed>empty() : cachedValue;
     }
@@ -121,7 +122,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @param barCode
      * @return
      */
-    public Observable<Parsed> disk(@NonNull final BarCode barCode) {
+    public Observable<Parsed> disk(@NotNull final BarCode barCode) {
         return persister().read(barCode)
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
                 .map(parser)
@@ -139,7 +140,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return data from fetch and store it in memory and persister
      */
-    public Observable<Parsed> fetch(@NonNull final BarCode barCode) {
+    public Observable<Parsed> fetch(@NotNull final BarCode barCode) {
         return Observable.defer(new Func0<Observable<Parsed>>() {
             @Nullable
             @Override
@@ -160,10 +161,10 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @return observable that emits a {@link Parsed} value
      */
     @Nullable
-    Observable<Parsed> fetchAndPersist(@NonNull final BarCode barCode) {
+    Observable<Parsed> fetchAndPersist(@NotNull final BarCode barCode) {
         try {
             return inFlightRequests.get(barCode, new Callable<Observable<Parsed>>() {
-                @NonNull
+                @NotNull
                 @Override
                 public Observable<Parsed> call() {
                     return response(barCode);
@@ -174,8 +175,8 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         }
     }
 
-    @NonNull
-    Observable<Parsed> response(@NonNull final BarCode barCode) {
+    @NotNull
+    Observable<Parsed> response(@NotNull final BarCode barCode) {
         return fetcher()
                 .fetch(barCode)
                 .flatMap(new Func1<Raw, Observable<Parsed>>() {
@@ -184,7 +185,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                         //Log.i(TAG,"writing and then reading from Persister");
                         return persister().write(barCode, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
-                                    @NonNull
+                                    @NotNull
                                     @Override
                                     public Observable<Parsed> call(Boolean aBoolean) {
                                         return disk(barCode);
@@ -216,7 +217,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return
      */
-    public Observable<Parsed> stream(@NonNull BarCode id) {
+    public Observable<Parsed> stream(@NotNull BarCode id) {
 
         Observable<Parsed> stream = subject.asObservable();
 
@@ -234,7 +235,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @param barCode
      * @param data
      */
-    void updateMemory(@NonNull final BarCode barCode, final Parsed data) {
+    void updateMemory(@NotNull final BarCode barCode, final Parsed data) {
         memCache.put(barCode, Observable.just(data));
     }
 
@@ -247,7 +248,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @param barCode of data to clear
      */
-    public void clearMemory(@NonNull final BarCode barCode) {
+    public void clearMemory(@NotNull final BarCode barCode) {
         memCache.invalidate(barCode);
     }
 
