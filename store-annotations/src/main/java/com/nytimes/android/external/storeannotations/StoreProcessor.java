@@ -5,8 +5,6 @@ import com.nytimes.android.external.store.base.annotation.BuildStore;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -14,26 +12,24 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 @SupportedAnnotationTypes("com.nytimes.android.external.store.base.annotation.BuildStore")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class StoreProcessor extends AbstractProcessor {
 
-    private Types typeUtils;
-    private Elements elementUtils;
-    private Filer filer;
-    private Messager messager;
+    //private Types typeUtils;
+    //private Elements elementUtils;
+    //private Filer filer;
+    //private Messager messager;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        typeUtils = processingEnv.getTypeUtils();
-        elementUtils = processingEnv.getElementUtils();
-        filer = processingEnv.getFiler();
-        messager = processingEnv.getMessager();
+        //typeUtils = processingEnv.getTypeUtils();
+        //elementUtils = processingEnv.getElementUtils();
+        //filer = processingEnv.getFiler();
+        //messager = processingEnv.getMessager();
     }
 
     @Override
@@ -45,9 +41,9 @@ public class StoreProcessor extends AbstractProcessor {
             TypeElement typeElement = (TypeElement) annotatedElement;
 
             try {
-                new Generator(typeElement, processingEnv).generateFiles(); // throws IllegalArgumentException
-            } catch (IllegalArgumentException e) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "FOO error:" + e.getMessage());
+                new Generator(typeElement, processingEnv).generateFiles();
+            } catch (IllegalArgumentException exception) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "error:" + exception.getMessage());
                 return true;
             }
             return false;

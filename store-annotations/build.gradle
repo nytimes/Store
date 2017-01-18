@@ -1,12 +1,11 @@
 apply plugin: 'java'
-final RETROFIT_VERSION = '2.0.0-beta3'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile libraries.slf4jTesting
     compile libraries.dagger
-    compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
-    compile 'com.squareup:javapoet:1.8.0'
+    compile libraries.retrofit
+    compile libraries.javapoet
     compile project(path: ':store-base')
 }
 
