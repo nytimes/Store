@@ -37,4 +37,29 @@ public final class BarCode implements Serializable {
     public static BarCode empty() {
         return new BarCode("", "");
     }
+
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof BarCode)) {
+            return false;
+        }
+        BarCode barCode = (BarCode) object;
+
+        if (!key.equals(barCode.key)) {
+            return false;
+        }
+        if (!type.equals(barCode.type)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result = key.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
+    }
 }
