@@ -54,9 +54,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 //    compile project(path: ':store')
 //    compile project(path: ':cache')
-    compile 'com.nytimes.android:store:1.0.2'
-    compile 'com.nytimes.android:middleware:1.0.2'
-    compile 'com.nytimes.android:filesystem:1.0.2'
+    compile 'com.nytimes.android:store:1.0.3'
+    compile 'com.nytimes.android:middleware:1.0.3'
+    compile 'com.nytimes.android:filesystem:1.0.3'
     retrolambdaConfig libraries.retrolambda
     compile libraries.rxAndroid
 

@@ -1,5 +1,7 @@
 package com.nytimes.android.external.store;
 
+import com.nytimes.android.external.cache.Cache;
+import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
@@ -13,6 +15,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +29,7 @@ public class StoreTest {
 
     private static final String DISK = "disk";
     private static final String NETWORK = "fetch";
+    private static final String MEMORY = "memory";
 
     @Mock
     Fetcher<String> fetcher;
@@ -110,4 +115,19 @@ public class StoreTest {
         assertThat(value).isEqualTo(NETWORK);
     }
 
+
+    @Test
+    public void testEquivalence() {
+        Cache<BarCode, String> cache = CacheBuilder.newBuilder()
+                .maximumSize(1)
+                .expireAfterAccess(Long.MAX_VALUE, TimeUnit.SECONDS)
+                .build();
+
+        cache.put(barCode, MEMORY);
+        String value = cache.getIfPresent(barCode);
+        assertThat(value).isEqualTo(MEMORY);
+
+        value = cache.getIfPresent(new BarCode(barCode.getType(), barCode.getKey()));
+        assertThat(value).isEqualTo(MEMORY);
+    }
 }

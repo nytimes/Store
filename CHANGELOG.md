@@ -1,7 +1,11 @@
 Change Log
 ==========
 
-Version 1.0.3 *(2017-01-10)*
+Version 1.0.4 *(2017-01-19/)*
+----------------------------
+* Bug Fix: Fix memory caching issue with Equivalence.Equals (#70)
+
+Version 1.0.3 *(2017-01-17)*
 ----------------------------
 * New Feature: Multi Parser (#61)   - You can now pass in a list of Parsers and do multi Parsing steps
 * New Feature: Jackson Middleware (#60)

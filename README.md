@@ -256,37 +256,37 @@ public class SampleStore extends RealStore<String> {
 
 ### Artifacts
 Note: Release is in Sync with current state of master (not develop) branch
-
+CurrentVersion = 1.0.3
 Since this is android, we have split Store into 4 artifacts:
 + **Cache** Cache extracted from Guava (~200 methods) 
 
 	```groovy
-	compile 'com.nytimes.android:cache:1.0.3'
+	compile 'com.nytimes.android:cache:CurrentVersion'
 	```
 + **Store** This contains only Store classes and has a dependecy on RxJava + the above cache.  
 
 	```groovy
-	compile 'com.nytimes.android:store:1.0.3'
+	compile 'com.nytimes.android:store:CurrentVersion'
 	```
 + **Middleware** Sample gson parsers, (feel free to create more and open PRs) 
 
-	```groovy
-	compile 'com.nytimes.android:middleware:1.0.3'
-	```
-	+ **Middleware-Jackson** Sample gson parsers, (feel free to create more and open PRs)
+    ```groovy
+    compile 'com.nytimes.android:middleware:CurrentVersion'
+    ```
++ **Middleware-Jackson** Sample gson parsers, (feel free to create more and open PRs)
 
     ```groovy
-    compile 'com.nytimes.android:middleware:-jackson1.0.3'
+    compile 'com.nytimes.android:middleware:-jackson:CurrentVersion'
     ```
-    + **Middleware-Moshi** Sample gson parsers, (feel free to create more and open PRs)
++ **Middleware-Moshi** Sample gson parsers, (feel free to create more and open PRs)
 
-        ```groovy
-        compile 'com.nytimes.android:middleware-moshi:1.0.3'
-        ```
+    ```groovy
+    compile 'com.nytimes.android:middleware-moshi:CurrentVersion'
+    ```
 + **File System** Persistence Library built using OKIO Source/Sink + Middleware for streaming from Network to FileSystem 
 
 	```groovy
-	compile 'com.nytimes.android:filesystem:1.0.3'
+	compile 'com.nytimes.android:filesystem:CurrentVersion'
 	```
 
 
