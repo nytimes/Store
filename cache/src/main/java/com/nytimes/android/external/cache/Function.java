@@ -11,5 +11,6 @@ public interface Function<F, T> {
     @Nullable
     T apply(F var1);
 
+    @Override
     boolean equals(Object var1);
 }

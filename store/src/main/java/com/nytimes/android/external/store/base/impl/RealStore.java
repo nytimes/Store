@@ -53,7 +53,7 @@ public class RealStore<Parsed> implements Store<Parsed> {
     }
 
 
-    @Override
+    @NonNull @Override
     public Observable<Parsed> get(@NonNull final BarCode barCode) {
         return internalStore.get(barCode);
     }
@@ -64,17 +64,18 @@ public class RealStore<Parsed> implements Store<Parsed> {
      *
      * @return data from fetch and store it in memory and persister
      */
-    @Override
+    @NonNull @Override
     public Observable<Parsed> fetch(@NonNull final BarCode barCode) {
         return internalStore.fetch(barCode);
     }
 
-    @Override
+    @NonNull @Override
     public Observable<Parsed> stream() {
         return internalStore.stream();
     }
 
-    @Override public Observable<Parsed> stream(BarCode id) {
+    @NonNull @Override
+    public Observable<Parsed> stream(BarCode id) {
         return internalStore.stream(id);
     }
 

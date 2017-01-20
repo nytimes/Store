@@ -58,6 +58,7 @@ public final class Futures {
             super(inputFuture, function);
         }
 
+        @Override
         void doTransform(@NonNull Function<? super I, ? extends O> function, I input) {
             this.set(function.apply(input));
         }
@@ -119,6 +120,7 @@ public final class Futures {
         abstract void doTransform(F function, I result) throws Exception;
 
 
+        @Override
         final void done() {
             this.maybePropagateCancellation(this.inputFuture);
             this.inputFuture = null;
@@ -134,7 +136,7 @@ public final class Futures {
             this.thrown = thrown;
         }
 
-        @NonNull
+        @Override @NonNull
         public V get() throws ExecutionException {
             throw new ExecutionException(this.thrown);
         }
@@ -152,6 +154,7 @@ public final class Futures {
             this.value = value;
         }
 
+        @Override
         public V get() {
             return this.value;
         }
@@ -163,6 +166,7 @@ public final class Futures {
         private ImmediateFuture() {
         }
 
+        @Override
         public void addListener(@NonNull Runnable listener, @NonNull Executor executor) {
             Preconditions.checkNotNull(listener, "Runnable was null.");
             Preconditions.checkNotNull(executor, "Executor was null.");
@@ -175,21 +179,26 @@ public final class Futures {
 
         }
 
+        @Override
         public boolean cancel(boolean mayInterruptIfRunning) {
             return false;
         }
 
+        @Override
         public abstract V get() throws ExecutionException;
 
+        @Override
         public V get(long timeout, @NonNull TimeUnit unit) throws ExecutionException {
             Preconditions.checkNotNull(unit);
             return this.get();
         }
 
+        @Override
         public boolean isCancelled() {
             return false;
         }
 
+        @Override
         public boolean isDone() {
             return true;
         }

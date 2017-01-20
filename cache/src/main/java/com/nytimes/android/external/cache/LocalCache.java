@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import com.nytimes.android.external.cache.CacheLoader.InvalidCacheLoadException;
 import com.nytimes.android.external.cache.CacheLoader.UnsupportedLoadingOperationException;
 
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -4754,6 +4753,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
             return delegate;
         }
 
+        @Override
         protected Cache<K, V> delegate() {
             return delegate;
         }

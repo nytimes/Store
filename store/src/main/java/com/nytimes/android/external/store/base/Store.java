@@ -22,16 +22,19 @@ public interface Store<T> {
      * Data will be returned from oldest non expired source
      * Sources are Memory Cache, Disk Cache, Inflight, Network Response
      */
+    @NonNull
     Observable<T> get(@NonNull BarCode barCode);
 
     /**
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
      */
+    @NonNull
     Observable<T> fetch(@NonNull BarCode barCode);
 
     /**
      * @return an Observable that emits new items when they arrive.
      */
+    @NonNull
     Observable<T> stream();
 
     /**
@@ -43,6 +46,7 @@ public interface Store<T> {
      * use {@code store.stream().startWith(store.get(barcode))}
      */
     @Deprecated
+    @NonNull
     Observable<T> stream(BarCode id);
 
     /**
