@@ -21,10 +21,10 @@ public final class Futures {
     @Nullable
     public static <V> ListenableFuture<V> immediateFuture(@Nullable V value) {
         if (value == null) {
-            Futures.ImmediateSuccessfulFuture typedNull = Futures.ImmediateSuccessfulFuture.NULL;
-            return typedNull;
+            //noinspection unchecked safe because of erasure
+            return (ListenableFuture<V>) ImmediateSuccessfulFuture.NULL;
         } else {
-            return new Futures.ImmediateSuccessfulFuture(value);
+            return new Futures.ImmediateSuccessfulFuture<>(value);
         }
     }
 
@@ -32,13 +32,13 @@ public final class Futures {
     @NonNull
     public static <V> ListenableFuture<V> immediateFailedFuture(Throwable throwable) {
         Preconditions.checkNotNull(throwable);
-        return new Futures.ImmediateFailedFuture(throwable);
+        return new Futures.ImmediateFailedFuture<>(throwable);
     }
 
     @NonNull
     public static <I, O> ListenableFuture<O> transform(@NonNull ListenableFuture<I> input, Function<? super I, ? extends O> function) {
         Preconditions.checkNotNull(function);
-        Futures.ChainingFuture output = new Futures.ChainingFuture(input, function);
+        Futures.ChainingFuture<I,O> output = new Futures.ChainingFuture<>(input, function);
         input.addListener(output, DirectExecutor.INSTANCE);
         return output;
     }
@@ -145,7 +145,7 @@ public final class Futures {
 
     private static class ImmediateSuccessfulFuture<V> extends Futures.ImmediateFuture<V> {
         @Nullable
-        static final Futures.ImmediateSuccessfulFuture<Object> NULL = new Futures.ImmediateSuccessfulFuture((Object) null);
+        static final Futures.ImmediateSuccessfulFuture<Object> NULL = new Futures.ImmediateSuccessfulFuture<>(null);
 
         private final V value;
 
