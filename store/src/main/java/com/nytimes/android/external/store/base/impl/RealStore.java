@@ -70,7 +70,11 @@ public class RealStore<Parsed> implements Store<Parsed> {
     }
 
     @Override
-    public Observable<Parsed> stream(BarCode id) {
+    public Observable<Parsed> stream() {
+        return internalStore.stream();
+    }
+
+    @Override public Observable<Parsed> stream(BarCode id) {
         return internalStore.stream(id);
     }
 

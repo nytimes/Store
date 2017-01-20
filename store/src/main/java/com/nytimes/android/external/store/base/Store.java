@@ -16,6 +16,7 @@ import rx.Observable;
  * (skipping cache)
  */
 public interface Store<T> {
+
     /**
      * Return an Observable of T for request Barcode
      * Data will be returned from oldest non expired source
@@ -29,10 +30,19 @@ public interface Store<T> {
     Observable<T> fetch(@NonNull BarCode barCode);
 
     /**
+     * @return an Observable that emits new items when they arrive.
+     */
+    Observable<T> stream();
+
+    /**
      * Similar to  {@link com.nytimes.android.external.store.base.Store#get(BarCode) Store.get() }
      * Rather than returning a single response, Stream will stay subscribed for future emissions to the Store
      * NOTE: Stream will continue to get emissions for ANY barcode not just starting one
+     *
+     * @deprecated Use {@link Store#stream()}. If you need to start with the first value,
+     * use {@code store.stream().startWith(store.get(barcode))}
      */
+    @Deprecated
     Observable<T> stream(BarCode id);
 
     /**

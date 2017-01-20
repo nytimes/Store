@@ -227,6 +227,10 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         return stream;
     }
 
+    public Observable<Parsed> stream() {
+        return subject.asObservable();
+    }
+
     /**
      * Only update memory after persister has been successfully update
      *
