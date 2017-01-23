@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.functions.Func2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
@@ -68,6 +69,41 @@ public class StoreTest {
         assertThat(value).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
+
+
+    @Test
+    public void testDoubleTap() {
+
+        Store<String> simpleStore = new StoreBuilder<String>()
+                .persister(persister)
+                .fetcher(fetcher)
+                .open();
+
+
+        when(fetcher.fetch(barCode))
+                .thenReturn(Observable.just(NETWORK));
+
+        when(persister.read(barCode))
+                .thenReturn(Observable.<String>empty())
+                .thenReturn(Observable.just(DISK));
+
+        when(persister.write(barCode, NETWORK))
+                .thenReturn(Observable.just(true));
+
+        String value = simpleStore.get(barCode).toBlocking().first();
+
+        assertThat(value).isEqualTo(DISK);
+        value = simpleStore.get(barCode).zipWith(simpleStore.get(barCode), new Func2<String, String, String>() {
+            @Override
+            public String call(String s, String s2) {
+                return "hello";
+            }
+        }).toBlocking().first();
+        assertThat(value).isEqualTo("hello");
+        verify(fetcher, times(1)).fetch(barCode);
+    }
+
+
     @Test
     public void testSubclass() {
 
