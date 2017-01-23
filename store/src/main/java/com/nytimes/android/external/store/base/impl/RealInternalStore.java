@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
@@ -198,7 +199,14 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                     public void call(Parsed data) {
                         notifySubscribers(data);
                     }
-                }).cache();
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        inFlightRequests.invalidate(barCode);
+                    }
+                })
+                .cache();
     }
 
     void notifySubscribers(Parsed data) {
