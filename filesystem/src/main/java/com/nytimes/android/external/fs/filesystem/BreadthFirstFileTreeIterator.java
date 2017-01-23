@@ -63,6 +63,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @return True if the iteration has more elements
      */
 
+    @Override
     public boolean hasNext() {
         return !endOfTree && getNextFile() != null;
     }
@@ -73,6 +74,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @return The next element in the iteration
      */
 
+    @Override
     @Nullable
     public Object next() {
         if (endOfTree) {
@@ -97,6 +99,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @throws UnsupportedOperationException
      */
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }

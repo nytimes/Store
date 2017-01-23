@@ -98,7 +98,7 @@ Calls to both `fetch()` and `get()` emit one value and then call `onCompleted()`
 
 
 ### Stream
-You may also call `store.stream(barCode)` which returns an Observable emitting the response for your BarCode and then stays subscribed to receive any new items emitted for any calls to that store (for any BarCode). Think of stream as an Event Bus-like feature that allows you to know when any new network hits happen for a particular store. You can leverage the Rx operator `filter()` to only subscribe to a subset of emissions.
+You may also call `store.stream()` which returns an Observable that emits each time a new item was added to the store. Think of stream as an Event Bus-like feature that allows you to know when any new network hits happen for a particular store. You can leverage the Rx operator `filter()` to only subscribe to a subset of emissions.
 
 
 ### Inflight Debouncer
@@ -256,7 +256,7 @@ public class SampleStore extends RealStore<String> {
 
 ### Artifacts
 Note: Release is in Sync with current state of master (not develop) branch
-CurrentVersion = 1.0.3
+CurrentVersion = 1.0.6
 Since this is android, we have split Store into 4 artifacts:
 + **Cache** Cache extracted from Guava (~200 methods) 
 

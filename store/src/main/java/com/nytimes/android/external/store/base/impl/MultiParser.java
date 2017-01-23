@@ -9,11 +9,11 @@ import java.util.List;
 import static com.nytimes.android.external.cache.Preconditions.checkArgument;
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
-class MultiParser<Raw, Parsed> implements Parser<Raw, Parsed> {
+public class MultiParser<Raw, Parsed> implements Parser<Raw, Parsed> {
 
     private final List<Parser> parsers = new ArrayList<>();
 
-    MultiParser(List<Parser> parsers) {
+    public MultiParser(List<Parser> parsers) {
         checkNotNull(parsers, "Parsers can't be null.");
         checkArgument(!parsers.isEmpty(), "Parsers can't be empty.");
         for (Parser parser : parsers) {

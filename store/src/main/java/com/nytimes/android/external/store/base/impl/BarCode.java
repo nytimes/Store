@@ -38,6 +38,7 @@ public final class BarCode implements Serializable {
         return new BarCode("", "");
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) {
             return true;
@@ -57,6 +58,7 @@ public final class BarCode implements Serializable {
         return true;
     }
 
+    @Override
     public int hashCode() {
         int result = key.hashCode();
         result = 31 * result + type.hashCode();
