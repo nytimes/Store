@@ -11,7 +11,9 @@ Version 1.0.6 *(2017-01-23/)*
     2 Deprecated old stream(barcode) and added migration helping in the documentation
 
 
-Version 1.0.5 *DOES NOT EXIST* (We screwed up deployment)
+Version 1.0.5 *DOES NOT EXIST* 
+----------------------------
+*(We screwed up deployment)
 
 Version 1.0.4 *(2017-01-19/)*
 ----------------------------
