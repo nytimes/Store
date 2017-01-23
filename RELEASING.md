@@ -11,6 +11,6 @@ Releasing
  8. Update the top level `build.gradle` to the next SNAPSHOT version.
  9. `git commit -am "Prepare next development version."`
  10. `git push && git push --tags`
- 11. Update the two sample modules to point to the newly released version.
+ 11. Update the sample module to point to the newly released version. (May take 2 hours)
 
 If step 5 or 6 fails, drop the Sonatype repo, fix the problem, commit, and start again at step 5.
