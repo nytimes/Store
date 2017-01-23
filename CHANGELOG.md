@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+
+Version 1.0.6 *(2017-01-23/)*
+----------------------------
+* Bug Fix: fix race condition of 2 fetch requests too quickly (#74)
+* Bug Fix: Expose MultiParser as Public
+* API Change: Clarifying Store.stream (#73)
+    1 Added the stream() method
+    2 Deprecated old stream(barcode) and added migration helping in the documentation
+
+
+Version 1.0.5 *DOES NOT EXIST* (We screwed up deployment)
+
 Version 1.0.4 *(2017-01-19/)*
 ----------------------------
 * Bug Fix: Fix memory caching issue with Equivalence.Equals (#70)
