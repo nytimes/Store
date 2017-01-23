@@ -16,8 +16,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import rx.Emitter;
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
@@ -36,6 +40,7 @@ public class StoreTest {
     @Mock
     Persister<String> persister;
     private final BarCode barCode = new BarCode("key", "value");
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     @Before
     public void setUp() {
@@ -68,6 +73,53 @@ public class StoreTest {
         assertThat(value).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
+
+
+    @Test
+    public void testDoubleTap() {
+
+        Store<String> simpleStore = new StoreBuilder<String>()
+                .persister(persister)
+                .fetcher(fetcher)
+                .open();
+
+        Observable<String> networkObservable =
+                Observable.fromEmitter(new Action1<Emitter<String>>() {
+                    @Override
+                    public void call(Emitter<String> emitter) {
+                        if (counter.incrementAndGet() == 1) {
+                            emitter.onNext(NETWORK);
+
+                        } else {
+                            emitter.onError(new RuntimeException("Yo Dawg your inflight is broken"));
+                        }
+                    }
+                }, Emitter.BackpressureMode.NONE);
+        when(fetcher.fetch(barCode))
+                .thenReturn(networkObservable);
+
+        when(persister.read(barCode))
+                .thenReturn(Observable.<String>empty())
+                .thenReturn(Observable.just(DISK));
+
+        when(persister.write(barCode, NETWORK))
+                .thenReturn(Observable.just(true));
+
+
+        String response = simpleStore.get(barCode).zipWith(simpleStore.get(barCode),
+                new Func2<String, String, String>() {
+                    @Override
+                    public String call(String s, String s2) {
+                        return "hello";
+                    }
+                })
+                .toBlocking()
+                .first();
+        assertThat(response).isEqualTo("hello");
+        verify(fetcher, times(1)).fetch(barCode);
+    }
+
+
     @Test
     public void testSubclass() {
 
@@ -96,6 +148,7 @@ public class StoreTest {
         NoopPersister<String> persister = spy(new NoopPersister<String>());
         Store<String> simpleStore = new RealStore<>(fetcher, persister);
         simpleStore.clearMemory();
+
 
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));

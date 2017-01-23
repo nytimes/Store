@@ -80,7 +80,8 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @param barCode
      * @return an observable from the first data source that is available
      */
-    @NonNull @Override
+    @NonNull
+    @Override
     public Observable<Parsed> get(@NonNull final BarCode barCode) {
         return Observable.concat(
                 cache(barCode),
@@ -140,7 +141,8 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return data from fetch and store it in memory and persister
      */
-    @NonNull @Override
+    @NonNull
+    @Override
     public Observable<Parsed> fetch(@NonNull final BarCode barCode) {
         return Observable.defer(new Func0<Observable<Parsed>>() {
             @Nullable
@@ -205,7 +207,8 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                     public void call() {
                         inFlightRequests.invalidate(barCode);
                     }
-                });
+                })
+                .cache();
     }
 
     void notifySubscribers(Parsed data) {
@@ -218,7 +221,8 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return
      */
-    @NonNull @Override
+    @NonNull
+    @Override
     public Observable<Parsed> stream(@NonNull BarCode id) {
 
         Observable<Parsed> stream = subject.asObservable();
@@ -231,7 +235,8 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         return stream;
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public Observable<Parsed> stream() {
         return subject.asObservable();
     }
