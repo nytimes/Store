@@ -29,7 +29,7 @@ public class SourcePersister implements Persister<BufferedSource> {
 
     @Inject
     public SourcePersister(FileSystem fileSystem) {
-        this.sourceFileReader = new SourceFileReader(fileSystem);
+        sourceFileReader = new SourceFileReader(fileSystem);
         sourceFileWriter = new SourceFileWriter(fileSystem);
     }
 

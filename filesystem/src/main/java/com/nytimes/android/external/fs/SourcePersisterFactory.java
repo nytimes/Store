@@ -2,6 +2,7 @@ package com.nytimes.android.external.fs;
 
 import android.support.annotation.NonNull;
 
+import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 import com.nytimes.android.external.store.base.Persister;
 
@@ -30,5 +31,19 @@ public final class SourcePersisterFactory {
             throw new IllegalArgumentException("root file cannot be null.");
         }
         return new SourcePersister(FileSystemFactory.create(root));
+    }
+
+    /**
+     * Returns a new {@link BufferedSource} persister with the provided fileSystem as the root of the
+     * persistence {@link com.nytimes.android.external.fs.filesystem.FileSystem}.
+     *
+     * @throws IOException
+     */
+    @NonNull
+    public static Persister<BufferedSource> create(@NonNull FileSystem fileSystem) throws IOException {
+        if (fileSystem == null) {
+            throw new IllegalArgumentException("fileSystem cannot be null.");
+        }
+        return new SourcePersister(fileSystem);
     }
 }
