@@ -22,6 +22,7 @@ buildscript {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+        classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
     }
 
     // this corresponds to the lombok.ast included above. fixes lint for retro-lambda
@@ -81,6 +82,11 @@ subprojects {
         } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
             project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
         }
+    }
+    project.plugins.apply('net.ltgt.errorprone')
+
+    configurations.errorprone {
+        resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.15'
     }
 }
 
