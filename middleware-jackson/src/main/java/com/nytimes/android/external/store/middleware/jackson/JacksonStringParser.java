@@ -18,7 +18,6 @@ public class JacksonStringParser<Parsed> implements Parser<String, Parsed> {
     private final ObjectMapper objectMapper;
     private final JavaType parsedType;
 
-    @Inject
     public JacksonStringParser(@NonNull JsonFactory jsonFactory, @NonNull Type type) {
         objectMapper = new ObjectMapper(jsonFactory);
         parsedType = objectMapper.constructType(type);

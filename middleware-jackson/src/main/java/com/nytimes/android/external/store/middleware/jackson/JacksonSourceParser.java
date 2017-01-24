@@ -21,7 +21,6 @@ public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parse
     private final ObjectMapper objectMapper;
     private final JavaType parsedType;
 
-    @Inject
     public JacksonSourceParser(@NonNull JsonFactory jsonFactory, @NonNull Type type) {
         objectMapper = new ObjectMapper(jsonFactory);
         parsedType = objectMapper.constructType(type);
