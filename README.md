@@ -257,6 +257,7 @@ public class SampleStore extends RealStore<String> {
 ### Artifacts
 Note: Release is in Sync with current state of master (not develop) branch
 CurrentVersion = 1.0.6
+
 Since this is android, we have split Store into 4 artifacts:
 + **Cache** Cache extracted from Guava (~200 methods) 
 
