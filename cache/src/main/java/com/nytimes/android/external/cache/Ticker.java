@@ -16,7 +16,8 @@
 
 package com.nytimes.android.external.cache;
 
-import android.support.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Ticker {
   /**
@@ -35,7 +36,7 @@ public abstract class Ticker {
    *
    * @since 10.0
    */
-  @NonNull
+  @NotNull
   public static Ticker systemTicker() {
     return SYSTEM_TICKER;
   }
