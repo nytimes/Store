@@ -4817,7 +4817,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
         final LocalCache<K, V> localCache;
 
         LocalManualCache(@NotNull CacheBuilder<? super K, ? super V> builder) {
-            this(new LocalCache<>(builder, null));
+            this(new LocalCache(builder, null));
         }
 
         private LocalManualCache(LocalCache<K, V> localCache) {

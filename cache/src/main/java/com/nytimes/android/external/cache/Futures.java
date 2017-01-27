@@ -38,7 +38,7 @@ public final class Futures {
     @NotNull
     public static <I, O> ListenableFuture<O> transform(@NotNull ListenableFuture<I> input, Function<? super I, ? extends O> function) {
         Preconditions.checkNotNull(function);
-        Futures.ChainingFuture<I,O> output = new Futures.ChainingFuture<>(input, function);
+        Futures.ChainingFuture<I,O> output = new Futures.ChainingFuture(input, function);
         input.addListener(output, DirectExecutor.INSTANCE);
         return output;
     }
