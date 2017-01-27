@@ -24,7 +24,7 @@ Store leverages RxJava and multiple request throttling to prevent excessive call
 ### Fully Configured Store
 Let's start by looking at what a fully configured store looks like, we will then walk through simpler examples building up functionality:
 ```java
-Store<Foo> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
+Store<Foo> store = ParsingStoreBuilder.<BufferedSource, String>builder()
                .fetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
                .persister(SourcePersisterFactory.create(context.getFilesDir())
                .parser(GsonParserFactory.createSourceParser(gson, Foo.class))
@@ -46,12 +46,12 @@ Create a store using a builder, the only requirement is to include a `.fetcher()
 
 
 ``` java
-Store<Article> ArticleStore = StoreBuilder.<String>builder()
+Store<Article> articleStore = StoreBuilder.<String>builder()
                .nonObservableFetcher(barCode -> api.getArticle(barcode.getKey()))
                .open();
 
 
-Store<Article> ArticleStore = StoreBuilder.<String>builder()
+Store<Article> articleStore = StoreBuilder.<String>builder()
                .fetcher(barCode -> retrofitApi.getArticleObservable(barcode.getKey()))
                .open();
 ```
@@ -111,7 +111,7 @@ There is an inflight debouncer as well to prevent duplicative requests for the s
 Since it is rare that data comes from the network in the format that your views need, Stores can delegate to a parser. by using a `ParsingStoreBuilder<T,V>` rather than a `StoreBuilder<T>.` ParsingStoreBuilder has an additional method `parser()` which can take a Parser<Raw, Parsed>
 
 ```java
-Store<Article> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
+Store<Article> store = ParsingStoreBuilder.<BufferedSource, String>builder()
         .nonObservableFetcher(barCode -> source)  //OkHttp responseBody.source()
         .parser(source -> {
           try (InputStreamReader reader = new InputStreamReader(source.inputStream())) {
@@ -140,7 +140,7 @@ These can be accessed via a Factory class (GsonParserFactory).
 
 Our example can now be rewritten as:
 ```java
-Store<Article> Store = ParsingStoreBuilder.<BufferedSource, Article>builder()
+Store<Article> store = ParsingStoreBuilder.<BufferedSource, Article>builder()
                 .nonObservableFetcher(this::getResponse)
                 .parser(GsonParserFactory.createSourceParser(gson, Article.class))
                 .open();
@@ -148,7 +148,7 @@ Store<Article> Store = ParsingStoreBuilder.<BufferedSource, Article>builder()
 
 In some cases you may need to parse a top level JSONArray, in which case you can provide a TypeToken.
 ```java
-Store<List<Article>> Store = ParsingStoreBuilder.<BufferedSource, List<Article>>builder()
+Store<List<Article>> store = ParsingStoreBuilder.<BufferedSource, List<Article>>builder()
                 .nonObservableFetcher(this::getResponse)
                 .parser(GsonParserFactory.createSourceParser(gson, new TypeToken<List<Article>>() {}))
                 .open();
@@ -167,7 +167,7 @@ Now our data flow looks like:
  Ideally, data will be streamed from network to disk using either a BufferedSource or Reader as your network raw type (rather than String).
 
 ```java
-Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
+Store<String> store = ParsingStoreBuilder.<BufferedSource, String>builder()
            .nonObservableFetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
            .persister(new Persister<BufferedSource>() {
              @Override
@@ -202,7 +202,7 @@ If using SQLite we recommend working with SqlBrite. If you are not using SqlBrit
 We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included a seperate lib with a reactive FileSystem which depends on Okio BufferedSources. We have also included a SourcePersister which will give you disk caching and works beautifully with GsonSourceParser. Now we are back to our first example:
 
 ```java
-Store<String> Store = ParsingStoreBuilder.<BufferedSource, String>builder()
+Store<String> store = ParsingStoreBuilder.<BufferedSource, String>builder()
                .nonObservableFetcher(this::ResponseAsSource)  //OkHttp responseBody.source()
                .persister(SourcePersisterFactory.create(context.getFilesDir()))
                .parser(GsonParserFactory.createSourceParser(gson, String.class))
