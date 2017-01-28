@@ -1,8 +1,8 @@
 package com.nytimes.android.external.store.base;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.nytimes.android.external.store.base.impl.BarCode;
+
+import org.jetbrains.annotations.NotNull;
 
 import rx.Observable;
 
