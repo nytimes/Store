@@ -19,7 +19,7 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Files.createTempDir;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SimpleTest extends BaseTestCase {
+public class SimpleTest {
 
     private static final String testString1 = "aszfbW#$%#$^&*5 r7ytjdfbv!@#R$\n@!#$%2354 wtyebfsdv\n";
     private static final String testString2 = "#%^sdfvb#W%EtsdfbSER@#$%dsfb\nASRG \n #dsfvb \n";

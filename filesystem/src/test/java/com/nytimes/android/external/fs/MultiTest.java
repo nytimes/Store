@@ -3,7 +3,6 @@ package com.nytimes.android.external.fs;
 import com.google.common.collect.ImmutableMap;
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
-import com.nytimes.android.external.fs.impl.BaseTestCase;
 
 import org.junit.Test;
 
@@ -21,7 +20,7 @@ import static com.google.common.io.Files.createTempDir;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MultiTest extends BaseTestCase {
+public class MultiTest {
 
     private static final Map<String, List<String>> fileData
             = ImmutableMap.<String, List<String>>builder()

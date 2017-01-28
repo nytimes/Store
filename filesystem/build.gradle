@@ -6,7 +6,7 @@ version = VERSION_NAME
 dependencies {
     compile libraries.okio
     compile libraries.gson
-
+    compile libraries.intellijAnnotations
     compile libraries.rxJava
     compile project(path: ':cache')
     compile project(path: ':store')
@@ -14,7 +14,7 @@ dependencies {
     testCompile libraries.mockito
     testCompile libraries.assertJ
     testCompile libraries.junit
-    compile group: 'com.intellij', name: 'annotations', version: '9.0.4'
+    testCompile libraries.guava
 }
 
 buildscript {
