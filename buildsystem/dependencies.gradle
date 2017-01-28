@@ -26,7 +26,7 @@ ext.versions = [
         butterKnife          : '7.0.1',
 
         // Reactive.
-        rxJava               : '1.1.6',
+        rxJava               : '1.2.4',
         rxJavaProGuardRules  : '1.1.6.0',
         rxJavaAsyncUtil      : '0.21.0',
         rxAndroid            : '1.2.1',
