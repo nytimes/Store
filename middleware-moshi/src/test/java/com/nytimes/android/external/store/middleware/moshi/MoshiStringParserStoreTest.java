@@ -2,7 +2,7 @@ package com.nytimes.android.external.store.middleware.moshi;
 
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.beta.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.moshi.data.Foo;
@@ -27,15 +27,12 @@ public class MoshiStringParserStoreTest {
     private static final String KEY = "key";
     private static final String source =
             "{\"number\":123,\"string\":\"abc\",\"bars\":[{\"string\":\"def\"},{\"string\":\"ghi\"}]}";
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
-    Fetcher<String> fetcher;
+    Fetcher<String, BarCode> fetcher;
     @Mock
-    Persister<String> persister;
-
+    Persister<String, BarCode> persister;
     private final BarCode barCode = new BarCode("value", KEY);
 
     @Before
@@ -55,7 +52,7 @@ public class MoshiStringParserStoreTest {
 
     @Test
     public void testMoshiString() {
-        Store<Foo> store = ParsingStoreBuilder.<String, Foo>builder()
+        Store<Foo, BarCode> store = ParsingStoreBuilder.<String, Foo>builder()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(MoshiParserFactory.createStringParser(Foo.class))

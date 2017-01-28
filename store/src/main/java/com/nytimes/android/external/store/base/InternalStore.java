@@ -1,7 +1,6 @@
 package com.nytimes.android.external.store.base;
 
-
-import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.beta.Store;
 
 import javax.annotation.Nonnull;
 
@@ -11,9 +10,10 @@ import rx.Observable;
  * this interface allows us to mark a {@link Store} as "internal", exposing methods for retrieving data
  * directly from memory or from disk.
  */
-public interface InternalStore<Parsed> extends Store<Parsed> {
+public interface InternalStore<Parsed, Key> extends Store<Parsed, Key> {
     @Nonnull
-    Observable<Parsed> memory(@Nonnull final BarCode barCode);
+    Observable<Parsed> memory(@Nonnull final Key barCode);
+
     @Nonnull
-    Observable<Parsed> disk(@Nonnull final BarCode barCode);
+    Observable<Parsed> disk(@Nonnull final Key barCode);
 }

@@ -38,6 +38,6 @@ public class MultiParser<Raw, Parsed> implements Parser<Raw, Parsed> {
 
     private ParserException createParserException() {
         return new ParserException("One of the provided parsers has a wrong typing. " +
-                "Make sure that parsers are passed in a correct order and the types match each other.");
+                "Make sure that parsers are passed in a correct order and the fromTypes match each other.");
     }
 }

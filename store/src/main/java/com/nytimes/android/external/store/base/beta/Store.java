@@ -1,9 +1,9 @@
-package com.nytimes.android.external.store.base;
+package com.nytimes.android.external.store.base.beta;
 
 
 import com.nytimes.android.external.store.base.impl.BarCode;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import rx.Observable;
 
@@ -16,30 +16,26 @@ import rx.Observable;
  * force a call to {@link Store#fetch(BarCode) Store.fetch() }
  * (skipping cache)
  */
-@Deprecated
-public interface Store<T> extends com.nytimes.android.external.store.base.beta.Store<T, BarCode> {
+public interface Store<T, V> {
 
     /**
      * Return an Observable of T for request Barcode
      * Data will be returned from oldest non expired source
      * Sources are Memory Cache, Disk Cache, Inflight, Network Response
      */
-    @Nonnull
-    @Override
-    Observable<T> get(@Nonnull BarCode barCode);
+    @NotNull
+    Observable<T> get(@NotNull V key);
 
     /**
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
      */
-    @Nonnull
-    @Override
-    Observable<T> fetch(@Nonnull BarCode barCode);
+    @NotNull
+    Observable<T> fetch(@NotNull V key);
 
     /**
      * @return an Observable that emits new items when they arrive.
      */
-    @Nonnull
-    @Override
+    @NotNull
     Observable<T> stream();
 
     /**
@@ -51,20 +47,18 @@ public interface Store<T> extends com.nytimes.android.external.store.base.beta.S
      * use {@code store.stream().startWith(store.get(keyAndRawType))}
      */
     @Deprecated
-    @Nonnull
-    Observable<T> stream(BarCode id);
+    @NotNull
+    Observable<T> stream(V id);
 
     /**
      * Clear the memory cache of all entries
      */
-    @Override
     void clearMemory();
 
     /**
      * Purge a particular entry from memory cache.
      */
-    @Override
-    void clearMemory(@Nonnull BarCode barCode);
+    void clearMemory(@NotNull V key);
 
 
 }

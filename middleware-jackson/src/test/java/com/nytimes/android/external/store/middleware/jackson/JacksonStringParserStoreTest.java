@@ -30,15 +30,12 @@ public class JacksonStringParserStoreTest {
     private static final String KEY = "key";
     private static final String source =
             "{\"number\":123,\"string\":\"abc\",\"bars\":[{\"string\":\"def\"},{\"string\":\"ghi\"}]}";
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
-    Fetcher<String> fetcher;
+    Fetcher<String, BarCode> fetcher;
     @Mock
-    Persister<String> persister;
-
+    Persister<String, BarCode> persister;
     private final BarCode barCode = new BarCode("value", KEY);
 
     @Before

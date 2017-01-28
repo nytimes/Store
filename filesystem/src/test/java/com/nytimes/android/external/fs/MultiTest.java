@@ -28,6 +28,10 @@ public class MultiTest {
             .put("/foo/bar/baz.xyz", asList("sasffvSFv", "AsfgsdvzsfbvasFgae", "szfvzsfszfvzsvbzdsfb"))
             .build();
 
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
+    }
+
     private FileSystem createAndPopulateTestFileSystem() throws IOException {
         File baseDir = createTempDir();
         FileSystem fileSystem = FileSystemFactory.create(baseDir);
@@ -61,9 +65,5 @@ public class MultiTest {
             assertCount++;
         }
         assertThat(assertCount).isEqualTo(fileData.size());
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
     }
 }
