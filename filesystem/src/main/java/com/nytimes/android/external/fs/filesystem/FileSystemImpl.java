@@ -1,11 +1,11 @@
 package com.nytimes.android.external.fs.filesystem;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.nytimes.android.external.cache.CacheLoader;
 import com.nytimes.android.external.cache.LoadingCache;
 import com.nytimes.android.external.fs.Util;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,19 +27,19 @@ import static java.lang.String.format;
 class FileSystemImpl implements FileSystem {
 
     private final Util util = new Util();
-    @NonNull
+    @NotNull
     private final LoadingCache<String, FSFile> files;
-    @NonNull
+    @NotNull
     private final File root;
 
-    FileSystemImpl(@NonNull final File root) throws IOException {
+    FileSystemImpl(@NotNull final File root) throws IOException {
         this.root = root;
 
         this.files = newBuilder().maximumSize(20)
                 .build(new CacheLoader<String, FSFile>() {
-                    @NonNull
+                    @NotNull
                     @Override
-                    public FSFile load(@NonNull String path) throws IOException {
+                    public FSFile load(@NotNull String path) throws IOException {
                         return new FSFile(root, path);
                     }
                 });
@@ -47,25 +47,25 @@ class FileSystemImpl implements FileSystem {
         util.createParentDirs(root);
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public BufferedSource read(@NonNull String path) throws FileNotFoundException {
+    public BufferedSource read(@NotNull String path) throws FileNotFoundException {
         return getFile(path).source();
     }
 
     @Override
-    public void write(@NonNull String path, BufferedSource source) throws IOException {
+    public void write(@NotNull String path, BufferedSource source) throws IOException {
         getFile(path).write(source);
     }
 
     @Override
-    public void delete(@NonNull String path) throws IOException {
+    public void delete(@NotNull String path) throws IOException {
         getFile(path).delete();
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public Collection<String> list(@NonNull String directory) throws FileNotFoundException {
+    public Collection<String> list(@NotNull String directory) throws FileNotFoundException {
 
         Collection<FSFile> foundFiles = findFiles(directory);
         Collection<String> names = new ArrayList<>(foundFiles.size());
@@ -77,7 +77,7 @@ class FileSystemImpl implements FileSystem {
     }
 
     @Override
-    public void deleteAll(@NonNull String directory) throws FileNotFoundException {
+    public void deleteAll(@NotNull String directory) throws FileNotFoundException {
 
         Collection<FSFile> foundFiles = findFiles(directory);
         Iterator<FSFile> iterator = foundFiles.iterator();
@@ -87,22 +87,22 @@ class FileSystemImpl implements FileSystem {
     }
 
     @Override
-    public boolean exists(@NonNull String path) {
+    public boolean exists(@NotNull String path) {
         return getFile(path).exists();
     }
 
     @Nullable
-    private FSFile getFile(@NonNull String path) {
+    private FSFile getFile(@NotNull String path) {
         return files.getUnchecked(cleanPath(path));
     }
 
-    @NonNull
-    private String cleanPath(@NonNull String dirty) {
+    @NotNull
+    private String cleanPath(@NotNull String dirty) {
         return util.simplifyPath(dirty);
     }
 
-    @NonNull
-    private Collection<FSFile> findFiles(@NonNull String path) throws FileNotFoundException {
+    @NotNull
+    private Collection<FSFile> findFiles(@NotNull String path) throws FileNotFoundException {
 
         File searchRoot = new File(root, util.simplifyPath(path));
         if (searchRoot.exists() && searchRoot.isFile()) {

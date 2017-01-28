@@ -1,10 +1,10 @@
 package com.nytimes.android.external.fs;
 
-import android.support.annotation.NonNull;
-
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.impl.BarCode;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Callable;
 
@@ -26,11 +26,11 @@ public class SourceFileWriter implements DiskWrite<BufferedSource> {
     }
 
 
-    @NonNull
+    @NotNull
     @Override
-    public Observable<Boolean> write(@NonNull final BarCode barCode, @NonNull final BufferedSource data) {
+    public Observable<Boolean> write(@NotNull final BarCode barCode, @NotNull final BufferedSource data) {
         return Observable.fromCallable(new Callable<Boolean>() {
-            @NonNull
+            @NotNull
             @Override
             @SuppressWarnings("PMD.SignatureDeclareThrowsException")
             public Boolean call() throws Exception {
