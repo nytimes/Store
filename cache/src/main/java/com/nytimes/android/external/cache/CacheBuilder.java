@@ -18,8 +18,8 @@ package com.nytimes.android.external.cache;
 
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -88,7 +88,7 @@ public final class CacheBuilder<K, V> {
    * Constructs a new {@code CacheBuilder} instance with default settings, including strong keys,
    * strong values, and no automatic eviction of any kind.
    */
-  @NonNull
+  @NotNull
   public static CacheBuilder<Object, Object> newBuilder() {
     return new CacheBuilder<Object, Object>();
   }
@@ -99,8 +99,8 @@ public final class CacheBuilder<K, V> {
    * <p>By default, the cache uses {@link Equivalence#identity} to determine key equality when
    * @link #weakKeys} is specified, and {@link Equivalence#equals()} otherwise.
    */
-  @NonNull
-  CacheBuilder<K, V> keyEquivalence(@NonNull Equivalence<Object> equivalence) {
+  @NotNull
+  CacheBuilder<K, V> keyEquivalence(@NotNull Equivalence<Object> equivalence) {
     Preconditions.checkState(keyEquivalence == null, "key equivalence was already set to %s", keyEquivalence);
     keyEquivalence = Preconditions.checkNotNull(equivalence);
     return this;
@@ -118,8 +118,8 @@ public final class CacheBuilder<K, V> {
    * @link #weakValues} or @link #softValues} is specified, and {@link Equivalence#equals()}
    * otherwise.
    */
-  @NonNull
-  CacheBuilder<K, V> valueEquivalence(@NonNull Equivalence<Object> equivalence) {
+  @NotNull
+  CacheBuilder<K, V> valueEquivalence(@NotNull Equivalence<Object> equivalence) {
     Preconditions.checkState(valueEquivalence == null,
         "value equivalence was already set to %s", valueEquivalence);
     this.valueEquivalence = Preconditions.checkNotNull(equivalence);
@@ -165,7 +165,7 @@ public final class CacheBuilder<K, V> {
    * @throws IllegalArgumentException if {@code concurrencyLevel} is nonpositive
    * @throws IllegalStateException if a concurrency level was already set
    */
-  @NonNull
+  @NotNull
   public CacheBuilder<K, V> concurrencyLevel(int concurrencyLevel) {
     Preconditions.checkState(this.concurrencyLevel == UNSET_INT, "concurrency level was already set to %s",
         this.concurrencyLevel);
@@ -193,7 +193,7 @@ public final class CacheBuilder<K, V> {
    * @throws IllegalArgumentException if {@code size} is negative
    * @throws IllegalStateException if a maximum size or weight was already set
    */
-  @NonNull
+  @NotNull
   public CacheBuilder<K, V> maximumSize(long size) {
     Preconditions.checkState(this.maximumSize == UNSET_INT, "maximum size was already set to %s",
         this.maximumSize);
@@ -229,7 +229,7 @@ public final class CacheBuilder<K, V> {
    * @throws IllegalStateException if a maximum weight or size was already set
    * @since 11.0
    */
-  @NonNull
+  @NotNull
   public CacheBuilder<K, V> maximumWeight(long weight) {
     Preconditions.checkState(this.maximumWeight == UNSET_INT, "maximum weight was already set to %s",
         this.maximumWeight);
@@ -268,9 +268,9 @@ public final class CacheBuilder<K, V> {
    * @throws IllegalStateException if a maximum size was already set
    * @since 11.0
    */
-  @NonNull
+  @NotNull
   public <K1 extends K, V1 extends V> CacheBuilder<K1, V1> weigher(
-      @NonNull Weigher<? super K1, ? super V1> weigher) {
+      @NotNull Weigher<? super K1, ? super V1> weigher) {
     Preconditions.checkState(this.weigher == null);
     if (strictParsing) {
       Preconditions.checkState(this.maximumSize == UNSET_INT, "weigher can not be combined with maximum size",
@@ -299,8 +299,8 @@ public final class CacheBuilder<K, V> {
   }
 
 
-  @NonNull
-  CacheBuilder<K, V> setKeyStrength(@NonNull LocalCache.Strength strength) {
+  @NotNull
+  CacheBuilder<K, V> setKeyStrength(@NotNull LocalCache.Strength strength) {
     Preconditions.checkState(keyStrength == null, "Key strength was already set to %s", keyStrength);
     keyStrength = Preconditions.checkNotNull(strength);
     return this;
@@ -312,8 +312,8 @@ public final class CacheBuilder<K, V> {
   }
 
 
-  @NonNull
-  CacheBuilder<K, V> setValueStrength(@NonNull LocalCache.Strength strength) {
+  @NotNull
+  CacheBuilder<K, V> setValueStrength(@NotNull LocalCache.Strength strength) {
     Preconditions.checkState(valueStrength == null, "Value strength was already set to %s", valueStrength);
     valueStrength = Preconditions.checkNotNull(strength);
     return this;
@@ -343,8 +343,8 @@ public final class CacheBuilder<K, V> {
    * @throws IllegalArgumentException if {@code duration} is negative
    * @throws IllegalStateException if the time to live or time to idle was already set
    */
-  @NonNull
-  public CacheBuilder<K, V> expireAfterWrite(long duration, @NonNull TimeUnit unit) {
+  @NotNull
+  public CacheBuilder<K, V> expireAfterWrite(long duration, @NotNull TimeUnit unit) {
     Preconditions.checkState(expireAfterWriteNanos == UNSET_INT, "expireAfterWrite was already set to %s ns",
         expireAfterWriteNanos);
     Preconditions.checkArgument(duration >= 0, "duration cannot be negative: %s %s", duration, unit);
@@ -378,8 +378,8 @@ public final class CacheBuilder<K, V> {
    * @throws IllegalArgumentException if {@code duration} is negative
    * @throws IllegalStateException if the time to idle or time to live was already set
    */
-  @NonNull
-  public CacheBuilder<K, V> expireAfterAccess(long duration, @NonNull TimeUnit unit) {
+  @NotNull
+  public CacheBuilder<K, V> expireAfterAccess(long duration, @NotNull TimeUnit unit) {
     Preconditions.checkState(expireAfterAccessNanos == UNSET_INT, "expireAfterAccess was already set to %s ns",
         expireAfterAccessNanos);
     Preconditions.checkArgument(duration >= 0, "duration cannot be negative: %s %s", duration, unit);
@@ -406,8 +406,8 @@ public final class CacheBuilder<K, V> {
    *
    * @throws IllegalStateException if a ticker was already set
    */
-  @NonNull
-  public CacheBuilder<K, V> ticker(@NonNull Ticker ticker) {
+  @NotNull
+  public CacheBuilder<K, V> ticker(@NotNull Ticker ticker) {
     Preconditions.checkState(this.ticker == null);
     this.ticker = Preconditions.checkNotNull(ticker);
     return this;
@@ -441,9 +441,9 @@ public final class CacheBuilder<K, V> {
    *     remaining configuration and cache building
    * @throws IllegalStateException if a removal listener was already set
    */
-  @NonNull
+  @NotNull
   public <K1 extends K, V1 extends V> CacheBuilder<K1, V1> removalListener(
-      @NonNull RemovalListener<? super K1, ? super V1> listener) {
+      @NotNull RemovalListener<? super K1, ? super V1> listener) {
     Preconditions.checkState(this.removalListener == null);
 
     // safely limiting the kinds of caches this can produce
@@ -473,14 +473,14 @@ public final class CacheBuilder<K, V> {
    * @param loader the cache loader used to obtain new values
    * @return a cache having the requested features
    */
-  @NonNull
+  @NotNull
   public <K1 extends K, V1 extends V> LoadingCache<K1, V1> build(
-          @NonNull CacheLoader<? super K1, V1> loader) {
+          @NotNull CacheLoader<? super K1, V1> loader) {
     checkWeightWithWeigher();
     return new LocalCache.LocalLoadingCache<K1, V1>(this, loader);
   }
 
-  @NonNull
+  @NotNull
   public <K1 extends K, V1 extends V> Cache<K1, V1> build() {
     checkWeightWithWeigher();
     checkNonLoadingCache();

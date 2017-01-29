@@ -1,8 +1,9 @@
 package com.nytimes.android.external.fs.filesystem;
 
-import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.fs.Util;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,12 +18,12 @@ import static java.lang.String.format;
 class FSFile {
 
     private final Util util = new Util();
-    @NonNull
+    @NotNull
     private final String pathValue;
-    @NonNull
+    @NotNull
     private final File file;
 
-    FSFile(File root, @NonNull String path) throws IOException {
+    FSFile(File root, @NotNull String path) throws IOException {
         this.pathValue = path;
         this.file = new File(root, path);
         if (file.exists() && file.isDirectory()) {
@@ -45,7 +46,7 @@ class FSFile {
         }
     }
 
-    @NonNull
+    @NotNull
     public String path() {
         return pathValue;
     }
@@ -74,7 +75,7 @@ class FSFile {
     }
 
 
-    @NonNull
+    @NotNull
     public BufferedSource source() throws FileNotFoundException {
         if (file.exists()) {
             return Okio.buffer(Okio.source(file));

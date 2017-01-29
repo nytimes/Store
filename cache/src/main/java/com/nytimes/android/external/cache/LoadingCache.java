@@ -1,6 +1,6 @@
 package com.nytimes.android.external.cache;
 
-import android.support.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;

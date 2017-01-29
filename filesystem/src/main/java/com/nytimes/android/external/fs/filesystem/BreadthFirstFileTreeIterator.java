@@ -19,8 +19,9 @@ package com.nytimes.android.external.fs.filesystem;
 
 //package org.jpublish.util;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Iterator;
@@ -40,7 +41,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
     private File[] currentList;
     @Nullable
     private File nextFile;
-    @NonNull
+    @NotNull
     private final Stack directories;
     private boolean endOfTree = false;
 
@@ -50,7 +51,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @param root The root directory
      */
 
-    BreadthFirstFileTreeIterator(@NonNull File root) {
+    BreadthFirstFileTreeIterator(@NotNull File root) {
         this.currentList = root.listFiles();
         this.directories = new Stack();
     }

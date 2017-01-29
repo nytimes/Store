@@ -2,8 +2,8 @@ package com.nytimes.android.external.cache;
 
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -39,7 +39,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
 
     @Nullable
-    @Override public final V get(long timeout, @NonNull TimeUnit unit)
+    @Override public final V get(long timeout, @NotNull TimeUnit unit)
         throws InterruptedException, ExecutionException, TimeoutException {
       return super.get(timeout, unit);
     }
@@ -52,7 +52,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
       return super.isCancelled();
     }
 
-    @Override public final void addListener(@NonNull Runnable listener, @NonNull Executor executor) {
+    @Override public final void addListener(@NotNull Runnable listener, @NotNull Executor executor) {
       super.addListener(listener, executor);
     }
   }
@@ -146,7 +146,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    *   <li>The waiters list should be very short.
    * </ul>
    */
-  private void removeWaiter(@NonNull Waiter node) {
+  private void removeWaiter(@NotNull Waiter node) {
     node.thread = null;  // mark as 'deleted'
     restart: while (true) {
       Waiter pred = null;
@@ -197,7 +197,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
   private static final class Failure {
     static final Failure FALLBACK_INSTANCE = new Failure(
         new Throwable("Failure occurred while trying to finish a future.") {
-          @NonNull
+          @NotNull
           @Override public synchronized Throwable fillInStackTrace() {
             return this;  // no stack trace
           }
@@ -309,7 +309,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    */
   @Nullable
   @Override
-  public V get(long timeout, @NonNull TimeUnit unit)
+  public V get(long timeout, @NotNull TimeUnit unit)
       throws InterruptedException, TimeoutException, ExecutionException {
     // NOTE: if timeout < 0, remainingNanos will be < 0 and we will fall into the while(true) loop
     // at the bottom and throw a timeoutexception.
@@ -509,7 +509,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    * <p>Note: this method may be called speculatively.  There is no guarantee that the future will
    * be cancelled if this method is called.
    */
-  @NonNull
+  @NotNull
   private Throwable newCancellationCause() {
     return new CancellationException("Future.cancel() was called.");
   }
@@ -543,7 +543,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    * @since 10.0
    */
   @Override
-  public void addListener(@NonNull Runnable listener, @NonNull Executor executor) {
+  public void addListener(@NotNull Runnable listener, @NotNull Executor executor) {
     Preconditions.checkNotNull(listener, "Runnable was null.");
     Preconditions.checkNotNull(executor, "Executor was null.");
     Listener oldHead = listeners;
@@ -625,7 +625,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    *     cancelled or set.
    * @since 19.0
    */
-  protected boolean setFuture(@NonNull ListenableFuture<? extends V> future) {
+  protected boolean setFuture(@NotNull ListenableFuture<? extends V> future) {
     Preconditions.checkNotNull(future);
     Object localValue = value;
     if (localValue == null) {
@@ -777,7 +777,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    * Submits the given runnable to the given {@link Executor} catching and logging all
    * {@linkplain RuntimeException runtime exceptions} thrown by the executor.
    */
-  private static void executeListener(@NonNull Runnable runnable, @NonNull Executor executor) {
+  private static void executeListener(@NotNull Runnable runnable, @NotNull Executor executor) {
     try {
       executor.execute(runnable);
     } catch (RuntimeException e) {
@@ -789,7 +789,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
   }
 
-  @NonNull
+  @NotNull
   static final CancellationException cancellationExceptionWithCause(
         String message,   Throwable cause) {
     CancellationException exception = new CancellationException(message);
@@ -843,27 +843,27 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
 
     @Override
-    void putThread(@NonNull Waiter waiter, Thread newValue) {
+    void putThread(@NotNull Waiter waiter, Thread newValue) {
       waiterThreadUpdater.lazySet(waiter, newValue);
     }
 
     @Override
-    void putNext(@NonNull Waiter waiter, Waiter newValue) {
+    void putNext(@NotNull Waiter waiter, Waiter newValue) {
       waiterNextUpdater.lazySet(waiter, newValue);
     }
 
     @Override
-    boolean casWaiters(@NonNull AbstractFuture<?> future, Waiter expect, Waiter update) {
+    boolean casWaiters(@NotNull AbstractFuture<?> future, Waiter expect, Waiter update) {
       return waitersUpdater.compareAndSet(future, expect, update);
     }
 
     @Override
-    boolean casListeners(@NonNull AbstractFuture<?> future, Listener expect, Listener update) {
+    boolean casListeners(@NotNull AbstractFuture<?> future, Listener expect, Listener update) {
       return listenersUpdater.compareAndSet(future, expect, update);
     }
 
     @Override
-    boolean casValue(@NonNull AbstractFuture<?> future, Object expect, Object update) {
+    boolean casValue(@NotNull AbstractFuture<?> future, Object expect, Object update) {
       return valueUpdater.compareAndSet(future, expect, update);
     }
   }
@@ -876,17 +876,17 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
    */
   private static final class SynchronizedHelper extends AtomicHelper {
     @Override
-    void putThread(@NonNull Waiter waiter, Thread newValue) {
+    void putThread(@NotNull Waiter waiter, Thread newValue) {
       waiter.thread = newValue;
     }
 
     @Override
-    void putNext(@NonNull Waiter waiter, Waiter newValue) {
+    void putNext(@NotNull Waiter waiter, Waiter newValue) {
       waiter.next = newValue;
     }
 
     @Override
-    boolean casWaiters(@NonNull AbstractFuture<?> future, Waiter expect, Waiter update) {
+    boolean casWaiters(@NotNull AbstractFuture<?> future, Waiter expect, Waiter update) {
       synchronized (future) {
         if (future.waiters == expect) {
           future.waiters = update;
@@ -897,7 +897,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
 
     @Override
-    boolean casListeners(@NonNull AbstractFuture<?> future, Listener expect, Listener update) {
+    boolean casListeners(@NotNull AbstractFuture<?> future, Listener expect, Listener update) {
       synchronized (future) {
         if (future.listeners == expect) {
           future.listeners = update;
@@ -908,7 +908,7 @@ public abstract class AbstractFuture<V> implements ListenableFuture<V> {
     }
 
     @Override
-    boolean casValue(@NonNull AbstractFuture<?> future, Object expect, Object update) {
+    boolean casValue(@NotNull AbstractFuture<?> future, Object expect, Object update) {
       synchronized (future) {
         if (future.value == expect) {
           future.value = update;

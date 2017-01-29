@@ -1,9 +1,10 @@
 package com.nytimes.android.external.store.util;
 
-import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -16,14 +17,14 @@ import rx.Observable;
 public class NoopPersister<Raw> implements Persister<Raw> {
     private final ConcurrentMap<BarCode, Raw> networkResponses = new ConcurrentHashMap<>();
 
-    @NonNull
+    @NotNull
     @Override
     public Observable<Raw> read(BarCode barCode) {
         Raw raw = networkResponses.get(barCode);
         return raw == null ? Observable.<Raw>empty() : Observable.just(raw);
     }
 
-    @NonNull
+    @NotNull
     @Override
     public Observable<Boolean> write(BarCode barCode, Raw raw) {
         networkResponses.put(barCode, raw);

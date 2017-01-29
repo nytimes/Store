@@ -1,5 +1,4 @@
 apply plugin: 'checkstyle'
-preBuild.dependsOn('checkstyle')
 assemble.dependsOn('lint')
 check.dependsOn('checkstyle')
 
@@ -16,6 +15,9 @@ tasks.withType(Checkstyle) {
     checkstyleClasspath = project.configurations.checksytleOverride
 }
 
+checkstyle {
+    configFile file("${project.rootDir}/checkstyle-ruleset.xml")
+}
 
 task checkstyle(type: Checkstyle) {
     configFile file("${project.rootDir}/checkstyle-ruleset.xml")
