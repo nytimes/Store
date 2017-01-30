@@ -21,7 +21,7 @@ public class SequentialTest {
     private Store<Integer> store;
 
     @Before
-    public void setup() {
+    public void setUp() {
         networkCalls = 0;
         store = StoreBuilder.<Integer>builder()
                 .fetcher(new Fetcher<Integer>() {
@@ -30,7 +30,7 @@ public class SequentialTest {
                     public Observable<Integer> fetch(BarCode barCode) {
                         return Observable.fromCallable(new Callable<Integer>() {
                             @Override
-                            public Integer call() throws Exception {
+                            public Integer call() {
                                 return networkCalls++;
                             }
                         });
