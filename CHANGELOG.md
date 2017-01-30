@@ -11,9 +11,7 @@ Version 1.0.7 *(2017-01-30/)*
 * Bug Fix: fixes race condition in memory cache (#90)
 * Bug Fix: add back in flight 1 minute debouncing (was missing somehow?) (#92)
 * Documentation Fix: Classnames up, field names down (#81)
-* API Change: Clarifying Store.stream (#73)
-    1 Added the stream() method
-    2 Deprecated old stream(barcode) and added migration helping in the documentation
+
 
 
 Version 1.0.6 *(2017-01-23/)*
