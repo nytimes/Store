@@ -1,8 +1,6 @@
 package com.nytimes.android.external.cache;
 
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.CancellationException;
@@ -12,6 +10,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class Futures {
     private Futures() {
@@ -29,25 +30,25 @@ public final class Futures {
     }
 
 
-    @NotNull
+    @Nonnull
     public static <V> ListenableFuture<V> immediateFailedFuture(Throwable throwable) {
         Preconditions.checkNotNull(throwable);
         return new Futures.ImmediateFailedFuture<>(throwable);
     }
 
-    @NotNull
-    public static <I, O> ListenableFuture<O> transform(@NotNull ListenableFuture<I> input, Function<? super I, ? extends O> function) {
+    @Nonnull
+    public static <I, O> ListenableFuture<O> transform(@Nonnull ListenableFuture<I> input, Function<? super I, ? extends O> function) {
         Preconditions.checkNotNull(function);
         Futures.ChainingFuture<I,O> output = new Futures.ChainingFuture(input, function);
         input.addListener(output, DirectExecutor.INSTANCE);
         return output;
     }
 
-    public static <V, X extends Exception> V getChecked(@NotNull Future<V> future, Class<X> exceptionClass) throws X {
+    public static <V, X extends Exception> V getChecked(@Nonnull Future<V> future, Class<X> exceptionClass) throws X {
         return FuturesGetChecked.getChecked(future, exceptionClass);
     }
 
-    public static <V, X extends Exception> V getChecked(@NotNull Future<V> future, Class<X> exceptionClass, long timeout, @NotNull TimeUnit unit) throws X {
+    public static <V, X extends Exception> V getChecked(@Nonnull Future<V> future, Class<X> exceptionClass, long timeout, @Nonnull TimeUnit unit) throws X {
         return FuturesGetChecked.getChecked(future, exceptionClass, timeout, unit);
     }
 
@@ -59,7 +60,7 @@ public final class Futures {
         }
 
         @Override
-        void doTransform(@NotNull Function<? super I, ? extends O> function, I input) {
+        void doTransform(@Nonnull Function<? super I, ? extends O> function, I input) {
             this.set(function.apply(input));
         }
     }
@@ -136,7 +137,7 @@ public final class Futures {
             this.thrown = thrown;
         }
 
-        @Override @NotNull
+        @Override @Nonnull
         public V get() throws ExecutionException {
             throw new ExecutionException(this.thrown);
         }
@@ -167,7 +168,7 @@ public final class Futures {
         }
 
         @Override
-        public void addListener(@NotNull Runnable listener, @NotNull Executor executor) {
+        public void addListener(@Nonnull Runnable listener, @Nonnull Executor executor) {
             Preconditions.checkNotNull(listener, "Runnable was null.");
             Preconditions.checkNotNull(executor, "Executor was null.");
 
@@ -188,7 +189,7 @@ public final class Futures {
         public abstract V get() throws ExecutionException;
 
         @Override
-        public V get(long timeout, @NotNull TimeUnit unit) throws ExecutionException {
+        public V get(long timeout, @Nonnull TimeUnit unit) throws ExecutionException {
             Preconditions.checkNotNull(unit);
             return this.get();
         }

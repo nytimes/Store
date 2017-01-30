@@ -6,7 +6,7 @@ version = VERSION_NAME
 dependencies {
     compile libraries.okio
     compile libraries.gson
-    compile libraries.intellijAnnotations
+    compile libraries.jsr305
     compile libraries.rxJava
     compile project(path: ':cache')
     compile project(path: ':store')

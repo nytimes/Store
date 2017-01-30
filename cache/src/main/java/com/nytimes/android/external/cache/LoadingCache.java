@@ -1,10 +1,10 @@
 package com.nytimes.android.external.cache;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
+
+import javax.annotation.Nullable;
 
 public interface LoadingCache<K, V> extends Cache<K, V>, Function<K, V> {
 

@@ -5,6 +5,7 @@ version = VERSION_NAME
 
 dependencies {
     compile project(path: ':store')
+    compile libraries.jsr305
     compile libraries.jacksonCore
     compile libraries.jacksonDatabind
     compile libraries.rxJava

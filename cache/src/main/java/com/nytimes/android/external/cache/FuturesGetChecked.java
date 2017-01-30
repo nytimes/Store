@@ -1,8 +1,6 @@
 package com.nytimes.android.external.cache;
 
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.ref.WeakReference;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -11,10 +9,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.annotation.Nonnull;
+
 import static java.lang.Thread.currentThread;
 
 final class FuturesGetChecked {
-  static <V, X extends Exception> V getChecked(@NotNull Future<V> future, Class<X> exceptionClass) throws X {
+  static <V, X extends Exception> V getChecked(@Nonnull Future<V> future, Class<X> exceptionClass) throws X {
     return getChecked(bestGetCheckedTypeValidator(), future, exceptionClass);
   }
 
@@ -22,7 +22,7 @@ final class FuturesGetChecked {
    * Implementation of {@link Futures#getChecked(Future, Class)}.
    */
   static <V, X extends Exception> V getChecked(
-          @NotNull GetCheckedTypeValidator validator, @NotNull Future<V> future, Class<X> exceptionClass) throws X {
+          @Nonnull GetCheckedTypeValidator validator, @Nonnull Future<V> future, Class<X> exceptionClass) throws X {
     validator.validateClass(exceptionClass);
     try {
       return future.get();
@@ -38,7 +38,7 @@ final class FuturesGetChecked {
    * Implementation of {@link Futures#getChecked(Future, Class, long, TimeUnit)}.
    */
   static <V, X extends Exception> V getChecked(
-          @NotNull Future<V> future, Class<X> exceptionClass, long timeout, @NotNull TimeUnit unit) throws X {
+          @Nonnull Future<V> future, Class<X> exceptionClass, long timeout, @Nonnull TimeUnit unit) throws X {
     // TODO(cpovirk): benchmark a version of this method that accepts a GetCheckedTypeValidator
     bestGetCheckedTypeValidator().validateClass(exceptionClass);
     try {
@@ -57,12 +57,12 @@ final class FuturesGetChecked {
     void validateClass(Class<? extends Exception> exceptionClass);
   }
 
-  @NotNull
+  @Nonnull
   private static GetCheckedTypeValidator bestGetCheckedTypeValidator() {
     return GetCheckedTypeValidatorHolder.BEST_VALIDATOR;
   }
 
-  @NotNull
+  @Nonnull
   static GetCheckedTypeValidator weakSetValidator() {
     return GetCheckedTypeValidatorHolder.WeakSetValidator.INSTANCE;
   }
@@ -98,7 +98,7 @@ final class FuturesGetChecked {
               new CopyOnWriteArraySet<>();
 
       @Override
-      public void validateClass(@NotNull Class<? extends Exception> exceptionClass) {
+      public void validateClass(@Nonnull Class<? extends Exception> exceptionClass) {
         for (WeakReference<Class<? extends Exception>> knownGood : validClasses) {
           if (exceptionClass.equals(knownGood.get())) {
             return;
@@ -127,7 +127,7 @@ final class FuturesGetChecked {
      * Returns the ClassValue-using validator, or falls back to the "weak Set" implementation if
      * unable to do so.
      */
-    @NotNull
+    @Nonnull
     static GetCheckedTypeValidator getBestValidator() {
       try {
         Class<?> theClass = Class.forName(CLASS_VALUE_VALIDATOR_NAME);
