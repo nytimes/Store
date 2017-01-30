@@ -98,26 +98,27 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                 .defer(new Func0<Observable<Parsed>>() {
                     @Override
                     public Observable<Parsed> call() {
-                        try {
-                            return cache(barCode);
-                        } catch (ExecutionException e) {
-                            return Observable.empty();
-                        }
+                        return cache(barCode);
+
                     }
                 })
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
 
     }
 
-    private Observable<Parsed> cache(@NotNull final BarCode barCode) throws ExecutionException {
-        return memCache.get(barCode, new Callable<Observable<Parsed>>() {
-            @NotNull
-            @Override
-            @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-            public Observable<Parsed> call() throws Exception {
-                return disk(barCode);
-            }
-        });
+    private Observable<Parsed> cache(@NotNull final BarCode barCode) {
+        try {
+            return memCache.get(barCode, new Callable<Observable<Parsed>>() {
+                @NotNull
+                @Override
+                @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+                public Observable<Parsed> call() throws Exception {
+                    return disk(barCode);
+                }
+            });
+        } catch (ExecutionException e) {
+            return Observable.empty();
+        }
     }
 
 
@@ -136,15 +137,20 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      */
     @Override
     public Observable<Parsed> disk(@NotNull final BarCode barCode) {
-        return persister().read(barCode)
-                .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
-                .map(parser)
-                .doOnNext(new Action1<Parsed>() {
-                    @Override
-                    public void call(Parsed parsed) {
-                        updateMemory(barCode, parsed);
-                    }
-                }).cache();
+        return Observable.defer(new Func0<Observable<Parsed>>() {
+            @Override
+            public Observable<Parsed> call() {
+                return persister().read(barCode)
+                        .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
+                        .map(parser)
+                        .doOnNext(new Action1<Parsed>() {
+                            @Override
+                            public void call(Parsed parsed) {
+                                updateMemory(barCode, parsed);
+                            }
+                        }).cache();
+            }
+        });
     }
 
     /**
