@@ -17,8 +17,8 @@
 package com.nytimes.android.external.cache;
 
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -121,7 +121,7 @@ public abstract class Equivalence<T> {
    * @since 8.0 (in Equivalences with null-friendly behavior)
    * @since 4.0 (in Equivalences)
    */
-  @NonNull
+  @NotNull
   public static Equivalence<Object> equals() {
     return Equals.INSTANCE;
   }
@@ -134,7 +134,7 @@ public abstract class Equivalence<T> {
    * @since 13.0
    * @since 4.0 (in Equivalences)
    */
-  @NonNull
+  @NotNull
   public static Equivalence<Object> identity() {
     return Identity.INSTANCE;
   }
@@ -144,16 +144,16 @@ public abstract class Equivalence<T> {
     static final Equals INSTANCE = new Equals();
 
     @Override
-    protected boolean doEquivalent(@NonNull Object a, Object b) {
+    protected boolean doEquivalent(@NotNull Object a, Object b) {
       return a.equals(b);
     }
 
     @Override
-    protected int doHash(@NonNull Object o) {
+    protected int doHash(@NotNull Object o) {
       return o.hashCode();
     }
 
-    @NonNull
+    @NotNull
     private Object readResolve() {
       return INSTANCE;
     }
@@ -175,7 +175,7 @@ public abstract class Equivalence<T> {
       return System.identityHashCode(o);
     }
 
-    @NonNull
+    @NotNull
     private Object readResolve() {
       return INSTANCE;
     }

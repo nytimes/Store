@@ -2,6 +2,18 @@ Change Log
 ==========
 
 
+Version 1.0.7 *(2017-01-30/)*
+----------------------------
+* Feature: add additional create(FileSystem) within SourcePersister to allow clearing fileSystem cache (#77)
+* Feature: add error prone analyzer (#79)
+* Feature: convert store to java project from android (#85)
+* Bug Fix: Removed application meta data (#80)
+* Bug Fix: fixes race condition in memory cache (#90)
+* Bug Fix: add back in flight 1 minute debouncing (was missing somehow?) (#92)
+* Documentation Fix: Classnames up, field names down (#81)
+
+
+
 Version 1.0.6 *(2017-01-23/)*
 ----------------------------
 * Bug Fix: fix race condition of 2 fetch requests too quickly (#74)

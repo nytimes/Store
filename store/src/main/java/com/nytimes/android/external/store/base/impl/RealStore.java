@@ -1,6 +1,5 @@
 package com.nytimes.android.external.store.base.impl;
 
-import android.support.annotation.NonNull;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.Fetcher;
@@ -10,6 +9,8 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
+
+import org.jetbrains.annotations.NotNull;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -53,8 +54,8 @@ public class RealStore<Parsed> implements Store<Parsed> {
     }
 
 
-    @NonNull @Override
-    public Observable<Parsed> get(@NonNull final BarCode barCode) {
+    @NotNull @Override
+    public Observable<Parsed> get(@NotNull final BarCode barCode) {
         return internalStore.get(barCode);
     }
 
@@ -64,17 +65,18 @@ public class RealStore<Parsed> implements Store<Parsed> {
      *
      * @return data from fetch and store it in memory and persister
      */
-    @NonNull @Override
-    public Observable<Parsed> fetch(@NonNull final BarCode barCode) {
+    @NotNull
+    @Override
+    public Observable<Parsed> fetch(@NotNull final BarCode barCode) {
         return internalStore.fetch(barCode);
     }
 
-    @NonNull @Override
+    @NotNull @Override
     public Observable<Parsed> stream() {
         return internalStore.stream();
     }
 
-    @NonNull @Override
+    @NotNull @Override
     public Observable<Parsed> stream(BarCode id) {
         return internalStore.stream(id);
     }
@@ -90,16 +92,16 @@ public class RealStore<Parsed> implements Store<Parsed> {
      * @param barCode of data to clear
      */
     @Override
-    public void clearMemory(@NonNull final BarCode barCode) {
+    public void clearMemory(@NotNull final BarCode barCode) {
         internalStore.clearMemory(barCode);
     }
 
-    protected Observable<Parsed> memory(@NonNull BarCode id) {
+    protected Observable<Parsed> memory(@NotNull BarCode id) {
         return internalStore.memory(id);
     }
 
-    @NonNull
-    protected Observable<Parsed> disk(@NonNull BarCode id) {
+    @NotNull
+    protected Observable<Parsed> disk(@NotNull BarCode id) {
         return internalStore.disk(id);
     }
 

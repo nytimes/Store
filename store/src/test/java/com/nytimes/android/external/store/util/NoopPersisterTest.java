@@ -21,14 +21,13 @@ public class NoopPersisterTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public void noopParserFuncTest() {
         NoopParserFunc<String, String> noopParserFunc = new NoopParserFunc<>();
         String input = "foo";
         String output = (String) noopParserFunc.call(input);
         assertThat(input).isEqualTo(output);
         //intended object ref comparison
-        assertThat(input == output).isTrue();
+        assertThat(input).isSameAs(output);
     }
 
 }

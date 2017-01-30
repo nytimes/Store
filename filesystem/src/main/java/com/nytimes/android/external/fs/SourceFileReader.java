@@ -1,10 +1,10 @@
 package com.nytimes.android.external.fs;
 
-import android.support.annotation.NonNull;
-
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.impl.BarCode;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.util.concurrent.Callable;
@@ -25,11 +25,11 @@ public class SourceFileReader implements DiskRead<BufferedSource> {
         this.fileSystem = fileSystem;
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public Observable<BufferedSource> read(@NonNull final BarCode barCode) {
+    public Observable<BufferedSource> read(@NotNull final BarCode barCode) {
         return Observable.fromCallable(new Callable<BufferedSource>() {
-            @NonNull
+            @NotNull
             @Override
             public BufferedSource call() throws FileNotFoundException {
                 return fileSystem.read(pathForBarcode(barCode));
@@ -37,7 +37,7 @@ public class SourceFileReader implements DiskRead<BufferedSource> {
         });
     }
 
-    public boolean exists(@NonNull BarCode barCode) {
+    public boolean exists(@NotNull BarCode barCode) {
         return fileSystem.exists(pathForBarcode(barCode));
     }
 }

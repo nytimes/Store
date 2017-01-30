@@ -1,9 +1,10 @@
 package com.nytimes.android.external.store.middleware;
 
-import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +15,8 @@ import javax.inject.Inject;
 import okio.BufferedSource;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 
 /**
  * Parser to be used when going from a BufferedSource to any Parsed Type
@@ -40,8 +43,8 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
     }
 
     @Override
-    public Parsed call(@NonNull BufferedSource source) {
-        try (InputStreamReader reader = new InputStreamReader(source.inputStream())) {
+    public Parsed call(@NotNull BufferedSource source) {
+        try (InputStreamReader reader = new InputStreamReader(source.inputStream(), UTF_8)) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {
             throw new RuntimeException(e);

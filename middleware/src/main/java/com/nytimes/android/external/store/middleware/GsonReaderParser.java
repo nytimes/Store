@@ -1,9 +1,9 @@
 package com.nytimes.android.external.store.middleware;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Reader;
 import java.lang.reflect.Type;
@@ -26,7 +26,7 @@ public class GsonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     }
 
     @Override
-    public Parsed call(@NonNull Reader reader) {
+    public Parsed call(@NotNull Reader reader) {
         return gson.fromJson(reader, type);
     }
 }

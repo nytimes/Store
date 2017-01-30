@@ -1,7 +1,5 @@
 package com.nytimes.android.external.fs;
 
-import com.nytimes.android.external.fs.impl.BaseTestCase;
-
 import org.junit.Test;
 
 import java.io.File;
@@ -12,7 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class UtilTest extends BaseTestCase {
+public class UtilTest {
 
     private final Util util = new Util();
 

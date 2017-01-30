@@ -1,12 +1,12 @@
 package com.nytimes.android.external.cache;
 
-import android.support.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executor;
 
 enum DirectExecutor implements Executor {
     INSTANCE;
-    @Override public void execute(@NonNull Runnable command) {
+    @Override public void execute(@NotNull Runnable command) {
       command.run();
     }
 
