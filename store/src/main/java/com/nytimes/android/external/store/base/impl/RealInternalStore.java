@@ -203,12 +203,6 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                         notifySubscribers(data);
                     }
                 })
-                .doOnTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        inFlightRequests.invalidate(barCode);
-                    }
-                })
                 .cache();
     }
 
