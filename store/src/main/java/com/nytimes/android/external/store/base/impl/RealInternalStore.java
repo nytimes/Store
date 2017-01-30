@@ -85,7 +85,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     @Override
     public Observable<Parsed> get(@NotNull final BarCode barCode) {
         return Observable.concat(
-                cache(barCode),
+                lazyCache(barCode),
                 fetch(barCode)
         ).take(1);
     }
@@ -93,20 +93,31 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     /**
      * @return data from memory
      */
-    private Observable<Parsed> cache(@NotNull final BarCode barCode) {
-        try {
-            return memCache.get(barCode, new Callable<Observable<Parsed>>() {
-                @NotNull
-                @Override
-                @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-                public Observable<Parsed> call() throws Exception {
-                    return disk(barCode);
-                }
-            })
-                    .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
-        } catch (ExecutionException e) {
-            return Observable.empty();
-        }
+    private Observable<Parsed> lazyCache(@NotNull final BarCode barCode) {
+        return Observable
+                .defer(new Func0<Observable<Parsed>>() {
+                    @Override
+                    public Observable<Parsed> call() {
+                        try {
+                            return cache(barCode);
+                        } catch (ExecutionException e) {
+                            return Observable.empty();
+                        }
+                    }
+                })
+                .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
+
+    }
+
+    private Observable<Parsed> cache(@NotNull final BarCode barCode) throws ExecutionException {
+        return memCache.get(barCode, new Callable<Observable<Parsed>>() {
+            @NotNull
+            @Override
+            @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+            public Observable<Parsed> call() throws Exception {
+                return disk(barCode);
+            }
+        });
     }
 
 
