@@ -11,9 +11,9 @@ import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.Callable;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -27,21 +27,21 @@ public class StoreBuilder<T> {
     private Persister<T> persister;
     private Cache<BarCode, Observable<T>> memCache;
 
-    @NotNull
+    @Nonnull
     public static <Raw> StoreBuilder<Raw> builder() {
         return new StoreBuilder<>();
     }
 
-    @NotNull
-    public StoreBuilder<T> fetcher(final @NotNull Fetcher<T> fetcher) {
+    @Nonnull
+    public StoreBuilder<T> fetcher(final @Nonnull Fetcher<T> fetcher) {
         this.fetcher = fetcher;
         return this;
     }
 
-    @NotNull
-    public StoreBuilder<T> nonObservableFetcher(final @NotNull Func1<BarCode, T> fetcher) {
+    @Nonnull
+    public StoreBuilder<T> nonObservableFetcher(final @Nonnull Func1<BarCode, T> fetcher) {
         this.fetcher = new Fetcher<T>() {
-            @NotNull
+            @Nonnull
             @Override
             public Observable<T> fetch(final BarCode barCode) {
                 return Observable.fromCallable(new Callable<T>() {
@@ -56,23 +56,23 @@ public class StoreBuilder<T> {
         return this;
     }
 
-    @NotNull
-    public StoreBuilder<T> persister(final @NotNull Persister<T> persister) {
+    @Nonnull
+    public StoreBuilder<T> persister(final @Nonnull Persister<T> persister) {
         this.persister = persister;
         return this;
     }
 
-    @NotNull
-    public StoreBuilder<T> persister(final @NotNull DiskRead<T> diskRead,
-                                     final @NotNull DiskWrite<T> diskWrite) {
+    @Nonnull
+    public StoreBuilder<T> persister(final @Nonnull DiskRead<T> diskRead,
+                                     final @Nonnull DiskWrite<T> diskWrite) {
         persister = new Persister<T>() {
-            @NotNull
+            @Nonnull
             @Override
             public Observable<T> read(BarCode barCode) {
                 return diskRead.read(barCode);
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public Observable<Boolean> write(BarCode barCode, T t) {
                 return diskWrite.write(barCode, t);
@@ -81,13 +81,13 @@ public class StoreBuilder<T> {
         return this;
     }
 
-    @NotNull
+    @Nonnull
     public StoreBuilder<T> memory(Cache<BarCode, Observable<T>> memCache) {
         this.memCache = memCache;
         return this;
     }
 
-    @NotNull
+    @Nonnull
     public Store<T> open() {
         if (persister == null) {
             persister = new NoopPersister<>();

@@ -10,11 +10,11 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -34,16 +34,16 @@ public class ParsingStoreBuilder<Raw, Parsed> {
 
     }
 
-    @NotNull
-    public ParsingStoreBuilder<Raw, Parsed> fetcher(final @NotNull Fetcher<Raw> fetcher) {
+    @Nonnull
+    public ParsingStoreBuilder<Raw, Parsed> fetcher(final @Nonnull Fetcher<Raw> fetcher) {
         this.fetcher = fetcher;
         return this;
     }
 
-    @NotNull
-    public ParsingStoreBuilder<Raw, Parsed> nonObservableFetcher(final @NotNull Func1<BarCode, Raw> fetcher) {
+    @Nonnull
+    public ParsingStoreBuilder<Raw, Parsed> nonObservableFetcher(final @Nonnull Func1<BarCode, Raw> fetcher) {
         this.fetcher = new Fetcher<Raw>() {
-            @NotNull
+            @Nonnull
             @Override
             public Observable<Raw> fetch(final BarCode barCode) {
                 return Observable.fromCallable(new Callable<Raw>() {
@@ -58,23 +58,23 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         return this;
     }
 
-    @NotNull
-    public ParsingStoreBuilder<Raw, Parsed> persister(final @NotNull Persister<Raw> persister) {
+    @Nonnull
+    public ParsingStoreBuilder<Raw, Parsed> persister(final @Nonnull Persister<Raw> persister) {
         this.persister = persister;
         return this;
     }
 
-    @NotNull
-    public ParsingStoreBuilder<Raw, Parsed> persister(final @NotNull DiskRead<Raw> diskRead,
-                                                      final @NotNull DiskWrite<Raw> diskWrite) {
+    @Nonnull
+    public ParsingStoreBuilder<Raw, Parsed> persister(final @Nonnull DiskRead<Raw> diskRead,
+                                                      final @Nonnull DiskWrite<Raw> diskWrite) {
         persister = new Persister<Raw>() {
-            @NotNull
+            @Nonnull
             @Override
             public Observable<Raw> read(BarCode barCode) {
                 return diskRead.read(barCode);
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public Observable<Boolean> write(BarCode barCode, Raw raw) {
                 return diskWrite.write(barCode, raw);
@@ -83,39 +83,39 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         return this;
     }
 
-    @NotNull
-    public ParsingStoreBuilder<Raw, Parsed> parser(final @NotNull Func1<Raw, Parsed> parser) {
+    @Nonnull
+    public ParsingStoreBuilder<Raw, Parsed> parser(final @Nonnull Func1<Raw, Parsed> parser) {
         this.parsers.clear();
         this.parsers.add((Parser<Raw, Parsed>) parser);
         return this;
     }
 
-    @NotNull
-    public ParsingStoreBuilder<Raw, Parsed> parser(final @NotNull Parser<Raw, Parsed> parser) {
+    @Nonnull
+    public ParsingStoreBuilder<Raw, Parsed> parser(final @Nonnull Parser<Raw, Parsed> parser) {
         this.parsers.clear();
         this.parsers.add(parser);
         return this;
     }
 
-    @NotNull
-    public ParsingStoreBuilder<Raw, Parsed> parsers(final @NotNull List<Parser> parsers) {
+    @Nonnull
+    public ParsingStoreBuilder<Raw, Parsed> parsers(final @Nonnull List<Parser> parsers) {
         this.parsers.clear();
         this.parsers.addAll(parsers);
         return this;
     }
 
-    @NotNull
+    @Nonnull
     public static <Raw, Parsed> ParsingStoreBuilder<Raw, Parsed> builder() {
         return new ParsingStoreBuilder<>();
     }
 
-    @NotNull
+    @Nonnull
     public ParsingStoreBuilder<Raw, Parsed> memory(Cache<BarCode, Observable<Parsed>> memCache) {
         this.memCache = memCache;
         return this;
     }
 
-    @NotNull
+    @Nonnull
     public Store<Parsed> open() {
         if (persister == null) {
             persister = new NoopPersister<>();

@@ -10,7 +10,7 @@ import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -54,8 +54,9 @@ public class RealStore<Parsed> implements Store<Parsed> {
     }
 
 
-    @NotNull @Override
-    public Observable<Parsed> get(@NotNull final BarCode barCode) {
+    @Nonnull
+    @Override
+    public Observable<Parsed> get(@Nonnull final BarCode barCode) {
         return internalStore.get(barCode);
     }
 
@@ -65,18 +66,18 @@ public class RealStore<Parsed> implements Store<Parsed> {
      *
      * @return data from fetch and store it in memory and persister
      */
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<Parsed> fetch(@NotNull final BarCode barCode) {
+    public Observable<Parsed> fetch(@Nonnull final BarCode barCode) {
         return internalStore.fetch(barCode);
     }
 
-    @NotNull @Override
+    @Nonnull @Override
     public Observable<Parsed> stream() {
         return internalStore.stream();
     }
 
-    @NotNull @Override
+    @Nonnull @Override
     public Observable<Parsed> stream(BarCode id) {
         return internalStore.stream(id);
     }
@@ -92,16 +93,16 @@ public class RealStore<Parsed> implements Store<Parsed> {
      * @param barCode of data to clear
      */
     @Override
-    public void clearMemory(@NotNull final BarCode barCode) {
+    public void clearMemory(@Nonnull final BarCode barCode) {
         internalStore.clearMemory(barCode);
     }
 
-    protected Observable<Parsed> memory(@NotNull BarCode id) {
+    protected Observable<Parsed> memory(@Nonnull BarCode id) {
         return internalStore.memory(id);
     }
 
-    @NotNull
-    protected Observable<Parsed> disk(@NotNull BarCode id) {
+    @Nonnull
+    protected Observable<Parsed> disk(@Nonnull BarCode id) {
         return internalStore.disk(id);
     }
 

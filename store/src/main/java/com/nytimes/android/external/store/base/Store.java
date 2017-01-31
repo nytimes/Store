@@ -3,7 +3,7 @@ package com.nytimes.android.external.store.base;
 
 import com.nytimes.android.external.store.base.impl.BarCode;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 
@@ -23,19 +23,19 @@ public interface Store<T> {
      * Data will be returned from oldest non expired source
      * Sources are Memory Cache, Disk Cache, Inflight, Network Response
      */
-    @NotNull
-    Observable<T> get(@NotNull BarCode barCode);
+    @Nonnull
+    Observable<T> get(@Nonnull BarCode barCode);
 
     /**
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
      */
-    @NotNull
-    Observable<T> fetch(@NotNull BarCode barCode);
+    @Nonnull
+    Observable<T> fetch(@Nonnull BarCode barCode);
 
     /**
      * @return an Observable that emits new items when they arrive.
      */
-    @NotNull
+    @Nonnull
     Observable<T> stream();
 
     /**
@@ -47,7 +47,7 @@ public interface Store<T> {
      * use {@code store.stream().startWith(store.get(barcode))}
      */
     @Deprecated
-    @NotNull
+    @Nonnull
     Observable<T> stream(BarCode id);
 
     /**
@@ -58,7 +58,7 @@ public interface Store<T> {
     /**
      * Purge a particular entry from memory cache.
      */
-    void clearMemory(@NotNull BarCode barCode);
+    void clearMemory(@Nonnull BarCode barCode);
 
 
 }
