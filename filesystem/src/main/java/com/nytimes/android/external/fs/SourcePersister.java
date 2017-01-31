@@ -5,8 +5,7 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
-import org.jetbrains.annotations.NotNull;
-
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import okio.BufferedSource;
@@ -23,9 +22,9 @@ import rx.Observable;
  */
 public class SourcePersister implements Persister<BufferedSource> {
 
-    @NotNull
+    @Nonnull
     private final SourceFileReader sourceFileReader;
-    @NotNull
+    @Nonnull
     private final SourceFileWriter sourceFileWriter;
 
     @Inject
@@ -34,21 +33,21 @@ public class SourcePersister implements Persister<BufferedSource> {
         sourceFileWriter = new SourceFileWriter(fileSystem);
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<BufferedSource> read(@NotNull final BarCode barCode) {
+    public Observable<BufferedSource> read(@Nonnull final BarCode barCode) {
         return sourceFileReader.exists(barCode) ? sourceFileReader.read(barCode) : Observable.<BufferedSource>empty();
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<Boolean> write(@NotNull final BarCode barCode, @NotNull final BufferedSource data) {
+    public Observable<Boolean> write(@Nonnull final BarCode barCode, @Nonnull final BufferedSource data) {
         return sourceFileWriter.write(barCode, data);
     }
 
 
-    @NotNull
-    static String pathForBarcode(@NotNull BarCode barCode) {
+    @Nonnull
+    static String pathForBarcode(@Nonnull BarCode barCode) {
         return barCode.getType() + barCode.getKey();
     }
 

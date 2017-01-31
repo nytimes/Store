@@ -1,9 +1,9 @@
 package com.nytimes.android.external.fs.filesystem;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 /**
  * Factory for {@link FileSystem}.
@@ -19,8 +19,8 @@ public final class FileSystemFactory {
    * @return new instance of {@link FileSystemImpl}.
    * @throws IOException
    */
-  @NotNull
-  public static FileSystem create(@NotNull File root) throws IOException {
+  @Nonnull
+  public static FileSystem create(@Nonnull File root) throws IOException {
     return new FileSystemImpl(root);
   }
 }

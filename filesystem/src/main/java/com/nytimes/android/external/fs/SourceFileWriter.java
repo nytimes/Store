@@ -4,10 +4,9 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.Callable;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import okio.BufferedSource;
@@ -26,11 +25,11 @@ public class SourceFileWriter implements DiskWrite<BufferedSource> {
     }
 
 
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<Boolean> write(@NotNull final BarCode barCode, @NotNull final BufferedSource data) {
+    public Observable<Boolean> write(@Nonnull final BarCode barCode, @Nonnull final BufferedSource data) {
         return Observable.fromCallable(new Callable<Boolean>() {
-            @NotNull
+            @Nonnull
             @Override
             @SuppressWarnings("PMD.SignatureDeclareThrowsException")
             public Boolean call() throws Exception {
