@@ -147,8 +147,6 @@ public class StoreTest {
 
         NoopPersister<String> persister = spy(new NoopPersister<String>());
         Store<String> simpleStore = new RealStore<>(fetcher, persister);
-        simpleStore.clearMemory();
-
 
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));
