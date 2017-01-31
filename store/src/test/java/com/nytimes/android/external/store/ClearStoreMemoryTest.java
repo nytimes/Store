@@ -31,7 +31,7 @@ public class ClearStoreMemoryTest {
                     public Observable<Integer> fetch(BarCode barCode) {
                         return Observable.fromCallable(new Callable<Integer>() {
                             @Override
-                            public Integer call() throws Exception {
+                            public Integer call() {
                                 return networkCalls++;
                             }
                         });
