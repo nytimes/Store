@@ -99,11 +99,9 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                     @Override
                     public Observable<Parsed> call() {
                         return cache(barCode);
-
                     }
                 })
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
-
     }
 
     private Observable<Parsed> cache(@Nonnull final BarCode barCode) {
@@ -203,7 +201,6 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                 .flatMap(new Func1<Raw, Observable<Parsed>>() {
                     @Override
                     public Observable<Parsed> call(Raw raw) {
-                        //Log.i(TAG,"writing and then reading from Persister");
                         return persister().write(barCode, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
                                     @Nonnull
@@ -224,7 +221,6 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     }
 
     void notifySubscribers(Parsed data) {
-        //Log.d(TAG,"notify stream subscribers of fresh data");
         subject.onNext(data);
     }
 
@@ -303,7 +299,6 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @return memory persister size
      */
     private long getCacheSize() {
-//        return memCache.size();
         return 100;
     }
 
