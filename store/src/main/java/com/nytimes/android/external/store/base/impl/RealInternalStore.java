@@ -265,9 +265,9 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
     @Override
     public void clearMemory() {
-        memCache.invalidateAll();
         inFlightRequests.invalidateAll();
         clearDiskIfNoOp();
+        memCache.invalidateAll();
     }
 
     private void clearDiskIfNoOp() {
@@ -283,9 +283,9 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      */
     @Override
     public void clearMemory(@Nonnull final BarCode barCode) {
-        memCache.invalidate(barCode);
         inFlightRequests.invalidate(barCode);
         clearDiskIfNoOp();
+        memCache.invalidate(barCode);
     }
 
     /**
