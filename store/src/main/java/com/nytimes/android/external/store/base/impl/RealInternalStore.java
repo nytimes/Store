@@ -6,6 +6,7 @@ import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.util.NoopPersister;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
 
 import java.util.concurrent.Callable;
@@ -264,7 +265,15 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
     @Override
     public void clearMemory() {
+        inFlightRequests.invalidateAll();
+        clearDiskIfNoOp();
         memCache.invalidateAll();
+    }
+
+    private void clearDiskIfNoOp() {
+        if (persister() instanceof NoopPersister) {
+            persister = new NoopPersister<>();
+        }
     }
 
     /**
@@ -274,6 +283,8 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      */
     @Override
     public void clearMemory(@Nonnull final BarCode barCode) {
+        inFlightRequests.invalidate(barCode);
+        clearDiskIfNoOp();
         memCache.invalidate(barCode);
     }
 
