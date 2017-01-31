@@ -92,6 +92,7 @@ public class StoreBuilder<T> {
         if (persister == null) {
             persister = new NoopPersister<>();
         }
+
         InternalStore<T> internalStore;
 
         if (memCache == null) {
@@ -99,7 +100,7 @@ public class StoreBuilder<T> {
         } else {
             internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<T, T>(), memCache);
         }
-        return new RealStore<>(internalStore);
 
+        return new RealStore<>(internalStore);
     }
 }

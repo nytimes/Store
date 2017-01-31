@@ -43,14 +43,17 @@ public final class BarCode implements Serializable {
         if (this == object) {
             return true;
         }
+
         if (!(object instanceof BarCode)) {
             return false;
         }
+
         BarCode barCode = (BarCode) object;
 
         if (!key.equals(barCode.key)) {
             return false;
         }
+
         if (!type.equals(barCode.type)) {
             return false;
         }
