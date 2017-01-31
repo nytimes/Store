@@ -4,10 +4,10 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 import com.nytimes.android.external.store.base.Persister;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 
@@ -25,8 +25,8 @@ public final class SourcePersisterFactory {
      *
      * @throws IOException
      */
-    @NotNull
-    public static Persister<BufferedSource> create(@NotNull File root) throws IOException {
+    @Nonnull
+    public static Persister<BufferedSource> create(@Nonnull File root) throws IOException {
         if (root == null) {
             throw new IllegalArgumentException("root file cannot be null.");
         }
@@ -39,8 +39,8 @@ public final class SourcePersisterFactory {
      *
      * @throws IOException
      */
-    @NotNull
-    public static Persister<BufferedSource> create(@NotNull FileSystem fileSystem) throws IOException {
+    @Nonnull
+    public static Persister<BufferedSource> create(@Nonnull FileSystem fileSystem) throws IOException {
         if (fileSystem == null) {
             throw new IllegalArgumentException("fileSystem cannot be null.");
         }

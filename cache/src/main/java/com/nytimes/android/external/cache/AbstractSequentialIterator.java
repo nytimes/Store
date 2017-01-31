@@ -3,9 +3,9 @@ package com.nytimes.android.external.cache;
 
 
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.NoSuchElementException;
+
+import javax.annotation.Nullable;
 
 public abstract class AbstractSequentialIterator<T> extends UnmodifiableIterator<T> {
   @Nullable

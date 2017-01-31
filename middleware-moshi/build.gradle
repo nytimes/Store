@@ -8,6 +8,7 @@ dependencies {
     compile libraries.moshi
     compile libraries.rxJava
     compile libraries.dagger
+    compile libraries.jsr305
     testCompile libraries.mockito
     testCompile libraries.junit
 }

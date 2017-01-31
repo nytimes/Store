@@ -5,13 +5,12 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.store.base.Parser;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import okio.BufferedSource;
@@ -21,13 +20,13 @@ public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parse
     private final ObjectMapper objectMapper;
     private final JavaType parsedType;
 
-    public JacksonSourceParser(@NotNull JsonFactory jsonFactory, @NotNull Type type) {
+    public JacksonSourceParser(@Nonnull JsonFactory jsonFactory, @Nonnull Type type) {
         objectMapper = new ObjectMapper(jsonFactory);
         parsedType = objectMapper.constructType(type);
     }
 
     @Inject
-    public JacksonSourceParser(@NotNull ObjectMapper objectMapper, @NotNull Type type) {
+    public JacksonSourceParser(@Nonnull ObjectMapper objectMapper, @Nonnull Type type) {
         this.objectMapper = objectMapper;
         parsedType = objectMapper.constructType(type);
     }
@@ -35,7 +34,7 @@ public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parse
     @Override
     @Nullable
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public Parsed call(@NotNull BufferedSource source) {
+    public Parsed call(@Nonnull BufferedSource source) {
         InputStream inputStream = source.inputStream();
         try {
             return objectMapper.readValue(inputStream, parsedType);

@@ -3,11 +3,10 @@ package com.nytimes.android.external.store.middleware;
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Reader;
 import java.lang.reflect.Type;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
@@ -26,7 +25,7 @@ public class GsonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     }
 
     @Override
-    public Parsed call(@NotNull Reader reader) {
+    public Parsed call(@Nonnull Reader reader) {
         return gson.fromJson(reader, type);
     }
 }

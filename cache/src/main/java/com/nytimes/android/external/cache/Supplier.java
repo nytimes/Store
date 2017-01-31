@@ -5,9 +5,9 @@
 
 package com.nytimes.android.external.cache;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public interface Supplier<T> {
-    @NotNull
+    @Nonnull
     T get();
 }

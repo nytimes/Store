@@ -1,6 +1,6 @@
 package com.nytimes.android.external.cache;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public final class Ascii {
 
@@ -13,8 +13,8 @@ public final class Ascii {
      * characters} have been converted to lowercase. All other characters are copied without
      * modification.
      */
-    @NotNull
-    public static String toLowerCase(@NotNull String string) {
+    @Nonnull
+    public static String toLowerCase(@Nonnull String string) {
         int length = string.length();
         for (int i = 0; i < length; i++) {
             if (isUpperCase(string.charAt(i))) {

@@ -32,7 +32,6 @@ ext.versions = [
         rxAndroid            : '1.2.1',
 
         // Others.
-        intellij             : '9.0.4',
         retrofit             : '2.0.0-beta3',
         retrolambda          : '2.3.0',
         dagger               : '2.5',
@@ -86,7 +85,6 @@ ext.libraries = [
         rxAndroid               : "io.reactivex:rxandroid:$versions.rxAndroid",
 
         // Others.
-        intellijAnnotations     : "com.intellij:annotations:$versions.intellij",
         retrofit                : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitGsonConverter   : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
         retrofitRx              : "com.squareup.retrofit2:adapter-rxjava:$versions.retrofit",

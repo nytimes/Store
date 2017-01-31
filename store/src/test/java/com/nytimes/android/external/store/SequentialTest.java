@@ -5,11 +5,12 @@ import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.Callable;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 
@@ -25,7 +26,7 @@ public class SequentialTest {
         networkCalls = 0;
         store = StoreBuilder.<Integer>builder()
                 .fetcher(new Fetcher<Integer>() {
-                    @NotNull
+                    @Nonnull
                     @Override
                     public Observable<Integer> fetch(BarCode barCode) {
                         return Observable.fromCallable(new Callable<Integer>() {
