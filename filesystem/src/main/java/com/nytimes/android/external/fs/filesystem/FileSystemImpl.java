@@ -3,6 +3,7 @@ package com.nytimes.android.external.fs.filesystem;
 import com.nytimes.android.external.cache.CacheLoader;
 import com.nytimes.android.external.cache.LoadingCache;
 import com.nytimes.android.external.fs.Util;
+import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -89,6 +91,14 @@ class FileSystemImpl implements FileSystem {
     @Override
     public boolean exists(@Nonnull String path) {
         return getFile(path).exists();
+    }
+
+    @Override
+    public boolean isRecordStale(@Nonnull TimeUnit expirationUnit, long expirationDuration, @Nonnull String path) {
+        FSFile file = getFile(path);
+        long now = System.currentTimeMillis();
+        long cuttOffPoint = now - TimeUnit.MILLISECONDS.convert(expirationDuration, expirationUnit);
+        return file.lastModified() < cuttOffPoint;
     }
 
     @Nullable
