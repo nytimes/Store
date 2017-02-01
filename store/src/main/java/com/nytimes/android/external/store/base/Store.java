@@ -27,6 +27,14 @@ public interface Store<T> {
     Observable<T> get(@Nonnull BarCode barCode);
 
     /**
+     * Calls store.get(), additionally will repeat anytime store.clear(barcode) is called
+     * WARNING: getRefreshing(barcode) is an endless observable be careful when combining with operators
+     * that expect an OnComplete event
+     */
+    Observable<T> getRefreshing(@Nonnull final BarCode barCode);
+
+
+    /**
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
      */
     @Nonnull

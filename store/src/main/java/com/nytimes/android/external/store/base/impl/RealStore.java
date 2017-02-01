@@ -60,6 +60,11 @@ public class RealStore<Parsed> implements Store<Parsed> {
         return internalStore.get(barCode);
     }
 
+    @Override
+    public Observable<Parsed> getRefreshing(@Nonnull BarCode barCode) {
+        return internalStore.getRefreshing(barCode);
+    }
+
     /**
      * Will check to see if there exists an in flight observable and return it before
      * going to nerwork
@@ -72,12 +77,14 @@ public class RealStore<Parsed> implements Store<Parsed> {
         return internalStore.fetch(barCode);
     }
 
-    @Nonnull @Override
+    @Nonnull
+    @Override
     public Observable<Parsed> stream() {
         return internalStore.stream();
     }
 
-    @Nonnull @Override
+    @Nonnull
+    @Override
     public Observable<Parsed> stream(BarCode id) {
         return internalStore.stream(id);
     }

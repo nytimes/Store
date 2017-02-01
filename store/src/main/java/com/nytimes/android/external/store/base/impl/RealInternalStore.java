@@ -22,6 +22,9 @@ import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Store to be used for loading an object different data sources
@@ -42,6 +45,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     private Persister<Raw> persister;
     private Func1<Raw, Parsed> parser;
     private BehaviorSubject<Parsed> subject;
+    private PublishSubject<BarCode> clearSubject=PublishSubject.create();
 
     RealInternalStore(Fetcher<Raw> fetcher,
                       Persister<Raw> persister,
@@ -88,6 +92,43 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                 lazyCache(barCode),
                 fetch(barCode)
         ).take(1);
+    }
+
+    @Nonnull
+    public Observable<Parsed> getRefreshing(@Nonnull final BarCode barCode) {
+       return get(barCode).compose(repeatWhenCacheEvicted(barCode));
+    }
+
+
+    private  Observable.Transformer<Parsed, Parsed> repeatWhenCacheEvicted(final BarCode key) {
+        Observable<BarCode> filter = clearSubject.filter(new Func1<BarCode, Boolean>() {
+            @Override
+            public Boolean call(BarCode barCode) {
+                return key.equals(barCode);
+            }
+        });
+        return from(filter);
+    }
+
+    @Nonnull
+    public  <T> Observable.Transformer<T, T> from(@Nonnull final Observable retrySource) {
+        requireNonNull(retrySource);
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> source) {
+                return source.repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> events) {
+                        return events.switchMap(new Func1<Void, Observable<?>>() {
+                            @Override
+                            public Observable<?> call(Void aVoid) {
+                                return retrySource;
+                            }
+                        });
+                    }
+                });
+            }
+        };
     }
 
     /**
@@ -282,6 +323,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         inFlightRequests.invalidate(barCode);
         clearDiskIfNoOp();
         memCache.invalidate(barCode);
+        clearSubject.onNext(barCode);
     }
 
     /**
