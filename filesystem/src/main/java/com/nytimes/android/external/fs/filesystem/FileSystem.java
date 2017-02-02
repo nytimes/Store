@@ -1,7 +1,6 @@
 package com.nytimes.android.external.fs.filesystem;
 
 import com.nytimes.android.external.fs.RecordState;
-import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.io.File;
 import java.io.FileNotFoundException;

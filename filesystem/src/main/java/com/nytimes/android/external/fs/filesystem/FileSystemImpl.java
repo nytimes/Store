@@ -4,7 +4,6 @@ import com.nytimes.android.external.cache.CacheLoader;
 import com.nytimes.android.external.cache.LoadingCache;
 import com.nytimes.android.external.fs.RecordState;
 import com.nytimes.android.external.fs.Util;
-import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
