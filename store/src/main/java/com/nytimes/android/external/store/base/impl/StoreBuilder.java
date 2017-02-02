@@ -26,6 +26,11 @@ public class StoreBuilder<T> {
     private Fetcher<T> fetcher;
     private Persister<T> persister;
     private Cache<BarCode, Observable<T>> memCache;
+    private StalePolicy stalePolicy = StalePolicy.Unspecified;
+
+    public enum StalePolicy {
+        Unspecified, refreshOnStale, networkBeforeStale
+    }
 
     @Nonnull
     public static <Raw> StoreBuilder<Raw> builder() {
@@ -53,6 +58,18 @@ public class StoreBuilder<T> {
                 });
             }
         };
+        return this;
+    }
+
+    @Nonnull
+    public StoreBuilder<T> refreshOnStale() {
+        stalePolicy = StalePolicy.refreshOnStale;
+        return this;
+    }
+
+    @Nonnull
+    public StoreBuilder<T> networkBeforeStale() {
+        stalePolicy = StalePolicy.networkBeforeStale;
         return this;
     }
 

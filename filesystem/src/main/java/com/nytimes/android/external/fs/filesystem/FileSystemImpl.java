@@ -2,6 +2,7 @@ package com.nytimes.android.external.fs.filesystem;
 
 import com.nytimes.android.external.cache.CacheLoader;
 import com.nytimes.android.external.cache.LoadingCache;
+import com.nytimes.android.external.fs.RecordState;
 import com.nytimes.android.external.fs.Util;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
@@ -94,11 +95,18 @@ class FileSystemImpl implements FileSystem {
     }
 
     @Override
-    public boolean isRecordStale(@Nonnull TimeUnit expirationUnit, long expirationDuration, @Nonnull String path) {
+    public RecordState isRecordStale(@Nonnull TimeUnit expirationUnit, long expirationDuration, @Nonnull String path) {
         FSFile file = getFile(path);
+        if (file == null) {
+            return RecordState.MISSING;
+        }
         long now = System.currentTimeMillis();
         long cuttOffPoint = now - TimeUnit.MILLISECONDS.convert(expirationDuration, expirationUnit);
-        return file.lastModified() < cuttOffPoint;
+        if (file.lastModified() < cuttOffPoint) {
+            return RecordState.STALE;
+        } else {
+            return RecordState.FRESH;
+        }
     }
 
     @Nullable

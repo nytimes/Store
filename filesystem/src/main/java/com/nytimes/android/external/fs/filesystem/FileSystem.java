@@ -1,5 +1,6 @@
 package com.nytimes.android.external.fs.filesystem;
 
+import com.nytimes.android.external.fs.RecordState;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.io.File;
@@ -103,7 +104,7 @@ public interface FileSystem {
      * @param path
      * @return
      */
-    boolean isRecordStale(@Nonnull TimeUnit expirationUnit,
-                                 long expirationDuration,
-                                 @Nonnull String path);
+    RecordState isRecordStale(@Nonnull TimeUnit expirationUnit,
+                              long expirationDuration,
+                              @Nonnull String path);
 }

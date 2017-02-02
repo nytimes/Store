@@ -41,7 +41,7 @@ public class SourceFileReader implements DiskRead<BufferedSource> {
         return fileSystem.exists(pathForBarcode(barCode));
     }
 
-    public boolean isStale(@Nonnull BarCode barCode,
+    public RecordState isStale(@Nonnull BarCode barCode,
                            @Nonnull TimeUnit expirationUnit,
                            long expirationDuration) {
         return fileSystem.isRecordStale(expirationUnit, expirationDuration, pathForBarcode(barCode));

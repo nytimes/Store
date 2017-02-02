@@ -23,7 +23,7 @@ public class StaleAwarePersister extends SourcePersister {
         this.expirationUnit = expirationUnit;
     }
 
-    public boolean isRecordStale(@Nonnull BarCode barCode) {
+    public RecordState isRecordStale(@Nonnull BarCode barCode) {
         return sourceFileReader.isStale(barCode, expirationUnit, expirationDuration);
     }
 }
