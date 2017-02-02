@@ -9,11 +9,11 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import org.jetbrains.annotations.Nonnull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -84,13 +84,6 @@ public class ParsingStoreBuilder<Raw, Parsed> {
                 return diskWrite.write(barCode, raw);
             }
         };
-        return this;
-    }
-
-    @Nonnull
-    public ParsingStoreBuilder<Raw, Parsed> parser(final @Nonnull Func1<Raw, Parsed> parser) {
-        this.parsers.clear();
-        this.parsers.add((Parser<Raw, Parsed>) parser);
         return this;
     }
 

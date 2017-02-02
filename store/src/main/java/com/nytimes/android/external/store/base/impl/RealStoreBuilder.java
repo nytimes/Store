@@ -10,10 +10,10 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.beta.Store;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 
@@ -26,34 +26,34 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     private Cache<Key, Observable<Parsed>> memCache;
     private Fetcher<Raw, Key> fetcher;
 
-    @NotNull
+    @Nonnull
     public static <Raw, Parsed, Key> RealStoreBuilder<Raw, Parsed, Key> builder() {
         return new RealStoreBuilder<>();
     }
 
-    @NotNull
-    public RealStoreBuilder<Raw, Parsed, Key> fetcher(final @NotNull Fetcher<Raw, Key> fetcher) {
+    @Nonnull
+    public RealStoreBuilder<Raw, Parsed, Key> fetcher(final @Nonnull Fetcher<Raw, Key> fetcher) {
         this.fetcher = fetcher;
         return this;
     }
 
-    @NotNull
-    public RealStoreBuilder<Raw, Parsed, Key> persister(final @NotNull Persister<Raw, Key> persister) {
+    @Nonnull
+    public RealStoreBuilder<Raw, Parsed, Key> persister(final @Nonnull Persister<Raw, Key> persister) {
         this.persister = persister;
         return this;
     }
 
-    @NotNull
-    public RealStoreBuilder<Raw, Parsed, Key> persister(final @NotNull DiskRead<Raw, Key> diskRead,
-                                                        final @NotNull DiskWrite<Raw, Key> diskWrite) {
+    @Nonnull
+    public RealStoreBuilder<Raw, Parsed, Key> persister(final @Nonnull DiskRead<Raw, Key> diskRead,
+                                                        final @Nonnull DiskWrite<Raw, Key> diskWrite) {
         persister = new Persister<Raw, Key>() {
-            @NotNull
+            @Nonnull
             @Override
             public Observable<Raw> read(Key barCode) {
                 return diskRead.read(barCode);
             }
 
-            @NotNull
+            @Nonnull
             @Override
             public Observable<Boolean> write(Key barCode, Raw raw) {
                 return diskWrite.write(barCode, raw);
@@ -62,27 +62,27 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         return this;
     }
 
-    @NotNull
-    public RealStoreBuilder<Raw, Parsed, Key> parser(final @NotNull Parser<Raw, Parsed> parser) {
+    @Nonnull
+    public RealStoreBuilder<Raw, Parsed, Key> parser(final @Nonnull Parser<Raw, Parsed> parser) {
         this.parsers.clear();
         this.parsers.add(parser);
         return this;
     }
 
-    @NotNull
-    public RealStoreBuilder<Raw, Parsed, Key> parsers(final @NotNull List<Parser> parsers) {
+    @Nonnull
+    public RealStoreBuilder<Raw, Parsed, Key> parsers(final @Nonnull List<Parser> parsers) {
         this.parsers.clear();
         this.parsers.addAll(parsers);
         return this;
     }
 
-    @NotNull
+    @Nonnull
     public RealStoreBuilder<Raw, Parsed, Key> memory(Cache<Key, Observable<Parsed>> memCache) {
         this.memCache = memCache;
         return this;
     }
 
-    @NotNull
+    @Nonnull
     public Store<Parsed, Key> open() {
         if (persister == null) {
             persister = new NoopPersister<>();

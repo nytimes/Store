@@ -8,10 +8,11 @@ import com.nytimes.android.external.store.base.beta.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
 import org.assertj.core.api.Assertions;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.Date;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 
@@ -24,20 +25,20 @@ public class TypeStoreTest {
         Store<Date, Integer> store = StoreBuilder
                 .fromTypes(Integer.class, String.class, Date.class)
                 .fetcher(new Fetcher<String, Integer>() {
-                    @NotNull
+                    @Nonnull
                     @Override
                     public Observable<String> fetch(Integer barCode) {
                         return Observable.just(String.valueOf(barCode));
                     }
                 })
                 .persister(new Persister<String, Integer>() {
-                    @NotNull
+                    @Nonnull
                     @Override
                     public Observable<String> read(Integer barCode) {
                         return Observable.just(String.valueOf(barCode));
                     }
 
-                    @NotNull
+                    @Nonnull
                     @Override
                     public Observable<Boolean> write(Integer barCode, String s) {
                         return Observable.empty();

@@ -10,7 +10,7 @@ import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import org.jetbrains.annotations.Nonnull;
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 import rx.annotations.Beta;

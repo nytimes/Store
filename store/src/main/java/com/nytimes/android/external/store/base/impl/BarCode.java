@@ -15,27 +15,27 @@ import javax.annotation.Nonnull;
  **/
 @Deprecated
 public final class BarCode implements Serializable {
-    @NotNull
+    @Nonnull
     private final String key;
-    @NotNull
+    @Nonnull
     private final String type;
 
-    public BarCode(@NotNull String type, @NotNull String key) {
+    public BarCode(@Nonnull String type, @Nonnull String key) {
         this.key = key;
         this.type = type;
     }
 
-    @NotNull
+    @Nonnull
     public static BarCode empty() {
         return new BarCode("", "");
     }
 
-    @NotNull
+    @Nonnull
     public String getKey() {
         return key;
     }
 
-    @NotNull
+    @Nonnull
     public String getType() {
         return type;
     }

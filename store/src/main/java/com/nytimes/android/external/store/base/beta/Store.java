@@ -3,9 +3,10 @@ package com.nytimes.android.external.store.base.beta;
 
 import com.nytimes.android.external.store.base.impl.BarCode;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import rx.Observable;
+import rx.annotations.Experimental;
 
 /**
  * a {@link com.nytimes.android.external.store.base.impl.StoreBuilder StoreBuilder}
@@ -23,19 +24,28 @@ public interface Store<T, V> {
      * Data will be returned from oldest non expired source
      * Sources are Memory Cache, Disk Cache, Inflight, Network Response
      */
-    @NotNull
-    Observable<T> get(@NotNull V key);
+    @Nonnull
+    Observable<T> get(@Nonnull V key);
+
+    /**
+     * Calls store.get(), additionally will repeat anytime store.clear(barcode) is called
+     * WARNING: getRefreshing(barcode) is an endless observable, be careful when combining
+     * with operators that expect an OnComplete event
+     */
+    @Experimental
+    Observable<T> getRefreshing(@Nonnull final V key);
+
 
     /**
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
      */
-    @NotNull
-    Observable<T> fetch(@NotNull V key);
+    @Nonnull
+    Observable<T> fetch(@Nonnull V key);
 
     /**
      * @return an Observable that emits new items when they arrive.
      */
-    @NotNull
+    @Nonnull
     Observable<T> stream();
 
     /**
@@ -47,7 +57,7 @@ public interface Store<T, V> {
      * use {@code store.stream().startWith(store.get(keyAndRawType))}
      */
     @Deprecated
-    @NotNull
+    @Nonnull
     Observable<T> stream(V id);
 
     /**
@@ -58,7 +68,7 @@ public interface Store<T, V> {
     /**
      * Purge a particular entry from memory cache.
      */
-    void clearMemory(@NotNull V key);
+    void clearMemory(@Nonnull V key);
 
 
 }

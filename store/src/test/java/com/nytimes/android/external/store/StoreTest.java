@@ -144,9 +144,8 @@ public class StoreTest {
     @Test
     public void testNoopAndDefault() {
 
-        NoopPersister<String, BarCode> persister = spy(new NoopPersister<String, BarCode>());
+        Persister<String, BarCode> persister = spy(new NoopPersister<String, BarCode>());
         ProxyStore<String> simpleStore = new SampleStore(fetcher, persister);
-        simpleStore.clearMemory();
 
 
         when(fetcher.fetch(barCode))

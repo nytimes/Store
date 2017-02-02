@@ -1,7 +1,5 @@
 package com.nytimes.android.external.store.base.impl;
 
-import javax.annotation.Nonnull;
-
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
@@ -10,6 +8,8 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.beta.Store;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -60,7 +60,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
     }
 
     @Override
-    public Observable<Parsed> getRefreshing(@Nonnull key barCode) {
+    public Observable<Parsed> getRefreshing(@Nonnull Key barCode) {
         return internalStore.getRefreshing(barCode);
     }
 
