@@ -39,6 +39,7 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
 final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
+    public static final BarCode ALL_BARCODE = new BarCode("all", "all");
     Cache<BarCode, Observable<Parsed>> inFlightRequests;
     Cache<BarCode, Observable<Parsed>> memCache;
 
@@ -106,7 +107,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         Observable<BarCode> filter = refreshSubject.filter(new Func1<BarCode, Boolean>() {
             @Override
             public Boolean call(BarCode barCode) {
-                return key.equals(barCode);
+                return key.equals(barCode)||barCode.equals(ALL_BARCODE);
             }
         });
         return from(filter);
@@ -307,6 +308,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         inFlightRequests.invalidateAll();
         clearDiskIfNoOp();
         memCache.invalidateAll();
+        refreshSubject.onNext(ALL_BARCODE);
     }
 
     private void clearDiskIfNoOp() {

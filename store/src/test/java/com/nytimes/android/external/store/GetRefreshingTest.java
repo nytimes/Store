@@ -48,13 +48,31 @@ public class GetRefreshingTest {
         assertThat(testStore.getValueCount()).isEqualTo(1);
         assertThat(networkCalls).isEqualTo(1);
         //clearing the store should produce another network call
-        this.store.clearMemory(barcode);
+        store.clearMemory(barcode);
         assertThat(testStore.getValueCount()).isEqualTo(2);
         assertThat(networkCalls).isEqualTo(2);
 
         store.get(barcode).test().awaitTerminalEvent();
         assertThat(testStore.getValueCount()).isEqualTo(2);
         assertThat(networkCalls).isEqualTo(2);
+    }
+
+    @Test
+    public void testRefreshOnClearAll(){
+        BarCode barcode1 = new BarCode("type", "key");
+        BarCode barcode2 = new BarCode("type", "key2");
+
+        AssertableSubscriber<Integer> testObservable1 = store.getRefreshing(barcode1).test();
+        AssertableSubscriber<Integer> testObservable2 = store.getRefreshing(barcode2).test();
+        assertThat(testObservable1.getValueCount()).isEqualTo(1);
+        assertThat(testObservable2.getValueCount()).isEqualTo(1);
+
+        assertThat(networkCalls).isEqualTo(2);
+
+        store.clearMemory();
+        assertThat(networkCalls).isEqualTo(4);
+
+
     }
 
 }
