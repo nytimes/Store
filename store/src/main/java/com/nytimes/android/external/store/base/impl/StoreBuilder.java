@@ -26,6 +26,8 @@ public class StoreBuilder<T> {
     private Fetcher<T> fetcher;
     private Persister<T> persister;
     private Cache<BarCode, Observable<T>> memCache;
+
+    @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
     private StalePolicy stalePolicy = StalePolicy.Unspecified;
 
     public enum StalePolicy {
