@@ -18,10 +18,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import rx.Observable;
+import rx.annotations.Experimental;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Store to be used for loading an object different data sources
@@ -35,9 +39,11 @@ import rx.subjects.BehaviorSubject;
 @SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
 final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
+    private static final BarCode ALL_BARCODE = new BarCode("all", "all");
     Cache<BarCode, Observable<Parsed>> inFlightRequests;
     Cache<BarCode, Observable<Parsed>> memCache;
 
+    private final PublishSubject<BarCode> refreshSubject = PublishSubject.create();
     private Fetcher<Raw> fetcher;
     private Persister<Raw> persister;
     private Func1<Raw, Parsed> parser;
@@ -88,6 +94,44 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                 lazyCache(barCode),
                 fetch(barCode)
         ).take(1);
+    }
+
+    @Nonnull
+    @Experimental
+    public Observable<Parsed> getRefreshing(@Nonnull final BarCode barCode) {
+        return get(barCode).compose(repeatWhenCacheEvicted(barCode));
+    }
+
+    @Nonnull
+    private Observable.Transformer<Parsed, Parsed> repeatWhenCacheEvicted(@Nonnull final BarCode key) {
+        Observable<BarCode> filter = refreshSubject.filter(new Func1<BarCode, Boolean>() {
+            @Override
+            public Boolean call(BarCode barCode) {
+                return barCode.equals(key) || barCode.equals(ALL_BARCODE);
+            }
+        });
+        return from(filter);
+    }
+
+    @Nonnull
+    private <T> Observable.Transformer<T, T> from(@Nonnull final Observable retrySource) {
+        requireNonNull(retrySource);
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> source) {
+                return source.repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> events) {
+                        return events.switchMap(new Func1<Void, Observable<?>>() {
+                            @Override
+                            public Observable<?> call(Void aVoid) {
+                                return retrySource;
+                            }
+                        });
+                    }
+                });
+            }
+        };
     }
 
     /**
@@ -270,6 +314,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         inFlightRequests.invalidateAll();
         clearDiskIfNoOp();
         memCache.invalidateAll();
+        refreshSubject.onNext(ALL_BARCODE);
     }
 
     private void clearDiskIfNoOp() {
@@ -288,6 +333,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         inFlightRequests.invalidate(barCode);
         clearDiskIfNoOp();
         memCache.invalidate(barCode);
+        refreshSubject.onNext(barCode);
     }
 
     /**
