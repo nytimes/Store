@@ -58,7 +58,7 @@ public class GetRefreshingTest {
     }
 
     @Test
-    public void testRefreshOnClearAll(){
+    public void testRefreshOnClearAll() {
         BarCode barcode1 = new BarCode("type", "key");
         BarCode barcode2 = new BarCode("type", "key2");
 

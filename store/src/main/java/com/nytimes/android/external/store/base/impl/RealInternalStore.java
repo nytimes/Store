@@ -107,7 +107,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         Observable<BarCode> filter = refreshSubject.filter(new Func1<BarCode, Boolean>() {
             @Override
             public Boolean call(BarCode barCode) {
-                return key.equals(barCode)||barCode.equals(ALL_BARCODE);
+                return key.equals(barCode) || barCode.equals(ALL_BARCODE);
             }
         });
         return from(filter);
