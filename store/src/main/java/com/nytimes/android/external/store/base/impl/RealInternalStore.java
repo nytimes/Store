@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
 final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
-    public static final BarCode ALL_BARCODE = new BarCode("all", "all");
+    private static final BarCode ALL_BARCODE = new BarCode("all", "all");
     Cache<BarCode, Observable<Parsed>> inFlightRequests;
     Cache<BarCode, Observable<Parsed>> memCache;
 
