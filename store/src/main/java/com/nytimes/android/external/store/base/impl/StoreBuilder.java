@@ -28,10 +28,10 @@ public class StoreBuilder<T> {
     private Cache<BarCode, Observable<T>> memCache;
 
     @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
-    private StalePolicy stalePolicy = StalePolicy.Unspecified;
+    private StalePolicy stalePolicy = StalePolicy.UNSPECIFIED;
 
     public enum StalePolicy {
-        Unspecified, refreshOnStale, networkBeforeStale
+        UNSPECIFIED, REFRESH_ON_STALE, NETWORK_BEFORE_STALE
     }
 
     @Nonnull
@@ -65,13 +65,13 @@ public class StoreBuilder<T> {
 
     @Nonnull
     public StoreBuilder<T> refreshOnStale() {
-        stalePolicy = StalePolicy.refreshOnStale;
+        stalePolicy = StalePolicy.REFRESH_ON_STALE;
         return this;
     }
 
     @Nonnull
     public StoreBuilder<T> networkBeforeStale() {
-        stalePolicy = StalePolicy.networkBeforeStale;
+        stalePolicy = StalePolicy.NETWORK_BEFORE_STALE;
         return this;
     }
 
