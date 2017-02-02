@@ -43,11 +43,11 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     Cache<BarCode, Observable<Parsed>> inFlightRequests;
     Cache<BarCode, Observable<Parsed>> memCache;
 
+    private final PublishSubject<BarCode> refreshSubject = PublishSubject.create();
     private Fetcher<Raw> fetcher;
     private Persister<Raw> persister;
     private Func1<Raw, Parsed> parser;
     private BehaviorSubject<Parsed> subject;
-    private PublishSubject<BarCode> refreshSubject = PublishSubject.create();
 
     RealInternalStore(Fetcher<Raw> fetcher,
                       Persister<Raw> persister,
@@ -107,7 +107,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         Observable<BarCode> filter = refreshSubject.filter(new Func1<BarCode, Boolean>() {
             @Override
             public Boolean call(BarCode barCode) {
-                return key.equals(barCode) || barCode.equals(ALL_BARCODE);
+                return barCode.equals(key) || barCode.equals(ALL_BARCODE);
             }
         });
         return from(filter);
