@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import rx.Observable;
+import rx.annotations.Experimental;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
@@ -45,7 +46,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     private Persister<Raw> persister;
     private Func1<Raw, Parsed> parser;
     private BehaviorSubject<Parsed> subject;
-    private PublishSubject<BarCode> clearSubject=PublishSubject.create();
+    private PublishSubject<BarCode> refreshSubject = PublishSubject.create();
 
     RealInternalStore(Fetcher<Raw> fetcher,
                       Persister<Raw> persister,
@@ -95,13 +96,14 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     }
 
     @Nonnull
+    @Experimental
     public Observable<Parsed> getRefreshing(@Nonnull final BarCode barCode) {
-       return get(barCode).compose(repeatWhenCacheEvicted(barCode));
+        return get(barCode).compose(repeatWhenCacheEvicted(barCode));
     }
 
-
-    private  Observable.Transformer<Parsed, Parsed> repeatWhenCacheEvicted(final BarCode key) {
-        Observable<BarCode> filter = clearSubject.filter(new Func1<BarCode, Boolean>() {
+    @Nonnull
+    private Observable.Transformer<Parsed, Parsed> repeatWhenCacheEvicted(@Nonnull final BarCode key) {
+        Observable<BarCode> filter = refreshSubject.filter(new Func1<BarCode, Boolean>() {
             @Override
             public Boolean call(BarCode barCode) {
                 return key.equals(barCode);
@@ -111,7 +113,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     }
 
     @Nonnull
-    public  <T> Observable.Transformer<T, T> from(@Nonnull final Observable retrySource) {
+    private <T> Observable.Transformer<T, T> from(@Nonnull final Observable retrySource) {
         requireNonNull(retrySource);
         return new Observable.Transformer<T, T>() {
             @Override
@@ -323,7 +325,7 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         inFlightRequests.invalidate(barCode);
         clearDiskIfNoOp();
         memCache.invalidate(barCode);
-        clearSubject.onNext(barCode);
+        refreshSubject.onNext(barCode);
     }
 
     /**
