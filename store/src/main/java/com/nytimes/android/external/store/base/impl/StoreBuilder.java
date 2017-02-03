@@ -50,7 +50,9 @@ public final class StoreBuilder<Raw> {
         return new RealStoreBuilder<>();
     }
 
-    //Please Use fromTypes to build Stores, allowing customization of Barcode Type
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
     @Deprecated
     @Nonnull
     public StoreBuilder<Raw> fetcher(final @Nonnull Fetcher<Raw, BarCode> fetcher) {
@@ -58,7 +60,9 @@ public final class StoreBuilder<Raw> {
         return this;
     }
 
-    //Please Use fromTypes to build Stores, allowing customization of Barcode Type
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
     @Deprecated
     @Nonnull
     public StoreBuilder<Raw> persister(final @Nonnull Persister<Raw, BarCode> persister) {
@@ -66,7 +70,9 @@ public final class StoreBuilder<Raw> {
         return this;
     }
 
-    //Please Use fromTypes to build Stores, allowing customization of Barcode Type
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
     @Deprecated
     @Nonnull
     public StoreBuilder<Raw> persister(final @Nonnull DiskRead<Raw, BarCode> diskRead,
@@ -87,7 +93,9 @@ public final class StoreBuilder<Raw> {
         return this;
     }
 
-    //Please Use fromTypes to build Stores, allowing customization of Barcode Type
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
     @Nonnull
     @Deprecated
     public StoreBuilder<Raw> memory(Cache<BarCode, Observable<Raw>> memCache) {
@@ -95,7 +103,9 @@ public final class StoreBuilder<Raw> {
         return this;
     }
 
-    //Please Use fromTypes to build Stores, allowing customization of Barcode Type
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
     @Nonnull
     @Deprecated
     public Store<Raw> open() {
