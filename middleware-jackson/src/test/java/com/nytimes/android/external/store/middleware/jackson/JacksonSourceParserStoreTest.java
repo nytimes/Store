@@ -35,16 +35,17 @@ public class JacksonSourceParserStoreTest {
     private static final String KEY = "key";
     private static final String sourceString =
             "{\"number\":123,\"string\":\"abc\",\"bars\":[{\"string\":\"def\"},{\"string\":\"ghi\"}]}";
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
-    Fetcher<BufferedSource> fetcher;
+    Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
-    Persister<BufferedSource> persister;
-
+    Persister<BufferedSource, BarCode> persister;
     private final BarCode barCode = new BarCode("value", KEY);
+
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(Charset.defaultCharset()))));
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -130,10 +131,6 @@ public class JacksonSourceParserStoreTest {
     public void testNullType() {
         expectedException.expect(NullPointerException.class);
         JacksonParserFactory.createStringParser(null);
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(Charset.defaultCharset()))));
     }
 
 }

@@ -95,8 +95,6 @@
     <rule ref="rulesets/java/naming.xml/SuspiciousHashcodeMethodName" />
     <rule ref="rulesets/java/naming.xml/SuspiciousConstantFieldName" />
     <rule ref="rulesets/java/naming.xml/SuspiciousEqualsMethodName" />
-    <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingTypeName" />
-    <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingMethodName" />
     <rule ref="rulesets/java/naming.xml/NoPackage" />
     <rule ref="rulesets/java/naming.xml/PackageCase" />
     <!--<rule ref="rulesets/java/naming.xml/GenericsNaming" />-->

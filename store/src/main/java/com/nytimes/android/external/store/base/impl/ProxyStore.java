@@ -1,11 +1,12 @@
 package com.nytimes.android.external.store.base.impl;
 
+
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.beta.Store;
+import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
@@ -14,56 +15,57 @@ import javax.annotation.Nonnull;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
+@Deprecated
+public class ProxyStore<Parsed> implements Store<Parsed> {
 
-    private final InternalStore<Parsed, Key> internalStore;
+    private final InternalStore<Parsed, BarCode> internalStore;
 
-    RealStore(InternalStore<Parsed, Key> internalStore) {
+    ProxyStore(InternalStore<Parsed, BarCode> internalStore) {
         this.internalStore = internalStore;
     }
 
-    public RealStore(Fetcher<Parsed, Key> fetcher) {
-        internalStore = new RealInternalStore<>(fetcher, new NoopPersister<Parsed, Key>(),
+    public ProxyStore(Fetcher<Parsed, BarCode> fetcher) {
+        internalStore = new RealInternalStore<>(fetcher, new NoopPersister<Parsed, BarCode>(),
                 new NoopParserFunc<Parsed, Parsed>());
     }
 
-    public RealStore(Fetcher<Parsed, Key> fetcher, Persister<Parsed, Key> persister) {
+    public ProxyStore(Fetcher<Parsed, BarCode> fetcher, Persister<Parsed, BarCode> persister) {
         internalStore = new RealInternalStore<>(fetcher, persister,
                 new NoopParserFunc<Parsed, Parsed>());
     }
 
-    public <Raw> RealStore(Fetcher<Raw, Key> fetcher,
-                           Persister<Raw, Key> persister,
-                           Parser<Raw, Parsed> parser) {
+    public <Raw> ProxyStore(Fetcher<Raw, BarCode> fetcher,
+                            Persister<Raw, BarCode> persister,
+                            Parser<Raw, Parsed> parser) {
         internalStore = new RealInternalStore<>(fetcher, persister, parser);
     }
 
 
-    public <Raw> RealStore(Fetcher<Raw, Key> fetcher,
-                           Persister<Raw, Key> persister,
-                           Func1<Raw, Parsed> parser, Cache<Key, Observable<Parsed>> memCache) {
+    public <Raw> ProxyStore(Fetcher<Raw, BarCode> fetcher,
+                            Persister<Raw, BarCode> persister,
+                            Func1<Raw, Parsed> parser, Cache<BarCode, Observable<Parsed>> memCache) {
         internalStore = new RealInternalStore<>(fetcher, persister, parser, memCache);
     }
 
 
-    public <Raw> RealStore(Fetcher<Raw, Key> fetcher,
-                           Persister<Raw, Key> persister,
-                           Cache<Key, Observable<Parsed>> memCache) {
+    public <Raw> ProxyStore(Fetcher<Raw, BarCode> fetcher,
+                            Persister<Raw, BarCode> persister,
+                            Cache<BarCode, Observable<Parsed>> memCache) {
         internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Parsed>(), memCache);
     }
 
 
     @Nonnull
     @Override
-    public Observable<Parsed> get(@Nonnull final Key barCode) {
+    public Observable<Parsed> get(@Nonnull final BarCode barCode) {
         return internalStore.get(barCode);
     }
 
+    @Nonnull
     @Override
-    public Observable<Parsed> getRefreshing(@Nonnull Key barCode) {
-        return internalStore.getRefreshing(barCode);
+    public Observable<Parsed> getRefreshing(@Nonnull BarCode key) {
+        return internalStore.getRefreshing(key);
     }
-
 
     /**
      * Will check to see if there exists an in flight observable and return it before
@@ -73,7 +75,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
      */
     @Nonnull
     @Override
-    public Observable<Parsed> fetch(@Nonnull final Key barCode) {
+    public Observable<Parsed> fetch(@Nonnull final BarCode barCode) {
         return internalStore.fetch(barCode);
     }
 
@@ -85,7 +87,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
     @Nonnull
     @Override
-    public Observable<Parsed> stream(Key id) {
+    public Observable<Parsed> stream(BarCode id) {
         return internalStore.stream(id);
     }
 
@@ -100,16 +102,16 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
      * @param barCode of data to clear
      */
     @Override
-    public void clearMemory(@Nonnull final Key barCode) {
+    public void clearMemory(@Nonnull final BarCode barCode) {
         internalStore.clearMemory(barCode);
     }
 
-    protected Observable<Parsed> memory(@Nonnull Key id) {
+    protected Observable<Parsed> memory(@Nonnull BarCode id) {
         return internalStore.memory(id);
     }
 
     @Nonnull
-    protected Observable<Parsed> disk(@Nonnull Key id) {
+    protected Observable<Parsed> disk(@Nonnull BarCode id) {
         return internalStore.disk(id);
     }
 

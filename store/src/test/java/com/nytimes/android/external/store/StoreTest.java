@@ -6,7 +6,7 @@ import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.RealStore;
+import com.nytimes.android.external.store.base.impl.ProxyStore;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.util.NoopPersister;
 
@@ -34,11 +34,10 @@ public class StoreTest {
     private static final String DISK = "disk";
     private static final String NETWORK = "fetch";
     private static final String MEMORY = "memory";
-
     @Mock
-    Fetcher<String> fetcher;
+    Fetcher<String, BarCode> fetcher;
     @Mock
-    Persister<String> persister;
+    Persister<String, BarCode> persister;
     private final BarCode barCode = new BarCode("key", "value");
     private final AtomicInteger counter = new AtomicInteger(0);
 
@@ -123,7 +122,7 @@ public class StoreTest {
     @Test
     public void testSubclass() {
 
-        Store<String> simpleStore = new SampleStore(fetcher, persister);
+        ProxyStore<String> simpleStore = new SampleStore(fetcher, persister);
         simpleStore.clearMemory();
 
         when(fetcher.fetch(barCode))
@@ -145,8 +144,9 @@ public class StoreTest {
     @Test
     public void testNoopAndDefault() {
 
-        NoopPersister<String> persister = spy(new NoopPersister<String>());
-        Store<String> simpleStore = new RealStore<>(fetcher, persister);
+        Persister<String, BarCode> persister = spy(new NoopPersister<String, BarCode>());
+        ProxyStore<String> simpleStore = new SampleStore(fetcher, persister);
+
 
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));

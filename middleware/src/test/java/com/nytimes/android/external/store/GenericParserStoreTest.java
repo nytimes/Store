@@ -28,11 +28,15 @@ import static org.mockito.Mockito.when;
 public class GenericParserStoreTest {
     public static final String KEY = "key";
     @Mock
-    Fetcher<BufferedSource> fetcher;
+    Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
-    Persister<BufferedSource> persister;
-
+    Persister<BufferedSource, BarCode> persister;
     private final BarCode barCode = new BarCode("value", KEY);
+
+
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
+    }
 
     @Test
     public void testSimple() {
@@ -69,10 +73,6 @@ public class GenericParserStoreTest {
         result = simpleStore.get(barCode).toBlocking().first();
         assertThat(result.bar).isEqualTo(KEY);
         verify(fetcher, times(1)).fetch(barCode);
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
     }
 
     private static class Foo {

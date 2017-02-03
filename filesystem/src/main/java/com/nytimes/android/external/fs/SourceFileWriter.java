@@ -15,7 +15,7 @@ import rx.Observable;
 import static com.nytimes.android.external.fs.SourcePersister.pathForBarcode;
 import static okio.Okio.buffer;
 
-public class SourceFileWriter implements DiskWrite<BufferedSource> {
+public class SourceFileWriter implements DiskWrite<BufferedSource, BarCode> {
 
     final FileSystem fileSystem;
 
