@@ -237,7 +237,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .flatMap(new Func1<Raw, Observable<Parsed>>() {
                     @Override
                     public Observable<Parsed> call(Raw raw) {
-                        //Log.i(TAG,"writing and then reading from Persister");
                         return persister().write(barCode, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
                                     @Nonnull
@@ -264,7 +263,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     void notifySubscribers(Parsed data) {
-        //Log.d(TAG,"notify stream subscribers of fresh data");
         subject.onNext(data);
     }
 
