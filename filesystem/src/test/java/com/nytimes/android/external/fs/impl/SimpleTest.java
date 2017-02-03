@@ -1,6 +1,7 @@
 package com.nytimes.android.external.fs.impl;
 
 
+import com.nytimes.android.external.fs.RecordState;
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 
@@ -11,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okio.BufferedSource;
 import okio.Okio;
@@ -51,7 +53,15 @@ public class SimpleTest {
         assertThat(fileSystem.read("/boo").readUtf8()).isEqualTo(testString1);
         fileSystem.delete("/boo");
         assertThat(fileSystem.exists("/boo")).isFalse();
-        assertThat(fileSystem.exists("/boo")).isFalse();
+    }
+
+    @Test
+    public void testIsRecordStale() throws IOException {
+        fileSystem.write("/boo", source(testString1));
+        assertThat(fileSystem.read("/boo").readUtf8()).isEqualTo(testString1);
+        assertThat(fileSystem.isRecordStale(TimeUnit.MINUTES, 1, "/boo")).isEqualTo(RecordState.FRESH);
+        assertThat(fileSystem.isRecordStale(TimeUnit.MICROSECONDS, 1, "/boo")).isEqualTo(RecordState.STALE);
+        assertThat(fileSystem.isRecordStale(TimeUnit.DAYS, 1, "/notfound")).isEqualTo(RecordState.MISSING);
     }
 
     @Test
