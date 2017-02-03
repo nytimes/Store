@@ -351,7 +351,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      * @return memory persister size
      */
     private long getCacheSize() {
-//        return memCache.size();
         return 100;
     }
 
