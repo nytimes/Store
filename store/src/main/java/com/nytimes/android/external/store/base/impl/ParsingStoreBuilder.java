@@ -95,7 +95,7 @@ public class ParsingStoreBuilder<Raw, Parsed> {
     }
 
     @Nonnull
-    public ParsingStoreBuilder<Raw, Parsed> parsers(final @Nonnull List<Parser<Raw, Parsed>> parsers) {
+    public ParsingStoreBuilder<Raw, Parsed> parsers(final @Nonnull List<Parser> parsers) {
         this.parsers.clear();
         this.parsers.addAll(parsers);
         return this;
