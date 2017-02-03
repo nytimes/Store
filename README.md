@@ -3,7 +3,7 @@
 
 # Store
 
-Android library for async data loading from multiple sources
+Android library for async data loading from multiple sources.  NOTE: While this library is production ready it is still in early stages and some apis may be renamed/changed.
 
 ### The Problems:
 

@@ -6,6 +6,7 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
+import rx.annotations.Experimental;
 
 /**
  * a {@link com.nytimes.android.external.store.base.impl.StoreBuilder StoreBuilder}
@@ -25,6 +26,15 @@ public interface Store<T> {
      */
     @Nonnull
     Observable<T> get(@Nonnull BarCode barCode);
+
+    /**
+     * Calls store.get(), additionally will repeat anytime store.clear(barcode) is called
+     * WARNING: getRefreshing(barcode) is an endless observable, be careful when combining
+     * with operators that expect an OnComplete event
+     */
+    @Experimental
+    Observable<T> getRefreshing(@Nonnull final BarCode barCode);
+
 
     /**
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
