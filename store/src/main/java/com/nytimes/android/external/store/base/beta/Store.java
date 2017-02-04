@@ -1,4 +1,4 @@
-package com.nytimes.android.external.store.base;
+package com.nytimes.android.external.store.base.beta;
 
 
 import com.nytimes.android.external.store.base.impl.BarCode;
@@ -6,6 +6,7 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
+import rx.annotations.Experimental;
 
 /**
  * a {@link com.nytimes.android.external.store.base.impl.StoreBuilder StoreBuilder}
@@ -16,8 +17,7 @@ import rx.Observable;
  * force a call to {@link Store#fetch(BarCode) Store.fetch() }
  * (skipping cache)
  */
-@Deprecated
-public interface Store<T> extends com.nytimes.android.external.store.base.beta.Store<T, BarCode> {
+public interface Store<T, V> {
 
     /**
      * Return an Observable of T for request Barcode
@@ -25,21 +25,27 @@ public interface Store<T> extends com.nytimes.android.external.store.base.beta.S
      * Sources are Memory Cache, Disk Cache, Inflight, Network Response
      */
     @Nonnull
-    @Override
-    Observable<T> get(@Nonnull BarCode barCode);
+    Observable<T> get(@Nonnull V key);
+
+    /**
+     * Calls store.get(), additionally will repeat anytime store.clear(barcode) is called
+     * WARNING: getRefreshing(barcode) is an endless observable, be careful when combining
+     * with operators that expect an OnComplete event
+     */
+    @Experimental
+    Observable<T> getRefreshing(@Nonnull final V key);
+
 
     /**
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
      */
     @Nonnull
-    @Override
-    Observable<T> fetch(@Nonnull BarCode barCode);
+    Observable<T> fetch(@Nonnull V key);
 
     /**
      * @return an Observable that emits new items when they arrive.
      */
     @Nonnull
-    @Override
     Observable<T> stream();
 
     /**
@@ -52,19 +58,17 @@ public interface Store<T> extends com.nytimes.android.external.store.base.beta.S
      */
     @Deprecated
     @Nonnull
-    Observable<T> stream(BarCode id);
+    Observable<T> stream(V id);
 
     /**
      * Clear the memory cache of all entries
      */
-    @Override
     void clearMemory();
 
     /**
      * Purge a particular entry from memory cache.
      */
-    @Override
-    void clearMemory(@Nonnull BarCode barCode);
+    void clearMemory(@Nonnull V key);
 
 
 }

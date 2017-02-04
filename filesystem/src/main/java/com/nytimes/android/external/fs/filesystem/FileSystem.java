@@ -59,7 +59,7 @@ public interface FileSystem {
      * write a new version of a file. No readers will "see" this version until it has successfully been completely
      * written to and closed. In case of error, the version is deleted from disk.
      *
-     * @param path what to write to
+     * @param path   what to write to
      * @param source a {@link BufferedSource} containing the content to be written to disk. Caller must close it!
      * @throws IOException
      */

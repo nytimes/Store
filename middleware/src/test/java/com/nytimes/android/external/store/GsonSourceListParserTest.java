@@ -31,11 +31,14 @@ import static org.mockito.Mockito.when;
 public class GsonSourceListParserTest {
     public static final String KEY = "key";
     @Mock
-    Fetcher<BufferedSource> fetcher;
+    Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
-    Persister<BufferedSource> persister;
-
+    Persister<BufferedSource, BarCode> persister;
     private final BarCode barCode = new BarCode("value", KEY);
+
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
+    }
 
     @Test
     public void testSimple() {
@@ -77,10 +80,6 @@ public class GsonSourceListParserTest {
         assertThat(result.get(2).value).isEqualTo("c");
 
         verify(fetcher, times(1)).fetch(barCode);
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
     }
 
     private static class Foo {

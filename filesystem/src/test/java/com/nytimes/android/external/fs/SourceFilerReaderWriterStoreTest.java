@@ -26,13 +26,17 @@ import static org.mockito.Mockito.when;
 public class SourceFilerReaderWriterStoreTest {
     public static final String KEY = "key";
     @Mock
-    Fetcher<BufferedSource> fetcher;
+    Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
     SourceFileReader fileReader;
     @Mock
     SourceFileWriter fileWriter;
-
     private final BarCode barCode = new BarCode("value", KEY);
+
+
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
+    }
 
     @Test
     public void testSimple() {
@@ -66,10 +70,6 @@ public class SourceFilerReaderWriterStoreTest {
         result = simpleStore.get(barCode).toBlocking().first();
         assertThat(result.bar).isEqualTo(KEY);
         verify(fetcher, times(1)).fetch(barCode);
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
     }
 
     private static class Foo {

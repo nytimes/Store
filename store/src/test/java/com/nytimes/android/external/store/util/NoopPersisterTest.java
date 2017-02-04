@@ -13,7 +13,7 @@ public class NoopPersisterTest {
     @Test
     public void writeReadTest() {
 
-        NoopPersister<String> persister = new NoopPersister<>();
+        NoopPersister<String, BarCode> persister = new NoopPersister<>();
         boolean success = persister.write(barCode, "foo").toBlocking().first();
         assertThat(success).isTrue();
         String rawValue = persister.read(barCode).toBlocking().first();

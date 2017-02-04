@@ -1,6 +1,5 @@
 package com.nytimes.android.external.store.base.impl;
 
-
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.DiskWrite;
@@ -11,21 +10,19 @@ import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import java.util.concurrent.Callable;
-
 import javax.annotation.Nonnull;
 
 import rx.Observable;
-import rx.functions.Func1;
+import rx.annotations.Beta;
+
 
 /**
  * Builder where there parser is used.
  */
-@SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
-public class StoreBuilder<T> {
-    private Fetcher<T> fetcher;
-    private Persister<T> persister;
-    private Cache<BarCode, Observable<T>> memCache;
+public final class StoreBuilder<Raw> {
+    private Fetcher<Raw, BarCode> fetcher;
+    private Persister<Raw, BarCode> persister;
+    private Cache<BarCode, Observable<Raw>> memCache;
 
     @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
     private StalePolicy stalePolicy = StalePolicy.UNSPECIFIED;
@@ -35,91 +32,113 @@ public class StoreBuilder<T> {
     }
 
     @Nonnull
+    @Deprecated
+    //Please Use fromTypes to build Stores, allowing customization of Barcode Type
     public static <Raw> StoreBuilder<Raw> builder() {
         return new StoreBuilder<>();
     }
 
+    @Beta
+    public static <Key, Raw, Parsed> RealStoreBuilder<Raw, Parsed, Key> fromTypes(Class<Key> keyClass,
+                                                                                  Class<Raw> rawClass,
+                                                                                  Class<Parsed> parsedClass
+    ) {
+        return new RealStoreBuilder<>();
+    }
+
+    @Beta
+    public static <Key, Parsed> RealStoreBuilder<Parsed, Parsed, Key> fromTypes(Class<Key> keyClass,
+                                                                                Class<Parsed> returnClass) {
+        return new RealStoreBuilder<>();
+    }
+
+    @Beta
+    public static <Parsed> RealStoreBuilder<Parsed, Parsed, BarCode> fromTypes(Class<Parsed> returnClass) {
+        return new RealStoreBuilder<>();
+    }
+
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
+    @Deprecated
     @Nonnull
-    public StoreBuilder<T> fetcher(final @Nonnull Fetcher<T> fetcher) {
+    public StoreBuilder<Raw> fetcher(final @Nonnull Fetcher<Raw, BarCode> fetcher) {
         this.fetcher = fetcher;
         return this;
     }
 
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
+    @Deprecated
     @Nonnull
-    public StoreBuilder<T> nonObservableFetcher(final @Nonnull Func1<BarCode, T> fetcher) {
-        this.fetcher = new Fetcher<T>() {
-            @Nonnull
-            @Override
-            public Observable<T> fetch(final BarCode barCode) {
-                return Observable.fromCallable(new Callable<T>() {
-                    @SuppressWarnings("all")
-                    @Override
-                    public T call() throws Exception {
-                        return fetcher.call(barCode);
-                    }
-                });
-            }
-        };
+    public StoreBuilder<Raw> persister(final @Nonnull Persister<Raw, BarCode> persister) {
+        this.persister = persister;
         return this;
     }
 
-    @Nonnull
-    public StoreBuilder<T> refreshOnStale() {
+    public StoreBuilder<Raw> refreshOnStale() {
         stalePolicy = StalePolicy.REFRESH_ON_STALE;
         return this;
     }
 
     @Nonnull
-    public StoreBuilder<T> networkBeforeStale() {
+    public StoreBuilder<Raw> networkBeforeStale() {
         stalePolicy = StalePolicy.NETWORK_BEFORE_STALE;
         return this;
     }
 
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
+    @Deprecated
     @Nonnull
-    public StoreBuilder<T> persister(final @Nonnull Persister<T> persister) {
-        this.persister = persister;
-        return this;
-    }
-
-    @Nonnull
-    public StoreBuilder<T> persister(final @Nonnull DiskRead<T> diskRead,
-                                     final @Nonnull DiskWrite<T> diskWrite) {
-        persister = new Persister<T>() {
+    public StoreBuilder<Raw> persister(final @Nonnull DiskRead<Raw, BarCode> diskRead,
+                                       final @Nonnull DiskWrite<Raw, BarCode> diskWrite) {
+        persister = new Persister<Raw, BarCode>() {
             @Nonnull
             @Override
-            public Observable<T> read(BarCode barCode) {
+            public Observable<Raw> read(BarCode barCode) {
                 return diskRead.read(barCode);
             }
 
             @Nonnull
             @Override
-            public Observable<Boolean> write(BarCode barCode, T t) {
+            public Observable<Boolean> write(BarCode barCode, Raw t) {
                 return diskWrite.write(barCode, t);
             }
         };
         return this;
     }
 
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
     @Nonnull
-    public StoreBuilder<T> memory(Cache<BarCode, Observable<T>> memCache) {
+    @Deprecated
+    public StoreBuilder<Raw> memory(Cache<BarCode, Observable<Raw>> memCache) {
         this.memCache = memCache;
         return this;
     }
 
+    /**
+     * Please Use fromTypes to build Stores, allowing customization of Barcode Type
+     */
     @Nonnull
-    public Store<T> open() {
+    @Deprecated
+    public Store<Raw> open() {
         if (persister == null) {
             persister = new NoopPersister<>();
         }
-
-        InternalStore<T> internalStore;
+        InternalStore<Raw, BarCode> internalStore;
 
         if (memCache == null) {
-            internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<T, T>());
+            internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Raw>());
         } else {
-            internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<T, T>(), memCache);
+            internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Raw>(), memCache);
         }
+        return new ProxyStore<Raw>(internalStore);
 
-        return new RealStore<>(internalStore);
     }
+
 }
