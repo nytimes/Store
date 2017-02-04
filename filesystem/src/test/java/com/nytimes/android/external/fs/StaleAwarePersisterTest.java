@@ -46,8 +46,6 @@ public class StaleAwarePersisterTest {
 
         BufferedSource returnedValue = sourcePersister.read(simple).toBlocking().single();
         assertThat(returnedValue).isEqualTo(bufferedSource);
-
-
     }
 
     @Test

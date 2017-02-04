@@ -97,6 +97,8 @@ public interface FileSystem {
     boolean exists(String file);
 
     /**
+     * compares age of file with given expiration time and returns
+     * appropriate recordState
      *
      * @param expirationUnit
      * @param expirationDuration
