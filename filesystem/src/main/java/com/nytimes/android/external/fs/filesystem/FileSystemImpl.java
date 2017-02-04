@@ -96,7 +96,7 @@ class FileSystemImpl implements FileSystem {
     @Override
     public RecordState isRecordStale(@Nonnull TimeUnit expirationUnit, long expirationDuration, @Nonnull String path) {
         FSFile file = getFile(path);
-        if (file == null) {
+        if (!file.exists()) {
             return RecordState.MISSING;
         }
         long now = System.currentTimeMillis();
