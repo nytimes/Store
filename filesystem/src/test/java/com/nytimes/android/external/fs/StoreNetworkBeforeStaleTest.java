@@ -9,6 +9,7 @@ import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -16,13 +17,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 import okio.BufferedSource;
 import rx.Observable;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class StoreRefreshWhenStaleTest {
+public class StoreNetworkBeforeStaleTest {
     @Mock
     Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
@@ -45,15 +47,15 @@ public class StoreRefreshWhenStaleTest {
         store = StoreBuilder.<BufferedSource>barcode()
                 .fetcher(fetcher)
                 .persister(persister)
-                .refreshOnStale()
+                .networkBeforeStale()
                 .open();
 
     }
 
     @Test
-    public void diskWasRefreshedWhenStaleRecord() {
+    public void networkBeforeDiskWhenStale() {
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(network1));
+                .thenReturn(Observable.<BufferedSource>error(new Exception()));
         when(persister.read(barCode))
                 .thenReturn(Observable.just(disk1));  //get should return from disk
         when(persister.getRecordState(barCode)).thenReturn(RecordState.STALE);
@@ -62,39 +64,43 @@ public class StoreRefreshWhenStaleTest {
                 .thenReturn(Observable.just(true));
 
         store.get(barCode).test().awaitTerminalEvent();
-        verify(fetcher, times(1)).fetch(barCode);
-        verify(persister, times(2)).getRecordState(barCode);
-        verify(persister, times(1)).write(barCode, network1);
-        verify(persister, times(2)).read(barCode); //reads from disk a second time when backfilling
+
+        InOrder inOrder = inOrder(fetcher, persister);
+        inOrder.verify(fetcher, times(1)).fetch(barCode);
+        inOrder.verify(persister, times(1)).read(barCode);
+        verify(persister, never()).write(barCode, network1);
 
     }
 
     @Test
-    public void diskWasNotRefreshedWhenFreshRecord() {
+    public void noNetworkBeforeStaleWhenMissingRecord() {
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(network1));
         when(persister.read(barCode))
-                .thenReturn(Observable.just(disk1))  //get should return from disk
-                .thenReturn(Observable.just(disk2));//backfill should read from disk again
-        when(persister.getRecordState(barCode)).thenReturn(RecordState.FRESH);
+                .thenReturn(Observable.just(disk1));  //get should return from disk
+        when(persister.getRecordState(barCode)).thenReturn(RecordState.MISSING);
 
         when(persister.write(barCode, network1))
                 .thenReturn(Observable.just(true));
 
-        BufferedSource result = store.get(barCode)
-                .test()
-                .awaitTerminalEvent()
-                .getOnNextEvents()
-                .get(0);
-        assertThat(result).isEqualTo(disk1);
-        verify(fetcher, times(0)).fetch(barCode);
-        verify(persister, times(1)).getRecordState(barCode);
+        store.get(barCode).test().awaitTerminalEvent();
 
-        store.clearMemory(barCode);
-        result = store.get(barCode).test().awaitTerminalEvent().getOnNextEvents().get(0);
-        assertThat(result).isEqualTo(disk2);
-        verify(fetcher, times(0)).fetch(barCode);
-        verify(persister, times(2)).getRecordState(barCode);
+        InOrder inOrder = inOrder(fetcher, persister);
+        inOrder.verify(fetcher, times(1)).fetch(barCode);
+        inOrder.verify(persister, times(1)).write(barCode, network1);
+        inOrder.verify(persister, times(1)).read(barCode);
+    }
 
+    @Test
+    public void noNetworkBeforeStaleWhenFreshRecord() {
+        when(persister.read(barCode))
+                .thenReturn(Observable.just(disk1));  //get should return from disk
+        when(persister.getRecordState(barCode)).thenReturn(RecordState.FRESH);
+
+        store.get(barCode).test().awaitTerminalEvent();
+
+        verify(fetcher, never()).fetch(barCode);
+        verify(persister, never()).write(barCode, network1);
+        verify(persister, times(1)).read(barCode);
     }
 }

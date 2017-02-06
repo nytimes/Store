@@ -1,7 +1,5 @@
 package com.nytimes.android.external.fs;
 
-import javax.annotation.Nonnull;
-
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 import com.nytimes.android.external.store.base.Persister;
@@ -9,6 +7,8 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.io.File;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 

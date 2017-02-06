@@ -1,9 +1,9 @@
 package com.nytimes.android.external.fs.impl;
 
 
-import com.nytimes.android.external.store.base.RecordState;
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
+import com.nytimes.android.external.store.base.RecordState;
 
 import org.junit.Before;
 import org.junit.Test;

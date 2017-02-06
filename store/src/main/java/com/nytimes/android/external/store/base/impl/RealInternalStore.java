@@ -26,6 +26,8 @@ import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.nytimes.android.external.store.base.impl.StoreUtil.*;
+
 /**
  * Store to be used for loading an object different data sources
  *
@@ -149,7 +151,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     @Override
     public Observable<Parsed> disk(@Nonnull final Key barCode) {
-        if (StoreUtil.shouldReturnNetworkBeforeStale(persister, stalePolicy, barCode)) {
+        if (shouldReturnNetworkBeforeStale(persister, stalePolicy, barCode)) {
             return Observable.empty();
         }
 
@@ -165,7 +167,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                     public void call(Parsed parsed) {
                         updateMemory(barCode, parsed);
                         if (stalePolicy == StalePolicy.REFRESH_ON_STALE
-                                && StoreUtil.persisterIsStale(barCode, persister)) {
+                                && persisterIsStale(barCode, persister)) {
                             backfillCache(barCode);
                         }
                     }
@@ -240,7 +242,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                         return persister().write(barCode, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
                                     public Observable<Parsed> call(Boolean aBoolean) {
-                                        return disk(barCode);
+                                        return readDisk(barCode);
                                     }
                                 });
                     }

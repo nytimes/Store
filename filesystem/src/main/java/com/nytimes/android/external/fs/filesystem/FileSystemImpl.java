@@ -2,8 +2,8 @@ package com.nytimes.android.external.fs.filesystem;
 
 import com.nytimes.android.external.cache.CacheLoader;
 import com.nytimes.android.external.cache.LoadingCache;
-import com.nytimes.android.external.store.base.RecordState;
 import com.nytimes.android.external.fs.Util;
+import com.nytimes.android.external.store.base.RecordState;
 
 import java.io.File;
 import java.io.FileNotFoundException;
