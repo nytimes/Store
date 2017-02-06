@@ -166,10 +166,24 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                         updateMemory(barCode, parsed);
                         if (stalePolicy == StalePolicy.REFRESH_ON_STALE
                                 && StoreUtil.persisterIsStale(barCode, persister)) {
-                            fetch(barCode);
+                            backfillCache(barCode);
                         }
                     }
                 }).cache();
+    }
+
+    private void backfillCache(@Nonnull Key barCode) {
+        fetch(barCode).subscribe(new Action1<Parsed>() {
+            @Override
+            public void call(Parsed parsed) {
+                //do Nothing we are just backfilling cache
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                //do nothing as we are just backfilling cache
+            }
+        });
     }
 
 

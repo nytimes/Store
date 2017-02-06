@@ -18,8 +18,8 @@ public class RecordPersister extends SourcePersister implements RecordProvider<B
 
     @Inject
     public RecordPersister(FileSystem fileSystem,
-                           @Nonnull TimeUnit expirationUnit,
-                           long expirationDuration) {
+                           long expirationDuration,
+                           @Nonnull TimeUnit expirationUnit) {
         super(fileSystem);
         this.expirationDuration = expirationDuration;
         this.expirationUnit = expirationUnit;
