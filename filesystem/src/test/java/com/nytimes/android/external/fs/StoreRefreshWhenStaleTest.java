@@ -75,7 +75,7 @@ public class StoreRefreshWhenStaleTest {
                 .thenReturn(Observable.just(network1));
         when(persister.read(barCode))
                 .thenReturn(Observable.just(disk1))  //get should return from disk
-                .thenReturn(Observable.just(disk2));//backfill should read from disk again
+                .thenReturn(Observable.just(disk2)); //backfill should read from disk again
         when(persister.getRecordState(barCode)).thenReturn(RecordState.FRESH);
 
         when(persister.write(barCode, network1))
