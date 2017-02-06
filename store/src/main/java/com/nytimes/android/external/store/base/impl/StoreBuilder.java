@@ -24,6 +24,13 @@ public final class StoreBuilder<Raw> {
     private Persister<Raw, BarCode> persister;
     private Cache<BarCode, Observable<Raw>> memCache;
 
+    @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
+    private StalePolicy stalePolicy = StalePolicy.UNSPECIFIED;
+
+    public enum StalePolicy {
+        UNSPECIFIED, REFRESH_ON_STALE, NETWORK_BEFORE_STALE
+    }
+
     @Nonnull
     @Deprecated
     //Please Use fromTypes to build Stores, allowing customization of Barcode Type
@@ -60,6 +67,17 @@ public final class StoreBuilder<Raw> {
     @Nonnull
     public StoreBuilder<Raw> persister(final @Nonnull Persister<Raw, BarCode> persister) {
         this.persister = persister;
+        return this;
+    }
+
+    public StoreBuilder<Raw> refreshOnStale() {
+        stalePolicy = StalePolicy.REFRESH_ON_STALE;
+        return this;
+    }
+
+    @Nonnull
+    public StoreBuilder<Raw> networkBeforeStale() {
+        stalePolicy = StalePolicy.NETWORK_BEFORE_STALE;
         return this;
     }
 

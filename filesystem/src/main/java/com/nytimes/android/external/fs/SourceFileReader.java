@@ -6,6 +6,7 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.io.FileNotFoundException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -38,5 +39,11 @@ public class SourceFileReader implements DiskRead<BufferedSource, BarCode> {
 
     public boolean exists(@Nonnull BarCode barCode) {
         return fileSystem.exists(pathForBarcode(barCode));
+    }
+
+    public RecordState isStale(@Nonnull BarCode barCode,
+                           @Nonnull TimeUnit expirationUnit,
+                           long expirationDuration) {
+        return fileSystem.isRecordStale(expirationUnit, expirationDuration, pathForBarcode(barCode));
     }
 }

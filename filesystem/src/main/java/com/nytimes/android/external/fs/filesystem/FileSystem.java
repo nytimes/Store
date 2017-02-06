@@ -1,9 +1,12 @@
 package com.nytimes.android.external.fs.filesystem;
 
+import com.nytimes.android.external.fs.RecordState;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -92,4 +95,17 @@ public interface FileSystem {
      * @return exists, duh
      */
     boolean exists(String file);
+
+    /**
+     * compares age of file with given expiration time and returns
+     * appropriate recordState
+     *
+     * @param expirationUnit
+     * @param expirationDuration
+     * @param path
+     * @return
+     */
+    RecordState isRecordStale(@Nonnull TimeUnit expirationUnit,
+                              long expirationDuration,
+                              @Nonnull String path);
 }

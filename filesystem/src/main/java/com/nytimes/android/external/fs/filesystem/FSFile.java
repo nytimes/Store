@@ -82,5 +82,9 @@ class FSFile {
         }
         throw new FileNotFoundException(pathValue);
     }
+
+    public long lastModified() {
+        return file.lastModified();
+    }
 }
 

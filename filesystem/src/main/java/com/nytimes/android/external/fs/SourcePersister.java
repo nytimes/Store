@@ -24,9 +24,9 @@ import rx.Observable;
 public class SourcePersister implements Persister<BufferedSource, BarCode> {
 
     @Nonnull
-    private final SourceFileReader sourceFileReader;
+    final SourceFileReader sourceFileReader;
     @Nonnull
-    private final SourceFileWriter sourceFileWriter;
+    final SourceFileWriter sourceFileWriter;
 
     @Inject
     public SourcePersister(FileSystem fileSystem) {
