@@ -5,9 +5,9 @@ import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.beta.Store;
+import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.Date;
@@ -16,14 +16,16 @@ import javax.annotation.Nonnull;
 
 import rx.Observable;
 
-public class TypeStoreTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class StoreBuilderTest {
 
     public static final Date DATE = new Date();
 
     @Test
-    public void simpleTest() {
-        Store<Date, Integer> store = StoreBuilder
-                .fromTypes(Integer.class, String.class, Date.class)
+    public void testBuildersBuildWithCorrectTypes() {
+        //test  is checking whether types are correct in builders
+        Store<Date, Integer> store = StoreBuilder.<Integer, String, Date>parsedWithKey()
                 .fetcher(new Fetcher<String, Integer>() {
                     @Nonnull
                     @Override
@@ -52,8 +54,29 @@ public class TypeStoreTest {
                 })
                 .open();
 
+
+        Store<Date, BarCode> barCodeStore = StoreBuilder.<Date>barcode().fetcher(new Fetcher<Date, BarCode>() {
+            @Nonnull
+            @Override
+            public Observable<Date> fetch(BarCode barCode) {
+                return Observable.just(DATE);
+            }
+        }).open();
+
+
+        Store<Date, Integer> keyStore = StoreBuilder.<Integer, Date>key()
+                .fetcher(new Fetcher<Date, Integer>() {
+                    @Nonnull
+                    @Override
+                    public Observable<Date> fetch(Integer barCode) {
+                        return Observable.just(DATE);
+                    }
+                })
+                .open();
         Date result = store.get(5).toBlocking().first();
-        Assertions.assertThat(result).isEqualTo(DATE);
+        result = barCodeStore.get(new BarCode("test", "5")).toBlocking().first();
+        result = keyStore.get(5).toBlocking().first();
+        assertThat(result).isNotNull();
 
     }
 }
