@@ -15,6 +15,8 @@ import javax.annotation.Nonnull;
 import rx.Observable;
 import rx.annotations.Beta;
 
+import static com.nytimes.android.external.store.base.impl.StalePolicy.UNSPECIFIED;
+
 
 /**
  * Builder where there parser is used.
@@ -24,12 +26,6 @@ public final class StoreBuilder<Raw> {
     private Persister<Raw, BarCode> persister;
     private Cache<BarCode, Observable<Raw>> memCache;
 
-    @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
-    private StalePolicy stalePolicy = StalePolicy.UNSPECIFIED;
-
-    public enum StalePolicy {
-        UNSPECIFIED, REFRESH_ON_STALE, NETWORK_BEFORE_STALE
-    }
 
     @Nonnull
     @Deprecated
@@ -74,17 +70,6 @@ public final class StoreBuilder<Raw> {
     @Nonnull
     public StoreBuilder<Raw> persister(final @Nonnull Persister<Raw, BarCode> persister) {
         this.persister = persister;
-        return this;
-    }
-
-    public StoreBuilder<Raw> refreshOnStale() {
-        stalePolicy = StalePolicy.REFRESH_ON_STALE;
-        return this;
-    }
-
-    @Nonnull
-    public StoreBuilder<Raw> networkBeforeStale() {
-        stalePolicy = StalePolicy.NETWORK_BEFORE_STALE;
         return this;
     }
 
@@ -133,11 +118,13 @@ public final class StoreBuilder<Raw> {
         InternalStore<Raw, BarCode> internalStore;
 
         if (memCache == null) {
-            internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Raw>());
+            internalStore = new RealInternalStore<>(fetcher, persister,
+                    new NoopParserFunc<Raw, Raw>(), UNSPECIFIED);
         } else {
-            internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Raw>(), memCache);
+            internalStore = new RealInternalStore<>(fetcher, persister,
+                    new NoopParserFunc<Raw, Raw>(), memCache, UNSPECIFIED);
         }
-        return new ProxyStore<Raw>(internalStore);
+        return new ProxyStore<>(internalStore);
 
     }
 

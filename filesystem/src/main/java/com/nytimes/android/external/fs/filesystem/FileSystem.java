@@ -1,6 +1,6 @@
 package com.nytimes.android.external.fs.filesystem;
 
-import com.nytimes.android.external.fs.RecordState;
+import com.nytimes.android.external.store.base.RecordState;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -99,13 +99,8 @@ public interface FileSystem {
     /**
      * compares age of file with given expiration time and returns
      * appropriate recordState
-     *
-     * @param expirationUnit
-     * @param expirationDuration
-     * @param path
-     * @return
      */
-    RecordState isRecordStale(@Nonnull TimeUnit expirationUnit,
-                              long expirationDuration,
-                              @Nonnull String path);
+    RecordState getRecordState(@Nonnull TimeUnit expirationUnit,
+                               long expirationDuration,
+                               @Nonnull String path);
 }

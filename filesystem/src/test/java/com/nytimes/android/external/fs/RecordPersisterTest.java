@@ -1,6 +1,7 @@
 package com.nytimes.android.external.fs;
 
 import com.nytimes.android.external.fs.filesystem.FileSystem;
+import com.nytimes.android.external.store.base.RecordState;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
 import org.junit.Before;
@@ -20,7 +21,7 @@ import okio.BufferedSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class StaleAwarePersisterTest {
+public class RecordPersisterTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -29,13 +30,13 @@ public class StaleAwarePersisterTest {
     @Mock
     BufferedSource bufferedSource;
 
-    private StaleAwarePersister sourcePersister;
+    private RecordPersister sourcePersister;
     private final BarCode simple = new BarCode("type", "key");
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        sourcePersister = new StaleAwarePersister(fileSystem, TimeUnit.DAYS, 1L);
+        sourcePersister = new RecordPersister(fileSystem, TimeUnit.DAYS, 1L);
     }
 
     @Test
@@ -50,26 +51,26 @@ public class StaleAwarePersisterTest {
 
     @Test
     public void freshTest() {
-        when(fileSystem.isRecordStale(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
                 .thenReturn(RecordState.FRESH);
 
-        assertThat(sourcePersister.isRecordStale(simple)).isEqualTo(RecordState.FRESH);
+        assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.FRESH);
     }
 
     @Test
     public void staleTest() {
-        when(fileSystem.isRecordStale(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
                 .thenReturn(RecordState.STALE);
 
-        assertThat(sourcePersister.isRecordStale(simple)).isEqualTo(RecordState.STALE);
+        assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.STALE);
     }
 
     @Test
     public void missingTest() {
-        when(fileSystem.isRecordStale(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
                 .thenReturn(RecordState.MISSING);
 
-        assertThat(sourcePersister.isRecordStale(simple)).isEqualTo(RecordState.MISSING);
+        assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.MISSING);
     }
 
     @Test

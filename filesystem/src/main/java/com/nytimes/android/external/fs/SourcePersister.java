@@ -5,9 +5,8 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
-
-import javax.inject.Inject;
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 import okio.BufferedSource;
 import rx.Observable;
@@ -21,7 +20,7 @@ import rx.Observable;
  * .parser(new GsonSourceParser<>(gson, BookResults.class))
  * .open();
  */
-public class SourcePersister implements Persister<BufferedSource, BarCode> {
+public class SourcePersister implements Persister<BufferedSource, BarCode>{
 
     @Nonnull
     final SourceFileReader sourceFileReader;

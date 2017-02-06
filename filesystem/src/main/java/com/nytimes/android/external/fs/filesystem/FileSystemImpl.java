@@ -2,7 +2,7 @@ package com.nytimes.android.external.fs.filesystem;
 
 import com.nytimes.android.external.cache.CacheLoader;
 import com.nytimes.android.external.cache.LoadingCache;
-import com.nytimes.android.external.fs.RecordState;
+import com.nytimes.android.external.store.base.RecordState;
 import com.nytimes.android.external.fs.Util;
 
 import java.io.File;
@@ -94,7 +94,7 @@ class FileSystemImpl implements FileSystem {
     }
 
     @Override
-    public RecordState isRecordStale(@Nonnull TimeUnit expirationUnit, long expirationDuration, @Nonnull String path) {
+    public RecordState getRecordState(@Nonnull TimeUnit expirationUnit, long expirationDuration, @Nonnull String path) {
         FSFile file = getFile(path);
         if (!file.exists()) {
             return RecordState.MISSING;

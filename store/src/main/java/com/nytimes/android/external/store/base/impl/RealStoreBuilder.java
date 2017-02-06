@@ -26,6 +26,9 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     private Cache<Key, Observable<Parsed>> memCache;
     private Fetcher<Raw, Key> fetcher;
 
+    @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
+    private StalePolicy stalePolicy = StalePolicy.UNSPECIFIED;
+
     @Nonnull
     public static <Raw, Parsed, Key> RealStoreBuilder<Raw, Parsed, Key> builder() {
         return new RealStoreBuilder<>();
@@ -82,6 +85,17 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         return this;
     }
 
+    public RealStoreBuilder<Raw, Parsed, Key> refreshOnStale() {
+        stalePolicy = StalePolicy.REFRESH_ON_STALE;
+        return this;
+    }
+
+    @Nonnull
+    public RealStoreBuilder<Raw, Parsed, Key> networkBeforeStale() {
+        stalePolicy = StalePolicy.NETWORK_BEFORE_STALE;
+        return this;
+    }
+
     @Nonnull
     public Store<Parsed, Key> open() {
         if (persister == null) {
@@ -92,9 +106,9 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         RealInternalStore<Raw, Parsed, Key> realInternalStore;
 
         if (memCache == null) {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser);
+            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, stalePolicy);
         } else {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, memCache);
+            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, memCache, stalePolicy);
         }
 
         return new RealStore<>(realInternalStore);
