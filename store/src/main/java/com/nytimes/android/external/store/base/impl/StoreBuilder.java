@@ -34,25 +34,18 @@ public final class StoreBuilder<Raw> {
         return new StoreBuilder<>();
     }
 
-    @Beta
-    public static <Key, Raw, Parsed> RealStoreBuilder<Raw, Parsed, Key> fromTypes(Class<Key> keyClass,
-                                                                                  Class<Raw> rawClass,
-                                                                                  Class<Parsed> parsedClass
-    ) {
+    public static <Parsed> RealStoreBuilder<Parsed, Parsed, BarCode> barcode() {
+        return new RealStoreBuilder<>();
+    }
+
+    public static <Key, Parsed> RealStoreBuilder<Parsed, Parsed, Key> key() {
         return new RealStoreBuilder<>();
     }
 
     @Beta
-    public static <Key, Parsed> RealStoreBuilder<Parsed, Parsed, Key> fromTypes(Class<Key> keyClass,
-                                                                                Class<Parsed> returnClass) {
+    public static <Key, Raw, Parsed> RealStoreBuilder<Raw, Parsed, Key> parsedWithKey() {
         return new RealStoreBuilder<>();
     }
-
-    @Beta
-    public static <Parsed> RealStoreBuilder<Parsed, Parsed, BarCode> fromTypes(Class<Parsed> returnClass) {
-        return new RealStoreBuilder<>();
-    }
-
     /**
      * Please Use fromTypes to build Stores, allowing customization of Barcode Type
      */

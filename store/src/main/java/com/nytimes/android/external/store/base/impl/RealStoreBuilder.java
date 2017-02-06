@@ -8,6 +8,7 @@ import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.beta.Store;
+import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
 import java.util.ArrayList;
@@ -100,6 +101,10 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     public Store<Parsed, Key> open() {
         if (persister == null) {
             persister = new NoopPersister<>();
+        }
+
+        if (parsers.isEmpty()) {
+            parser(new NoopParserFunc<Raw, Parsed>());
         }
 
         Parser<Raw, Parsed> multiParser = new MultiParser<>(parsers);
