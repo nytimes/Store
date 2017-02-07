@@ -40,9 +40,9 @@ public class SourcePersisterTest {
 
     @Test
     public void readExists() throws FileNotFoundException {
-        when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.exists(simple.toString()))
                 .thenReturn(true);
-        when(fileSystem.read(SourcePersister.pathForBarcode(simple))).thenReturn(bufferedSource);
+        when(fileSystem.read(simple.toString())).thenReturn(bufferedSource);
 
         BufferedSource returnedValue = sourcePersister.read(simple).toBlocking().single();
         assertThat(returnedValue).isEqualTo(bufferedSource);
