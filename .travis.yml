@@ -10,6 +10,8 @@ android:
   - extra-android-m2repository
 script:
 - ./gradlew check --stacktrace
+after_success:
+  - gradle/deploy_snapshot.sh
 branches:
   except:
   - gh-pages
@@ -18,5 +20,9 @@ notifications:
 sudo: false
 cache:
   directories:
-  - "$HOME/.m2"
-  - "$HOME/.gradle"
+  - $HOME/.m2
+  - $HOME/.gradle
+env:
+  global:
+  - secure: dKC1kpEFHhnCqt9+txDKxGcrHdFGUUM46KkKGvQXGDkvXFa2RcDiLCQ0qXfJvmdHTRAxvp7xpQeN1Vr2t+792YvWj90z9gPBDcPc3V+5D7MBXKB1PPPO4Kvq15Z8mRmNy64R7YIm35/MPz6TySi/VUmJ8QuoKlkVd3CsQM6GI77YztKyyA4Vrp078SSOCJLbZfQQ+KE/s3C9mIuTqHca8hBuNs8u9kZy8+znc+86NAnpt3aMEwICPHAUZD1AmPSL2WoOgtkVnHn6ShgmL0+vCZI0xesHHH256QCFY6nWA760hWMcD3VtG6WUGv8rjOIrDBAbl50Gp/6MU61OiSqstJKCVGS1ZjKP2pFLcKQTXvRCN5L2v8Q+kwRD9bT4Q06BxOj5JwG8kWBjy3uwlgSmlmh1iGXmlppt8jscpot5ErkevyBaq1w4zjnazR2NGXF04CeT6f8tfrfIEwPvlPNRLYWrA2ybyQMzlLAxQSNqc08FNef2q+djm+FKqN470nKp1bjI737fdrlAnVzSTEYGgn+2VCu1h/2aFldI6R9we3X3XgJo50+W6bQSU7Xj4LX1FjH4r8iZ1C9sfLQeenpwViFbLFb6uhNLd3OF6siTr6SaYYXRgVzStFtIuGT2LJl8a99cx7gXE3kMwo6Tu3Q1aOw1jVMiO5rxyBCwXzNLrBs=
+  - secure: 0MV6JaE+32cPY5qr+nC1UmshP7iwuwL9rbfhY2atJkyl+a31T0O+/u+76b8aNJTU95UZ4+3ZR6tXz/c0W+tEBT2A6JbH1vxHLuAVQPcYEjruTF4QgcMd/6Jm4bjIbaM5M3H6oUNcqNVyTBvpJm1Azc1KjwLWTtrhnnwa6bXTQvB/MHQ5NPMCp+4kolk7iACGP55WfS6thcFjZf+KaHWyN0WPOeSL5eneGIn+sS3ag72KXSxqgZgORJqbVpcOEPTu9Y71MNjcWLKLwZ0USYFNVVVgdY/nfDz61xLKydcQB9f7jvt+QgyncebarVlOQsisV3I/vnzmI2DDTAWz0eOT+4zFJCitQFfFoA+iUh0O8n++H47frEAkJTb01Nrbx0ZPc95iQ+JrKEkw5GgAAuBWJ8zgITFGHi1foBYTPjP8YhEMl3loepSXJmAZ2sdBnBXnwky5Tet8gHOaTATWaSAR15i1KKAjHmQ+pHscN6IQN2uZFDDAbZXjneKCCuUvCIwbO2tebTKRxP5idTgYkmUMN21aPtU3SZyewpBA69+NDwkp5y+1KQbYRVq+DpdR0mKtz4SMp+jLSRxSSl94wFADAaYsoPxr97pVmQQaIK8s5Q9LQBK24JgpE6Ed8fTQIZyf1SszLN98SxCkVFE4q8CS9vskHJ5lQH9/EkexV9L9e9g=
