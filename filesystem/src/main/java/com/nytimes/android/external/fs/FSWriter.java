@@ -10,11 +10,9 @@ import javax.annotation.Nonnull;
 import okio.BufferedSource;
 import rx.Observable;
 
-import static okio.Okio.buffer;
-
-public class FSWriter<T> implements DiskWrite<BufferedSource,T> {
-     final FileSystem fileSystem;
-     final String filenamePrefix;
+public class FSWriter<T> implements DiskWrite<BufferedSource, T> {
+    final FileSystem fileSystem;
+    final String filenamePrefix;
 
     public FSWriter(FileSystem fileSystem, String filenamePrefix) {
         this.fileSystem = fileSystem;
@@ -29,8 +27,9 @@ public class FSWriter<T> implements DiskWrite<BufferedSource,T> {
             @Override
             @SuppressWarnings("PMD.SignatureDeclareThrowsException")
             public Boolean call() throws Exception {
-                fileSystem.write(filenamePrefix + barCode, buffer(data));
+                fileSystem.write(filenamePrefix + barCode, data);
                 return true;
             }
-        });    }
+        });
+    }
 }

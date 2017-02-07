@@ -14,7 +14,16 @@ public class FileSystemPersister<T> implements Persister<BufferedSource, T> {
     private final FSReader<T> fileReader;
     private final FSWriter<Object> fileWriter;
 
-    public FileSystemPersister(FileSystem fileSystem, String filenamePrefix) {
+    @Nonnull
+    public static <T> Persister<BufferedSource, T> create(FileSystem fileSystem,
+                                                          String filenamePrefix) {
+        if (fileSystem == null) {
+            throw new IllegalArgumentException("root file cannot be null.");
+        }
+        return new FileSystemPersister<>(fileSystem, filenamePrefix);
+    }
+
+    private FileSystemPersister(FileSystem fileSystem, String filenamePrefix) {
 
         fileReader = new FSReader<>(fileSystem, filenamePrefix);
         fileWriter = new FSWriter<>(fileSystem, filenamePrefix);

@@ -39,10 +39,11 @@ public final class SourcePersisterFactory {
      * persistence {@link com.nytimes.android.external.fs.filesystem.FileSystem}.
      **/
     @Nonnull
-    public static Persister<BufferedSource, BarCode> create(@Nonnull FileSystem fileSystem)  {
+    public static Persister<BufferedSource, BarCode> create(@Nonnull FileSystem fileSystem) {
         if (fileSystem == null) {
             throw new IllegalArgumentException("fileSystem cannot be null.");
         }
         return new SourcePersister(fileSystem);
     }
+
 }
