@@ -117,9 +117,11 @@ public class ParsingStoreBuilder<Raw, Parsed> {
         RealInternalStore<Raw, Parsed, BarCode> realInternalStore;
 
         if (memCache == null) {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser);
+            realInternalStore = new RealInternalStore<>(fetcher, persister,
+                    multiParser, StalePolicy.UNSPECIFIED);
         } else {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, memCache);
+            realInternalStore = new RealInternalStore<>(fetcher, persister,
+                    multiParser, memCache, StalePolicy.UNSPECIFIED);
         }
 
         return new ProxyStore<>(realInternalStore);

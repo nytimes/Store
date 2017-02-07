@@ -15,6 +15,8 @@ import javax.annotation.Nonnull;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.nytimes.android.external.store.base.impl.StalePolicy.UNSPECIFIED;
+
 @Deprecated
 public class ProxyStore<Parsed> implements Store<Parsed> {
 
@@ -26,32 +28,33 @@ public class ProxyStore<Parsed> implements Store<Parsed> {
 
     public ProxyStore(Fetcher<Parsed, BarCode> fetcher) {
         internalStore = new RealInternalStore<>(fetcher, new NoopPersister<Parsed, BarCode>(),
-                new NoopParserFunc<Parsed, Parsed>());
+                new NoopParserFunc<Parsed, Parsed>(), UNSPECIFIED);
     }
 
     public ProxyStore(Fetcher<Parsed, BarCode> fetcher, Persister<Parsed, BarCode> persister) {
         internalStore = new RealInternalStore<>(fetcher, persister,
-                new NoopParserFunc<Parsed, Parsed>());
+                new NoopParserFunc<Parsed, Parsed>(), UNSPECIFIED);
     }
 
     public <Raw> ProxyStore(Fetcher<Raw, BarCode> fetcher,
                             Persister<Raw, BarCode> persister,
                             Parser<Raw, Parsed> parser) {
-        internalStore = new RealInternalStore<>(fetcher, persister, parser);
+        internalStore = new RealInternalStore<>(fetcher, persister, parser, UNSPECIFIED);
     }
 
 
     public <Raw> ProxyStore(Fetcher<Raw, BarCode> fetcher,
                             Persister<Raw, BarCode> persister,
                             Func1<Raw, Parsed> parser, Cache<BarCode, Observable<Parsed>> memCache) {
-        internalStore = new RealInternalStore<>(fetcher, persister, parser, memCache);
+        internalStore = new RealInternalStore<>(fetcher, persister, parser, memCache, UNSPECIFIED);
     }
 
 
     public <Raw> ProxyStore(Fetcher<Raw, BarCode> fetcher,
                             Persister<Raw, BarCode> persister,
                             Cache<BarCode, Observable<Parsed>> memCache) {
-        internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Parsed>(), memCache);
+        internalStore = new RealInternalStore<>(fetcher, persister,
+                new NoopParserFunc<Raw, Parsed>(), memCache, UNSPECIFIED);
     }
 
 

@@ -15,6 +15,8 @@ import javax.annotation.Nonnull;
 import rx.Observable;
 import rx.annotations.Beta;
 
+import static com.nytimes.android.external.store.base.impl.StalePolicy.UNSPECIFIED;
+
 
 /**
  * Builder where there parser is used.
@@ -23,6 +25,7 @@ public final class StoreBuilder<Raw> {
     private Fetcher<Raw, BarCode> fetcher;
     private Persister<Raw, BarCode> persister;
     private Cache<BarCode, Observable<Raw>> memCache;
+
 
     @Nonnull
     @Deprecated
@@ -108,9 +111,11 @@ public final class StoreBuilder<Raw> {
         InternalStore<Raw, BarCode> internalStore;
 
         if (memCache == null) {
-            internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Raw>());
+            internalStore = new RealInternalStore<>(fetcher, persister,
+                    new NoopParserFunc<Raw, Raw>(), UNSPECIFIED);
         } else {
-            internalStore = new RealInternalStore<>(fetcher, persister, new NoopParserFunc<Raw, Raw>(), memCache);
+            internalStore = new RealInternalStore<>(fetcher, persister,
+                    new NoopParserFunc<Raw, Raw>(), memCache, UNSPECIFIED);
         }
         return new ProxyStore<>(internalStore);
 
