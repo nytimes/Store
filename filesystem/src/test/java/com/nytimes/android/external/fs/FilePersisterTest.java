@@ -23,8 +23,6 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
 
 public class FilePersisterTest {
-
-    public static final String FILENAME_PREFIX = "TEST";
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -34,8 +32,8 @@ public class FilePersisterTest {
     BufferedSource bufferedSource;
 
     private final BarCode simple = new BarCode("type", "key");
+    private final String resolvedPath = new BarCodePathResolver().resolve(simple);
     private Persister<BufferedSource, BarCode> fileSystemPersister;
-    private String resolvedPath = new BarCodePathResolver().resolve(simple);
 
     @Before
     public void setUp() {
