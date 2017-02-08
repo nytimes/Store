@@ -42,7 +42,7 @@ public class ClearStoreMemoryTest {
 
     @Test
     public void testClearSingleBarCode() {
-        // one request should produce one call
+        //one request should produce one call
         BarCode barcode = new BarCode("type", "key");
         store.get(barcode).test().awaitTerminalEvent();
         assertThat(networkCalls).isEqualTo(1);
@@ -58,14 +58,14 @@ public class ClearStoreMemoryTest {
         BarCode b1 = new BarCode("type1", "key1");
         BarCode b2 = new BarCode("type2", "key2");
 
-        // each request should produce one call
+        //each request should produce one call
         store.get(b1).test().awaitTerminalEvent();
         store.get(b2).test().awaitTerminalEvent();
         assertThat(networkCalls).isEqualTo(2);
 
         store.clearMemory();
 
-        // after everything is cleared each request should produce another 2 calls
+        //after everything is cleared each request should produce another 2 calls
         store.get(b1).test().awaitTerminalEvent();
         store.get(b2).test().awaitTerminalEvent();
         assertThat(networkCalls).isEqualTo(4);

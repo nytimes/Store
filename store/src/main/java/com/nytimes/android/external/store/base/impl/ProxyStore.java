@@ -109,6 +109,16 @@ public class ProxyStore<Parsed> implements Store<Parsed> {
         internalStore.clearMemory(barCode);
     }
 
+    @Override
+    public void clear() {
+        internalStore.clear();
+    }
+
+    @Override
+    public void clear(@Nonnull BarCode key) {
+        internalStore.clear(key);
+    }
+
     protected Observable<Parsed> memory(@Nonnull BarCode id) {
         return internalStore.memory(id);
     }

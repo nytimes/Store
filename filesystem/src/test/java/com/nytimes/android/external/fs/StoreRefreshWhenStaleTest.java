@@ -90,7 +90,7 @@ public class StoreRefreshWhenStaleTest {
         verify(fetcher, times(0)).fetch(barCode);
         verify(persister, times(1)).getRecordState(barCode);
 
-        store.clearMemory(barCode);
+        store.clear(barCode);
         result = store.get(barCode).test().awaitTerminalEvent().getOnNextEvents().get(0);
         assertThat(result).isEqualTo(disk2);
         verify(fetcher, times(0)).fetch(barCode);
