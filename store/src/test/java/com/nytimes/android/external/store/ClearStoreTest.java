@@ -1,9 +1,7 @@
 package com.nytimes.android.external.store;
 
-import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.beta.Store;
+import com.nytimes.android.external.store.base.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
@@ -19,22 +17,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
-import rx.observers.AssertableSubscriber;
 
+import static com.nytimes.android.external.store.GetRefreshingTest.ClearingPersister;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GetRefreshingTest {
+public class ClearStoreTest {
     @Mock
     ClearingPersister persister;
     private AtomicInteger networkCalls;
-    private Store<Integer, BarCode> store;
+    private Store<Integer> store;
 
     @Before
     public void setUp() {
         networkCalls = new AtomicInteger(0);
-        store = StoreBuilder.<Integer>barcode()
+        store = StoreBuilder.<Integer>builder()
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override
@@ -52,34 +50,32 @@ public class GetRefreshingTest {
     }
 
     @Test
-    public void testRefreshOnClear() {
+    public void testClearSingleBarCode() {
+        // one request should produce one call
         BarCode barcode = new BarCode("type", "key");
+
         when(persister.read(barcode))
-                .thenReturn(Observable.<Integer>empty()) //read from disk
+                .thenReturn(Observable.<Integer>empty()) //read from disk on get
                 .thenReturn(Observable.just(1)) //read from disk after fetching from network
-                .thenReturn(Observable.<Integer>empty()) //read from disk after clearing disk cache
+                .thenReturn(Observable.<Integer>empty()) //read from disk after clearing
                 .thenReturn(Observable.just(1)); //read from disk after making additional network call
         when(persister.write(barcode, 1)).thenReturn(Observable.just(true));
         when(persister.write(barcode, 2)).thenReturn(Observable.just(true));
 
 
-        AssertableSubscriber<Integer> refreshingObservable = store.getRefreshing(barcode).test();
-        assertThat(refreshingObservable.getValueCount()).isEqualTo(1);
-        assertThat(networkCalls.intValue()).isEqualTo(1);
-        //clearing the store should produce another network call
-        store.clear(barcode);
-        assertThat(refreshingObservable.getValueCount()).isEqualTo(2);
-        assertThat(networkCalls.intValue()).isEqualTo(2);
-
         store.get(barcode).test().awaitTerminalEvent();
-        assertThat(refreshingObservable.getValueCount()).isEqualTo(2);
+        assertThat(networkCalls.intValue()).isEqualTo(1);
+
+        // after clearing the memory another call should be made
+        store.clear(barcode);
+        store.get(barcode).test().awaitTerminalEvent();
         assertThat(networkCalls.intValue()).isEqualTo(2);
     }
 
     @Test
-    public void testRefreshOnClearAll() {
-        BarCode barcode1 = new BarCode("type", "key");
-        BarCode barcode2 = new BarCode("type", "key2");
+    public void testClearAllBarCodes() {
+        BarCode barcode1 = new BarCode("type1", "key1");
+        BarCode barcode2 = new BarCode("type2", "key2");
 
         when(persister.read(barcode1))
                 .thenReturn(Observable.<Integer>empty()) //read from disk
@@ -98,36 +94,17 @@ public class GetRefreshingTest {
         when(persister.write(barcode2, 1)).thenReturn(Observable.just(true));
         when(persister.write(barcode2, 2)).thenReturn(Observable.just(true));
 
-        AssertableSubscriber<Integer> testObservable1 = store.getRefreshing(barcode1).test();
-        AssertableSubscriber<Integer> testObservable2 = store.getRefreshing(barcode2).test();
-        assertThat(testObservable1.getValueCount()).isEqualTo(1);
-        assertThat(testObservable2.getValueCount()).isEqualTo(1);
 
+        // each request should produce one call
+        store.get(barcode1).test().awaitTerminalEvent();
+        store.get(barcode2).test().awaitTerminalEvent();
         assertThat(networkCalls.intValue()).isEqualTo(2);
 
         store.clear();
+
+        // after everything is cleared each request should produce another 2 calls
+        store.get(barcode1).test().awaitTerminalEvent();
+        store.get(barcode2).test().awaitTerminalEvent();
         assertThat(networkCalls.intValue()).isEqualTo(4);
-
-
     }
-    //everything will be mocked
-    static class ClearingPersister implements Persister<Integer, BarCode>, Clearable<BarCode> {
-        @Override
-        public void clear(BarCode key) {
-            throw new RuntimeException();
-        }
-
-        @Nonnull
-        @Override
-        public Observable<Integer> read(BarCode barCode) {
-            throw new RuntimeException();
-        }
-
-        @Nonnull
-        @Override
-        public Observable<Boolean> write(BarCode barCode, Integer integer) {
-            throw new RuntimeException();
-        }
-    }
-
 }

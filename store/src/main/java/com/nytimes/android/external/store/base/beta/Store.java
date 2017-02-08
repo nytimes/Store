@@ -43,8 +43,9 @@ public interface Store<T, V> {
     Observable<T> fetch(@Nonnull V key);
 
     /**
-     * @return an Observable that emits new items when they arrive.
-     */
+     * @return an Observable that emits "fresh" new response from the store that hit the fetcher
+     * WARNING: stream is an endless observable, be careful when combining
+     * with operators that expect an OnComplete event     */
     @Nonnull
     Observable<T> stream();
 
@@ -63,12 +64,21 @@ public interface Store<T, V> {
     /**
      * Clear the memory cache of all entries
      */
+    @Deprecated
     void clearMemory();
 
     /**
      * Purge a particular entry from memory cache.
      */
+    @Deprecated
     void clearMemory(@Nonnull V key);
+
+    void clear();
+
+    /**
+     * Purge a particular entry from memory and disk cache.
+     */
+    void clear(@Nonnull V key);
 
 
 }

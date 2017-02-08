@@ -123,7 +123,7 @@ public class StoreTest {
     public void testSubclass() {
 
         ProxyStore<String> simpleStore = new SampleStore(fetcher, persister);
-        simpleStore.clearMemory();
+        simpleStore.clear();
 
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));

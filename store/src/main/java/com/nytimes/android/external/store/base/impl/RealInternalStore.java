@@ -2,11 +2,11 @@ package com.nytimes.android.external.store.base.impl;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
+import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.util.NoopPersister;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
 
 import java.util.concurrent.Callable;
@@ -309,22 +309,25 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     @Override
+    @Deprecated
     public void clearMemory() {
         inFlightRequests.invalidateAll();
-        clearDiskIfNoOp();
 
 
         for (Key cachedKey : memCache.asMap().keySet()) {
             memCache.invalidate(cachedKey);
+            clearDiskIfNoOp(cachedKey);
             refreshSubject.onNext(cachedKey);
         }
 
     }
 
-    private void clearDiskIfNoOp() {
-        if (persister() instanceof NoopPersister) {
-            persister = new NoopPersister<>();
+    private boolean clearDiskIfNoOp(Key barCode) {
+        if (persister() instanceof Clearable) {
+            ((Clearable<Key>) persister).clear(barCode);
+            return true;
         }
+        return false;
     }
 
     /**
@@ -333,11 +336,33 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      * @param barCode of data to clear
      */
     @Override
+    @Deprecated
     public void clearMemory(@Nonnull final Key barCode) {
         inFlightRequests.invalidate(barCode);
-        clearDiskIfNoOp();
         memCache.invalidate(barCode);
         refreshSubject.onNext(barCode);
+        if (persister instanceof Clearable) {
+            ((Clearable<Key>) persister).clear(barCode);
+        }
+    }
+
+
+    @Override
+    public void clear(){
+        for (Key cachedKey : memCache.asMap().keySet()) {
+            clear(cachedKey);
+        }
+    }
+
+    @Override
+    public void clear(@Nonnull Key key) {
+        inFlightRequests.invalidate(key);
+        memCache.invalidate(key);
+
+        if (persister instanceof Clearable) {
+            ((Clearable<Key>) persister).clear(key);
+        }
+        refreshSubject.onNext(key);
 
     }
 

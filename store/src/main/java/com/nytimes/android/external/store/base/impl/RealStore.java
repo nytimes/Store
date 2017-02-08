@@ -107,6 +107,17 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
         internalStore.clearMemory(barCode);
     }
 
+    @Override
+    public void clear() {
+        internalStore.clear();
+    }
+
+    @Override
+    public void clear(@Nonnull Key key) {
+        internalStore.clear();
+
+    }
+
     protected Observable<Parsed> memory(@Nonnull Key id) {
         return internalStore.memory(id);
     }
