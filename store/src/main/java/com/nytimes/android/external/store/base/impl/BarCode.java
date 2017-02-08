@@ -1,7 +1,5 @@
 package com.nytimes.android.external.store.base.impl;
 
-import com.nytimes.android.external.store.base.beta.Store;
-
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
