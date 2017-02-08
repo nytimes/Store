@@ -4,17 +4,19 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskRead;
 
 import java.io.FileNotFoundException;
-import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
+import rx.Emitter;
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * FSReader is used when persisting from file system
  * PathResolver will be used in creating file system paths based on cache keys.
  * Make sure to have keys containing same data resolve to same "path"
+ *
  * @param <T> key type
  */
 public class FSReader<T> implements DiskRead<BufferedSource, T> {
@@ -29,15 +31,24 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> read(final T key) {
-        final String resolvedKey = pathResolver.resolve(key);
-
-        return fileSystem.exists(resolvedKey) ?
-            Observable.fromCallable(new Callable<BufferedSource>() {
-                @Override
-                public BufferedSource call() throws FileNotFoundException {
-                    return fileSystem.read(resolvedKey);
+        return Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
+            @Override
+            public void call(Emitter<BufferedSource> emitter) {
+                String resolvedKey = pathResolver.resolve(key);
+                boolean exists = fileSystem.exists(resolvedKey);
+              
+                if (exists) {
+                    try {
+                        BufferedSource bufferedSource = fileSystem.read(resolvedKey);
+                        emitter.onNext(bufferedSource);
+                        emitter.onCompleted();
+                    } catch (FileNotFoundException e) {
+                        emitter.onError(e);
+                    }
+                } else {
+                    emitter.onCompleted();
                 }
-            }) :
-            Observable.<BufferedSource>empty();
+            }
+        }, Emitter.BackpressureMode.NONE);
     }
 }
