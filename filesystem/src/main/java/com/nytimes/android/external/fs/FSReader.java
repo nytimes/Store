@@ -4,17 +4,19 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskRead;
 
 import java.io.FileNotFoundException;
-import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
+import rx.Emitter;
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * FSReader is used when persisting from file system
  * PathResolver will be used in creating file system paths based on cache keys.
  * Make sure to have keys containing same data resolve to same "path"
+ *
  * @param <T> key type
  */
 public class FSReader<T> implements DiskRead<BufferedSource, T> {
@@ -29,13 +31,22 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> read(final T id) {
-        return fileSystem.exists(pathResolver.resolve(id)) ?
-                Observable.fromCallable(new Callable<BufferedSource>() {
-                    @Override
-                    public BufferedSource call() throws FileNotFoundException {
-                        return fileSystem.read(pathResolver.resolve(id));
+        return Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
+            @Override
+            public void call(Emitter<BufferedSource> emitter) {
+                boolean exists = fileSystem.exists(pathResolver.resolve(id));
+                if (exists) {
+                    try {
+                        BufferedSource bufferedSource = fileSystem.read(pathResolver.resolve(id));
+                        emitter.onNext(bufferedSource);
+                        emitter.onCompleted();
+                    } catch (FileNotFoundException e) {
+                        emitter.onError(e);
                     }
-                }) :
-                Observable.<BufferedSource>empty();
+                } else {
+                    emitter.onCompleted();
+                }
+            }
+        }, Emitter.BackpressureMode.NONE);
     }
 }
