@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.jackson.data.Foo;
 
 import org.junit.Before;
@@ -68,7 +68,7 @@ public class JacksonSourceParserStoreTest {
     @Test
     public void testDefaultJacksonSourceParser() {
         Parser<BufferedSource, Foo> parser = JacksonParserFactory.createSourceParser(Foo.class);
-        Store<Foo> store = ParsingStoreBuilder.<BufferedSource, Foo>builder()
+        Store<Foo, BarCode> store = StoreBuilder.<BarCode, BufferedSource, Foo>parsedWithKey()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)
@@ -87,7 +87,7 @@ public class JacksonSourceParserStoreTest {
 
         Parser<BufferedSource, Foo> parser = JacksonParserFactory.createSourceParser(jsonFactory, Foo.class);
 
-        Store<Foo> store = ParsingStoreBuilder.<BufferedSource, Foo>builder()
+        Store<Foo, BarCode> store = StoreBuilder.<BarCode, BufferedSource, Foo>parsedWithKey()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)

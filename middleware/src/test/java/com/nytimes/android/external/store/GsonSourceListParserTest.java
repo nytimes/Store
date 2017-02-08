@@ -5,9 +5,9 @@ import com.google.gson.reflect.TypeToken;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
 
 import org.junit.Test;
@@ -48,11 +48,13 @@ public class GsonSourceListParserTest {
                 GsonParserFactory.createSourceParser(new Gson(), new TypeToken<List<Foo>>() {
                 }.getType());
 
-        Store<List<Foo>> simpleStore = ParsingStoreBuilder.<BufferedSource, List<Foo>>builder()
-                .persister(persister)
-                .fetcher(fetcher)
-                .parser(parser)
-                .open();
+
+        Store<List<Foo>, BarCode> simpleStore =
+                StoreBuilder.<BarCode, BufferedSource, List<Foo>>parsedWithKey()
+                        .persister(persister)
+                        .fetcher(fetcher)
+                        .parser(parser)
+                        .open();
 
         Foo foo = new Foo("a");
         Foo foo2 = new Foo("b");

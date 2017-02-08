@@ -2,9 +2,9 @@ package com.nytimes.android.external.fs;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonSourceParser;
 
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class SourceFilerReaderWriterStoreTest {
     public void testSimple() {
         MockitoAnnotations.initMocks(this);
         GsonSourceParser<Foo> parser = new GsonSourceParser<>(new Gson(), Foo.class);
-        Store<Foo> simpleStore = new ParsingStoreBuilder<BufferedSource, Foo>()
+        Store<Foo, BarCode> simpleStore = StoreBuilder.<BarCode, BufferedSource, Foo>parsedWithKey()
                 .persister(fileReader, fileWriter)
                 .fetcher(fetcher)
                 .parser(parser)

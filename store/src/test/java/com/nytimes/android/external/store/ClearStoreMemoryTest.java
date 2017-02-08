@@ -1,7 +1,7 @@
 package com.nytimes.android.external.store;
 
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
@@ -18,13 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClearStoreMemoryTest {
 
-    private int networkCalls = 0;
-    private Store<Integer> store;
+    int networkCalls = 0;
+    private Store<Integer, BarCode> store;
 
     @Before
     public void setUp() {
         networkCalls = 0;
-        store = StoreBuilder.<Integer>builder()
+        store = StoreBuilder.<Integer>barcode()
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override

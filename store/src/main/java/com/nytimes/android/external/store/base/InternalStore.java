@@ -1,6 +1,6 @@
 package com.nytimes.android.external.store.base;
 
-import com.nytimes.android.external.store.base.beta.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 
 import javax.annotation.Nonnull;
 

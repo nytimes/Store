@@ -1,7 +1,7 @@
 package com.nytimes.android.external.store;
 
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
@@ -16,12 +16,12 @@ import rx.Observable;
 
 public class DontCacheErrorsTest {
 
-    private boolean shouldThrow;
-    private Store<Integer> store;
+    boolean shouldThrow;
+    private Store<Integer, BarCode> store;
 
     @Before
     public void setUp() {
-        store = StoreBuilder.<Integer>builder()
+        store = StoreBuilder.<Integer>barcode()
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override

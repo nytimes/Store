@@ -1,7 +1,5 @@
-package com.nytimes.android.external.store.base.beta;
+package com.nytimes.android.external.store.base.impl;
 
-
-import com.nytimes.android.external.store.base.impl.BarCode;
 
 import javax.annotation.Nonnull;
 
