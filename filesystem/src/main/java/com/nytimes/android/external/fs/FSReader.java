@@ -30,14 +30,16 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> read(final T id) {
+    public Observable<BufferedSource> read(final T key) {
         return Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
             @Override
             public void call(Emitter<BufferedSource> emitter) {
-                boolean exists = fileSystem.exists(pathResolver.resolve(id));
+                String resolvedKey = pathResolver.resolve(key);
+                boolean exists = fileSystem.exists(resolvedKey);
+              
                 if (exists) {
                     try {
-                        BufferedSource bufferedSource = fileSystem.read(pathResolver.resolve(id));
+                        BufferedSource bufferedSource = fileSystem.read(resolvedKey);
                         emitter.onNext(bufferedSource);
                         emitter.onCompleted();
                     } catch (FileNotFoundException e) {
