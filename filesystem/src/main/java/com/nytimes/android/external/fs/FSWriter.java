@@ -9,14 +9,19 @@ import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 import rx.Observable;
-
+/**
+ * FSReader is used when persisting to file system
+ * PathResolver will be used in creating file system paths based on cache keys.
+ * Make sure to have keys containing same data resolve to same "path"
+ * @param <T> key type
+ */
 public class FSWriter<T> implements DiskWrite<BufferedSource, T> {
     final FileSystem fileSystem;
-    final String filenamePrefix;
+    final PathResolver<T> pathResolver;
 
-    public FSWriter(FileSystem fileSystem, String filenamePrefix) {
+    public FSWriter(FileSystem fileSystem, PathResolver<T> pathResolver) {
         this.fileSystem = fileSystem;
-        this.filenamePrefix = filenamePrefix;
+        this.pathResolver = pathResolver;
     }
 
     @Nonnull
@@ -27,7 +32,7 @@ public class FSWriter<T> implements DiskWrite<BufferedSource, T> {
             @Override
             @SuppressWarnings("PMD.SignatureDeclareThrowsException")
             public Boolean call() throws Exception {
-                fileSystem.write(filenamePrefix + barCode, data);
+                fileSystem.write(pathResolver.resolve(barCode), data);
                 return true;
             }
         });

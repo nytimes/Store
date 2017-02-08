@@ -6,6 +6,7 @@ import rx.Observable;
 
 /**
  * Interface for fetching data from persister
+ * when implementing also think about implementing PathResolver to ease in creating primary keys
  *
  * @param <Raw> data type before parsing
  */

@@ -7,28 +7,31 @@ import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 import rx.Observable;
-
-public class FileSystemPersister<T> implements Persister<BufferedSource, T> {
+/**
+ * FileSystemPersister is used when persisting to/from file system
+ * PathResolver will be used in creating file system paths based on cache keys.
+ * Make sure to have keys containing same data resolve to same "path"
+ * @param <T> key type
+ */
+public final class FileSystemPersister<T> implements Persister<BufferedSource, T> {
     final FileSystem fileSystem;
-    final String filenamePrefix;
     private final FSReader<T> fileReader;
-    private final FSWriter<Object> fileWriter;
+    private final FSWriter<T> fileWriter;
+
+    private FileSystemPersister(FileSystem fileSystem, PathResolver<T> pathResolver) {
+
+        fileReader = new FSReader<>(fileSystem, pathResolver);
+        fileWriter = new FSWriter<>(fileSystem, pathResolver);
+        this.fileSystem = fileSystem;
+    }
 
     @Nonnull
     public static <T> Persister<BufferedSource, T> create(FileSystem fileSystem,
-                                                          String filenamePrefix) {
+                                                          PathResolver<T> pathResolver) {
         if (fileSystem == null) {
             throw new IllegalArgumentException("root file cannot be null.");
         }
-        return new FileSystemPersister<>(fileSystem, filenamePrefix);
-    }
-
-    private FileSystemPersister(FileSystem fileSystem, String filenamePrefix) {
-
-        fileReader = new FSReader<>(fileSystem, filenamePrefix);
-        fileWriter = new FSWriter<>(fileSystem, filenamePrefix);
-        this.fileSystem = fileSystem;
-        this.filenamePrefix = filenamePrefix;
+        return new FileSystemPersister<>(fileSystem, pathResolver);
     }
 
     @Nonnull

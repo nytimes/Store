@@ -35,18 +35,19 @@ public class FilePersisterTest {
 
     private final BarCode simple = new BarCode("type", "key");
     private Persister<BufferedSource, BarCode> fileSystemPersister;
+    private String resolvedPath = new BarCodePathResolver().resolve(simple);
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        fileSystemPersister = FileSystemPersister.create(fileSystem, FILENAME_PREFIX);
+        fileSystemPersister = FileSystemPersister.create(fileSystem, new BarCodePathResolver());
     }
 
     @Test
     public void readExists() throws FileNotFoundException {
-        when(fileSystem.exists(FILENAME_PREFIX + simple))
+        when(fileSystem.exists(resolvedPath))
                 .thenReturn(true);
-        when(fileSystem.read(FILENAME_PREFIX + simple)).thenReturn(bufferedSource);
+        when(fileSystem.read(resolvedPath)).thenReturn(bufferedSource);
 
         BufferedSource returnedValue = fileSystemPersister.read(simple).toBlocking().single();
         assertThat(returnedValue).isEqualTo(bufferedSource);
@@ -55,7 +56,7 @@ public class FilePersisterTest {
     @Test
     public void readDoesNotExist() throws FileNotFoundException {
         expectedException.expect(NoSuchElementException.class);
-        when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.exists(resolvedPath))
                 .thenReturn(false);
 
         fileSystemPersister.read(simple).toBlocking().single();
@@ -63,17 +64,16 @@ public class FilePersisterTest {
 
     @Test
     public void writeThenRead() throws IOException {
-        when(fileSystem.read(FILENAME_PREFIX + simple)).thenReturn(bufferedSource);
-        when(fileSystem.exists(FILENAME_PREFIX + simple)).thenReturn(true);
+        when(fileSystem.read(resolvedPath)).thenReturn(bufferedSource);
+        when(fileSystem.exists(resolvedPath)).thenReturn(true);
         fileSystemPersister.write(simple, bufferedSource).toBlocking().single();
         BufferedSource source = fileSystemPersister.read(simple).toBlocking().first();
         InOrder inOrder = inOrder(fileSystem);
-        inOrder.verify(fileSystem).write(FILENAME_PREFIX + simple, bufferedSource);
-        inOrder.verify(fileSystem).exists(FILENAME_PREFIX + simple);
-        inOrder.verify(fileSystem).read(FILENAME_PREFIX + simple);
+        inOrder.verify(fileSystem).write(resolvedPath, bufferedSource);
+        inOrder.verify(fileSystem).exists(resolvedPath);
+        inOrder.verify(fileSystem).read(resolvedPath);
 
         assertThat(source).isEqualTo(bufferedSource);
-
 
 
     }
