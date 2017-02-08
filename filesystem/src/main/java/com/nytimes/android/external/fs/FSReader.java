@@ -28,14 +28,16 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> read(final T id) {
-        return fileSystem.exists(pathResolver.resolve(id)) ?
-                Observable.fromCallable(new Callable<BufferedSource>() {
-                    @Override
-                    public BufferedSource call() throws FileNotFoundException {
-                        return fileSystem.read(pathResolver.resolve(id));
-                    }
-                }) :
-                Observable.<BufferedSource>empty();
+    public Observable<BufferedSource> read(final T key) {
+        final String resolvedKey = pathResolver.resolve(key);
+
+        return fileSystem.exists(resolvedKey) ?
+            Observable.fromCallable(new Callable<BufferedSource>() {
+                @Override
+                public BufferedSource call() throws FileNotFoundException {
+                    return fileSystem.read(resolvedKey);
+                }
+            }) :
+            Observable.<BufferedSource>empty();
     }
 }
