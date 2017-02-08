@@ -1,6 +1,6 @@
 package com.nytimes.android.sample;
 
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.beta.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
@@ -18,7 +18,7 @@ import static junit.framework.Assert.assertEquals;
  */
 public class StoreIntegrationTest {
 
-    private Store<String> testStore;
+    private Store<String, BarCode> testStore;
 
     @Test
     public void addition_isCorrect() throws Exception {
@@ -28,7 +28,7 @@ public class StoreIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        testStore = StoreBuilder.<String>builder()
+        testStore = StoreBuilder.<String>barcode()
                 .fetcher(barCode -> Observable.just("hello"))
                 .open();
 

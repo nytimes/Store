@@ -11,9 +11,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nytimes.android.external.fs.SourcePersisterFactory;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.beta.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
 import com.nytimes.android.sample.BuildConfig;
 import com.nytimes.android.sample.R;
@@ -40,7 +40,7 @@ import static android.widget.Toast.makeText;
 
 public class PersistingStoreActivity extends AppCompatActivity {
 
-    private Persister<BufferedSource,BarCode> persister;
+    private Persister<BufferedSource, BarCode> persister;
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
 
@@ -92,15 +92,15 @@ public class PersistingStoreActivity extends AppCompatActivity {
                 .map(Children::data);
     }
 
-    private Store<RedditData> provideRedditStore() {
-        return ParsingStoreBuilder.<BufferedSource, RedditData>builder()
+    private Store<RedditData, BarCode> provideRedditStore() {
+        return StoreBuilder.<BarCode, BufferedSource, RedditData>parsedWithKey()
                 .fetcher(this::fetcher)
                 .persister(persister)
                 .parser(GsonParserFactory.createSourceParser(provideGson(), RedditData.class))
                 .open();
     }
 
-    private Persister<BufferedSource,BarCode> newPersister() throws IOException {
+    private Persister<BufferedSource, BarCode> newPersister() throws IOException {
         return SourcePersisterFactory.create(getApplicationContext().getCacheDir());
     }
 

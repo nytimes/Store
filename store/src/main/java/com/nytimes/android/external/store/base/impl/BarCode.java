@@ -2,8 +2,8 @@ package com.nytimes.android.external.store.base.impl;
 
 import com.nytimes.android.external.store.base.beta.Store;
 
-
 import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
  * Barcode will be passed to   Fetcher
  * and {@link com.nytimes.android.external.store.base.Persister  Persister}
  **/
-@Deprecated
 public final class BarCode implements Serializable {
     @Nonnull
     private final String key;

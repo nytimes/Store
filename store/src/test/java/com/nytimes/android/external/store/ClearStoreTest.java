@@ -1,7 +1,7 @@
 package com.nytimes.android.external.store;
 
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.beta.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
@@ -26,13 +26,13 @@ import static org.mockito.Mockito.when;
 public class ClearStoreTest {
     @Mock
     ClearingPersister persister;
-    private AtomicInteger networkCalls;
-    private Store<Integer> store;
+    AtomicInteger networkCalls;
+    private Store<Integer, BarCode> store;
 
     @Before
     public void setUp() {
         networkCalls = new AtomicInteger(0);
-        store = StoreBuilder.<Integer>builder()
+        store = StoreBuilder.<Integer>barcode()
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override

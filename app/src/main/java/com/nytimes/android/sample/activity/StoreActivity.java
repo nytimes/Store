@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.beta.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.sample.BuildConfig;
@@ -80,8 +80,8 @@ public class StoreActivity extends AppCompatActivity {
                 .map(Children::data);
     }
 
-    private Store<RedditData> provideRedditStore() {
-        return StoreBuilder.<RedditData>builder()
+    private Store<RedditData, BarCode> provideRedditStore() {
+        return StoreBuilder.<RedditData>barcode()
                 .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
                 .open();
     }
