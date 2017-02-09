@@ -13,8 +13,7 @@ import javax.annotation.Nonnull;
  **/
 public final class BarCode implements Serializable {
 
-    private static final String EMPTY_TYPE = "";
-    private static final String EMPTY_KEY = "";
+    private static final BarCode EMPTY_BARCODE = new BarCode("", "");
 
     @Nonnull
     private final String key;
@@ -28,7 +27,7 @@ public final class BarCode implements Serializable {
 
     @Nonnull
     public static BarCode empty() {
-        return new BarCode(EMPTY_TYPE, EMPTY_KEY);
+        return EMPTY_BARCODE;
     }
 
     @Nonnull
