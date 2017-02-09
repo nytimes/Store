@@ -33,8 +33,8 @@ public final class FileSystemPersister<T> implements Persister<BufferedSource, T
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> read(@Nonnull final T id) {
-        return fileReader.read(id);
+    public Observable<BufferedSource> read(@Nonnull final T key) {
+        return fileReader.read(key);
     }
 
     @Nonnull

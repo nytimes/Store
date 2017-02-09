@@ -23,8 +23,8 @@ final class StoreUtil {
     repeatWhenCacheEvicted(PublishSubject<Key> refreshSubject, @Nonnull final Key key) {
         Observable<Key> filter = refreshSubject.filter(new Func1<Key, Boolean>() {
             @Override
-            public Boolean call(Key barCode) {
-                return barCode.equals(key);
+            public Boolean call(Key key) {
+                return key.equals(key);
             }
         });
         return from(filter);

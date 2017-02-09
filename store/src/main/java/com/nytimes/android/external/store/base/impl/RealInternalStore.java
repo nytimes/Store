@@ -285,13 +285,13 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     @Nonnull
     @Override
-    public Observable<Parsed> stream(@Nonnull Key id) {
+    public Observable<Parsed> stream(@Nonnull Key key) {
 
         Observable<Parsed> stream = subject.asObservable();
 
         //If nothing was emitted through the subject yet, start stream with get() value
         if (!subject.hasValue()) {
-            return stream.startWith(get(id));
+            return stream.startWith(get(key));
         }
 
         return stream;

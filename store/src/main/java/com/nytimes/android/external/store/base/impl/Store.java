@@ -58,7 +58,7 @@ public interface Store<T, V> {
      */
     @Deprecated
     @Nonnull
-    Observable<T> stream(V id);
+    Observable<T> stream(V key);
 
     /**
      * Clear the memory cache of all entries
@@ -83,6 +83,4 @@ public interface Store<T, V> {
      * Persister will only be cleared if they implements Clearable
      */
     void clear(@Nonnull V key);
-
-
 }
