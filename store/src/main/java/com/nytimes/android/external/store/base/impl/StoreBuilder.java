@@ -18,15 +18,18 @@ public final class StoreBuilder {
         return new RealStoreBuilder<>();
     }
 
+    @Nonnull
     public static <Parsed> RealStoreBuilder<Parsed, Parsed, BarCode> barcode() {
         return new RealStoreBuilder<>();
     }
 
+    @Nonnull
     public static <Key, Parsed> RealStoreBuilder<Parsed, Parsed, Key> key() {
         return new RealStoreBuilder<>();
     }
 
     @Beta
+    @Nonnull
     public static <Key, Raw, Parsed> RealStoreBuilder<Raw, Parsed, Key> parsedWithKey() {
         return new RealStoreBuilder<>();
     }

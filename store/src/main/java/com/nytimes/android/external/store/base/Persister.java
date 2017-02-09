@@ -17,13 +17,15 @@ public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, 
      *                If data is not available implementer needs to
      *                either return Observable.empty or throw an exception
      */
+    @Override
     @Nonnull
-    Observable<Raw> read(final Key key);
+    Observable<Raw> read(@Nonnull final Key key);
 
     /**
      * @param key to use to store data to persister
      * @param raw     raw string to be stored
      */
+    @Override
     @Nonnull
-    Observable<Boolean> write(final Key key, final Raw raw);
+    Observable<Boolean> write(@Nonnull final Key key, @Nonnull final Raw raw);
 }

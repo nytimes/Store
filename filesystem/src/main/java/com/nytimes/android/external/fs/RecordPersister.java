@@ -25,6 +25,7 @@ public class RecordPersister extends SourcePersister implements RecordProvider<B
         this.expirationUnit = expirationUnit;
     }
 
+    @Nonnull
     @Override
     public RecordState getRecordState(@Nonnull BarCode barCode) {
         return sourceFileReader.getRecordState(barCode, expirationUnit, expirationDuration);

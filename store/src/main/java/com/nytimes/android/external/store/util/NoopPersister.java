@@ -19,20 +19,20 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
 
     @Nonnull
     @Override
-    public Observable<Raw> read(Key key) {
+    public Observable<Raw> read(@Nonnull Key key) {
         Raw raw = networkResponses.get(key);
         return raw == null ? Observable.<Raw>empty() : Observable.just(raw);
     }
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(Key key, Raw raw) {
+    public Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
         networkResponses.put(key, raw);
         return Observable.just(true);
     }
 
     @Override
-    public void clear(Key key) {
+    public void clear(@Nonnull Key key) {
         networkResponses.remove(key);
     }
 }

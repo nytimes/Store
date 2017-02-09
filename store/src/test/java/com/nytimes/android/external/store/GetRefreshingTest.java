@@ -38,7 +38,7 @@ public class GetRefreshingTest {
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override
-                    public Observable<Integer> fetch(BarCode barCode) {
+                    public Observable<Integer> fetch(@Nonnull BarCode barCode) {
                         return Observable.fromCallable(new Callable<Integer>() {
                             @Override
                             public Integer call() {
@@ -113,19 +113,19 @@ public class GetRefreshingTest {
     //everything will be mocked
     static class ClearingPersister implements Persister<Integer, BarCode>, Clearable<BarCode> {
         @Override
-        public void clear(BarCode key) {
+        public void clear(@Nonnull BarCode key) {
             throw new RuntimeException();
         }
 
         @Nonnull
         @Override
-        public Observable<Integer> read(BarCode barCode) {
+        public Observable<Integer> read(@Nonnull BarCode barCode) {
             throw new RuntimeException();
         }
 
         @Nonnull
         @Override
-        public Observable<Boolean> write(BarCode barCode, Integer integer) {
+        public Observable<Boolean> write(@Nonnull BarCode barCode, @Nonnull Integer integer) {
             throw new RuntimeException();
         }
     }

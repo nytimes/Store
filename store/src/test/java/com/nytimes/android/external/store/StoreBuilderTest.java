@@ -29,20 +29,20 @@ public class StoreBuilderTest {
                 .fetcher(new Fetcher<String, Integer>() {
                     @Nonnull
                     @Override
-                    public Observable<String> fetch(Integer barCode) {
+                    public Observable<String> fetch(@Nonnull Integer barCode) {
                         return Observable.just(String.valueOf(barCode));
                     }
                 })
                 .persister(new Persister<String, Integer>() {
                     @Nonnull
                     @Override
-                    public Observable<String> read(Integer barCode) {
+                    public Observable<String> read(@Nonnull Integer barCode) {
                         return Observable.just(String.valueOf(barCode));
                     }
 
                     @Nonnull
                     @Override
-                    public Observable<Boolean> write(Integer barCode, String s) {
+                    public Observable<Boolean> write(@Nonnull Integer barCode, @Nonnull String s) {
                         return Observable.empty();
                     }
                 })
@@ -58,7 +58,7 @@ public class StoreBuilderTest {
         Store<Date, BarCode> barCodeStore = StoreBuilder.<Date>barcode().fetcher(new Fetcher<Date, BarCode>() {
             @Nonnull
             @Override
-            public Observable<Date> fetch(BarCode barCode) {
+            public Observable<Date> fetch(@Nonnull BarCode barCode) {
                 return Observable.just(DATE);
             }
         }).open();
@@ -68,7 +68,7 @@ public class StoreBuilderTest {
                 .fetcher(new Fetcher<Date, Integer>() {
                     @Nonnull
                     @Override
-                    public Observable<Date> fetch(Integer barCode) {
+                    public Observable<Date> fetch(@Nonnull Integer barCode) {
                         return Observable.just(DATE);
                     }
                 })

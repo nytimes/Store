@@ -11,8 +11,8 @@ import rx.annotations.Experimental;
  * will return an instance of a store
  * <p>
  * A {@link Store  Store} can
- * {@link Store#get(BarCode) Store.get() } cached data or
- * force a call to {@link Store#fetch(BarCode) Store.fetch() }
+ * {@link Store#get(V) Store.get() } cached data or
+ * force a call to {@link Store#fetch(V) Store.fetch() }
  * (skipping cache)
  */
 public interface Store<T, V> {
@@ -49,7 +49,7 @@ public interface Store<T, V> {
     Observable<T> stream();
 
     /**
-     * Similar to  {@link Store#get(BarCode) Store.get() }
+     * Similar to  {@link Store#get(V) Store.get() }
      * Rather than returning a single response, Stream will stay subscribed for future emissions to the Store
      * NOTE: Stream will continue to get emissions for ANY keyAndRawType not just starting one
      *

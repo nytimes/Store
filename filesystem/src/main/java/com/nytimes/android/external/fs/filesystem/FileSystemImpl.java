@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -68,23 +67,19 @@ class FileSystemImpl implements FileSystem {
     @Nonnull
     @Override
     public Collection<String> list(@Nonnull String directory) throws FileNotFoundException {
-
         Collection<FSFile> foundFiles = findFiles(directory);
         Collection<String> names = new ArrayList<>(foundFiles.size());
-        Iterator<FSFile> iterator = foundFiles.iterator();
-        while (iterator.hasNext()) {
-            names.add(iterator.next().path());
+        for (FSFile foundFile : foundFiles) {
+            names.add(foundFile.path());
         }
         return names;
     }
 
     @Override
     public void deleteAll(@Nonnull String directory) throws FileNotFoundException {
-
         Collection<FSFile> foundFiles = findFiles(directory);
-        Iterator<FSFile> iterator = foundFiles.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().delete();
+        for (FSFile foundFile : foundFiles) {
+            foundFile.delete();
         }
     }
 
@@ -120,7 +115,6 @@ class FileSystemImpl implements FileSystem {
 
     @Nonnull
     private Collection<FSFile> findFiles(@Nonnull String path) throws FileNotFoundException {
-
         File searchRoot = new File(root, util.simplifyPath(path));
         if (searchRoot.exists() && searchRoot.isFile()) {
             throw new FileNotFoundException(format("expecting a directory at %s, instead found a file", path));

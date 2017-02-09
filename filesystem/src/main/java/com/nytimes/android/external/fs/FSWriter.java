@@ -26,7 +26,7 @@ public class FSWriter<T> implements DiskWrite<BufferedSource, T> {
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(final T barCode, final BufferedSource data) {
+    public Observable<Boolean> write(@Nonnull final T barCode, @Nonnull final BufferedSource data) {
         return Observable.fromCallable(new Callable<Boolean>() {
             @Nonnull
             @Override

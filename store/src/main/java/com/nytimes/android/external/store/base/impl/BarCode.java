@@ -1,5 +1,7 @@
 package com.nytimes.android.external.store.base.impl;
 
+import com.nytimes.android.external.cache.Preconditions;
+
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
@@ -21,8 +23,8 @@ public final class BarCode implements Serializable {
     private final String type;
 
     public BarCode(@Nonnull String type, @Nonnull String key) {
-        this.key = key;
-        this.type = type;
+        this.key = Preconditions.checkNotNull(key);
+        this.type = Preconditions.checkNotNull(type);
     }
 
     @Nonnull
@@ -68,5 +70,13 @@ public final class BarCode implements Serializable {
         int result = key.hashCode();
         result = 31 * result + type.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "BarCode{" +
+                "key='" + key + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

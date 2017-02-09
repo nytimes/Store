@@ -30,7 +30,7 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> read(final T key) {
+    public Observable<BufferedSource> read(@Nonnull final T key) {
         return Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
             @Override
             public void call(Emitter<BufferedSource> emitter) {

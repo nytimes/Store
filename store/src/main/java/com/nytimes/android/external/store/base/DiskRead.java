@@ -6,5 +6,5 @@ import rx.Observable;
 
 public interface DiskRead<Raw, Key> {
     @Nonnull
-    Observable<Raw> read(Key key);
+    Observable<Raw> read(@Nonnull Key key);
 }

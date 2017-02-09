@@ -52,13 +52,13 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         persister = new Persister<Raw, Key>() {
             @Nonnull
             @Override
-            public Observable<Raw> read(Key barCode) {
+            public Observable<Raw> read(@Nonnull Key barCode) {
                 return diskRead.read(barCode);
             }
 
             @Nonnull
             @Override
-            public Observable<Boolean> write(Key barCode, Raw raw) {
+            public Observable<Boolean> write(@Nonnull Key barCode, @Nonnull Raw raw) {
                 return diskWrite.write(barCode, raw);
             }
         };
