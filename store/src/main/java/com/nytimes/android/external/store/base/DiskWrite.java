@@ -11,5 +11,5 @@ public interface DiskWrite<Raw, Key> {
      *                either return Observable.empty or throw an exception
      */
     @Nonnull
-    Observable<Boolean> write(Key barCode, Raw raw);
+    Observable<Boolean> write(Key key, Raw raw);
 }
