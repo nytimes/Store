@@ -57,13 +57,13 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
     @Nonnull
     @Override
-    public Observable<Parsed> get(@Nonnull final Key barCode) {
-        return internalStore.get(barCode);
+    public Observable<Parsed> get(@Nonnull final Key key) {
+        return internalStore.get(key);
     }
 
     @Override
-    public Observable<Parsed> getRefreshing(@Nonnull Key barCode) {
-        return internalStore.getRefreshing(barCode);
+    public Observable<Parsed> getRefreshing(@Nonnull Key key) {
+        return internalStore.getRefreshing(key);
     }
 
 
@@ -75,8 +75,8 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
      */
     @Nonnull
     @Override
-    public Observable<Parsed> fetch(@Nonnull final Key barCode) {
-        return internalStore.fetch(barCode);
+    public Observable<Parsed> fetch(@Nonnull final Key key) {
+        return internalStore.fetch(key);
     }
 
     @Nonnull
@@ -87,8 +87,8 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
     @Nonnull
     @Override
-    public Observable<Parsed> stream(Key id) {
-        return internalStore.stream(id);
+    public Observable<Parsed> stream(Key key) {
+        return internalStore.stream(key);
     }
 
     @Override
@@ -99,11 +99,11 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
     /**
      * Clear memory by id
      *
-     * @param barCode of data to clear
+     * @param key of data to clear
      */
     @Override
-    public void clearMemory(@Nonnull final Key barCode) {
-        internalStore.clearMemory(barCode);
+    public void clearMemory(@Nonnull final Key key) {
+        internalStore.clearMemory(key);
     }
 
     @Override
@@ -117,13 +117,13 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
     }
 
-    protected Observable<Parsed> memory(@Nonnull Key id) {
-        return internalStore.memory(id);
+    protected Observable<Parsed> memory(@Nonnull Key key) {
+        return internalStore.memory(key);
     }
 
     @Nonnull
-    protected Observable<Parsed> disk(@Nonnull Key id) {
-        return internalStore.disk(id);
+    protected Observable<Parsed> disk(@Nonnull Key key) {
+        return internalStore.disk(key);
     }
 
 }
