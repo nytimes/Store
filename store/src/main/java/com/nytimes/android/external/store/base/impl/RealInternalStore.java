@@ -244,6 +244,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                     public Observable<Parsed> call(Raw raw) {
                         return persister().write(key, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
+                                    @Override
                                     public Observable<Parsed> call(Boolean aBoolean) {
                                         return readDisk(key);
                                     }
