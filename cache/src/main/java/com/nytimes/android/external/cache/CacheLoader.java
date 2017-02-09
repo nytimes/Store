@@ -52,7 +52,7 @@ public abstract class CacheLoader<K, V> {
    */
   @Nonnull
   public static <K, V> CacheLoader<K, V> from(@Nonnull Function<K, V> function) {
-    return new FunctionToCacheLoader<K, V>(function);
+    return new FunctionToCacheLoader<>(function);
   }
 
   private static final class FunctionToCacheLoader<K, V>
@@ -83,7 +83,7 @@ public abstract class CacheLoader<K, V> {
    */
   @Nonnull
   public static <V> CacheLoader<Object, V> from(@Nonnull Supplier<V> supplier) {
-    return new SupplierToCacheLoader<V>(supplier);
+    return new SupplierToCacheLoader<>(supplier);
   }
 
 

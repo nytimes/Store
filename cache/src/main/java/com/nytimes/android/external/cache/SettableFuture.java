@@ -10,7 +10,7 @@ public final class SettableFuture<V> extends AbstractFuture.TrustedFuture<V> {
    */
   @Nonnull
   public static <V> SettableFuture<V> create() {
-    return new SettableFuture<V>();
+    return new SettableFuture<>();
   }
 
   /**

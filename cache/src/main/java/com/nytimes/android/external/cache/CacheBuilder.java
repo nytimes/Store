@@ -91,7 +91,7 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public static CacheBuilder<Object, Object> newBuilder() {
-    return new CacheBuilder<Object, Object>();
+    return new CacheBuilder<>();
   }
 
   /**
@@ -478,14 +478,14 @@ public final class CacheBuilder<K, V> {
   public <K1 extends K, V1 extends V> LoadingCache<K1, V1> build(
           @Nonnull CacheLoader<? super K1, V1> loader) {
     checkWeightWithWeigher();
-    return new LocalCache.LocalLoadingCache<K1, V1>(this, loader);
+    return new LocalCache.LocalLoadingCache<>(this, loader);
   }
 
   @Nonnull
   public <K1 extends K, V1 extends V> Cache<K1, V1> build() {
     checkWeightWithWeigher();
     checkNonLoadingCache();
-    return new LocalCache.LocalManualCache<K1, V1>(this);
+    return new LocalCache.LocalManualCache<>(this);
   }
 
 
