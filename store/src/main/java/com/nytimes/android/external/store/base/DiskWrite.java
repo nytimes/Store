@@ -6,10 +6,10 @@ import rx.Observable;
 
 public interface DiskWrite<Raw, Key> {
     /**
-     * @param barCode to use to get data from persister
-     *                If data is not available implementer needs to
-     *                either return Observable.empty or throw an exception
+     * @param key to use to get data from persister
+     *            If data is not available implementer needs to
+     *            either return Observable.empty or throw an exception
      */
     @Nonnull
-    Observable<Boolean> write(Key key, Raw raw);
+    Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw);
 }

@@ -60,7 +60,7 @@ public final class JacksonParserFactory {
                                                                    @Nonnull Type type) {
         Preconditions.checkNotNull(jsonFactory, "jsonFactory cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
-        return new JacksonSourceParser<T>(jsonFactory, type);
+        return new JacksonSourceParser<>(jsonFactory, type);
     }
 
     /**
@@ -72,7 +72,7 @@ public final class JacksonParserFactory {
                                                                    @Nonnull Type type) {
         Preconditions.checkNotNull(objectMapper, "objectMapper cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
-        return new JacksonSourceParser<T>(objectMapper, type);
+        return new JacksonSourceParser<>(objectMapper, type);
     }
 
     /**
@@ -105,7 +105,7 @@ public final class JacksonParserFactory {
                                                            @Nonnull Type type) {
         Preconditions.checkNotNull(objectMapper, "objectMapper cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
-        return new JacksonReaderParser<T>(objectMapper, type);
+        return new JacksonReaderParser<>(objectMapper, type);
     }
 
     /**

@@ -14,15 +14,12 @@ import rx.Observable;
  * @param <T> key type
  */
 public final class FileSystemPersister<T> implements Persister<BufferedSource, T> {
-    final FileSystem fileSystem;
     private final FSReader<T> fileReader;
     private final FSWriter<T> fileWriter;
 
     private FileSystemPersister(FileSystem fileSystem, PathResolver<T> pathResolver) {
-
         fileReader = new FSReader<>(fileSystem, pathResolver);
         fileWriter = new FSWriter<>(fileSystem, pathResolver);
-        this.fileSystem = fileSystem;
     }
 
     @Nonnull
@@ -36,13 +33,13 @@ public final class FileSystemPersister<T> implements Persister<BufferedSource, T
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> read(final T id) {
-        return fileReader.read(id);
+    public Observable<BufferedSource> read(@Nonnull final T key) {
+        return fileReader.read(key);
     }
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(final T barCode, final BufferedSource data) {
-        return fileWriter.write(barCode, data);
+    public Observable<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
+        return fileWriter.write(key, data);
     }
 }

@@ -44,13 +44,13 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
     private Persister<Raw, Key> persister;
-    private Func1<Raw, Parsed> parser;
+    private Parser<Raw, Parsed> parser;
     private BehaviorSubject<Parsed> subject;
 
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      Func1<Raw, Parsed> parser,
+                      Parser<Raw, Parsed> parser,
                       Cache<Key, Observable<Parsed>> memCache,
                       StalePolicy stalePolicy) {
         init(fetcher, persister, parser, memCache, stalePolicy);
@@ -70,7 +70,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     private void init(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      Func1<Raw, Parsed> parser,
+                      Parser<Raw, Parsed> parser,
                       Cache<Key, Observable<Parsed>> memCache, StalePolicy stalePolicy) {
         this.fetcher = fetcher;
         this.persister = persister;
@@ -86,48 +86,49 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
 
     /**
-     * @param barCode
+     * @param key
      * @return an observable from the first data source that is available
      */
     @Nonnull
     @Override
-    public Observable<Parsed> get(@Nonnull final Key barCode) {
+    public Observable<Parsed> get(@Nonnull final Key key) {
         return Observable.concat(
-                lazyCache(barCode),
-                fetch(barCode)
+                lazyCache(key),
+                fetch(key)
         ).take(1);
     }
 
+    @Override
     @Nonnull
     @Experimental
-    public Observable<Parsed> getRefreshing(@Nonnull final Key barCode) {
-        return get(barCode)
-                .compose(StoreUtil.<Parsed, Key>repeatWhenCacheEvicted(refreshSubject, barCode));
+    public Observable<Parsed> getRefreshing(@Nonnull final Key key) {
+        return get(key)
+                .compose(StoreUtil.<Parsed, Key>repeatWhenCacheEvicted(refreshSubject, key));
     }
 
 
     /**
      * @return data from memory
      */
-    private Observable<Parsed> lazyCache(@Nonnull final Key barCode) {
+    private Observable<Parsed> lazyCache(@Nonnull final Key key) {
         return Observable
                 .defer(new Func0<Observable<Parsed>>() {
                     @Override
                     public Observable<Parsed> call() {
-                        return cache(barCode);
+                        return cache(key);
                     }
                 })
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
     }
 
-    private Observable<Parsed> cache(@Nonnull final Key barCode) {
+    private Observable<Parsed> cache(@Nonnull final Key key) {
         try {
-            return memCache.get(barCode, new Callable<Observable<Parsed>>() {
+            return memCache.get(key, new Callable<Observable<Parsed>>() {
                 @Nonnull
                 @Override
                 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
                 public Observable<Parsed> call() throws Exception {
-                    return disk(barCode);
+                    return disk(key);
                 }
             });
         } catch (ExecutionException e) {
@@ -136,46 +137,48 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
 
+    @Nonnull
     @Override
-    public Observable<Parsed> memory(@Nonnull Key barCode) {
-        Observable<Parsed> cachedValue = memCache.getIfPresent(barCode);
+    public Observable<Parsed> memory(@Nonnull Key key) {
+        Observable<Parsed> cachedValue = memCache.getIfPresent(key);
         return cachedValue == null ? Observable.<Parsed>empty() : cachedValue;
     }
 
     /**
      * Fetch data from persister and update memory after. If an error occurs, emit and empty observable
-     * so that the concat call in {@link #get(BarCode)} moves on to {@link #fetch(BarCode)}
+     * so that the concat call in {@link #get(Key)} moves on to {@link #fetch(Key)}
      *
-     * @param barCode
+     * @param key
      * @return
      */
+    @Nonnull
     @Override
-    public Observable<Parsed> disk(@Nonnull final Key barCode) {
-        if (shouldReturnNetworkBeforeStale(persister, stalePolicy, barCode)) {
+    public Observable<Parsed> disk(@Nonnull final Key key) {
+        if (shouldReturnNetworkBeforeStale(persister, stalePolicy, key)) {
             return Observable.empty();
         }
 
-        return readDisk(barCode);
+        return readDisk(key);
     }
 
-    private Observable<Parsed> readDisk(@Nonnull final Key barCode) {
-        return persister().read(barCode)
+    private Observable<Parsed> readDisk(@Nonnull final Key key) {
+        return persister().read(key)
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
                 .map(parser)
                 .doOnNext(new Action1<Parsed>() {
                     @Override
                     public void call(Parsed parsed) {
-                        updateMemory(barCode, parsed);
+                        updateMemory(key, parsed);
                         if (stalePolicy == StalePolicy.REFRESH_ON_STALE
-                                && persisterIsStale(barCode, persister)) {
-                            backfillCache(barCode);
+                                && persisterIsStale(key, persister)) {
+                            backfillCache(key);
                         }
                     }
                 }).cache();
     }
 
-    private void backfillCache(@Nonnull Key barCode) {
-        fetch(barCode).subscribe(new Action1<Parsed>() {
+    private void backfillCache(@Nonnull Key key) {
+        fetch(key).subscribe(new Action1<Parsed>() {
             @Override
             public void call(Parsed parsed) {
                 //do Nothing we are just backfilling cache
@@ -197,12 +200,12 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     @Nonnull
     @Override
-    public Observable<Parsed> fetch(@Nonnull final Key barCode) {
+    public Observable<Parsed> fetch(@Nonnull final Key key) {
         return Observable.defer(new Func0<Observable<Parsed>>() {
             @Nullable
             @Override
             public Observable<Parsed> call() {
-                return fetchAndPersist(barCode);
+                return fetchAndPersist(key);
             }
         });
     }
@@ -214,17 +217,17 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      * the last value it gets. Subject/Observable is cached in a {@link ConcurrentMap} to maintain
      * thread safety.
      *
-     * @param barCode resource identifier
+     * @param key resource identifier
      * @return observable that emits a {@link Parsed} value
      */
     @Nullable
-    Observable<Parsed> fetchAndPersist(@Nonnull final Key barCode) {
+    Observable<Parsed> fetchAndPersist(@Nonnull final Key key) {
         try {
-            return inFlightRequests.get(barCode, new Callable<Observable<Parsed>>() {
+            return inFlightRequests.get(key, new Callable<Observable<Parsed>>() {
                 @Nonnull
                 @Override
                 public Observable<Parsed> call() {
-                    return response(barCode);
+                    return response(key);
                 }
             });
         } catch (ExecutionException e) {
@@ -233,29 +236,32 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     @Nonnull
-    Observable<Parsed> response(@Nonnull final Key barCode) {
+    private Observable<Parsed> response(@Nonnull final Key key) {
         return fetcher()
-                .fetch(barCode)
+                .fetch(key)
                 .flatMap(new Func1<Raw, Observable<Parsed>>() {
                     @Override
                     public Observable<Parsed> call(Raw raw) {
-                        return persister().write(barCode, raw)
+                        return persister().write(key, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
+                                    @Override
                                     public Observable<Parsed> call(Boolean aBoolean) {
-                                        return readDisk(barCode);
+                                        return readDisk(key);
                                     }
                                 });
                     }
                 })
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends Parsed>>() {
+                    @Override
                     public Observable<? extends Parsed> call(Throwable throwable) {
                         if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
-                            return readDisk(barCode);
+                            return readDisk(key);
                         }
                         return Observable.error(throwable);
                     }
                 })
                 .doOnNext(new Action1<Parsed>() {
+                    @Override
                     public void call(Parsed data) {
                         notifySubscribers(data);
                     }
@@ -263,7 +269,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
-                        inFlightRequests.invalidate(barCode);
+                        inFlightRequests.invalidate(key);
                     }
                 })
                 .cache();
@@ -280,13 +286,13 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     @Nonnull
     @Override
-    public Observable<Parsed> stream(@Nonnull Key id) {
+    public Observable<Parsed> stream(@Nonnull Key key) {
 
         Observable<Parsed> stream = subject.asObservable();
 
         //If nothing was emitted through the subject yet, start stream with get() value
         if (!subject.hasValue()) {
-            return stream.startWith(get(id));
+            return stream.startWith(get(key));
         }
 
         return stream;
@@ -301,11 +307,11 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     /**
      * Only update memory after persister has been successfully update
      *
-     * @param barCode
+     * @param key
      * @param data
      */
-    void updateMemory(@Nonnull final Key barCode, final Parsed data) {
-        memCache.put(barCode, Observable.just(data));
+    void updateMemory(@Nonnull final Key key, final Parsed data) {
+        memCache.put(key, Observable.just(data));
     }
 
     @Override

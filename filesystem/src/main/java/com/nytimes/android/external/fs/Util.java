@@ -21,14 +21,15 @@ public class Util {
         String delim = "[/]+";
         String[] arr = path.split(delim);
 
-        Stack<String> stack = new Stack<String>();
+        Stack<String> stack = new Stack<>();
 
         fillStack(arr, stack);
 
-        StringBuilder sb = new StringBuilder();
         if (emptyStack(stack)) {
             return "/";
         }
+
+        StringBuilder sb = new StringBuilder();
 
         for (String str : stack) {
             sb.append("/").append(str);

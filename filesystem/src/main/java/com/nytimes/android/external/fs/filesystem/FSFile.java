@@ -17,7 +17,6 @@ import static java.lang.String.format;
 
 class FSFile {
 
-    private final Util util = new Util();
     @Nonnull
     private final String pathValue;
     @Nonnull
@@ -29,6 +28,7 @@ class FSFile {
         if (file.exists() && file.isDirectory()) {
             throw new FileNotFoundException(format("expecting a file at %s, instead found a directory", path));
         }
+        Util util = new Util();
         util.createParentDirs(this.file);
     }
 

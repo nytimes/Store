@@ -14,18 +14,18 @@ allprojects {
 
 ext.versions = [
         minSdk               : 16,
-        targetSdk            : 24,
-        compileSdk           : 24,
-        buildTools           : '24.0.2',
+        targetSdk            : 25,
+        compileSdk           : 25,
+        buildTools           : '25.0.2',
 
         // UI libs.
-        supportLibs          : '24.1.1',
+        supportLibs          : '25.1.1',
         picasso              : '2.5.2',
         rxBinding            : '0.3.0',
         butterKnife          : '7.0.1',
 
         // Reactive.
-        rxJava               : '1.2.4',
+        rxJava               : '1.2.6',
         rxJavaProGuardRules  : '1.1.6.0',
         rxJavaAsyncUtil      : '0.21.0',
         rxAndroid            : '1.2.1',
@@ -33,7 +33,7 @@ ext.versions = [
         // Others.
         retrofit             : '2.0.0-beta3',
         retrolambda          : '2.3.0',
-        dagger               : '2.5',
+        dagger               : '2.9',
         jsr305               : '3.0.1',
         okHttp               : '2.7.5',
         okio                 : '1.11.0',

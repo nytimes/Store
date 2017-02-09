@@ -20,11 +20,11 @@ final class StoreUtil {
 
     @Nonnull
     static <Parsed, Key> Observable.Transformer<Parsed, Parsed>
-    repeatWhenCacheEvicted(PublishSubject<Key> refreshSubject, @Nonnull final Key key) {
+    repeatWhenCacheEvicted(PublishSubject<Key> refreshSubject, @Nonnull final Key keyForRepeat) {
         Observable<Key> filter = refreshSubject.filter(new Func1<Key, Boolean>() {
             @Override
-            public Boolean call(Key barCode) {
-                return barCode.equals(key);
+            public Boolean call(Key key) {
+                return key.equals(keyForRepeat);
             }
         });
         return from(filter);

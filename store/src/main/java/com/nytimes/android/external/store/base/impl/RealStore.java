@@ -11,7 +11,6 @@ import com.nytimes.android.external.store.util.NoopPersister;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 import static com.nytimes.android.external.store.base.impl.StalePolicy.UNSPECIFIED;
 
@@ -42,7 +41,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
     public <Raw> RealStore(Fetcher<Raw, Key> fetcher,
                            Persister<Raw, Key> persister,
-                           Func1<Raw, Parsed> parser, Cache<Key, Observable<Parsed>> memCache) {
+                           Parser<Raw, Parsed> parser, Cache<Key, Observable<Parsed>> memCache) {
         internalStore = new RealInternalStore<>(fetcher, persister, parser, memCache, UNSPECIFIED);
     }
 

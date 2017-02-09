@@ -28,7 +28,7 @@ public class ClearStoreMemoryTest {
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override
-                    public Observable<Integer> fetch(BarCode barCode) {
+                    public Observable<Integer> fetch(@Nonnull BarCode barCode) {
                         return Observable.fromCallable(new Callable<Integer>() {
                             @Override
                             public Integer call() {
