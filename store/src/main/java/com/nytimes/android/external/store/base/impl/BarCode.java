@@ -12,6 +12,10 @@ import javax.annotation.Nonnull;
  * and {@link com.nytimes.android.external.store.base.Persister  Persister}
  **/
 public final class BarCode implements Serializable {
+
+    private static final String EMPTY_TYPE = "";
+    private static final String EMPTY_KEY = "";
+
     @Nonnull
     private final String key;
     @Nonnull
@@ -24,7 +28,7 @@ public final class BarCode implements Serializable {
 
     @Nonnull
     public static BarCode empty() {
-        return new BarCode("", "");
+        return new BarCode(EMPTY_TYPE, EMPTY_KEY);
     }
 
     @Nonnull
@@ -42,14 +46,17 @@ public final class BarCode implements Serializable {
         if (this == object) {
             return true;
         }
+
         if (!(object instanceof BarCode)) {
             return false;
         }
+
         BarCode barCode = (BarCode) object;
 
         if (!key.equals(barCode.key)) {
             return false;
         }
+
         if (!type.equals(barCode.type)) {
             return false;
         }
