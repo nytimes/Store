@@ -1,6 +1,27 @@
 Change Log
 ==========
 
+Version 2.0.0 *PENDING*
+#126 Remove duplicate element from versions array 
+#125 Fix name on occurences of Key 
+#124 Create single instance of empty BarCode
+#123 Simplify Persister clear and RefreshSubject notify 
+#122 Store v1 removal in favor of Stores with generic keys
+#120 Avoid multiple resolves of the same Key
+#115 Feature/filepersister 
+#117 Feature/clear all cache
+#114 remove extranous exception throw 
+#113 lets try this travis snapshot deploy again
+#111 networkBeforeStale and refreshOnStale
+#110 rework builders
+#108 Update to Moshi 1.4.0
+#86 Migrate Barcode to any Type
+#106 remove espresso, unneeded, conflicts with javax.annotations
+#103 GetRefreshing - Repeat when clear
+#101 fixes inflight caching errors 
+#99 Remove dead code and add/remove empty lines were needed
+#97 clear needs to clear noop disk and inflight 
+#94 use javax annotations instead of intellij 
 
 Version 1.0.7 *(2017-01-30/)*
 ----------------------------
