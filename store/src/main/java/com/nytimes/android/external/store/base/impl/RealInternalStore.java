@@ -313,37 +313,26 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     public void clearMemory() {
         inFlightRequests.invalidateAll();
 
-
         for (Key cachedKey : memCache.asMap().keySet()) {
             memCache.invalidate(cachedKey);
-            clearDiskIfNoOp(cachedKey);
-            refreshSubject.onNext(cachedKey);
+            clearPersister(cachedKey);
+            notifyRefresh(cachedKey);
         }
 
-    }
-
-    private boolean clearDiskIfNoOp(Key barCode) {
-        if (persister() instanceof Clearable) {
-            ((Clearable<Key>) persister).clear(barCode);
-            return true;
-        }
-        return false;
     }
 
     /**
      * Clear memory by id
      *
-     * @param barCode of data to clear
+     * @param key of data to clear
      */
     @Override
     @Deprecated
-    public void clearMemory(@Nonnull final Key barCode) {
-        inFlightRequests.invalidate(barCode);
-        memCache.invalidate(barCode);
-        refreshSubject.onNext(barCode);
-        if (persister instanceof Clearable) {
-            ((Clearable<Key>) persister).clear(barCode);
-        }
+    public void clearMemory(@Nonnull final Key key) {
+        inFlightRequests.invalidate(key);
+        memCache.invalidate(key);
+        clearPersister(key);
+        notifyRefresh(key);
     }
 
 
@@ -358,12 +347,20 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     public void clear(@Nonnull Key key) {
         inFlightRequests.invalidate(key);
         memCache.invalidate(key);
+        clearPersister(key);
+        notifyRefresh(key);
+    }
 
-        if (persister instanceof Clearable) {
+    private void notifyRefresh(Key key) {
+        refreshSubject.onNext(key);
+    }
+
+    private void clearPersister(Key key) {
+        boolean isPersisterClearable = persister instanceof Clearable;
+
+        if (isPersisterClearable) {
             ((Clearable<Key>) persister).clear(key);
         }
-        refreshSubject.onNext(key);
-
     }
 
     /**
