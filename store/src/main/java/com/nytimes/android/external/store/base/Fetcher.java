@@ -16,5 +16,5 @@ public interface Fetcher<Raw, Key> {
      * @return Observable that emits {@link Raw} data
      */
     @Nonnull
-    Observable<Raw> fetch(Key barCode);
+    Observable<Raw> fetch(Key key);
 }

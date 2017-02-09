@@ -52,15 +52,15 @@ final class StoreUtil {
     }
 
     static <Raw, Key> boolean shouldReturnNetworkBeforeStale(
-            Persister<Raw, Key> persister, StalePolicy stalePolicy, Key barCode) {
+            Persister<Raw, Key> persister, StalePolicy stalePolicy, Key key) {
         return stalePolicy == StalePolicy.NETWORK_BEFORE_STALE
-                && persisterIsStale(barCode, persister);
+                && persisterIsStale(key, persister);
     }
 
-    static <Raw, Key> boolean persisterIsStale(@Nonnull Key barCode, Persister<Raw, Key> persister) {
+    static <Raw, Key> boolean persisterIsStale(@Nonnull Key key, Persister<Raw, Key> persister) {
         if (persister instanceof RecordProvider) {
             RecordProvider<Key> provider = (RecordProvider<Key>) persister;
-            RecordState recordState = provider.getRecordState(barCode);
+            RecordState recordState = provider.getRecordState(key);
             return recordState != FRESH;
         }
         return false;
