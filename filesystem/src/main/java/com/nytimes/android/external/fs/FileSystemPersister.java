@@ -39,7 +39,7 @@ public final class FileSystemPersister<T> implements Persister<BufferedSource, T
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(@Nonnull final T barCode, @Nonnull final BufferedSource data) {
-        return fileWriter.write(barCode, data);
+    public Observable<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
+        return fileWriter.write(key, data);
     }
 }
