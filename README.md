@@ -308,6 +308,6 @@ CurrentVersion = **2.0.0**
 
 ### Sample Project
 
-See app for example usage of Store.
+See app for example usage of Store. Alternatively the Wiki contains a set of recipes for common use cases
 + Simple Example: Retrofit + Store
 + Complex Example: BufferedSource from Retrofit (Can be OKHTTP too) + our FileSystem + our GsonSourceParser
