@@ -28,9 +28,9 @@ memCache.get(key, new Callable<T>() {
  Please refer to Guava's Cache documentation for additional features/configurations 
  https://github.com/google/guava/wiki/CachesExplained
 
-	```groovy
+```groovy
 	compile 'com.nytimes.android:cache:CurrentVersion'
-	```
+```
 
 ```
 Copyright (c) 2017 The New York Times Company
