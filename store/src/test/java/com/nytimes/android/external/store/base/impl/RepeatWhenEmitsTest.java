@@ -37,5 +37,4 @@ public class RepeatWhenEmitsTest {
             source.onNext("event");
         }
     }
-
 }
