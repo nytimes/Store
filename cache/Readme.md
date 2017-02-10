@@ -3,7 +3,6 @@ Cache
 
 Store depends on a subset of Guava, we have extracted these parts into a shaded Cache artifact.  
 Feel free to use Cache anytime you need an in memory cache implementation optimized for Android.  
-https://github.com/google/guava/wiki/CachesExplained
 
 
 To use, first build a cache instance.
