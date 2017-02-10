@@ -4,8 +4,6 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.RecordProvider;
 import com.nytimes.android.external.store.base.RecordState;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
 
 import rx.Observable;
@@ -27,28 +25,7 @@ final class StoreUtil {
                 return key.equals(keyForRepeat);
             }
         });
-        return from(filter);
-    }
-
-    @Nonnull
-    static <T> Observable.Transformer<T, T> from(@Nonnull final Observable retrySource) {
-        Objects.requireNonNull(retrySource);
-        return new Observable.Transformer<T, T>() {
-            @Override
-            public Observable<T> call(Observable<T> source) {
-                return source.repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
-                    @Override
-                    public Observable<?> call(Observable<? extends Void> events) {
-                        return events.switchMap(new Func1<Void, Observable<?>>() {
-                            @Override
-                            public Observable<?> call(Void aVoid) {
-                                return retrySource;
-                            }
-                        });
-                    }
-                });
-            }
-        };
+        return RepeatWhenEmits.from(filter);
     }
 
     static <Raw, Key> boolean shouldReturnNetworkBeforeStale(
