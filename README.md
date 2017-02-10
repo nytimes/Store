@@ -26,7 +26,7 @@ Let's start by looking at what a fully configured store looks like, we will then
 ```java
 Store<ArticleAsset, Integer> articleStore = StoreBuilder.<Integer, BufferedSource, ArticleAsset>parsedWithKey()
                 .fetcher(articleId -> api.getArticleAsBufferedSource(articleId))  //OkHttp responseBody.source()
-                .persister(FileSystemPersister.create(FileSystemFactory.create(context.getFilesDir())))
+                .persister(FileSystemPersister.create(FileSystemFactory.create(context.getFilesDir()),pathResolver))
                 .parser(GsonParserFactory.createSourceParser(gson, ArticleAsset.Article.class))
                 .open();
 	      
@@ -205,12 +205,12 @@ If using SQLite we recommend working with SqlBrite. If you are not using SqlBrit
 
 ### Middleware - SourcePersister & FileSystem
 
-We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included a seperate lib with a reactive FileSystem which depends on Okio BufferedSources. We have also included a FileSystemPersister which will give you disk caching and works beautifully with GsonSourceParser. Now we are back to our first example:
+We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included a seperate lib with a reactive FileSystem which depends on Okio BufferedSources. We have also included a FileSystemPersister which will give you disk caching and works beautifully with GsonSourceParser. When using the FileSystemPersister you must pass in a `PathResolver` which will tell the file system how to name the paths to cache entries. Now we are back to our first example:
 
 ```java
 Store<Article,Integer> store = StoreBuilder.<Integer, BufferedSource, Article>parsedWithKey()
                .fetcher(articleId -> api.getArticles(articleId)) 
-               .persister(FileSystemPersister.create(FileSystemFactory.create(context.getFilesDir())))
+               .persister(FileSystemPersister.create(FileSystemFactory.create(context.getFilesDir()),pathResolver))
                .parser(GsonParserFactory.createSourceParser(gson, String.class))
                .open();
 ```
