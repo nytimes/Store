@@ -3,7 +3,7 @@ package com.nytimes.android.external.store.middleware.moshi;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store.middleware.moshi.data.Foo;
@@ -33,16 +33,17 @@ public class MoshiSourceParserTest {
     private static final String KEY = "key";
     private static final String sourceString =
             "{\"number\":123,\"string\":\"abc\",\"bars\":[{\"string\":\"def\"},{\"string\":\"ghi\"}]}";
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
-    Fetcher<BufferedSource> fetcher;
+    Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
-    Persister<BufferedSource> persister;
-
+    Persister<BufferedSource, BarCode> persister;
     private final BarCode barCode = new BarCode("value", KEY);
+
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(Charset.defaultCharset()))));
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -67,7 +68,7 @@ public class MoshiSourceParserTest {
 
         Parser<BufferedSource, Foo> parser = MoshiParserFactory.createSourceParser(Foo.class);
 
-        Store<Foo> store = ParsingStoreBuilder.<BufferedSource, Foo>builder()
+        Store<Foo, BarCode> store = ParsingStoreBuilder.<BufferedSource, Foo>builder()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)
@@ -95,10 +96,6 @@ public class MoshiSourceParserTest {
     public void testNullType() {
         expectedException.expect(NullPointerException.class);
         MoshiParserFactory.createSourceParser(null, Foo.class);
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(Charset.defaultCharset()))));
     }
 
 }

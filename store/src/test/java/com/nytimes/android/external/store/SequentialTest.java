@@ -1,15 +1,16 @@
 package com.nytimes.android.external.store;
 
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.Callable;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 
@@ -17,17 +18,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SequentialTest {
 
-    private int networkCalls = 0;
-    private Store<Integer> store;
+    int networkCalls = 0;
+    private Store<Integer, BarCode> store;
 
     @Before
     public void setUp() {
         networkCalls = 0;
-        store = StoreBuilder.<Integer>builder()
-                .fetcher(new Fetcher<Integer>() {
-                    @NotNull
+        store = StoreBuilder.<Integer>barcode()
+                .fetcher(new Fetcher<Integer, BarCode>() {
+                    @Nonnull
                     @Override
-                    public Observable<Integer> fetch(BarCode barCode) {
+                    public Observable<Integer> fetch(@Nonnull BarCode barCode) {
                         return Observable.fromCallable(new Callable<Integer>() {
                             @Override
                             public Integer call() {

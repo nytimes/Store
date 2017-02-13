@@ -1,19 +1,19 @@
 package com.nytimes.android.external.fs;
 
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
 public class Util {
 
-    @NotNull
-    public String simplifyPath(@NotNull String path) {
+    @Nonnull
+    public String simplifyPath(@Nonnull String path) {
         if (ifInvalidPATH(path)) {
             return "";
         }
@@ -21,14 +21,15 @@ public class Util {
         String delim = "[/]+";
         String[] arr = path.split(delim);
 
-        Stack<String> stack = new Stack<String>();
+        Stack<String> stack = new Stack<>();
 
         fillStack(arr, stack);
 
-        StringBuilder sb = new StringBuilder();
         if (emptyStack(stack)) {
             return "/";
         }
+
+        StringBuilder sb = new StringBuilder();
 
         for (String str : stack) {
             sb.append("/").append(str);
@@ -37,11 +38,11 @@ public class Util {
         return sb.toString();
     }
 
-    private boolean emptyStack(@NotNull Stack<String> stack) {
+    private boolean emptyStack(@Nonnull Stack<String> stack) {
         return stack.isEmpty();
     }
 
-    private void fillStack(@NotNull String[] arr, @NotNull Stack<String> stack) {
+    private void fillStack(@Nonnull String[] arr, @Nonnull Stack<String> stack) {
         for (String str : arr) {
             if ("/".equals(str)) {
                 continue;
@@ -60,7 +61,7 @@ public class Util {
         return path == null || path.length() == 0;
     }
 
-    public void createParentDirs(@NotNull File file) throws IOException {
+    public void createParentDirs(@Nonnull File file) throws IOException {
         checkNotNull(file);
         File parent = file.getCanonicalFile().getParentFile();
         if (parent == null) {

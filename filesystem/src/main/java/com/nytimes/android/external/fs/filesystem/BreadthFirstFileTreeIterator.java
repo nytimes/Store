@@ -20,13 +20,14 @@ package com.nytimes.android.external.fs.filesystem;
 //package org.jpublish.util;
 
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Breadth first iterator which iterates through all files which are decendents
@@ -35,14 +36,13 @@ import java.util.Stack;
  * @author Anthony Eden
  * @since 1.1
  */
-
 class BreadthFirstFileTreeIterator implements Iterator {
     private int currentIndex = 0;
     private File[] currentList;
     @Nullable
     private File nextFile;
-    @NotNull
-    private final Stack directories;
+    @Nonnull
+    private final Stack<File> directories;
     private boolean endOfTree = false;
 
     /**
@@ -50,10 +50,9 @@ class BreadthFirstFileTreeIterator implements Iterator {
      *
      * @param root The root directory
      */
-
-    BreadthFirstFileTreeIterator(@NotNull File root) {
+    BreadthFirstFileTreeIterator(@Nonnull File root) {
         this.currentList = root.listFiles();
-        this.directories = new Stack();
+        this.directories = new Stack<>();
     }
 
     /**
@@ -63,7 +62,6 @@ class BreadthFirstFileTreeIterator implements Iterator {
      *
      * @return True if the iteration has more elements
      */
-
     @Override
     public boolean hasNext() {
         return !endOfTree && getNextFile() != null;
@@ -99,7 +97,6 @@ class BreadthFirstFileTreeIterator implements Iterator {
      *
      * @throws UnsupportedOperationException
      */
-
     @Override
     public void remove() {
         throw new UnsupportedOperationException();
@@ -113,7 +110,6 @@ class BreadthFirstFileTreeIterator implements Iterator {
      *
      * @return The next file
      */
-
     @Nullable
     protected File getNextFile() {
         if (nextFile == null) {
@@ -127,7 +123,6 @@ class BreadthFirstFileTreeIterator implements Iterator {
      *
      * @return The next file
      */
-
     @Nullable
     protected File findNextFile() {
         while (currentIndex < currentList.length) {
@@ -142,7 +137,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
         }
 
         while (!directories.empty()) {
-            File directory = (File) directories.remove(0);
+            File directory = directories.remove(0);
             currentList = directory.listFiles();
             currentIndex = 0;
             File file = findNextFile();

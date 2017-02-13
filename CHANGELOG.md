@@ -1,8 +1,37 @@
 Change Log
 ==========
+Version 2.0.0 *(2017-02-13)*
+----------------------------
 
 
-Version 1.0.7 *(2017-01-30/)*
+**Breaking Changes**  - See Wiki/Closed PRs for more detail
+
+* (#122) Store v1 removal in favor of Stores with generic keys - Store<ReturnType> becomes Store<ReturnType,Key>
+* (#110) rework builders - See StoreBuilder for changes
+* (#86)  Migrate Barcode to any Type - No longer need to use Barcode as your request type!
+
+**New Features**
+* (#94)  use javax annotations instead of intellij
+* (#117) Feature/clear all cache - Disk Caching if Persister implements Clearable
+* (#115) Feature/filepersister - Using Store with FileSystem no longer requires our BarCode type
+* (#120) Avoid multiple resolves of the same Key
+* (#111) networkBeforeStale and refreshOnStale - 2 ways to control Persisters that are StaleAware
+* (#103) GetRefreshing - Like get but will repeat when clear
+* (#113) lets try this travis snapshot deploy again - Snapshot deployment now works woo!
+
+**Bug Fixes and Stability Improvements**
+* (#125) Fix name on occurences of Key
+* (#124) Create single instance of empty BarCode
+* (#123) Simplify Persister clear and RefreshSubject notify 
+* (#114) remove extranous exception throw
+* (#108) Update to Moshi 1.4.0
+* (#106) remove espresso, unneeded, conflicts with javax.annotations
+* (#101) fixes inflight caching errors
+* (#99)  Remove dead code and add/remove empty lines were needed
+* (#97)  clear needs to clear noop disk and inflight
+* (#126) Remove duplicate element from versions array
+
+Version 1.0.7 *(2017-01-30)*
 ----------------------------
 * Feature: add additional create(FileSystem) within SourcePersister to allow clearing fileSystem cache (#77)
 * Feature: add error prone analyzer (#79)
@@ -14,7 +43,7 @@ Version 1.0.7 *(2017-01-30/)*
 
 
 
-Version 1.0.6 *(2017-01-23/)*
+Version 1.0.6 *(2017-01-23)*
 ----------------------------
 * Bug Fix: fix race condition of 2 fetch requests too quickly (#74)
 * Bug Fix: Expose MultiParser as Public
@@ -27,7 +56,7 @@ Version 1.0.5 *DOES NOT EXIST*
 ----------------------------
 *(We screwed up deployment)
 
-Version 1.0.4 *(2017-01-19/)*
+Version 1.0.4 *(2017-01-19)*
 ----------------------------
 * Bug Fix: Fix memory caching issue with Equivalence.Equals (#70)
 

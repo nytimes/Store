@@ -4,12 +4,11 @@ package com.nytimes.android.external.store.middleware;
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import okio.BufferedSource;
@@ -43,7 +42,7 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
     }
 
     @Override
-    public Parsed call(@NotNull BufferedSource source) {
+    public Parsed call(@Nonnull BufferedSource source) {
         try (InputStreamReader reader = new InputStreamReader(source.inputStream(), UTF_8)) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {

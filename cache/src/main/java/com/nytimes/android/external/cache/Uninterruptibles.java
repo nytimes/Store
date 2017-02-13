@@ -1,9 +1,9 @@
 package com.nytimes.android.external.cache;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import javax.annotation.Nonnull;
 
 public final class Uninterruptibles {
 
@@ -18,7 +18,7 @@ public final class Uninterruptibles {
    *
    * @throws ExecutionException if the computation threw an exception
    */
-  public static <V> V getUninterruptibly(@NotNull Future<V> future)
+  public static <V> V getUninterruptibly(@Nonnull Future<V> future)
       throws ExecutionException {
     boolean interrupted = false;
     try {

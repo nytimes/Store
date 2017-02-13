@@ -1,33 +1,38 @@
 package com.nytimes.android.external.store.util;
 
 
+import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.impl.BarCode;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 
 /**
  * Pass-through diskdao for stores that don't want to use persister
  */
-public class NoopPersister<Raw> implements Persister<Raw> {
-    private final ConcurrentMap<BarCode, Raw> networkResponses = new ConcurrentHashMap<>();
+public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<Key> {
+    protected final ConcurrentMap<Key, Raw> networkResponses = new ConcurrentHashMap<>();
 
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<Raw> read(BarCode barCode) {
-        Raw raw = networkResponses.get(barCode);
+    public Observable<Raw> read(@Nonnull Key key) {
+        Raw raw = networkResponses.get(key);
         return raw == null ? Observable.<Raw>empty() : Observable.just(raw);
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<Boolean> write(BarCode barCode, Raw raw) {
-        networkResponses.put(barCode, raw);
+    public Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
+        networkResponses.put(key, raw);
         return Observable.just(true);
+    }
+
+    @Override
+    public void clear(@Nonnull Key key) {
+        networkResponses.remove(key);
     }
 }

@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
 
 import org.junit.Test;
@@ -28,11 +28,14 @@ import static org.mockito.Mockito.when;
 public class GenericParserStoreTest {
     public static final String KEY = "key";
     @Mock
-    Fetcher<BufferedSource> fetcher;
+    Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
-    Persister<BufferedSource> persister;
-
+    Persister<BufferedSource, BarCode> persister;
     private final BarCode barCode = new BarCode("value", KEY);
+
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
+    }
 
     @Test
     public void testSimple() {
@@ -40,7 +43,7 @@ public class GenericParserStoreTest {
 
         Parser<BufferedSource, Foo> parser = GsonParserFactory.createSourceParser(new Gson(), Foo.class);
 
-        Store<Foo> simpleStore = ParsingStoreBuilder.<BufferedSource, Foo>builder()
+        Store<Foo, BarCode> simpleStore = StoreBuilder.<BarCode, BufferedSource, Foo>parsedWithKey()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)
@@ -69,10 +72,6 @@ public class GenericParserStoreTest {
         result = simpleStore.get(barCode).toBlocking().first();
         assertThat(result.bar).isEqualTo(KEY);
         verify(fetcher, times(1)).fetch(barCode);
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
     }
 
     private static class Foo {

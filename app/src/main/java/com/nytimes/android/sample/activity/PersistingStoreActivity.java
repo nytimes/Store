@@ -6,13 +6,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nytimes.android.external.fs.SourcePersisterFactory;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
 import com.nytimes.android.sample.BuildConfig;
 import com.nytimes.android.sample.R;
@@ -22,8 +23,10 @@ import com.nytimes.android.sample.data.model.Post;
 import com.nytimes.android.sample.data.model.RedditData;
 import com.nytimes.android.sample.data.remote.Api;
 import com.nytimes.android.sample.reddit.PostAdapter;
+
 import java.io.IOException;
 import java.util.List;
+
 import okio.BufferedSource;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
@@ -37,7 +40,7 @@ import static android.widget.Toast.makeText;
 
 public class PersistingStoreActivity extends AppCompatActivity {
 
-    private Persister<BufferedSource> persister;
+    private Persister<BufferedSource, BarCode> persister;
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
 
@@ -72,7 +75,8 @@ public class PersistingStoreActivity extends AppCompatActivity {
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showPosts, throwable -> {});
+                .subscribe(this::showPosts, throwable -> {
+                });
     }
 
     private void showPosts(List<Post> posts) {
@@ -88,15 +92,15 @@ public class PersistingStoreActivity extends AppCompatActivity {
                 .map(Children::data);
     }
 
-    private Store<RedditData> provideRedditStore() {
-        return ParsingStoreBuilder.<BufferedSource,RedditData>builder()
+    private Store<RedditData, BarCode> provideRedditStore() {
+        return StoreBuilder.<BarCode, BufferedSource, RedditData>parsedWithKey()
                 .fetcher(this::fetcher)
                 .persister(persister)
-                .parser(GsonParserFactory.createSourceParser(provideGson(),RedditData.class))
+                .parser(GsonParserFactory.createSourceParser(provideGson(), RedditData.class))
                 .open();
     }
 
-    private Persister<BufferedSource> newPersister() throws IOException {
+    private Persister<BufferedSource, BarCode> newPersister() throws IOException {
         return SourcePersisterFactory.create(getApplicationContext().getCacheDir());
     }
 

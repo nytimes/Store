@@ -1,41 +1,45 @@
 package com.nytimes.android.external.store.base.impl;
 
-import org.jetbrains.annotations.NotNull;
+import com.nytimes.android.external.cache.Preconditions;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+
 /**
  * {@link com.nytimes.android.external.store.base.impl.BarCode Barcode} is used as a unique
- * identifier for a particular {@link com.nytimes.android.external.store.base.Store  Store}
+ * identifier for a particular {@link Store  Store}
  * <p/>
- * Barcode will be passed to {@link com.nytimes.android.external.store.base.Fetcher  Fetcher}
+ * Barcode will be passed to   Fetcher
  * and {@link com.nytimes.android.external.store.base.Persister  Persister}
  **/
-
 public final class BarCode implements Serializable {
-    @NotNull
+
+    private static final BarCode EMPTY_BARCODE = new BarCode("", "");
+
+    @Nonnull
     private final String key;
-    @NotNull
+    @Nonnull
     private final String type;
 
-    public BarCode(@NotNull String type, @NotNull String key) {
-        this.key = key;
-        this.type = type;
+    public BarCode(@Nonnull String type, @Nonnull String key) {
+        this.key = Preconditions.checkNotNull(key);
+        this.type = Preconditions.checkNotNull(type);
     }
 
-    @NotNull
+    @Nonnull
+    public static BarCode empty() {
+        return EMPTY_BARCODE;
+    }
+
+    @Nonnull
     public String getKey() {
         return key;
     }
 
-    @NotNull
+    @Nonnull
     public String getType() {
         return type;
-    }
-
-    @NotNull
-    public static BarCode empty() {
-        return new BarCode("", "");
     }
 
     @Override
@@ -43,14 +47,17 @@ public final class BarCode implements Serializable {
         if (this == object) {
             return true;
         }
+
         if (!(object instanceof BarCode)) {
             return false;
         }
+
         BarCode barCode = (BarCode) object;
 
         if (!key.equals(barCode.key)) {
             return false;
         }
+
         if (!type.equals(barCode.type)) {
             return false;
         }
@@ -63,5 +70,13 @@ public final class BarCode implements Serializable {
         int result = key.hashCode();
         result = 31 * result + type.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "BarCode{" +
+                "key='" + key + '\'' +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

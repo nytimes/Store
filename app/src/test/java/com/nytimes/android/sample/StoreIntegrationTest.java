@@ -1,11 +1,13 @@
 package com.nytimes.android.sample;
 
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import rx.Observable;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -16,7 +18,7 @@ import static junit.framework.Assert.assertEquals;
  */
 public class StoreIntegrationTest {
 
-    private Store<String> testStore;
+    private Store<String, BarCode> testStore;
 
     @Test
     public void addition_isCorrect() throws Exception {
@@ -26,8 +28,8 @@ public class StoreIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        testStore = StoreBuilder.<String>builder()
-                .nonObservableFetcher(barCode -> "hello")
+        testStore = StoreBuilder.<String>barcode()
+                .fetcher(barCode -> Observable.just("hello"))
                 .open();
 
     }
@@ -35,7 +37,7 @@ public class StoreIntegrationTest {
     @Test
     public void testRepeatedGet() throws Exception {
         String first = testStore.get(BarCode.empty()).toBlocking().first();
-        assertEquals(first,"hello");
+        assertEquals(first, "hello");
 
     }
 }

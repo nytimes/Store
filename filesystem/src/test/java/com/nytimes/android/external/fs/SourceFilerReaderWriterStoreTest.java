@@ -2,9 +2,9 @@ package com.nytimes.android.external.fs;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonSourceParser;
 
 import org.junit.Test;
@@ -26,19 +26,23 @@ import static org.mockito.Mockito.when;
 public class SourceFilerReaderWriterStoreTest {
     public static final String KEY = "key";
     @Mock
-    Fetcher<BufferedSource> fetcher;
+    Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
     SourceFileReader fileReader;
     @Mock
     SourceFileWriter fileWriter;
-
     private final BarCode barCode = new BarCode("value", KEY);
+
+
+    private static BufferedSource source(String data) {
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
+    }
 
     @Test
     public void testSimple() {
         MockitoAnnotations.initMocks(this);
         GsonSourceParser<Foo> parser = new GsonSourceParser<>(new Gson(), Foo.class);
-        Store<Foo> simpleStore = new ParsingStoreBuilder<BufferedSource, Foo>()
+        Store<Foo, BarCode> simpleStore = StoreBuilder.<BarCode, BufferedSource, Foo>parsedWithKey()
                 .persister(fileReader, fileWriter)
                 .fetcher(fetcher)
                 .parser(parser)
@@ -66,10 +70,6 @@ public class SourceFilerReaderWriterStoreTest {
         result = simpleStore.get(barCode).toBlocking().first();
         assertThat(result.bar).isEqualTo(KEY);
         verify(fetcher, times(1)).fetch(barCode);
-    }
-
-    private static BufferedSource source(String data) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
     }
 
     private static class Foo {

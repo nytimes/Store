@@ -3,7 +3,7 @@ package com.nytimes.android.external.store;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
 
@@ -22,11 +22,10 @@ public class StoreWithParserTest {
 
     private static final String DISK = "persister";
     private static final String NETWORK = "fetch";
-
     @Mock
-    Fetcher<String> fetcher;
+    Fetcher<String, BarCode> fetcher;
     @Mock
-    Persister<String> persister;
+    Persister<String, BarCode> persister;
     @Mock
     Parser<String, String> parser;
 
@@ -37,7 +36,7 @@ public class StoreWithParserTest {
         MockitoAnnotations.initMocks(this);
 
 
-        Store<String> simpleStore = ParsingStoreBuilder.<String, String>builder()
+        Store<String, BarCode> simpleStore = ParsingStoreBuilder.<String, String>builder()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)
@@ -66,7 +65,7 @@ public class StoreWithParserTest {
     public void testSubclass() {
         MockitoAnnotations.initMocks(this);
 
-        Store<String> simpleStore = new SampleParsingStore(fetcher, persister, parser);
+        Store<String, BarCode> simpleStore = new SampleParsingStore(fetcher, persister, parser);
 
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));

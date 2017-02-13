@@ -1,26 +1,32 @@
 package com.nytimes.android.external.store.base.impl;
 
-
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
+import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
+import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import rx.Observable;
+import rx.annotations.Experimental;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
+
+import static com.nytimes.android.external.store.base.impl.StoreUtil.*;
 
 /**
  * Store to be used for loading an object different data sources
@@ -31,43 +37,46 @@ import rx.subjects.BehaviorSubject;
  *                 Example usage:  @link
  */
 
-@SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName"})
-final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
-
-    Cache<BarCode, Observable<Parsed>> inFlightRequests;
-    Cache<BarCode, Observable<Parsed>> memCache;
-
-    private Fetcher<Raw> fetcher;
-    private Persister<Raw> persister;
-    private Func1<Raw, Parsed> parser;
+final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
+    Cache<Key, Observable<Parsed>> inFlightRequests;
+    Cache<Key, Observable<Parsed>> memCache;
+    private StalePolicy stalePolicy;
+    private final PublishSubject<Key> refreshSubject = PublishSubject.create();
+    private Fetcher<Raw, Key> fetcher;
+    private Persister<Raw, Key> persister;
+    private Parser<Raw, Parsed> parser;
     private BehaviorSubject<Parsed> subject;
 
-    RealInternalStore(Fetcher<Raw> fetcher,
-                      Persister<Raw> persister,
-                      Func1<Raw, Parsed> parser) {
+
+    RealInternalStore(Fetcher<Raw, Key> fetcher,
+                      Persister<Raw, Key> persister,
+                      Parser<Raw, Parsed> parser,
+                      Cache<Key, Observable<Parsed>> memCache,
+                      StalePolicy stalePolicy) {
+        init(fetcher, persister, parser, memCache, stalePolicy);
+    }
+
+    RealInternalStore(Fetcher<Raw, Key> fetcher,
+                      Persister<Raw, Key> persister,
+                      Parser<Raw, Parsed> parser,
+                      StalePolicy stalePolicy) {
         memCache = CacheBuilder.newBuilder()
                 .maximumSize(getCacheSize())
                 .expireAfterAccess(getCacheTTL(), TimeUnit.SECONDS)
                 .build();
-        init(fetcher, persister, parser, memCache);
+        init(fetcher, persister, parser, memCache, stalePolicy);
+
     }
 
-
-    RealInternalStore(Fetcher<Raw> fetcher,
-                      Persister<Raw> persister,
-                      Func1<Raw, Parsed> parser,
-                      Cache<BarCode, Observable<Parsed>> memCache) {
-        init(fetcher, persister, parser, memCache);
-    }
-
-    private void init(Fetcher<Raw> fetcher,
-                      Persister<Raw> persister,
-                      Func1<Raw, Parsed> parser,
-                      Cache<BarCode, Observable<Parsed>> memCache) {
+    private void init(Fetcher<Raw, Key> fetcher,
+                      Persister<Raw, Key> persister,
+                      Parser<Raw, Parsed> parser,
+                      Cache<Key, Observable<Parsed>> memCache, StalePolicy stalePolicy) {
         this.fetcher = fetcher;
         this.persister = persister;
         this.parser = parser;
         this.memCache = memCache;
+        this.stalePolicy = stalePolicy;
         inFlightRequests = CacheBuilder.newBuilder()
                 .expireAfterWrite(TimeUnit.MINUTES.toSeconds(1), TimeUnit.SECONDS)
                 .build();
@@ -77,42 +86,49 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
 
 
     /**
-     * @param barCode
+     * @param key
      * @return an observable from the first data source that is available
      */
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<Parsed> get(@NotNull final BarCode barCode) {
+    public Observable<Parsed> get(@Nonnull final Key key) {
         return Observable.concat(
-                lazyCache(barCode),
-                fetch(barCode)
+                lazyCache(key),
+                fetch(key)
         ).take(1);
     }
+
+    @Override
+    @Nonnull
+    @Experimental
+    public Observable<Parsed> getRefreshing(@Nonnull final Key key) {
+        return get(key)
+                .compose(StoreUtil.<Parsed, Key>repeatWhenCacheEvicted(refreshSubject, key));
+    }
+
 
     /**
      * @return data from memory
      */
-    private Observable<Parsed> lazyCache(@NotNull final BarCode barCode) {
+    private Observable<Parsed> lazyCache(@Nonnull final Key key) {
         return Observable
                 .defer(new Func0<Observable<Parsed>>() {
                     @Override
                     public Observable<Parsed> call() {
-                        return cache(barCode);
-
+                        return cache(key);
                     }
                 })
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
-
     }
 
-    private Observable<Parsed> cache(@NotNull final BarCode barCode) {
+    private Observable<Parsed> cache(@Nonnull final Key key) {
         try {
-            return memCache.get(barCode, new Callable<Observable<Parsed>>() {
-                @NotNull
+            return memCache.get(key, new Callable<Observable<Parsed>>() {
+                @Nonnull
                 @Override
                 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
                 public Observable<Parsed> call() throws Exception {
-                    return disk(barCode);
+                    return disk(key);
                 }
             });
         } catch (ExecutionException e) {
@@ -121,36 +137,60 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     }
 
 
+    @Nonnull
     @Override
-    public Observable<Parsed> memory(@NotNull BarCode barCode) {
-        Observable<Parsed> cachedValue = memCache.getIfPresent(barCode);
+    public Observable<Parsed> memory(@Nonnull Key key) {
+        Observable<Parsed> cachedValue = memCache.getIfPresent(key);
         return cachedValue == null ? Observable.<Parsed>empty() : cachedValue;
     }
 
     /**
      * Fetch data from persister and update memory after. If an error occurs, emit and empty observable
-     * so that the concat call in {@link #get(BarCode)} moves on to {@link #fetch(BarCode)}
+     * so that the concat call in {@link #get(Key)} moves on to {@link #fetch(Key)}
      *
-     * @param barCode
+     * @param key
      * @return
      */
+    @Nonnull
     @Override
-    public Observable<Parsed> disk(@NotNull final BarCode barCode) {
-        return Observable.defer(new Func0<Observable<Parsed>>() {
+    public Observable<Parsed> disk(@Nonnull final Key key) {
+        if (shouldReturnNetworkBeforeStale(persister, stalePolicy, key)) {
+            return Observable.empty();
+        }
+
+        return readDisk(key);
+    }
+
+    private Observable<Parsed> readDisk(@Nonnull final Key key) {
+        return persister().read(key)
+                .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
+                .map(parser)
+                .doOnNext(new Action1<Parsed>() {
+                    @Override
+                    public void call(Parsed parsed) {
+                        updateMemory(key, parsed);
+                        if (stalePolicy == StalePolicy.REFRESH_ON_STALE
+                                && persisterIsStale(key, persister)) {
+                            backfillCache(key);
+                        }
+                    }
+                }).cache();
+    }
+
+    private void backfillCache(@Nonnull Key key) {
+        fetch(key).subscribe(new Action1<Parsed>() {
             @Override
-            public Observable<Parsed> call() {
-                return persister().read(barCode)
-                        .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
-                        .map(parser)
-                        .doOnNext(new Action1<Parsed>() {
-                            @Override
-                            public void call(Parsed parsed) {
-                                updateMemory(barCode, parsed);
-                            }
-                        }).cache();
+            public void call(Parsed parsed) {
+                //do Nothing we are just backfilling cache
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                //do nothing as we are just backfilling cache
             }
         });
     }
+
 
     /**
      * Will check to see if there exists an in flight observable and return it before
@@ -158,14 +198,14 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return data from fetch and store it in memory and persister
      */
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<Parsed> fetch(@NotNull final BarCode barCode) {
+    public Observable<Parsed> fetch(@Nonnull final Key key) {
         return Observable.defer(new Func0<Observable<Parsed>>() {
             @Nullable
             @Override
             public Observable<Parsed> call() {
-                return fetchAndPersist(barCode);
+                return fetchAndPersist(key);
             }
         });
     }
@@ -177,17 +217,17 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * the last value it gets. Subject/Observable is cached in a {@link ConcurrentMap} to maintain
      * thread safety.
      *
-     * @param barCode resource identifier
+     * @param key resource identifier
      * @return observable that emits a {@link Parsed} value
      */
     @Nullable
-    Observable<Parsed> fetchAndPersist(@NotNull final BarCode barCode) {
+    Observable<Parsed> fetchAndPersist(@Nonnull final Key key) {
         try {
-            return inFlightRequests.get(barCode, new Callable<Observable<Parsed>>() {
-                @NotNull
+            return inFlightRequests.get(key, new Callable<Observable<Parsed>>() {
+                @Nonnull
                 @Override
                 public Observable<Parsed> call() {
-                    return response(barCode);
+                    return response(key);
                 }
             });
         } catch (ExecutionException e) {
@@ -195,22 +235,29 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
         }
     }
 
-    @NotNull
-    Observable<Parsed> response(@NotNull final BarCode barCode) {
+    @Nonnull
+    private Observable<Parsed> response(@Nonnull final Key key) {
         return fetcher()
-                .fetch(barCode)
+                .fetch(key)
                 .flatMap(new Func1<Raw, Observable<Parsed>>() {
                     @Override
                     public Observable<Parsed> call(Raw raw) {
-                        //Log.i(TAG,"writing and then reading from Persister");
-                        return persister().write(barCode, raw)
+                        return persister().write(key, raw)
                                 .flatMap(new Func1<Boolean, Observable<Parsed>>() {
-                                    @NotNull
                                     @Override
                                     public Observable<Parsed> call(Boolean aBoolean) {
-                                        return disk(barCode);
+                                        return readDisk(key);
                                     }
                                 });
+                    }
+                })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Parsed>>() {
+                    @Override
+                    public Observable<? extends Parsed> call(Throwable throwable) {
+                        if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
+                            return readDisk(key);
+                        }
+                        return Observable.error(throwable);
                     }
                 })
                 .doOnNext(new Action1<Parsed>() {
@@ -219,11 +266,16 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
                         notifySubscribers(data);
                     }
                 })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        inFlightRequests.invalidate(key);
+                    }
+                })
                 .cache();
     }
 
     void notifySubscribers(Parsed data) {
-        //Log.d(TAG,"notify stream subscribers of fresh data");
         subject.onNext(data);
     }
 
@@ -232,21 +284,21 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      *
      * @return
      */
-    @NotNull
+    @Nonnull
     @Override
-    public Observable<Parsed> stream(@NotNull BarCode id) {
+    public Observable<Parsed> stream(@Nonnull Key key) {
 
         Observable<Parsed> stream = subject.asObservable();
 
         //If nothing was emitted through the subject yet, start stream with get() value
         if (!subject.hasValue()) {
-            return stream.startWith(get(id));
+            return stream.startWith(get(key));
         }
 
         return stream;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Observable<Parsed> stream() {
         return subject.asObservable();
@@ -255,26 +307,66 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
     /**
      * Only update memory after persister has been successfully update
      *
-     * @param barCode
+     * @param key
      * @param data
      */
-    void updateMemory(@NotNull final BarCode barCode, final Parsed data) {
-        memCache.put(barCode, Observable.just(data));
+    void updateMemory(@Nonnull final Key key, final Parsed data) {
+        memCache.put(key, Observable.just(data));
     }
 
     @Override
+    @Deprecated
     public void clearMemory() {
-        memCache.invalidateAll();
+        inFlightRequests.invalidateAll();
+
+        for (Key cachedKey : memCache.asMap().keySet()) {
+            memCache.invalidate(cachedKey);
+            clearPersister(cachedKey);
+            notifyRefresh(cachedKey);
+        }
+
     }
 
     /**
      * Clear memory by id
      *
-     * @param barCode of data to clear
+     * @param key of data to clear
      */
     @Override
-    public void clearMemory(@NotNull final BarCode barCode) {
-        memCache.invalidate(barCode);
+    @Deprecated
+    public void clearMemory(@Nonnull final Key key) {
+        inFlightRequests.invalidate(key);
+        memCache.invalidate(key);
+        clearPersister(key);
+        notifyRefresh(key);
+    }
+
+
+    @Override
+    public void clear(){
+        for (Key cachedKey : memCache.asMap().keySet()) {
+            clear(cachedKey);
+        }
+    }
+
+    @Override
+    public void clear(@Nonnull Key key) {
+        inFlightRequests.invalidate(key);
+        memCache.invalidate(key);
+        clearPersister(key);
+        notifyRefresh(key);
+    }
+
+    private void notifyRefresh(Key key) {
+        refreshSubject.onNext(key);
+    }
+
+    private void clearPersister(Key key) {
+        boolean isPersisterClearable = persister instanceof Clearable;
+
+        if (isPersisterClearable) {
+            ((Clearable<Key>) persister).clear(key);
+        }
     }
 
     /**
@@ -292,21 +384,20 @@ final class RealInternalStore<Raw, Parsed> implements InternalStore<Parsed> {
      * @return memory persister size
      */
     private long getCacheSize() {
-//        return memCache.size();
         return 100;
     }
 
     /**
      * @return DiskDAO that stores and stores <Raw> data
      */
-    Persister<Raw> persister() {
+    Persister<Raw, Key> persister() {
         return persister;
     }
 
     /**
      *
      */
-    Fetcher<Raw> fetcher() {
+    Fetcher<Raw, Key> fetcher() {
         return fetcher;
     }
 }

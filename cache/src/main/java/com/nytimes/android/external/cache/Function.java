@@ -5,7 +5,7 @@
 
 package com.nytimes.android.external.cache;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 public interface Function<F, T> {
     @Nullable

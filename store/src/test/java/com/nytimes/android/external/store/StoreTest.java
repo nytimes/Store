@@ -4,7 +4,7 @@ import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.RealStore;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
@@ -34,13 +34,12 @@ public class StoreTest {
     private static final String DISK = "disk";
     private static final String NETWORK = "fetch";
     private static final String MEMORY = "memory";
-
+    final AtomicInteger counter = new AtomicInteger(0);
     @Mock
-    Fetcher<String> fetcher;
+    Fetcher<String, BarCode> fetcher;
     @Mock
-    Persister<String> persister;
+    Persister<String, BarCode> persister;
     private final BarCode barCode = new BarCode("key", "value");
-    private final AtomicInteger counter = new AtomicInteger(0);
 
     @Before
     public void setUp() {
@@ -50,7 +49,7 @@ public class StoreTest {
     @Test
     public void testSimple() {
 
-        Store<String> simpleStore = new StoreBuilder<String>()
+        Store<String, BarCode> simpleStore = StoreBuilder.<String>barcode()
                 .persister(persister)
                 .fetcher(fetcher)
                 .open();
@@ -78,7 +77,7 @@ public class StoreTest {
     @Test
     public void testDoubleTap() {
 
-        Store<String> simpleStore = new StoreBuilder<String>()
+        Store<String, BarCode> simpleStore = StoreBuilder.<String>barcode()
                 .persister(persister)
                 .fetcher(fetcher)
                 .open();
@@ -123,8 +122,8 @@ public class StoreTest {
     @Test
     public void testSubclass() {
 
-        Store<String> simpleStore = new SampleStore(fetcher, persister);
-        simpleStore.clearMemory();
+        RealStore<String, BarCode> simpleStore = new SampleStore(fetcher, persister);
+        simpleStore.clear();
 
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));
@@ -145,9 +144,8 @@ public class StoreTest {
     @Test
     public void testNoopAndDefault() {
 
-        NoopPersister<String> persister = spy(new NoopPersister<String>());
-        Store<String> simpleStore = new RealStore<>(fetcher, persister);
-        simpleStore.clearMemory();
+        Persister<String, BarCode> persister = spy(new NoopPersister<String, BarCode>());
+        RealStore<String, BarCode> simpleStore = new SampleStore(fetcher, persister);
 
 
         when(fetcher.fetch(barCode))

@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.cache.Preconditions;
 import com.nytimes.android.external.store.base.Parser;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Reader;
 import java.lang.reflect.Type;
+
+import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 
@@ -24,8 +24,8 @@ public final class JacksonParserFactory {
      * Returns a new Parser which parses from a String to the specified type, using
      * the provided {@link JsonFactory} instance.
      */
-    @NotNull
-    public static <T> Parser<String, T> createStringParser(@NotNull JsonFactory jsonFactory, @NotNull Type type) {
+    @Nonnull
+    public static <T> Parser<String, T> createStringParser(@Nonnull JsonFactory jsonFactory, @Nonnull Type type) {
         Preconditions.checkNotNull(jsonFactory, "jsonFactory cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
         return new JacksonStringParser<>(jsonFactory, type);
@@ -35,8 +35,8 @@ public final class JacksonParserFactory {
      * Returns a new Parser which parses from a String to the specified type, using
      * the provided {@link ObjectMapper} instance.
      */
-    @NotNull
-    public static <T> Parser<String, T> createStringParser(@NotNull ObjectMapper objectMapper, @NotNull Type type) {
+    @Nonnull
+    public static <T> Parser<String, T> createStringParser(@Nonnull ObjectMapper objectMapper, @Nonnull Type type) {
         Preconditions.checkNotNull(objectMapper, "objectMapper cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
         return new JacksonStringParser<>(objectMapper, type);
@@ -46,8 +46,8 @@ public final class JacksonParserFactory {
      * Returns a new Parser which parses from a String to the specified type, using
      * a new default {@link ObjectMapper} instance.
      */
-    @NotNull
-    public static <T> Parser<String, T> createStringParser(@NotNull Class<T> type) {
+    @Nonnull
+    public static <T> Parser<String, T> createStringParser(@Nonnull Class<T> type) {
         return createStringParser(new ObjectMapper(), type);
     }
 
@@ -55,32 +55,32 @@ public final class JacksonParserFactory {
      * Returns a new Parser which parses from {@link BufferedSource} to the specified type, using
      * the provided {@link JsonFactory} instance.
      */
-    @NotNull
-    public static <T> Parser<BufferedSource, T> createSourceParser(@NotNull JsonFactory jsonFactory,
-                                                                   @NotNull Type type) {
+    @Nonnull
+    public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull JsonFactory jsonFactory,
+                                                                   @Nonnull Type type) {
         Preconditions.checkNotNull(jsonFactory, "jsonFactory cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
-        return new JacksonSourceParser<T>(jsonFactory, type);
+        return new JacksonSourceParser<>(jsonFactory, type);
     }
 
     /**
      * Returns a new Parser which parses from {@link BufferedSource} to the specified type, using
      * the provided {@link ObjectMapper} instance.
      */
-    @NotNull
-    public static <T> Parser<BufferedSource, T> createSourceParser(@NotNull ObjectMapper objectMapper,
-                                                                   @NotNull Type type) {
+    @Nonnull
+    public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull ObjectMapper objectMapper,
+                                                                   @Nonnull Type type) {
         Preconditions.checkNotNull(objectMapper, "objectMapper cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
-        return new JacksonSourceParser<T>(objectMapper, type);
+        return new JacksonSourceParser<>(objectMapper, type);
     }
 
     /**
      * Returns a new Parser which parses from {@link BufferedSource} to the specified type, using
      * a new default configured {@link ObjectMapper} instance.
      */
-    @NotNull
-    public static <T> Parser<BufferedSource, T> createSourceParser(@NotNull Type type) {
+    @Nonnull
+    public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull Type type) {
         return createSourceParser(new ObjectMapper(), type);
     }
 
@@ -88,9 +88,9 @@ public final class JacksonParserFactory {
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * the provided {@link JsonFactory} instance.
      */
-    @NotNull
-    public static <T> Parser<Reader, T> createReaderParser(@NotNull JsonFactory jsonFactory,
-                                                           @NotNull Type type) {
+    @Nonnull
+    public static <T> Parser<Reader, T> createReaderParser(@Nonnull JsonFactory jsonFactory,
+                                                           @Nonnull Type type) {
         Preconditions.checkNotNull(jsonFactory, "jsonFactory cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
         return new JacksonReaderParser<>(jsonFactory, type);
@@ -100,20 +100,20 @@ public final class JacksonParserFactory {
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * the provided {@link ObjectMapper} instance.
      */
-    @NotNull
-    public static <T> Parser<Reader, T> createReaderParser(@NotNull ObjectMapper objectMapper,
-                                                           @NotNull Type type) {
+    @Nonnull
+    public static <T> Parser<Reader, T> createReaderParser(@Nonnull ObjectMapper objectMapper,
+                                                           @Nonnull Type type) {
         Preconditions.checkNotNull(objectMapper, "objectMapper cannot be null.");
         Preconditions.checkNotNull(type, "type cannot be null.");
-        return new JacksonReaderParser<T>(objectMapper, type);
+        return new JacksonReaderParser<>(objectMapper, type);
     }
 
     /**
      * Returns a new Parser which parses from {@link Reader} to the specified type, using
      * a new default configured {@link ObjectMapper} instance.
      */
-    @NotNull
-    public static <T> Parser<Reader, T> createReaderParser(@NotNull Type type) {
+    @Nonnull
+    public static <T> Parser<Reader, T> createReaderParser(@Nonnull Type type) {
         return createReaderParser(new ObjectMapper(), type);
     }
 }

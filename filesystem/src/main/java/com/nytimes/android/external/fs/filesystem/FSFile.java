@@ -3,11 +3,11 @@ package com.nytimes.android.external.fs.filesystem;
 
 import com.nytimes.android.external.fs.Util;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -17,18 +17,18 @@ import static java.lang.String.format;
 
 class FSFile {
 
-    private final Util util = new Util();
-    @NotNull
+    @Nonnull
     private final String pathValue;
-    @NotNull
+    @Nonnull
     private final File file;
 
-    FSFile(File root, @NotNull String path) throws IOException {
+    FSFile(File root, @Nonnull String path) throws IOException {
         this.pathValue = path;
         this.file = new File(root, path);
         if (file.exists() && file.isDirectory()) {
             throw new FileNotFoundException(format("expecting a file at %s, instead found a directory", path));
         }
+        Util util = new Util();
         util.createParentDirs(this.file);
     }
 
@@ -46,7 +46,7 @@ class FSFile {
         }
     }
 
-    @NotNull
+    @Nonnull
     public String path() {
         return pathValue;
     }
@@ -75,12 +75,16 @@ class FSFile {
     }
 
 
-    @NotNull
+    @Nonnull
     public BufferedSource source() throws FileNotFoundException {
         if (file.exists()) {
             return Okio.buffer(Okio.source(file));
         }
         throw new FileNotFoundException(pathValue);
+    }
+
+    public long lastModified() {
+        return file.lastModified();
     }
 }
 

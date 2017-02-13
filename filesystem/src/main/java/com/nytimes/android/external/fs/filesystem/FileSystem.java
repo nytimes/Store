@@ -1,11 +1,14 @@
 package com.nytimes.android.external.fs.filesystem;
 
-import org.jetbrains.annotations.NotNull;
+import com.nytimes.android.external.store.base.RecordState;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 
@@ -49,14 +52,14 @@ public interface FileSystem {
      * @return a {@link BufferedSource} to read - Caller must close it!
      * @throws FileNotFoundException
      */
-    @NotNull
+    @Nonnull
     BufferedSource read(String path) throws FileNotFoundException;
 
     /**
      * write a new version of a file. No readers will "see" this version until it has successfully been completely
      * written to and closed. In case of error, the version is deleted from disk.
      *
-     * @param path what to write to
+     * @param path   what to write to
      * @param source a {@link BufferedSource} containing the content to be written to disk. Caller must close it!
      * @throws IOException
      */
@@ -82,7 +85,7 @@ public interface FileSystem {
     /**
      * list all files under a given directory, recursively.
      */
-    @NotNull
+    @Nonnull
     Collection<String> list(String path) throws FileNotFoundException;
 
     /**
@@ -92,4 +95,12 @@ public interface FileSystem {
      * @return exists, duh
      */
     boolean exists(String file);
+
+    /**
+     * compares age of file with given expiration time and returns
+     * appropriate recordState
+     */
+    RecordState getRecordState(@Nonnull TimeUnit expirationUnit,
+                               long expirationDuration,
+                               @Nonnull String path);
 }

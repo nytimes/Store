@@ -14,33 +14,31 @@ allprojects {
 
 ext.versions = [
         minSdk               : 16,
-        targetSdk            : 24,
-        compileSdk           : 24,
-        targetSdk            : 24,
-        buildTools           : '24.0.2',
+        targetSdk            : 25,
+        compileSdk           : 25,
+        buildTools           : '25.0.2',
 
         // UI libs.
-        supportLibs          : '24.1.1',
+        supportLibs          : '25.1.1',
         picasso              : '2.5.2',
         rxBinding            : '0.3.0',
         butterKnife          : '7.0.1',
 
         // Reactive.
-        rxJava               : '1.2.4',
+        rxJava               : '1.2.6',
         rxJavaProGuardRules  : '1.1.6.0',
         rxJavaAsyncUtil      : '0.21.0',
         rxAndroid            : '1.2.1',
 
         // Others.
-        intellij             : '9.0.4',
         retrofit             : '2.0.0-beta3',
         retrolambda          : '2.3.0',
-        dagger               : '2.5',
+        dagger               : '2.9',
         jsr305               : '3.0.1',
         okHttp               : '2.7.5',
         okio                 : '1.11.0',
         gson                 : '2.6.2',
-        moshi                : '1.3.1',
+        moshi                : '1.4.0',
         jackson              : '2.8.6',
         guava                : '19.0',
         javapoet             : '1.8.0',
@@ -86,7 +84,6 @@ ext.libraries = [
         rxAndroid               : "io.reactivex:rxandroid:$versions.rxAndroid",
 
         // Others.
-        intellijAnnotations     : "com.intellij:annotations:$versions.intellij",
         retrofit                : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitGsonConverter   : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
         retrofitRx              : "com.squareup.retrofit2:adapter-rxjava:$versions.retrofit",

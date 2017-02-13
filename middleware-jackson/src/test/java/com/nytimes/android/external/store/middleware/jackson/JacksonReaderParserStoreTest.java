@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.Store;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.jackson.data.Foo;
 
 import org.junit.Before;
@@ -33,15 +33,12 @@ public class JacksonReaderParserStoreTest {
     private static final String KEY = "key";
     private static final String sourceString =
             "{\"number\":123,\"string\":\"abc\",\"bars\":[{\"string\":\"def\"},{\"string\":\"ghi\"}]}";
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
-    Fetcher<Reader> fetcher;
+    Fetcher<Reader, BarCode> fetcher;
     @Mock
-    Persister<Reader> persister;
-
+    Persister<Reader, BarCode> persister;
     private final BarCode barCode = new BarCode("value", KEY);
 
     @Before
@@ -63,7 +60,7 @@ public class JacksonReaderParserStoreTest {
     @Test
     public void testDefaultJacksonReaderParser() {
         Parser<Reader, Foo> parser = JacksonParserFactory.createReaderParser(Foo.class);
-        Store<Foo> store = ParsingStoreBuilder.<Reader, Foo>builder()
+        Store<Foo, BarCode> store = StoreBuilder.<BarCode, Reader, Foo>parsedWithKey()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)
@@ -82,7 +79,7 @@ public class JacksonReaderParserStoreTest {
 
         Parser<Reader, Foo> parser = JacksonParserFactory.createReaderParser(jsonFactory, Foo.class);
 
-        Store<Foo> store = ParsingStoreBuilder.<Reader, Foo>builder()
+        Store<Foo, BarCode> store = StoreBuilder.<BarCode, Reader, Foo>parsedWithKey()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(parser)

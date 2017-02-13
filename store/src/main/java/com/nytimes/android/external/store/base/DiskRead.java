@@ -1,12 +1,10 @@
 package com.nytimes.android.external.store.base;
 
-import com.nytimes.android.external.store.base.impl.BarCode;
-
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import rx.Observable;
 
-public interface DiskRead<Raw> {
-    @NotNull
-    Observable<Raw> read(BarCode barCode);
+public interface DiskRead<Raw, Key> {
+    @Nonnull
+    Observable<Raw> read(@Nonnull Key key);
 }

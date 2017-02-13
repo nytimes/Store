@@ -1,10 +1,11 @@
 package com.nytimes.android.external.cache;
 
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
@@ -22,13 +23,13 @@ public final class RemovalNotification<K, V> implements Map.Entry<K, V> {
    *
    * @since 19.0
    */
-  @NotNull
+  @Nonnull
   public static <K, V> RemovalNotification<K, V> create(
-          K key, V value, @NotNull RemovalCause cause) {
+          K key, V value, @Nonnull RemovalCause cause) {
     return new RemovalNotification(key, value, cause);
   }
 
-  private RemovalNotification(  K key,   V value, @NotNull RemovalCause cause) {
+  private RemovalNotification(  K key,   V value, @Nonnull RemovalCause cause) {
     this.key = key;
     this.value = value;
     this.cause = checkNotNull(cause);
@@ -61,7 +62,7 @@ public final class RemovalNotification<K, V> implements Map.Entry<K, V> {
     return value;
   }
 
-  @NotNull
+  @Nonnull
   @Override public final V setValue(V value) {
     throw new UnsupportedOperationException();
   }
@@ -84,7 +85,7 @@ public final class RemovalNotification<K, V> implements Map.Entry<K, V> {
   /**
    * Returns a string representation of the form <code>{key}={value}</code>.
    */
-  @NotNull
+  @Nonnull
   @Override public String toString() {
     return getKey() + "=" + getValue();
   }
