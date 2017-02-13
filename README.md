@@ -3,9 +3,7 @@
 
 # Store
 
-Store is an Android library for async data loading from network or two levels of caching.  
-
-NOTE: While this library is production ready, it is still in early stages and some APIs may be renamed/changed.
+Store is an Android library for effortless, reactive data loading.  
 
 ### The Problems:
 
