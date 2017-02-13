@@ -284,7 +284,7 @@ public class SampleStore extends RealStore<String, BarCode> {
 ### Artifacts
 Note: Release is in Sync with current state of master (not develop) branch
 
-CurrentVersion = **2.0.0-SNAPSHOT**
+**CurrentVersion = 2.0.0**
 
 + **Cache** Cache extracted from Guava (keeps method count to a minimum)
 
