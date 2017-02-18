@@ -43,7 +43,7 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
 
     @Override
     public Parsed call(@Nonnull BufferedSource source) {
-        try (InputStreamReader reader = new InputStreamReader(source.inputStream(), Charset.forName("UTF-8")) {
+        try (InputStreamReader reader = new InputStreamReader(source.inputStream(), Charset.forName("UTF-8"))) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {
             throw new RuntimeException(e);
