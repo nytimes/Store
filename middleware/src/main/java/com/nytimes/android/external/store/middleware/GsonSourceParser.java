@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import okio.BufferedSource;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.charset.Charset;
 
 
 /**
@@ -43,7 +43,7 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
 
     @Override
     public Parsed call(@Nonnull BufferedSource source) {
-        try (InputStreamReader reader = new InputStreamReader(source.inputStream(), UTF_8)) {
+        try (InputStreamReader reader = new InputStreamReader(source.inputStream(), Charset.forName("UTF-8"))) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {
             throw new RuntimeException(e);
