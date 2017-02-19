@@ -1,5 +1,7 @@
 apply plugin: 'checkstyle'
-assemble.dependsOn('lint')
+if(tasks.findByName('lint') != null) {
+    assemble.dependsOn('lint')
+}
 check.dependsOn('checkstyle')
 
 
