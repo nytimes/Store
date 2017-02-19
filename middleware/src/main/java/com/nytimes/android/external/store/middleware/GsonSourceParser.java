@@ -7,6 +7,7 @@ import com.nytimes.android.external.store.base.Parser;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -14,7 +15,6 @@ import javax.inject.Inject;
 import okio.BufferedSource;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 /**
@@ -43,7 +43,7 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
 
     @Override
     public Parsed call(@Nonnull BufferedSource source) {
-        try (InputStreamReader reader = new InputStreamReader(source.inputStream(), UTF_8)) {
+        try (InputStreamReader reader = new InputStreamReader(source.inputStream(), Charset.forName("UTF-8"))) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {
             throw new RuntimeException(e);
