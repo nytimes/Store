@@ -1,6 +1,8 @@
 package com.nytimes.android.external.store.base.impl;
 
 import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store.util.KeyParseFunc;
+import com.nytimes.android.external.store.util.NoKeyParseFunc;
 import com.nytimes.android.external.store.util.ParserException;
 
 import org.junit.Rule;
@@ -41,13 +43,13 @@ public class MultiParserTest {
 
     @Test
     public void shouldParseChainProperly() {
-        List<Parser> parsersChain = new ArrayList<>();
-        parsersChain.add(PARSER_1);
-        parsersChain.add(PARSER_2);
-        parsersChain.add(PARSER_3);
+        List<KeyParseFunc> parsersChain = new ArrayList<>();
+        parsersChain.add(new NoKeyParseFunc<>(PARSER_1));
+        parsersChain.add(new NoKeyParseFunc<>(PARSER_2));
+        parsersChain.add(new NoKeyParseFunc<>(PARSER_3));
 
-        Parser<Integer, UUID> parser = new MultiParser<>(parsersChain);
-        UUID parsed = parser.call(100);
+        KeyParseFunc<Object,Integer, UUID> parser = new MultiParser<>(parsersChain);
+        UUID parsed = parser.call(new Object(),100);
 
         assertNotNull(parsed);
     }
@@ -56,13 +58,13 @@ public class MultiParserTest {
     public void shouldFailIfOneOfParsersIsInvalid() {
         expectedException.expect(ParserException.class);
 
-        List<Parser> parsersChain = new ArrayList<>();
-        parsersChain.add(PARSER_1);
-        parsersChain.add(PARSER_3);
-        parsersChain.add(PARSER_2);
+        List<KeyParseFunc> parsersChain = new ArrayList<>();
+        parsersChain.add(new NoKeyParseFunc<>(PARSER_1));
+        parsersChain.add(new NoKeyParseFunc<>(PARSER_3));
+        parsersChain.add(new NoKeyParseFunc<>(PARSER_2));
 
-        Parser<Integer, UUID> parser = new MultiParser<>(parsersChain);
-        UUID parsed = parser.call(100);
+        KeyParseFunc<Object,Integer, UUID> parser = new MultiParser<>(parsersChain);
+        UUID parsed = parser.call(new Object(),100);
 
         assertNotNull(parsed);
     }

@@ -5,8 +5,8 @@ import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
-import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.util.KeyParseFunc;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
 
 import java.util.concurrent.Callable;
@@ -26,7 +26,8 @@ import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.nytimes.android.external.store.base.impl.StoreUtil.*;
+import static com.nytimes.android.external.store.base.impl.StoreUtil.persisterIsStale;
+import static com.nytimes.android.external.store.base.impl.StoreUtil.shouldReturnNetworkBeforeStale;
 
 /**
  * Store to be used for loading an object different data sources
@@ -40,25 +41,26 @@ import static com.nytimes.android.external.store.base.impl.StoreUtil.*;
 final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
     Cache<Key, Observable<Parsed>> inFlightRequests;
     Cache<Key, Observable<Parsed>> memCache;
-    private StalePolicy stalePolicy;
+    StalePolicy stalePolicy;
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
-    private Persister<Raw, Key> persister;
-    private Parser<Raw, Parsed> parser;
+    Persister<Raw, Key> persister;
     private BehaviorSubject<Parsed> subject;
+    KeyParseFunc<Key, Raw, Parsed> parser;
 
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      Parser<Raw, Parsed> parser,
+                      KeyParseFunc<Key,Raw, Parsed> parser,
                       Cache<Key, Observable<Parsed>> memCache,
                       StalePolicy stalePolicy) {
         init(fetcher, persister, parser, memCache, stalePolicy);
     }
 
+
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      Parser<Raw, Parsed> parser,
+                      KeyParseFunc<Key,Raw, Parsed> parser,
                       StalePolicy stalePolicy) {
         memCache = CacheBuilder.newBuilder()
                 .maximumSize(getCacheSize())
@@ -70,7 +72,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     private void init(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      Parser<Raw, Parsed> parser,
+                      KeyParseFunc<Key, Raw, Parsed> parser,
                       Cache<Key, Observable<Parsed>> memCache, StalePolicy stalePolicy) {
         this.fetcher = fetcher;
         this.persister = persister;
@@ -121,7 +123,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
     }
 
-    private Observable<Parsed> cache(@Nonnull final Key key) {
+    Observable<Parsed> cache(@Nonnull final Key key) {
         try {
             return memCache.get(key, new Callable<Observable<Parsed>>() {
                 @Nonnull
@@ -161,10 +163,15 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         return readDisk(key);
     }
 
-    private Observable<Parsed> readDisk(@Nonnull final Key key) {
+    Observable<Parsed> readDisk(@Nonnull final Key key) {
         return persister().read(key)
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
-                .map(parser)
+                .map(new Func1<Raw, Parsed>() {
+                    @Override
+                    public Parsed call(Raw raw) {
+                        return parser.call(key,raw);
+                    }
+                })
                 .doOnNext(new Action1<Parsed>() {
                     @Override
                     public void call(Parsed parsed) {
@@ -177,7 +184,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 }).cache();
     }
 
-    private void backfillCache(@Nonnull Key key) {
+    void backfillCache(@Nonnull Key key) {
         fetch(key).subscribe(new Action1<Parsed>() {
             @Override
             public void call(Parsed parsed) {
@@ -236,7 +243,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     @Nonnull
-    private Observable<Parsed> response(@Nonnull final Key key) {
+    Observable<Parsed> response(@Nonnull final Key key) {
         return fetcher()
                 .fetch(key)
                 .flatMap(new Func1<Raw, Observable<Parsed>>() {
