@@ -5,6 +5,7 @@ import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.util.KeyParser;
 import com.nytimes.android.external.store.util.NoKeyParser;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
@@ -55,6 +56,15 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
                            StalePolicy policy) {
         internalStore = new RealInternalStore<>(fetcher, persister,
                 new NoKeyParser<Key, Raw, Parsed>(parser), memCache, policy);
+    }
+
+    public <Raw> RealStore(Fetcher<Raw, Key> fetcher,
+                           Persister<Raw, Key> persister,
+                           KeyParser<Key, Raw, Parsed> parser,
+                           Cache<Key, Observable<Parsed>> memCache,
+                           StalePolicy policy) {
+        internalStore = new RealInternalStore<>(fetcher, persister,
+                parser, memCache, policy);
     }
 
 
