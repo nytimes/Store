@@ -7,6 +7,8 @@ import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.util.KeyParser;
+import com.nytimes.android.external.store.util.NoKeyParser;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
@@ -21,7 +23,7 @@ import rx.Observable;
  * Builder where there parser is used.
  */
 public class RealStoreBuilder<Raw, Parsed, Key> {
-    private final List<Parser> parsers = new ArrayList<>();
+    private final List<KeyParser> parsers = new ArrayList<>();
     private Persister<Raw, Key> persister;
     private Cache<Key, Observable<Parsed>> memCache;
     private Fetcher<Raw, Key> fetcher;
@@ -68,14 +70,25 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     @Nonnull
     public RealStoreBuilder<Raw, Parsed, Key> parser(final @Nonnull Parser<Raw, Parsed> parser) {
         this.parsers.clear();
-        this.parsers.add(parser);
+        this.parsers.add(new NoKeyParser<>(parser));
         return this;
     }
 
     @Nonnull
+    public RealStoreBuilder<Raw, Parsed, Key> parser(final @Nonnull KeyParser<Key, Raw, Parsed> parser) {
+        this.parsers.clear();
+        this.parsers.add(parser);
+        return this;
+    }
+
+
+    @Nonnull
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public RealStoreBuilder<Raw, Parsed, Key> parsers(final @Nonnull List<Parser> parsers) {
         this.parsers.clear();
-        this.parsers.addAll(parsers);
+        for (Parser parser : parsers) {
+            this.parsers.add(new NoKeyParser<>(parser));
+        }
         return this;
     }
 
@@ -84,12 +97,14 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         this.memCache = memCache;
         return this;
     }
+
     //Store will backfill the disk cache anytime a record is stale
     //User will still get the stale record returned to them
     public RealStoreBuilder<Raw, Parsed, Key> refreshOnStale() {
         stalePolicy = StalePolicy.REFRESH_ON_STALE;
         return this;
     }
+
     //Store will try to get network source when disk data is stale
     //if network source throws error or is empty, stale disk data will be returned
     @Nonnull
@@ -108,7 +123,7 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
             parser(new NoopParserFunc<Raw, Parsed>());
         }
 
-        Parser<Raw, Parsed> multiParser = new MultiParser<>(parsers);
+        KeyParser<Key, Raw, Parsed> multiParser = new MultiParser<>(parsers);
         RealInternalStore<Raw, Parsed, Key> realInternalStore;
 
         if (memCache == null) {
