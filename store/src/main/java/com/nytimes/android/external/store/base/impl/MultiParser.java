@@ -9,7 +9,7 @@ import java.util.List;
 import static com.nytimes.android.external.cache.Preconditions.checkArgument;
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
-public class MultiParser<Key,Raw, Parsed> implements KeyParseFunc<Key, Raw, Parsed> {
+public class MultiParser<Key, Raw, Parsed> implements KeyParseFunc<Key, Raw, Parsed> {
 
     private final List<KeyParseFunc> parsers = new ArrayList<>();
 
@@ -33,7 +33,7 @@ public class MultiParser<Key,Raw, Parsed> implements KeyParseFunc<Key, Raw, Pars
         Object parsed = raw;
         for (KeyParseFunc parser : parsers) {
             try {
-                parsed = parser.call(key,parsed);
+                parsed = parser.call(key, parsed);
             } catch (ClassCastException exception) {
                 throw createParserException();
             }

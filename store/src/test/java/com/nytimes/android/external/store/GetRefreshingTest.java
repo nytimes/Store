@@ -3,8 +3,8 @@ package com.nytimes.android.external.store;
 import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
 import org.junit.Before;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 public class GetRefreshingTest {
     @Mock
     ClearingPersister persister;
-    private AtomicInteger networkCalls;
+    AtomicInteger networkCalls;
     private Store<Integer, BarCode> store;
 
     @Before
@@ -110,6 +110,7 @@ public class GetRefreshingTest {
 
 
     }
+
     //everything will be mocked
     static class ClearingPersister implements Persister<Integer, BarCode>, Clearable<BarCode> {
         @Override

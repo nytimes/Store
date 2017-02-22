@@ -48,8 +48,8 @@ public class MultiParserTest {
         parsersChain.add(new NoKeyParseFunc<>(PARSER_2));
         parsersChain.add(new NoKeyParseFunc<>(PARSER_3));
 
-        KeyParseFunc<Object,Integer, UUID> parser = new MultiParser<>(parsersChain);
-        UUID parsed = parser.call(new Object(),100);
+        KeyParseFunc<Object, Integer, UUID> parser = new MultiParser<>(parsersChain);
+        UUID parsed = parser.call(new Object(), 100);
 
         assertNotNull(parsed);
     }
@@ -63,8 +63,8 @@ public class MultiParserTest {
         parsersChain.add(new NoKeyParseFunc<>(PARSER_3));
         parsersChain.add(new NoKeyParseFunc<>(PARSER_2));
 
-        KeyParseFunc<Object,Integer, UUID> parser = new MultiParser<>(parsersChain);
-        UUID parsed = parser.call(new Object(),100);
+        KeyParseFunc<Object, Integer, UUID> parser = new MultiParser<>(parsersChain);
+        UUID parsed = parser.call(new Object(), 100);
 
         assertNotNull(parsed);
     }

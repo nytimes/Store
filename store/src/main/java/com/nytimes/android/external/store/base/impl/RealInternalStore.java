@@ -42,16 +42,17 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     Cache<Key, Observable<Parsed>> inFlightRequests;
     Cache<Key, Observable<Parsed>> memCache;
     StalePolicy stalePolicy;
+    Persister<Raw, Key> persister;
+    KeyParseFunc<Key, Raw, Parsed> parser;
+
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
-    Persister<Raw, Key> persister;
     private BehaviorSubject<Parsed> subject;
-    KeyParseFunc<Key, Raw, Parsed> parser;
 
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      KeyParseFunc<Key,Raw, Parsed> parser,
+                      KeyParseFunc<Key, Raw, Parsed> parser,
                       Cache<Key, Observable<Parsed>> memCache,
                       StalePolicy stalePolicy) {
         init(fetcher, persister, parser, memCache, stalePolicy);
@@ -60,7 +61,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      KeyParseFunc<Key,Raw, Parsed> parser,
+                      KeyParseFunc<Key, Raw, Parsed> parser,
                       StalePolicy stalePolicy) {
         memCache = CacheBuilder.newBuilder()
                 .maximumSize(getCacheSize())
@@ -169,7 +170,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .map(new Func1<Raw, Parsed>() {
                     @Override
                     public Parsed call(Raw raw) {
-                        return parser.call(key,raw);
+                        return parser.call(key, raw);
                     }
                 })
                 .doOnNext(new Action1<Parsed>() {
@@ -350,7 +351,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
 
     @Override
-    public void clear(){
+    public void clear() {
         for (Key cachedKey : memCache.asMap().keySet()) {
             clear(cachedKey);
         }

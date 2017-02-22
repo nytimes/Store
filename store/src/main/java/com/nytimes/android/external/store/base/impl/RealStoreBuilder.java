@@ -75,7 +75,7 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     }
 
     @Nonnull
-    public RealStoreBuilder<Raw, Parsed, Key> parser(final @Nonnull KeyParseFunc<Key,Raw, Parsed> parser) {
+    public RealStoreBuilder<Raw, Parsed, Key> parser(final @Nonnull KeyParseFunc<Key, Raw, Parsed> parser) {
         this.parsers.clear();
         this.parsers.add(parser);
         return this;
@@ -83,6 +83,7 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
 
 
     @Nonnull
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public RealStoreBuilder<Raw, Parsed, Key> parsers(final @Nonnull List<Parser> parsers) {
         this.parsers.clear();
         for (Parser parser : parsers) {

@@ -1,8 +1,8 @@
 package com.nytimes.android.external.store;
 
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
 import org.junit.Before;

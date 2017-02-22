@@ -45,7 +45,7 @@ public class KeyParserTest {
     public void testStoreWithKeyParserFuncNoPersister() throws Exception {
         AssertableSubscriber<String> testObservable = store.get(KEY).test().awaitTerminalEvent();
         testObservable.assertNoErrors()
-                .assertValues(NETWORK+KEY)
+                .assertValues(NETWORK + KEY)
                 .assertUnsubscribed();
 
 
