@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import rx.functions.Func2;
 
-public interface KeyParseFunc<Key, Raw, Parsed> extends Func2<Key, Raw, Parsed> {
+public interface KeyParser<Key, Raw, Parsed> extends Func2<Key, Raw, Parsed> {
 
 
     @Override

@@ -3,7 +3,7 @@ package com.nytimes.android.external.store;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
-import com.nytimes.android.external.store.util.KeyParseFunc;
+import com.nytimes.android.external.store.util.KeyParser;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class KeyParserTest {
     @Before
     public void setUp() throws Exception {
         store = StoreBuilder.<Integer, String, String>parsedWithKey()
-                .parser(new KeyParseFunc<Integer, String, String>() {
+                .parser(new KeyParser<Integer, String, String>() {
                     @Override
                     public String call(Integer integer, String s) {
                         return s + integer;

@@ -6,7 +6,7 @@ import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.InternalStore;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.util.KeyParseFunc;
+import com.nytimes.android.external.store.util.KeyParser;
 import com.nytimes.android.external.store.util.OnErrorResumeWithEmpty;
 
 import java.util.concurrent.Callable;
@@ -43,7 +43,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     Cache<Key, Observable<Parsed>> memCache;
     StalePolicy stalePolicy;
     Persister<Raw, Key> persister;
-    KeyParseFunc<Key, Raw, Parsed> parser;
+    KeyParser<Key, Raw, Parsed> parser;
 
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
@@ -52,7 +52,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      KeyParseFunc<Key, Raw, Parsed> parser,
+                      KeyParser<Key, Raw, Parsed> parser,
                       Cache<Key, Observable<Parsed>> memCache,
                       StalePolicy stalePolicy) {
         init(fetcher, persister, parser, memCache, stalePolicy);
@@ -61,7 +61,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      KeyParseFunc<Key, Raw, Parsed> parser,
+                      KeyParser<Key, Raw, Parsed> parser,
                       StalePolicy stalePolicy) {
         memCache = CacheBuilder.newBuilder()
                 .maximumSize(getCacheSize())
@@ -73,7 +73,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     private void init(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
-                      KeyParseFunc<Key, Raw, Parsed> parser,
+                      KeyParser<Key, Raw, Parsed> parser,
                       Cache<Key, Observable<Parsed>> memCache, StalePolicy stalePolicy) {
         this.fetcher = fetcher;
         this.persister = persister;

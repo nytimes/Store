@@ -7,8 +7,8 @@ import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.util.KeyParseFunc;
-import com.nytimes.android.external.store.util.NoKeyParseFunc;
+import com.nytimes.android.external.store.util.KeyParser;
+import com.nytimes.android.external.store.util.NoKeyParser;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
@@ -23,7 +23,7 @@ import rx.Observable;
  * Builder where there parser is used.
  */
 public class RealStoreBuilder<Raw, Parsed, Key> {
-    private final List<KeyParseFunc> parsers = new ArrayList<>();
+    private final List<KeyParser> parsers = new ArrayList<>();
     private Persister<Raw, Key> persister;
     private Cache<Key, Observable<Parsed>> memCache;
     private Fetcher<Raw, Key> fetcher;
@@ -70,12 +70,12 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     @Nonnull
     public RealStoreBuilder<Raw, Parsed, Key> parser(final @Nonnull Parser<Raw, Parsed> parser) {
         this.parsers.clear();
-        this.parsers.add(new NoKeyParseFunc<>(parser));
+        this.parsers.add(new NoKeyParser<>(parser));
         return this;
     }
 
     @Nonnull
-    public RealStoreBuilder<Raw, Parsed, Key> parser(final @Nonnull KeyParseFunc<Key, Raw, Parsed> parser) {
+    public RealStoreBuilder<Raw, Parsed, Key> parser(final @Nonnull KeyParser<Key, Raw, Parsed> parser) {
         this.parsers.clear();
         this.parsers.add(parser);
         return this;
@@ -87,7 +87,7 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     public RealStoreBuilder<Raw, Parsed, Key> parsers(final @Nonnull List<Parser> parsers) {
         this.parsers.clear();
         for (Parser parser : parsers) {
-            this.parsers.add(new NoKeyParseFunc<>(parser));
+            this.parsers.add(new NoKeyParser<>(parser));
         }
         return this;
     }
@@ -123,7 +123,7 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
             parser(new NoopParserFunc<Raw, Parsed>());
         }
 
-        KeyParseFunc<Key, Raw, Parsed> multiParser = new MultiParser<>(parsers);
+        KeyParser<Key, Raw, Parsed> multiParser = new MultiParser<>(parsers);
         RealInternalStore<Raw, Parsed, Key> realInternalStore;
 
         if (memCache == null) {
