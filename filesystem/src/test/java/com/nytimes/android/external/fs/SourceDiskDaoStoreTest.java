@@ -3,8 +3,8 @@ package com.nytimes.android.external.fs;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonSourceParser;
 
