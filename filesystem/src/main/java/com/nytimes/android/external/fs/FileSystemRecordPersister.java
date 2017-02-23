@@ -54,7 +54,7 @@ public final class FileSystemRecordPersister<Key> implements Persister<BufferedS
     @Nonnull
     @Override
     public RecordState getRecordState(@Nonnull Key key) {
-        return fileSystem.getRecordState(expirationUnit,expirationDuration,pathResolver.resolve(key));
+        return fileSystem.getRecordState(expirationUnit, expirationDuration, pathResolver.resolve(key));
     }
 
     @Nonnull
@@ -66,6 +66,6 @@ public final class FileSystemRecordPersister<Key> implements Persister<BufferedS
     @Nonnull
     @Override
     public Observable<Boolean> write(@Nonnull Key key, @Nonnull BufferedSource bufferedSource) {
-        return fileWriter.write(key,bufferedSource);
+        return fileWriter.write(key, bufferedSource);
     }
 }
