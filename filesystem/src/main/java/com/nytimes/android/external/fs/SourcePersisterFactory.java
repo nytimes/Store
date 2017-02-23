@@ -7,6 +7,7 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -20,6 +21,37 @@ public final class SourcePersisterFactory {
     private SourcePersisterFactory() {
     }
 
+
+    /**
+     * Returns a new {@link BufferedSource} persister with the provided file as the root of the
+     * persistence {@link com.nytimes.android.external.fs.filesystem.FileSystem}.
+     *
+     * @throws IOException
+     */
+    @Nonnull
+    public static Persister<BufferedSource, BarCode> create(@Nonnull File root,
+                                                            long expirationDuration,
+                                                            @Nonnull TimeUnit expirationUnit) throws IOException {
+        if (root == null) {
+            throw new IllegalArgumentException("root file cannot be null.");
+        }
+        return RecordPersister.create(FileSystemFactory.create(root), expirationDuration, expirationUnit);
+    }
+
+    /**
+     * Returns a new {@link BufferedSource} persister with the provided fileSystem as the root of the
+     * persistence {@link com.nytimes.android.external.fs.filesystem.FileSystem}.
+     **/
+    @Nonnull
+    public static Persister<BufferedSource, BarCode> create(@Nonnull FileSystem fileSystem,
+                                                            long expirationDuration,
+                                                            @Nonnull TimeUnit expirationUnit) {
+        if (fileSystem == null) {
+            throw new IllegalArgumentException("fileSystem cannot be null.");
+        }
+        return RecordPersister.create(fileSystem, expirationDuration, expirationUnit);
+    }
+
     /**
      * Returns a new {@link BufferedSource} persister with the provided file as the root of the
      * persistence {@link com.nytimes.android.external.fs.filesystem.FileSystem}.
@@ -31,7 +63,7 @@ public final class SourcePersisterFactory {
         if (root == null) {
             throw new IllegalArgumentException("root file cannot be null.");
         }
-        return new SourcePersister(FileSystemFactory.create(root));
+        return SourcePersister.create(FileSystemFactory.create(root));
     }
 
     /**
@@ -43,7 +75,7 @@ public final class SourcePersisterFactory {
         if (fileSystem == null) {
             throw new IllegalArgumentException("fileSystem cannot be null.");
         }
-        return new SourcePersister(fileSystem);
+        return SourcePersister.create(fileSystem);
     }
 
 }
