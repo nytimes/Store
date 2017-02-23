@@ -20,7 +20,7 @@ import rx.Observable;
  * .parser(new GsonSourceParser<>(gson, BookResults.class))
  * .open();
  */
-public class SourcePersister implements Persister<BufferedSource, BarCode>{
+public class SourcePersister implements Persister<BufferedSource, BarCode> {
 
     @Nonnull
     final SourceFileReader sourceFileReader;
@@ -31,6 +31,10 @@ public class SourcePersister implements Persister<BufferedSource, BarCode>{
     public SourcePersister(FileSystem fileSystem) {
         sourceFileReader = new SourceFileReader(fileSystem);
         sourceFileWriter = new SourceFileWriter(fileSystem);
+    }
+
+    public static SourcePersister create(FileSystem fileSystem) {
+        return new SourcePersister(fileSystem);
     }
 
     @Nonnull
