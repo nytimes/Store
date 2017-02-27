@@ -20,6 +20,7 @@ import rx.Observable;
 
 import static com.nytimes.android.external.store.GetRefreshingTest.ClearingPersister;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -69,6 +70,7 @@ public class ClearStoreTest {
         // after clearing the memory another call should be made
         store.clear(barcode);
         store.get(barcode).test().awaitTerminalEvent();
+        verify(persister).clear(barcode);
         assertThat(networkCalls.intValue()).isEqualTo(2);
     }
 

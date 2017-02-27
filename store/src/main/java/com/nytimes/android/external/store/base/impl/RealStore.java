@@ -126,7 +126,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
     @Override
     public void clear(@Nonnull Key key) {
-        internalStore.clear();
+        internalStore.clear(key);
     }
 
     protected Observable<Parsed> memory(@Nonnull Key key) {
