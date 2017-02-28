@@ -1,8 +1,22 @@
 Change Log
 ==========
-Version 2.0.0 *(2017-02-13)*
+
+Version 2.0.1 *(2017-02-28)*
 ----------------------------
 
+**New Features**
+* (#137) FileSystemRecordPersister
+* (#138) Introduce RecordPersisterFactory
+* (#140) Add FileSystemRecordPersisterFactory
+
+**Bug Fixes and Stability Improvements**
+* (#134) Do not depend on lint task if it does not exist.
+* (#133) Remove StandardCharsets usage to work on API < 19
+* (#136) add KeyParseFunc for times when parser needs input val
+* (#141) fix clear one barcode
+
+Version 2.0.0 *(2017-02-13)*
+----------------------------
 
 **Breaking Changes**  - See Wiki/Closed PRs for more detail
 
