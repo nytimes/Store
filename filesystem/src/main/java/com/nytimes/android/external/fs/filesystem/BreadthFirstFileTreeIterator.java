@@ -38,7 +38,8 @@ import javax.annotation.Nullable;
  */
 class BreadthFirstFileTreeIterator implements Iterator {
     private int currentIndex = 0;
-    private File[] currentList;
+    @Nonnull
+    private File[] currentList = new File[0];
     @Nullable
     private File nextFile;
     @Nonnull
@@ -51,7 +52,9 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @param root The root directory
      */
     BreadthFirstFileTreeIterator(@Nonnull File root) {
-        this.currentList = root.listFiles();
+        if (root.listFiles() != null) {
+            currentList = root.listFiles();
+        }
         this.directories = new Stack<>();
     }
 
