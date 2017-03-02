@@ -325,14 +325,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Override
     @Deprecated
     public void clearMemory() {
-        inFlightRequests.invalidateAll();
-
-        for (Key cachedKey : memCache.asMap().keySet()) {
-            memCache.invalidate(cachedKey);
-            clearPersister(cachedKey);
-            notifyRefresh(cachedKey);
-        }
-
+        clear();
     }
 
     /**
@@ -343,10 +336,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Override
     @Deprecated
     public void clearMemory(@Nonnull final Key key) {
-        inFlightRequests.invalidate(key);
-        memCache.invalidate(key);
-        clearPersister(key);
-        notifyRefresh(key);
+        clear(key);
     }
 
 

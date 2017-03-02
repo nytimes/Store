@@ -22,6 +22,7 @@ package com.nytimes.android.external.fs.filesystem;
 
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
@@ -38,7 +39,8 @@ import javax.annotation.Nullable;
  */
 class BreadthFirstFileTreeIterator implements Iterator {
     private int currentIndex = 0;
-    private File[] currentList;
+    @Nonnull
+    private File[] currentList = new File[0];
     @Nullable
     private File nextFile;
     @Nonnull
@@ -51,7 +53,10 @@ class BreadthFirstFileTreeIterator implements Iterator {
      * @param root The root directory
      */
     BreadthFirstFileTreeIterator(@Nonnull File root) {
-        this.currentList = root.listFiles();
+        File[] listedFiles = root.listFiles();
+        if (listedFiles != null){
+            currentList = Arrays.copyOf(listedFiles, listedFiles.length);
+        }
         this.directories = new Stack<>();
     }
 
