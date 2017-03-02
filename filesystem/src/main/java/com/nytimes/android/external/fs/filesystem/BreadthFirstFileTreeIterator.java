@@ -54,7 +54,7 @@ class BreadthFirstFileTreeIterator implements Iterator {
      */
     BreadthFirstFileTreeIterator(@Nonnull File root) {
         File[] listedFiles = root.listFiles();
-        if(listedFiles != null){
+        if (listedFiles != null){
             currentList = Arrays.copyOf(listedFiles, listedFiles.length);
         }
         this.directories = new Stack<>();
