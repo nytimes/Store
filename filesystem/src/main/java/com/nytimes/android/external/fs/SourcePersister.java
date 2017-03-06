@@ -6,7 +6,6 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
 import okio.BufferedSource;
 import rx.Observable;
@@ -27,7 +26,6 @@ public class SourcePersister implements Persister<BufferedSource, BarCode> {
     @Nonnull
     final SourceFileWriter sourceFileWriter;
 
-    @Inject
     public SourcePersister(FileSystem fileSystem) {
         sourceFileReader = new SourceFileReader(fileSystem);
         sourceFileWriter = new SourceFileWriter(fileSystem);

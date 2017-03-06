@@ -8,8 +8,6 @@ import java.util.Stack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static dagger.internal.Preconditions.checkNotNull;
-
 public class Util {
 
     @Nonnull
@@ -78,5 +76,12 @@ public class Util {
         if (!parent.isDirectory()) {
             throw new IOException("Unable to create parent directories of " + file);
         }
+    }
+
+    public static <T> T checkNotNull(T reference) {
+        if (reference == null) {
+            throw new NullPointerException();
+        }
+        return reference;
     }
 }

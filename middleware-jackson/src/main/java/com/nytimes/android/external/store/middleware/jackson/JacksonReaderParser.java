@@ -11,7 +11,6 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
 public class JacksonReaderParser<Parsed> implements Parser<Reader, Parsed> {
 
@@ -23,7 +22,6 @@ public class JacksonReaderParser<Parsed> implements Parser<Reader, Parsed> {
         parsedType = objectMapper.constructType(type);
     }
 
-    @Inject
     public JacksonReaderParser(@Nonnull ObjectMapper objectMapper, @Nonnull Type type) {
         this.objectMapper = objectMapper;
         parsedType = objectMapper.constructType(type);
