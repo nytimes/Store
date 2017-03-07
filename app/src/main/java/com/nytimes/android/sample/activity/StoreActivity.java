@@ -8,25 +8,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.StoreBuilder;
-import com.nytimes.android.sample.BuildConfig;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.sample.R;
+import com.nytimes.android.sample.SampleApp;
 import com.nytimes.android.sample.data.model.Children;
-import com.nytimes.android.sample.data.model.GsonAdaptersModel;
 import com.nytimes.android.sample.data.model.Post;
 import com.nytimes.android.sample.data.model.RedditData;
-import com.nytimes.android.sample.data.remote.Api;
 import com.nytimes.android.sample.reddit.PostAdapter;
 
 import java.util.List;
 
-import retrofit2.GsonConverterFactory;
-import retrofit2.Retrofit;
-import retrofit2.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -38,6 +30,7 @@ public class StoreActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
+    private Store<RedditData, BarCode> nonPersistedStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +43,18 @@ public class StoreActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(postAdapter);
+    }
 
-        loadPosts();
+    private void initStore() {
+        if (this.nonPersistedStore == null) {
+            this.nonPersistedStore = ((SampleApp) getApplicationContext()).getNonPersistedStore();
+        }
     }
 
     public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
-        provideRedditStore()
+
+        this.nonPersistedStore
                 .get(awwRequest)
                 .flatMap(this::sanitizeData)
                 .toList()
@@ -80,25 +78,10 @@ public class StoreActivity extends AppCompatActivity {
                 .map(Children::data);
     }
 
-    private Store<RedditData, BarCode> provideRedditStore() {
-        return StoreBuilder.<RedditData>barcode()
-                .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
-                .open();
-    }
-
-    private Api provideRetrofit() {
-        return new Retrofit.Builder()
-                .baseUrl("http://reddit.com/")
-                .addConverterFactory(GsonConverterFactory.create(provideGson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .validateEagerly(BuildConfig.DEBUG)  // Fail early: check Retrofit configuration at creation time in Debug build.
-                .build()
-                .create(Api.class);
-    }
-
-    Gson provideGson() {
-        return new GsonBuilder()
-                .registerTypeAdapterFactory(new GsonAdaptersModel())
-                .create();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initStore();
+        loadPosts();
     }
 }
