@@ -8,6 +8,7 @@ dependencies {
     compile libraries.okio
     compile libraries.gson
     compile libraries.jsr305
+    compile libraries.javax
     testCompile libraries.mockito
     testCompile libraries.assertJ
     testCompile libraries.junit

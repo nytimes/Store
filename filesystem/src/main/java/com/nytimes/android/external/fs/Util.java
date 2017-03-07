@@ -60,7 +60,6 @@ public class Util {
     }
 
     public void createParentDirs(@Nonnull File file) throws IOException {
-        checkNotNull(file);
         File parent = file.getCanonicalFile().getParentFile();
         if (parent == null) {
       /*
@@ -76,12 +75,5 @@ public class Util {
         if (!parent.isDirectory()) {
             throw new IOException("Unable to create parent directories of " + file);
         }
-    }
-
-    public static <T> T checkNotNull(T reference) {
-        if (reference == null) {
-            throw new NullPointerException();
-        }
-        return reference;
     }
 }

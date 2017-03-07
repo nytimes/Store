@@ -7,6 +7,7 @@ dependencies {
     compile project(path: ':store')
     compile libraries.moshi
     compile libraries.jsr305
+    compile libraries.javax
     testCompile libraries.mockito
     testCompile libraries.junit
 }

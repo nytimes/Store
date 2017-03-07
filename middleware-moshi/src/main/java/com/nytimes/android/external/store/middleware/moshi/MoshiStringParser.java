@@ -9,11 +9,13 @@ import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 public class MoshiStringParser<Parsed> implements Parser<String, Parsed> {
 
     private final JsonAdapter<Parsed> jsonAdapter;
 
+    @Inject
     public MoshiStringParser(@Nonnull Moshi moshi, @Nonnull Type type) {
         jsonAdapter = moshi.adapter(type);
     }

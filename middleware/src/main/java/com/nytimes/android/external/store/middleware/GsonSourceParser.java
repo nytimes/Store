@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 import okio.BufferedSource;
 
@@ -32,6 +33,7 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
     private final Gson gson;
     private final Type type;
 
+    @Inject
     public GsonSourceParser(Gson gson, Type type) {
         checkNotNull(gson, "Gson can't be null");
         checkNotNull(type, "Type can't be null");

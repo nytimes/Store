@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
@@ -15,6 +16,7 @@ public class GsonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     private final Gson gson;
     private final Type type;
 
+    @Inject
     public GsonReaderParser(Gson gson, Type type) {
         checkNotNull(gson, "Gson can't be null");
         checkNotNull(type, "Type can't be null");

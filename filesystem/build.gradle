@@ -6,6 +6,7 @@ version = VERSION_NAME
 dependencies {
     compile libraries.okio
     compile libraries.jsr305
+    compile libraries.javax
     compile project(path: ':cache')
     compile project(path: ':store')
     testCompile libraries.mockito

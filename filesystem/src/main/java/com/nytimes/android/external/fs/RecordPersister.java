@@ -8,6 +8,7 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 public class RecordPersister extends SourcePersister implements RecordProvider<BarCode> {
 
@@ -15,6 +16,7 @@ public class RecordPersister extends SourcePersister implements RecordProvider<B
     private final TimeUnit expirationUnit;
     private final long expirationDuration;
 
+    @Inject
     public RecordPersister(FileSystem fileSystem,
                            long expirationDuration,
                            @Nonnull TimeUnit expirationUnit) {

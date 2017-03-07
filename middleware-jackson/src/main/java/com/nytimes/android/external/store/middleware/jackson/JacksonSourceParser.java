@@ -11,6 +11,7 @@ import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 import okio.BufferedSource;
 
@@ -24,6 +25,7 @@ public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parse
         parsedType = objectMapper.constructType(type);
     }
 
+    @Inject
     public JacksonSourceParser(@Nonnull ObjectMapper objectMapper, @Nonnull Type type) {
         this.objectMapper = objectMapper;
         parsedType = objectMapper.constructType(type);
