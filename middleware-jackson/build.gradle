@@ -8,9 +8,8 @@ dependencies {
     compile libraries.jsr305
     compile libraries.jacksonCore
     compile libraries.jacksonDatabind
-    compile libraries.rxJava
     compile libraries.okio
-    compile libraries.dagger
+    compile libraries.javax
     testCompile libraries.mockito
     testCompile libraries.junit
 }

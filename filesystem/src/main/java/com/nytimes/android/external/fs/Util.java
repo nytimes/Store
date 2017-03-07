@@ -8,8 +8,6 @@ import java.util.Stack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static dagger.internal.Preconditions.checkNotNull;
-
 public class Util {
 
     @Nonnull
@@ -62,7 +60,6 @@ public class Util {
     }
 
     public void createParentDirs(@Nonnull File file) throws IOException {
-        checkNotNull(file);
         File parent = file.getCanonicalFile().getParentFile();
         if (parent == null) {
       /*

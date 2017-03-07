@@ -5,16 +5,16 @@ version = VERSION_NAME
 
 dependencies {
     compile libraries.okio
-    compile libraries.gson
     compile libraries.jsr305
-    compile libraries.rxJava
+    compile libraries.javax
     compile project(path: ':cache')
     compile project(path: ':store')
-    compile project(path: ':middleware')
     testCompile libraries.mockito
     testCompile libraries.assertJ
     testCompile libraries.junit
     testCompile libraries.guava
+    testCompile libraries.gson
+    testCompile project(path: ':middleware')
 }
 
 buildscript {

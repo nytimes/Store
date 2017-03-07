@@ -3,6 +3,7 @@ package com.nytimes.android.external.store.middleware;
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
 import java.lang.reflect.Type;
+
 import javax.inject.Inject;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;

@@ -49,6 +49,7 @@ ext.versions = [
         autoService          : '1.0-rc2',
         autoCommon           : '0.6',
         javaWriter           : '2.5.1',
+        javax                : '1',
 
         // Debugging & Inspecting.
         slf4j                : '1.7.19',
@@ -110,6 +111,7 @@ ext.libraries = [
         autoService             : "com.google.auto.service:auto-service:$versions.autoService",
         autoCommon              : "com.google.auto:auto-common:$versions.autoCommon",
         javaWriter              : "com.squareup:javawriter:$versions.javaWriter",
+        javax                   : "javax.inject:javax.inject:$versions.javax",
 
         // Debugging & Inspecting.
         slf4jNoOp               : "org.slf4j:slf4j-api:$versions.slf4j",

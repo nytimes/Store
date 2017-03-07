@@ -6,9 +6,8 @@ version = VERSION_NAME
 dependencies {
     compile project(path: ':store')
     compile libraries.moshi
-    compile libraries.rxJava
-    compile libraries.dagger
     compile libraries.jsr305
+    compile libraries.javax
     testCompile libraries.mockito
     testCompile libraries.junit
 }
