@@ -53,40 +53,59 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
                       KeyParser<Key, Raw, Parsed> parser,
-                      Cache<Key, Observable<Parsed>> memCache,
                       StalePolicy stalePolicy) {
-        init(fetcher, persister, parser, memCache, stalePolicy);
+        init(fetcher, persister, parser, stalePolicy);
     }
 
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
                       KeyParser<Key, Raw, Parsed> parser,
+                      long expireAfter,
+                      TimeUnit expireAfterTimeUnit,
                       StalePolicy stalePolicy) {
-        memCache = CacheBuilder.newBuilder()
-                .maximumSize(getCacheSize())
-                .expireAfterAccess(getCacheTTL(), TimeUnit.SECONDS)
-                .build();
-        init(fetcher, persister, parser, memCache, stalePolicy);
-
+        init(fetcher, persister, parser, expireAfter, expireAfterTimeUnit, stalePolicy);
     }
 
     private void init(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
                       KeyParser<Key, Raw, Parsed> parser,
-                      Cache<Key, Observable<Parsed>> memCache, StalePolicy stalePolicy) {
+                      long expireAfter,
+                      TimeUnit expireAfterTimeUnit,
+                      StalePolicy stalePolicy) {
         this.fetcher = fetcher;
         this.persister = persister;
         this.parser = parser;
-        this.memCache = memCache;
+        this.memCache = CacheBuilder
+                .newBuilder()
+                .expireAfterWrite(expireAfter, expireAfterTimeUnit)
+                .build();
         this.stalePolicy = stalePolicy;
-        inFlightRequests = CacheBuilder.newBuilder()
-                .expireAfterWrite(TimeUnit.MINUTES.toSeconds(1), TimeUnit.SECONDS)
+        this.inFlightRequests = CacheBuilder.newBuilder()
+                .expireAfterWrite(expireAfter, expireAfterTimeUnit)
                 .build();
 
-        subject = BehaviorSubject.create();
+        this.subject = BehaviorSubject.create();
     }
 
+    private void init(Fetcher<Raw, Key> fetcher,
+                      Persister<Raw, Key> persister,
+                      KeyParser<Key, Raw, Parsed> parser,
+                      StalePolicy stalePolicy) {
+        this.fetcher = fetcher;
+        this.persister = persister;
+        this.parser = parser;
+        this.memCache = CacheBuilder
+                .newBuilder()
+                .expireAfterWrite(getCacheTTL(), getCacheTTLTimeUnit())
+                .build();
+        this.stalePolicy = stalePolicy;
+        this.inFlightRequests = CacheBuilder.newBuilder()
+                .expireAfterWrite(getCacheTTL(), getCacheTTLTimeUnit())
+                .build();
+
+        this.subject = BehaviorSubject.create();
+    }
 
     /**
      * @param key
@@ -383,6 +402,10 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     private long getCacheSize() {
         return 100;
+    }
+
+    private TimeUnit getCacheTTLTimeUnit() {
+        return TimeUnit.SECONDS;
     }
 
     /**

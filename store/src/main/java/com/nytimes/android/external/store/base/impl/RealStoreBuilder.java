@@ -1,7 +1,6 @@
 package com.nytimes.android.external.store.base.impl;
 
 
-import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.Fetcher;
@@ -14,6 +13,7 @@ import com.nytimes.android.external.store.util.NoopPersister;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -25,8 +25,9 @@ import rx.Observable;
 public class RealStoreBuilder<Raw, Parsed, Key> {
     private final List<KeyParser> parsers = new ArrayList<>();
     private Persister<Raw, Key> persister;
-    private Cache<Key, Observable<Parsed>> memCache;
     private Fetcher<Raw, Key> fetcher;
+    private long expireAfter = 0;
+    private TimeUnit expireAfterTimeUnit = null;
 
     @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
     private StalePolicy stalePolicy = StalePolicy.UNSPECIFIED;
@@ -93,8 +94,9 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     }
 
     @Nonnull
-    public RealStoreBuilder<Raw, Parsed, Key> memory(Cache<Key, Observable<Parsed>> memCache) {
-        this.memCache = memCache;
+    public RealStoreBuilder<Raw, Parsed, Key> memory(long expireAfter, TimeUnit expireAfterTimeUnit) {
+        this.expireAfter = expireAfter;
+        this.expireAfterTimeUnit = expireAfterTimeUnit;
         return this;
     }
 
@@ -116,7 +118,11 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     @Nonnull
     public Store<Parsed, Key> open() {
         if (persister == null) {
-            persister = new NoopPersister<>();
+            if (expireAfter > 0 && expireAfterTimeUnit != null) {
+                persister = NoopPersister.create(expireAfter, expireAfterTimeUnit);
+            } else {
+                persister = NoopPersister.create();
+            }
         }
 
         if (parsers.isEmpty()) {
@@ -126,10 +132,10 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         KeyParser<Key, Raw, Parsed> multiParser = new MultiParser<>(parsers);
         RealInternalStore<Raw, Parsed, Key> realInternalStore;
 
-        if (memCache == null) {
+        if (expireAfter == 0 || expireAfterTimeUnit == null) {
             realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, stalePolicy);
         } else {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, memCache, stalePolicy);
+            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, expireAfter, expireAfterTimeUnit, stalePolicy);
         }
 
         return new RealStore<>(realInternalStore);
