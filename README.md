@@ -134,7 +134,7 @@ Our updated data flow now looks like this:
 
 ### Middleware - GsonSourceParser
 
-There are also seperate middleware libraries with parsers to help in cases where your fetcher is a Reader, BufferedSource or String and your parser is Gson:
+There are also separate middleware libraries with parsers to help in cases where your fetcher is a Reader, BufferedSource or String and your parser is Gson:
 - GsonReaderParser
 - GsonSourceParser
 - GsonStringParser
@@ -207,7 +207,7 @@ If using SQLite we recommend working with SqlBrite. If you are not using SqlBrit
 
 ### Middleware - SourcePersister & FileSystem
 
-We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included a seperate library with a reactive FileSystem which depends on Okio BufferedSources. We have also included a FileSystemPersister which will give you disk caching and works beautifully with GsonSourceParser. When using the FileSystemPersister you must pass in a `PathResolver` which will tell the file system how to name the paths to cache entries. 
+We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included a separate library with a reactive FileSystem which depends on Okio BufferedSources. We have also included a FileSystemPersister which will give you disk caching and works beautifully with GsonSourceParser. When using the FileSystemPersister you must pass in a `PathResolver` which will tell the file system how to name the paths to cache entries. 
 
 Now back to our first example:
 
