@@ -37,7 +37,7 @@ import static com.nytimes.android.external.store.base.impl.StoreUtil.shouldRetur
  *                 <p>
  *                 Example usage:  @link
  */
-
+@SuppressWarnings("PMD")
 final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
     Cache<Key, Observable<Parsed>> inFlightRequests;
     Cache<Key, Observable<Parsed>> memCache;
