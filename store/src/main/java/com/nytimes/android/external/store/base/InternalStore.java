@@ -8,7 +8,7 @@ import rx.Observable;
 
 /**
  * this interface allows us to mark a {@link Store} as "internal", exposing methods for retrieving data
- * directly from memory or from disk.
+ * directly from memoryPolicy or from disk.
  */
 public interface InternalStore<Parsed, Key> extends Store<Parsed, Key> {
     @Nonnull

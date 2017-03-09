@@ -5,6 +5,7 @@ import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store.base.impl.MemoryPolicy;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,19 +19,26 @@ import rx.Observable;
 public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<Key> {
     protected final Cache<Key, Observable<Raw>> networkResponses;
 
-    public static <Raw, Key> NoopPersister<Raw, Key> create(long expireAfter, TimeUnit expireAfterTimeUnit) {
-        return new NoopPersister<>(expireAfter, expireAfterTimeUnit);
+    public static <Raw, Key> NoopPersister<Raw, Key> create(MemoryPolicy memoryPolicy) {
+        return new NoopPersister<>(memoryPolicy);
     }
 
     public static <Raw, Key> NoopPersister<Raw, Key> create() {
-        return new NoopPersister<>(TimeUnit.HOURS.toSeconds(24), TimeUnit.SECONDS);
+        MemoryPolicy defaultMemoryPolicy = MemoryPolicy
+            .MemoryPolicyBuilder
+            .newBuilder()
+            .setExpireAfter(TimeUnit.HOURS.toSeconds(24))
+            .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+            .build();
+
+        return new NoopPersister<>(defaultMemoryPolicy);
     }
 
-    NoopPersister(long expireAfter, TimeUnit expireAfterTimeUnit) {
+    NoopPersister(MemoryPolicy memoryPolicy) {
         this.networkResponses = CacheBuilder
-                .newBuilder()
-                .expireAfterWrite(expireAfter, expireAfterTimeUnit)
-                .build();
+            .newBuilder()
+            .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
+            .build();
     }
 
     @Nonnull

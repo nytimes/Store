@@ -28,46 +28,44 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
     public RealStore(Fetcher<Parsed, Key> fetcher) {
         final Parser<Parsed, Parsed> noOpFunc = new NoopParserFunc<>();
         internalStore = new RealInternalStore<>(fetcher, NoopPersister.<Parsed, Key>create(),
-                new NoKeyParser<Key, Parsed, Parsed>(noOpFunc), UNSPECIFIED);
+            new NoKeyParser<Key, Parsed, Parsed>(noOpFunc), UNSPECIFIED);
     }
 
     public RealStore(Fetcher<Parsed, Key> fetcher,
                      Persister<Parsed, Key> persister) {
         final Parser<Parsed, Parsed> noOpFunc = new NoopParserFunc<>();
         internalStore = new RealInternalStore<>(fetcher,
-                persister,
-                new NoKeyParser<Key, Parsed, Parsed>(noOpFunc),
-                UNSPECIFIED);
+            persister,
+            new NoKeyParser<Key, Parsed, Parsed>(noOpFunc),
+            UNSPECIFIED);
     }
 
     public <Raw> RealStore(Fetcher<Raw, Key> fetcher,
                            Persister<Raw, Key> persister,
                            final Parser<Raw, Parsed> parser) {
         internalStore = new RealInternalStore<>(fetcher,
-                persister,
-                new NoKeyParser<Key, Raw, Parsed>(parser),
-                UNSPECIFIED);
+            persister,
+            new NoKeyParser<Key, Raw, Parsed>(parser),
+            UNSPECIFIED);
     }
 
 
     public <Raw> RealStore(Fetcher<Raw, Key> fetcher,
                            Persister<Raw, Key> persister,
                            Parser<Raw, Parsed> parser,
-                           long expireAfter,
-                           TimeUnit expireAfterTimeUnit,
+                           MemoryPolicy memoryPolicy,
                            StalePolicy policy) {
         internalStore = new RealInternalStore<>(fetcher, persister,
-                new NoKeyParser<Key, Raw, Parsed>(parser), expireAfter, expireAfterTimeUnit, policy);
+            new NoKeyParser<Key, Raw, Parsed>(parser), memoryPolicy, policy);
     }
 
     public <Raw> RealStore(Fetcher<Raw, Key> fetcher,
                            Persister<Raw, Key> persister,
                            KeyParser<Key, Raw, Parsed> parser,
-                           long expireAfter,
-                           TimeUnit expireAfterTimeUnit,
+                           MemoryPolicy memoryPolicy,
                            StalePolicy policy) {
         internalStore = new RealInternalStore<>(fetcher, persister,
-                parser, expireAfter, expireAfterTimeUnit, policy);
+            parser, memoryPolicy, policy);
     }
 
 
@@ -87,7 +85,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
      * Will check to see if there exists an in flight observable and return it before
      * going to nerwork
      *
-     * @return data from fetch and store it in memory and persister
+     * @return data from fetch and store it in memoryPolicy and persister
      */
     @Nonnull
     @Override
@@ -113,7 +111,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
     }
 
     /**
-     * Clear memory by id
+     * Clear memoryPolicy by id
      *
      * @param key of data to clear
      */

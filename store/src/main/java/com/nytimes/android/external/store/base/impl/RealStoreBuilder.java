@@ -26,8 +26,7 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     private final List<KeyParser> parsers = new ArrayList<>();
     private Persister<Raw, Key> persister;
     private Fetcher<Raw, Key> fetcher;
-    private long expireAfter = 0;
-    private TimeUnit expireAfterTimeUnit = null;
+    private MemoryPolicy memoryPolicy;
 
     @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
     private StalePolicy stalePolicy = StalePolicy.UNSPECIFIED;
@@ -94,9 +93,8 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     }
 
     @Nonnull
-    public RealStoreBuilder<Raw, Parsed, Key> memory(long expireAfter, TimeUnit expireAfterTimeUnit) {
-        this.expireAfter = expireAfter;
-        this.expireAfterTimeUnit = expireAfterTimeUnit;
+    public RealStoreBuilder<Raw, Parsed, Key> memoryPolicy(MemoryPolicy memoryPolicy) {
+        this.memoryPolicy = memoryPolicy;
         return this;
     }
 
@@ -117,11 +115,15 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
 
     @Nonnull
     public Store<Parsed, Key> open() {
+        boolean nullMemPolicy = memoryPolicy == null;
+        boolean defaultMemPolicy = !nullMemPolicy && memoryPolicy.isDefaultPolicy();
+        boolean nullOrDefaultMemPolicy = nullMemPolicy || defaultMemPolicy;
+
         if (persister == null) {
-            if (expireAfter > 0 && expireAfterTimeUnit != null) {
-                persister = NoopPersister.create(expireAfter, expireAfterTimeUnit);
-            } else {
+            if (nullOrDefaultMemPolicy) {
                 persister = NoopPersister.create();
+            } else {
+                persister = NoopPersister.create(memoryPolicy);
             }
         }
 
@@ -132,10 +134,10 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         KeyParser<Key, Raw, Parsed> multiParser = new MultiParser<>(parsers);
         RealInternalStore<Raw, Parsed, Key> realInternalStore;
 
-        if (expireAfter == 0 || expireAfterTimeUnit == null) {
+        if (nullOrDefaultMemPolicy) {
             realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, stalePolicy);
         } else {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, expireAfter, expireAfterTimeUnit, stalePolicy);
+            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, memoryPolicy, stalePolicy);
         }
 
         return new RealStore<>(realInternalStore);

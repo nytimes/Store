@@ -33,7 +33,7 @@ public class StoreTest {
 
     private static final String DISK = "disk";
     private static final String NETWORK = "fetch";
-    private static final String MEMORY = "memory";
+    private static final String MEMORY = "memoryPolicy";
     final AtomicInteger counter = new AtomicInteger(0);
     @Mock
     Fetcher<String, BarCode> fetcher;
@@ -144,7 +144,7 @@ public class StoreTest {
     @Test
     public void testNoopAndDefault() {
 
-        Persister<String, BarCode> persister = spy(new NoopPersister<String, BarCode>());
+        Persister<String, BarCode> persister = spy(NoopPersister.<String, BarCode>create());
         RealStore<String, BarCode> simpleStore = new SampleStore(fetcher, persister);
 
 

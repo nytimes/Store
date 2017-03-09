@@ -22,7 +22,7 @@ import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
  * example usage:
  * ParsingStoreBuilder.<BufferedSource, BookResults>builder()
  * .fetcher(fetcher)
- * .persister(SourcePersisterFactory.create(getApplicationContext().getCacheDir()))
+ * .persister(SourcePersisterFactory.newBuilder(getApplicationContext().getCacheDir()))
  * .parser(GsonParserFactory.createSourceParser(new Gson(),BookResult.class)
  * .open();
  */

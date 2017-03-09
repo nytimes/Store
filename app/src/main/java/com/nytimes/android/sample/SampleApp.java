@@ -5,11 +5,11 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.fs.SourcePersisterFactory;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.MemoryPolicy;
 import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
@@ -70,7 +70,14 @@ public class SampleApp extends Application {
                     }
                 })
 //                .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
-                .memory(10, TimeUnit.SECONDS)
+                .memoryPolicy(
+                    MemoryPolicy
+                        .MemoryPolicyBuilder
+                        .newBuilder()
+                        .setExpireAfter(10)
+                        .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+                        .build()
+                )
                 .open();
     }
 
