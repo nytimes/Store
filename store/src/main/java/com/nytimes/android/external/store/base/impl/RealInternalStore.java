@@ -91,8 +91,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         this.stalePolicy = stalePolicy;
 
         MemoryPolicy defaultMemoryPolicy = MemoryPolicy
-            .MemoryPolicyBuilder
-            .newBuilder()
+            .builder()
             .setMemorySize(getCacheSize())
             .setExpireAfter(getCacheTTL())
             .setExpireAfterTimeUnit(getCacheTTLTimeUnit())

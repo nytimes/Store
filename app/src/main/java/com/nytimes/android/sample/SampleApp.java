@@ -72,8 +72,7 @@ public class SampleApp extends Application {
 //                .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
                 .memoryPolicy(
                     MemoryPolicy
-                        .MemoryPolicyBuilder
-                        .newBuilder()
+                        .builder()
                         .setExpireAfter(10)
                         .setExpireAfterTimeUnit(TimeUnit.SECONDS)
                         .build()

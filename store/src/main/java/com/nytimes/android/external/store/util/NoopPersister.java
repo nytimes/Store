@@ -32,8 +32,7 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
 
     public static <Raw, Key> NoopPersister<Raw, Key> create() {
         MemoryPolicy defaultMemoryPolicy = MemoryPolicy
-            .MemoryPolicyBuilder
-            .newBuilder()
+            .builder()
             .setExpireAfter(TimeUnit.HOURS.toSeconds(24))
             .setExpireAfterTimeUnit(TimeUnit.SECONDS)
             .build();

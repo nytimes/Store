@@ -31,14 +31,14 @@ public class MemoryPolicy {
         return expireAfter == -1;
     }
 
+    public static MemoryPolicyBuilder builder() {
+        return new MemoryPolicyBuilder();
+    }
+
     public static class MemoryPolicyBuilder {
         private long expireAfter = -1;
         private TimeUnit expireAfterTimeUnit = TimeUnit.SECONDS;
         private long maxSize = 1;
-
-        public static MemoryPolicyBuilder newBuilder() {
-            return new MemoryPolicyBuilder();
-        }
 
         public MemoryPolicyBuilder setExpireAfter(long expireAfter) {
             this.expireAfter = expireAfter;
