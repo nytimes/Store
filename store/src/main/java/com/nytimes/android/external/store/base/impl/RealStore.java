@@ -9,7 +9,6 @@ import com.nytimes.android.external.store.util.NoKeyParser;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 

@@ -19,6 +19,13 @@ import rx.Observable;
 public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<Key> {
     protected final Cache<Key, Observable<Raw>> networkResponses;
 
+    NoopPersister(MemoryPolicy memoryPolicy) {
+        this.networkResponses = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
+            .build();
+    }
+
     public static <Raw, Key> NoopPersister<Raw, Key> create(MemoryPolicy memoryPolicy) {
         return new NoopPersister<>(memoryPolicy);
     }
@@ -32,13 +39,6 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
             .build();
 
         return new NoopPersister<>(defaultMemoryPolicy);
-    }
-
-    NoopPersister(MemoryPolicy memoryPolicy) {
-        this.networkResponses = CacheBuilder
-            .newBuilder()
-            .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-            .build();
     }
 
     @Nonnull
