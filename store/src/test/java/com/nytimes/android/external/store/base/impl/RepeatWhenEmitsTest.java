@@ -23,7 +23,7 @@ public class RepeatWhenEmitsTest {
         Callable<String> mockCallable = (Callable<String>) mock(Callable.class);
         when(mockCallable.call()).thenReturn("value");
 
-        // newBuilder an observable and apply the transformer to test
+        // create an observable and apply the transformer to test
         PublishSubject<String> source = PublishSubject.create();
         AssertableSubscriber<String> testSubscriber = Observable.fromCallable(mockCallable)
                 .compose(RepeatWhenEmits.<String>from(source))

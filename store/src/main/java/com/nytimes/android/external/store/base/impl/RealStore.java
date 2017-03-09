@@ -84,7 +84,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
      * Will check to see if there exists an in flight observable and return it before
      * going to nerwork
      *
-     * @return data from fetch and store it in memoryPolicy and persister
+     * @return data from fetch and store it in memory and persister
      */
     @Nonnull
     @Override
@@ -110,7 +110,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
     }
 
     /**
-     * Clear memoryPolicy by id
+     * Clear memory by id
      *
      * @param key of data to clear
      */

@@ -151,7 +151,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
 
     /**
-     * @return data from memoryPolicy
+     * @return data from memory
      */
     private Observable<Parsed> lazyCache(@Nonnull final Key key) {
         return Observable
@@ -188,7 +188,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     /**
-     * Fetch data from persister and update memoryPolicy after. If an error occurs, emit and empty observable
+     * Fetch data from persister and update memory after. If an error occurs, emit and empty observable
      * so that the concat call in {@link #get(Key)} moves on to {@link #fetch(Key)}
      *
      * @param key
@@ -244,7 +244,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      * Will check to see if there exists an in flight observable and return it before
      * going to nerwork
      *
-     * @return data from fetch and store it in memoryPolicy and persister
+     * @return data from fetch and store it in memory and persister
      */
     @Nonnull
     @Override
@@ -353,7 +353,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     /**
-     * Only update memoryPolicy after persister has been successfully update
+     * Only update memory after persister has been successfully update
      *
      * @param key
      * @param data
@@ -369,7 +369,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     /**
-     * Clear memoryPolicy by id
+     * Clear memory by id
      *
      * @param key of data to clear
      */
@@ -410,7 +410,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     /**
      * Default Cache TTL, can be overridden
      *
-     * @return memoryPolicy persister ttl
+     * @return memory persister ttl
      */
     private long getCacheTTL() {
         return TimeUnit.HOURS.toSeconds(24);
@@ -419,7 +419,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     /**
      * Default mem persister is 1, can be overridden otherwise
      *
-     * @return memoryPolicy persister size
+     * @return memory persister size
      */
     private long getCacheSize() {
         return 100;

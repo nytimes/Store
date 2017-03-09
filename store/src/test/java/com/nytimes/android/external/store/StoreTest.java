@@ -33,7 +33,7 @@ public class StoreTest {
 
     private static final String DISK = "disk";
     private static final String NETWORK = "fetch";
-    private static final String MEMORY = "memoryPolicy";
+    private static final String MEMORY = "memory";
     final AtomicInteger counter = new AtomicInteger(0);
     @Mock
     Fetcher<String, BarCode> fetcher;

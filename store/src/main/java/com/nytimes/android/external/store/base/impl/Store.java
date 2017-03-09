@@ -61,25 +61,25 @@ public interface Store<T, V> {
     Observable<T> stream(V key);
 
     /**
-     * Clear the memoryPolicy cache of all entries
+     * Clear the memory cache of all entries
      */
     @Deprecated
     void clearMemory();
 
     /**
-     * Purge a particular entry from memoryPolicy cache.
+     * Purge a particular entry from memory cache.
      */
     @Deprecated
     void clearMemory(@Nonnull V key);
 
     /**
-     * purges all entries from memoryPolicy and disk cache
+     * purges all entries from memory and disk cache
      * Persister will only be cleared if they implements Clearable
      */
     void clear();
 
     /**
-     * Purge a particular entry from memoryPolicy and disk cache.
+     * Purge a particular entry from memory and disk cache.
      * Persister will only be cleared if they implements Clearable
      */
     void clear(@Nonnull V key);
