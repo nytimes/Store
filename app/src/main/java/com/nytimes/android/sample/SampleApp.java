@@ -61,15 +61,7 @@ public class SampleApp extends Application {
 
     private Store<RedditData, BarCode> provideRedditStore() {
         return StoreBuilder.<RedditData>barcode()
-                .fetcher(new Fetcher<RedditData, BarCode>() {
-                    @Nonnull
-                    @Override
-                    public Observable<RedditData> fetch(@Nonnull BarCode barCode) {
-                        Log.d("fetcher", "Going for fetcher");
-                        return provideRetrofit().fetchSubreddit(barCode.getKey(), "10");
-                    }
-                })
-//                .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
+                .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
                 .memoryPolicy(
                     MemoryPolicy
                         .builder()
