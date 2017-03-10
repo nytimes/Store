@@ -58,7 +58,6 @@ public class PersistingStoreActivity extends AppCompatActivity {
     public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
 
-
         this.persistedStore
                 .get(awwRequest)
                 .flatMap(this::sanitizeData)

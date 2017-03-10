@@ -30,6 +30,7 @@ public class MultiParser<Key, Raw, Parsed> implements KeyParser<Key, Raw, Parsed
     }
 
     @Override
+    @NonNull
     @SuppressWarnings("unchecked")
     public Parsed apply(@NonNull Key key, @NonNull Raw raw) throws ParserException {
         Object parsed = raw;
