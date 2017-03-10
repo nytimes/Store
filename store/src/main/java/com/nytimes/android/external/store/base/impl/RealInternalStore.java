@@ -49,12 +49,11 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     private Fetcher<Raw, Key> fetcher;
     private BehaviorSubject<Parsed> subject;
 
-
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
                       KeyParser<Key, Raw, Parsed> parser,
                       StalePolicy stalePolicy) {
-        init(fetcher, persister, parser, stalePolicy);
+        this(fetcher, persister, parser, null, stalePolicy);
     }
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
@@ -62,43 +61,23 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                       KeyParser<Key, Raw, Parsed> parser,
                       MemoryPolicy memoryPolicy,
                       StalePolicy stalePolicy) {
-        init(fetcher, persister, parser, memoryPolicy, stalePolicy);
-    }
 
-    private void init(Fetcher<Raw, Key> fetcher,
-                      Persister<Raw, Key> persister,
-                      KeyParser<Key, Raw, Parsed> parser,
-                      MemoryPolicy memoryPolicy,
-                      StalePolicy stalePolicy) {
         this.fetcher = fetcher;
         this.persister = persister;
         this.parser = parser;
         this.stalePolicy = stalePolicy;
+
+        if (memoryPolicy == null) {
+            memoryPolicy = MemoryPolicy
+                .builder()
+                .setMemorySize(getCacheSize())
+                .setExpireAfter(getCacheTTL())
+                .setExpireAfterTimeUnit(getCacheTTLTimeUnit())
+                .build();
+        }
 
         initMemCache(memoryPolicy);
         initFlightRequests(memoryPolicy);
-
-        subject = BehaviorSubject.create();
-    }
-
-    private void init(Fetcher<Raw, Key> fetcher,
-                      Persister<Raw, Key> persister,
-                      KeyParser<Key, Raw, Parsed> parser,
-                      StalePolicy stalePolicy) {
-        this.fetcher = fetcher;
-        this.persister = persister;
-        this.parser = parser;
-        this.stalePolicy = stalePolicy;
-
-        MemoryPolicy defaultMemoryPolicy = MemoryPolicy
-            .builder()
-            .setMemorySize(getCacheSize())
-            .setExpireAfter(getCacheTTL())
-            .setExpireAfterTimeUnit(getCacheTTLTimeUnit())
-            .build();
-
-        initMemCache(defaultMemoryPolicy);
-        initFlightRequests(defaultMemoryPolicy);
 
         subject = BehaviorSubject.create();
     }

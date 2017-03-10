@@ -114,16 +114,8 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
 
     @Nonnull
     public Store<Parsed, Key> open() {
-        boolean nullMemPolicy = memoryPolicy == null;
-        boolean defaultMemPolicy = !nullMemPolicy && memoryPolicy.isDefaultPolicy();
-        boolean nullOrDefaultMemPolicy = nullMemPolicy || defaultMemPolicy;
-
         if (persister == null) {
-            if (nullOrDefaultMemPolicy) {
-                persister = NoopPersister.create();
-            } else {
-                persister = NoopPersister.create(memoryPolicy);
-            }
+            persister = NoopPersister.create(memoryPolicy);
         }
 
         if (parsers.isEmpty()) {
@@ -131,13 +123,9 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         }
 
         KeyParser<Key, Raw, Parsed> multiParser = new MultiParser<>(parsers);
-        RealInternalStore<Raw, Parsed, Key> realInternalStore;
 
-        if (nullOrDefaultMemPolicy) {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, stalePolicy);
-        } else {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, memoryPolicy, stalePolicy);
-        }
+        RealInternalStore<Raw, Parsed, Key> realInternalStore
+            = new RealInternalStore<>(fetcher, persister, multiParser, memoryPolicy, stalePolicy);
 
         return new RealStore<>(realInternalStore);
     }

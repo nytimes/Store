@@ -26,18 +26,25 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
             .build();
     }
 
-    public static <Raw, Key> NoopPersister<Raw, Key> create(MemoryPolicy memoryPolicy) {
-        return new NoopPersister<>(memoryPolicy);
+    public static <Raw, Key> NoopPersister<Raw, Key> create() {
+        return NoopPersister.create(null);
     }
 
-    public static <Raw, Key> NoopPersister<Raw, Key> create() {
-        MemoryPolicy defaultMemoryPolicy = MemoryPolicy
-            .builder()
-            .setExpireAfter(TimeUnit.HOURS.toSeconds(24))
-            .setExpireAfterTimeUnit(TimeUnit.SECONDS)
-            .build();
+    public static <Raw, Key> NoopPersister<Raw, Key> create(MemoryPolicy memoryPolicy) {
+        //For some reason PMD requires a local variable instead of modifying the passed one.
+        MemoryPolicy memPolicy;
 
-        return new NoopPersister<>(defaultMemoryPolicy);
+        if (memoryPolicy == null) {
+            memPolicy = MemoryPolicy
+                .builder()
+                .setExpireAfter(TimeUnit.HOURS.toSeconds(24))
+                .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+                .build();
+        } else {
+            memPolicy = memoryPolicy;
+        }
+
+        return new NoopPersister<>(memPolicy);
     }
 
     @Nonnull
