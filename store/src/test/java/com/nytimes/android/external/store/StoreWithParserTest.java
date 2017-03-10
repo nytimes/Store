@@ -11,7 +11,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -32,7 +33,7 @@ public class StoreWithParserTest {
     private final BarCode barCode = new BarCode("key", "value");
 
     @Test
-    public void testSimple() {
+    public void testSimple() throws Exception {
         MockitoAnnotations.initMocks(this);
 
 
@@ -52,17 +53,17 @@ public class StoreWithParserTest {
         when(persister.write(barCode, NETWORK))
                 .thenReturn(Observable.just(true));
 
-        when(parser.call(DISK)).thenReturn(barCode.getKey());
+        when(parser.apply(DISK)).thenReturn(barCode.getKey());
 
-        String value = simpleStore.get(barCode).toBlocking().first();
+        String value = simpleStore.get(barCode).blockingFirst();
         assertThat(value).isEqualTo(barCode.getKey());
-        value = simpleStore.get(barCode).toBlocking().first();
+        value = simpleStore.get(barCode).blockingFirst();
         assertThat(value).isEqualTo(barCode.getKey());
         verify(fetcher, times(1)).fetch(barCode);
     }
 
     @Test
-    public void testSubclass() {
+    public void testSubclass() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         Store<String, BarCode> simpleStore = new SampleParsingStore(fetcher, persister, parser);
@@ -77,11 +78,11 @@ public class StoreWithParserTest {
         when(persister.write(barCode, NETWORK))
                 .thenReturn(Observable.just(true));
 
-        when(parser.call(DISK)).thenReturn(barCode.getKey());
+        when(parser.apply(DISK)).thenReturn(barCode.getKey());
 
-        String value = simpleStore.get(barCode).toBlocking().first();
+        String value = simpleStore.get(barCode).blockingFirst();
         assertThat(value).isEqualTo(barCode.getKey());
-        value = simpleStore.get(barCode).toBlocking().first();
+        value = simpleStore.get(barCode).blockingFirst();
         assertThat(value).isEqualTo(barCode.getKey());
         verify(fetcher, times(1)).fetch(barCode);
     }

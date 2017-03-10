@@ -12,7 +12,8 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

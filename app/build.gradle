@@ -28,6 +28,10 @@ android {
         abortOnError false
         disable 'InvalidPackage'
     }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
 }
 
 dependencies {
@@ -40,21 +44,20 @@ dependencies {
     compile libraries.supportDesign
     compile libraries.retrofit
     compile libraries.retrofitGsonConverter
-    compile libraries.retrofitRx
+    compile libraries.retrofitRx2
     compile libraries.picasso
     compile libraries.guava
     annotationProcessor libraries.immutablesValue // <-- for annotation processor
     provided libraries.immutablesValue // <-- for annotation API
     provided libraries.immutablesGson // for annotations
-    compile 'com.nytimes.android:store:2.0.2'
-    compile'com.nytimes.android:cache:2.0.2'
-    compile'com.nytimes.android:middleware:2.0.2'
-    compile 'com.nytimes.android:filesystem:2.0.2'
-    //compile project(path: ':store')
-    //compile project(path: ':cache')
-    //compile project(path: ':middleware')
-    //compile project(path: ':filesystem')
+    //compile 'com.nytimes.android:store:2.0.2'
+    //compile'com.nytimes.android:cache:2.0.2'
+    //compile'com.nytimes.android:middleware:2.0.2'
+    //compile 'com.nytimes.android:filesystem:2.0.2'
+    compile project(path: ':store')
+    compile project(path: ':cache')
+    compile project(path: ':middleware')
+    compile project(path: ':filesystem')
     retrolambdaConfig libraries.retrolambda
-    compile libraries.rxAndroid
-
+    compile libraries.rxAndroid2
 }

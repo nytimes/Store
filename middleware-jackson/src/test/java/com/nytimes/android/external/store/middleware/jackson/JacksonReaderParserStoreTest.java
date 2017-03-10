@@ -20,7 +20,8 @@ import org.mockito.MockitoAnnotations;
 import java.io.Reader;
 import java.io.StringReader;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -66,7 +67,7 @@ public class JacksonReaderParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(barCode).blockingFirst();
 
         validateFoo(result);
 
@@ -85,7 +86,7 @@ public class JacksonReaderParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(barCode).blockingFirst();
 
         validateFoo(result);
 

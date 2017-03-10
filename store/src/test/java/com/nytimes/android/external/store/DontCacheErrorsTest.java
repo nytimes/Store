@@ -12,7 +12,8 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+import io.reactivex.Observable;
+
 
 public class DontCacheErrorsTest {
 
@@ -47,12 +48,13 @@ public class DontCacheErrorsTest {
 
         shouldThrow = true;
         store.get(barcode).test()
-                .awaitTerminalEvent()
-                .assertError(Exception.class);
+                .assertTerminated()
+                .assertError(Exception.class)
+                .awaitTerminalEvent();
 
         shouldThrow = false;
         store.get(barcode).test()
-                .awaitTerminalEvent()
-                .assertNoErrors();
+                .assertNoErrors()
+                .awaitTerminalEvent();
     }
 }

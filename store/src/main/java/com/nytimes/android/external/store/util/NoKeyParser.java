@@ -4,6 +4,8 @@ import com.nytimes.android.external.store.base.Parser;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.annotations.NonNull;
+
 public class NoKeyParser<Key, Raw, Parsed> implements KeyParser<Key, Raw, Parsed> {
     private final Parser<Raw, Parsed> parser;
 
@@ -12,8 +14,7 @@ public class NoKeyParser<Key, Raw, Parsed> implements KeyParser<Key, Raw, Parsed
     }
 
     @Override
-    @Nonnull
-    public Parsed call(@Nonnull Key key, @Nonnull Raw raw) {
-        return parser.call(raw);
+    public Parsed apply(@NonNull Key key, @NonNull Raw raw) throws ParserException {
+        return parser.apply(raw);
     }
 }

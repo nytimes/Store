@@ -7,8 +7,9 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Observable;
 import okio.BufferedSource;
-import rx.Observable;
+
 /**
  * FSReader is used when persisting to file system
  * PathResolver will be used in creating file system paths based on cache keys.

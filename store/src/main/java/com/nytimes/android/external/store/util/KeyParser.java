@@ -1,13 +1,11 @@
 package com.nytimes.android.external.store.util;
 
-import javax.annotation.Nonnull;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
 
-import rx.functions.Func2;
-
-public interface KeyParser<Key, Raw, Parsed> extends Func2<Key, Raw, Parsed> {
-
+public interface KeyParser<Key, Raw, Parsed> extends BiFunction<Key, Raw, Parsed> {
 
     @Override
-    @Nonnull
-    Parsed call(@Nonnull Key key, @Nonnull Raw raw);
+    Parsed apply(@NonNull Key key, @NonNull Raw raw) throws ParserException;
+
 }

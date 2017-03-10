@@ -2,7 +2,7 @@ package com.nytimes.android.external.store.base;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 public interface DiskWrite<Raw, Key> {
     /**

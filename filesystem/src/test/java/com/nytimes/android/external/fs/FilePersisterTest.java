@@ -47,25 +47,27 @@ public class FilePersisterTest {
                 .thenReturn(true);
         when(fileSystem.read(resolvedPath)).thenReturn(bufferedSource);
 
-        BufferedSource returnedValue = fileSystemPersister.read(simple).toBlocking().single();
+        BufferedSource returnedValue = fileSystemPersister.read(simple).blockingFirst();
         assertThat(returnedValue).isEqualTo(bufferedSource);
     }
 
     @Test
+    @SuppressWarnings("CheckReturnValue")
     public void readDoesNotExist() throws FileNotFoundException {
         expectedException.expect(NoSuchElementException.class);
         when(fileSystem.exists(resolvedPath))
                 .thenReturn(false);
 
-        fileSystemPersister.read(simple).toBlocking().single();
+        fileSystemPersister.read(simple).blockingFirst();
     }
 
     @Test
+    @SuppressWarnings("CheckReturnValue")
     public void writeThenRead() throws IOException {
         when(fileSystem.read(resolvedPath)).thenReturn(bufferedSource);
         when(fileSystem.exists(resolvedPath)).thenReturn(true);
-        fileSystemPersister.write(simple, bufferedSource).toBlocking().single();
-        BufferedSource source = fileSystemPersister.read(simple).toBlocking().first();
+        fileSystemPersister.write(simple, bufferedSource).blockingFirst();
+        BufferedSource source = fileSystemPersister.read(simple).blockingFirst();
         InOrder inOrder = inOrder(fileSystem);
         inOrder.verify(fileSystem).write(resolvedPath, bufferedSource);
         inOrder.verify(fileSystem).exists(resolvedPath);

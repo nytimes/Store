@@ -17,7 +17,8 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -61,7 +62,7 @@ public class JacksonStringParserStoreTest {
                 .parser(JacksonParserFactory.createStringParser(Foo.class))
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(barCode).blockingFirst();
 
         validateFoo(result);
 
@@ -80,7 +81,7 @@ public class JacksonStringParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(barCode).blockingFirst();
 
         validateFoo(result);
 

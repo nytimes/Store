@@ -15,7 +15,8 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
@@ -58,7 +59,7 @@ public class MoshiStringParserStoreTest {
                 .parser(MoshiParserFactory.createStringParser(Foo.class))
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(barCode).blockingFirst();
 
         assertEquals(result.number, 123);
         assertEquals(result.string, "abc");

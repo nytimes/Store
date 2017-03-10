@@ -14,9 +14,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayInputStream;
 
+import io.reactivex.Observable;
 import okio.BufferedSource;
 import okio.Okio;
-import rx.Observable;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,9 +65,9 @@ public class SourceDiskDaoStoreTest {
         when(diskDAO.write(barCode, source))
                 .thenReturn(Observable.just(true));
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(barCode).blockingFirst();
         assertThat(result.bar).isEqualTo(KEY);
-        result = store.get(barCode).toBlocking().first();
+        result = store.get(barCode).blockingFirst();
         assertThat(result.bar).isEqualTo(KEY);
         verify(fetcher, times(1)).fetch(barCode);
     }

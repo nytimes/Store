@@ -5,8 +5,9 @@ import com.nytimes.android.external.store.base.Persister;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Observable;
 import okio.BufferedSource;
-import rx.Observable;
+
 /**
  * FileSystemPersister is used when persisting to/from file system
  * PathResolver will be used in creating file system paths based on cache keys.

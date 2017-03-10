@@ -4,13 +4,15 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store.util.ParserException;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import io.reactivex.annotations.NonNull;
 
 public class JacksonStringParser<Parsed> implements Parser<String, Parsed> {
 
@@ -29,12 +31,11 @@ public class JacksonStringParser<Parsed> implements Parser<String, Parsed> {
     }
 
     @Override
-    @Nullable
-    public Parsed call(@Nonnull String source) {
+    public Parsed apply(@NonNull String s) throws ParserException {
         try {
-            return objectMapper.readValue(source, parsedType);
+            return objectMapper.readValue(s, parsedType);
         } catch (IOException e) {
-            return null;
+            throw new ParserException(e.getMessage(), e);
         }
     }
 }

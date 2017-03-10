@@ -14,8 +14,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import io.reactivex.Observable;
 import okio.BufferedSource;
-import rx.Observable;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
