@@ -42,7 +42,7 @@ public class MultiParserTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void shouldParseChainProperly() throws Exception {
+    public void shouldParseChainProperly() {
         List<KeyParser> parsersChain = new ArrayList<>();
         parsersChain.add(new NoKeyParser<>(PARSER_1));
         parsersChain.add(new NoKeyParser<>(PARSER_2));
@@ -55,7 +55,7 @@ public class MultiParserTest {
     }
 
     @Test
-    public void shouldFailIfOneOfParsersIsInvalid() throws Exception {
+    public void shouldFailIfOneOfParsersIsInvalid() {
         expectedException.expect(ParserException.class);
 
         List<KeyParser> parsersChain = new ArrayList<>();

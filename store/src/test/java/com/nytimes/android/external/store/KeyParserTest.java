@@ -29,7 +29,7 @@ public class KeyParserTest {
         store = StoreBuilder.<Integer, String, String>parsedWithKey()
                 .parser(new KeyParser<Integer, String, String>() {
                     @Override
-                    public String apply(@NonNull Integer integer, @NonNull String s) throws Exception {
+                    public String apply(@NonNull Integer integer, @NonNull String s) {
                         return s + integer;
                     }
                 })

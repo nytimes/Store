@@ -17,12 +17,10 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.annotations.Experimental;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -120,7 +118,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         return Observable
                 .defer(new Callable<ObservableSource<? extends Parsed>>() {
                     @Override
-                    public ObservableSource<? extends Parsed> call() throws Exception {
+                    public ObservableSource<? extends Parsed> call() {
                         return cache(key);
                     }
                 })
@@ -133,7 +131,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 @Nonnull
                 @Override
                 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-                public Observable<Parsed> call() throws Exception {
+                public Observable<Parsed> call() {
                     return disk(key);
                 }
             });
@@ -172,13 +170,13 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
                 .map(new Function<Raw, Parsed>() {
                     @Override
-                    public Parsed apply(@NonNull Raw raw) throws Exception {
+                    public Parsed apply(@NonNull Raw raw) {
                         return parser.apply(key, raw);
                     }
                 })
                 .doOnNext(new Consumer<Parsed>() {
                     @Override
-                    public void accept(@NonNull Parsed parsed) throws Exception {
+                    public void accept(@NonNull Parsed parsed) {
                         updateMemory(key, parsed);
                         if (stalePolicy == StalePolicy.REFRESH_ON_STALE
                                 && persisterIsStale(key, persister)) {
@@ -188,15 +186,16 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 }).cache();
     }
 
+    @SuppressWarnings("CheckReturnValue")
     void backfillCache(@Nonnull Key key) {
-        Disposable disposable = fetch(key).subscribe(new Consumer<Parsed>() {
+        fetch(key).subscribe(new Consumer<Parsed>() {
             @Override
-            public void accept(@NonNull Parsed parsed) throws Exception {
+            public void accept(@NonNull Parsed parsed) {
                 // do Nothing we are just backfilling cache
             }
         }, new Consumer<Throwable>() {
             @Override
-            public void accept(@NonNull Throwable throwable) throws Exception {
+            public void accept(@NonNull Throwable throwable) {
                 // do nothing as we are just backfilling cache
             }
         });
@@ -214,7 +213,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     public Observable<Parsed> fetch(@Nonnull final Key key) {
         return Observable.defer(new Callable<ObservableSource<? extends Parsed>>() {
             @Override
-            public ObservableSource<? extends Parsed> call() throws Exception {
+            public ObservableSource<? extends Parsed> call() {
                 return fetchAndPersist(key);
             }
         });
@@ -251,11 +250,11 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .fetch(key)
                 .flatMap(new Function<Raw, ObservableSource<Parsed>>() {
                     @Override
-                    public ObservableSource<Parsed> apply(@NonNull Raw raw) throws Exception {
+                    public ObservableSource<Parsed> apply(@NonNull Raw raw) {
                         return persister().write(key, raw)
                                 .flatMap(new Function<Boolean, ObservableSource<Parsed>>() {
                                     @Override
-                                    public ObservableSource<Parsed> apply(@NonNull Boolean aBoolean) throws Exception {
+                                    public ObservableSource<Parsed> apply(@NonNull Boolean aBoolean) {
                                         return readDisk(key);
                                     }
                                 });
@@ -263,7 +262,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 })
                 .onErrorResumeNext(new Function<Throwable, ObservableSource<? extends Parsed>>() {
                     @Override
-                    public ObservableSource<? extends Parsed> apply(@NonNull Throwable throwable) throws Exception {
+                    public ObservableSource<? extends Parsed> apply(@NonNull Throwable throwable) {
                         if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
                             return readDisk(key);
                         }
@@ -272,13 +271,13 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 })
                 .doOnNext(new Consumer<Parsed>() {
                     @Override
-                    public void accept(@NonNull Parsed parsed) throws Exception {
+                    public void accept(@NonNull Parsed parsed) {
                         notifySubscribers(parsed);
                     }
                 })
                 .doOnTerminate(new Action() {
                     @Override
-                    public void run() throws Exception {
+                    public void run() {
                         inFlightRequests.invalidate(key);
                     }
                 })

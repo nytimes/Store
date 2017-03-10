@@ -30,8 +30,8 @@ public class JacksonStringParser<Parsed> implements Parser<String, Parsed> {
     }
 
     @Override
-    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
-    public Parsed apply(@NonNull String s) throws Exception {
+    @SuppressWarnings({"PMD.EmptyCatchBlock"})
+    public Parsed apply(@NonNull String s) {
         try {
             return objectMapper.readValue(s, parsedType);
         } catch (IOException e) {

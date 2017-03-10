@@ -31,7 +31,7 @@ public class MultiParser<Key, Raw, Parsed> implements KeyParser<Key, Raw, Parsed
 
     @Override
     @SuppressWarnings("unchecked")
-    public Parsed apply(@NonNull Key key, @NonNull Raw raw) throws Exception {
+    public Parsed apply(@NonNull Key key, @NonNull Raw raw) {
         Object parsed = raw;
         for (KeyParser parser : parsers) {
             try {

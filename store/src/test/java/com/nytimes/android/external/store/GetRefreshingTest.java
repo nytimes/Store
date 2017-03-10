@@ -18,10 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
-
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
-import io.reactivex.subscribers.TestSubscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

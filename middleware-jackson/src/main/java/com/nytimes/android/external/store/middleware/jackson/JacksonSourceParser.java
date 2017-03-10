@@ -32,8 +32,8 @@ public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parse
     }
 
     @Override
-    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
-    public Parsed apply(@NonNull BufferedSource bufferedSource) throws Exception {
+    @SuppressWarnings({"PMD.EmptyCatchBlock"})
+    public Parsed apply(@NonNull BufferedSource bufferedSource) {
         InputStream inputStream = bufferedSource.inputStream();
         try {
             return objectMapper.readValue(inputStream, parsedType);

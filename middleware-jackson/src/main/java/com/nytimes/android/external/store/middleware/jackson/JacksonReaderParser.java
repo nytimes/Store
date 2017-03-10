@@ -32,8 +32,8 @@ public class JacksonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     }
 
     @Override
-    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
-    public Parsed apply(@NonNull Reader reader) throws Exception {
+    @SuppressWarnings({"PMD.EmptyCatchBlock"})
+    public Parsed apply(@NonNull Reader reader) {
         try {
             return objectMapper.readValue(reader, parsedType);
         } catch (IOException e) {

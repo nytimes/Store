@@ -11,7 +11,7 @@ import io.reactivex.functions.Function;
 public class OnErrorResumeWithEmpty<Parsed> implements Function<Throwable, Observable<? extends Parsed>> {
 
     @Override
-    public Observable<? extends Parsed> apply(@NonNull Throwable throwable) throws Exception {
+    public Observable<? extends Parsed> apply(@NonNull Throwable throwable) {
         return Observable.empty();
     }
 }

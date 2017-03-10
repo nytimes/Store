@@ -4,9 +4,9 @@ import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.RealStore;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.util.NoopPersister;
 
@@ -18,8 +18,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
-import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -88,7 +86,7 @@ public class StoreTest {
         Observable<String> networkObservable =
                 Observable.create(new ObservableOnSubscribe<String>() {
                     @Override
-                    public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    public void subscribe(ObservableEmitter<String> emitter) {
                         if (counter.incrementAndGet() == 1) {
                             emitter.onNext(NETWORK);
 
@@ -113,7 +111,7 @@ public class StoreTest {
         String response = simpleStore.get(barCode).zipWith(simpleStore.get(barCode),
                 new BiFunction<String, String, String>() {
                     @Override
-                    public String apply(@NonNull String s, @NonNull String s2) throws Exception {
+                    public String apply(@NonNull String s, @NonNull String s2) {
                         return "hello";
                     }
                 })

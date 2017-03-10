@@ -26,8 +26,7 @@ public class GsonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     }
 
     @Override
-    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
-    public Parsed apply(@NonNull Reader reader) throws Exception {
+    public Parsed apply(@NonNull Reader reader) {
         return gson.fromJson(reader, type);
     }
 }

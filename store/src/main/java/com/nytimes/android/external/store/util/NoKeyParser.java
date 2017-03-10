@@ -14,7 +14,7 @@ public class NoKeyParser<Key, Raw, Parsed> implements KeyParser<Key, Raw, Parsed
     }
 
     @Override
-    public Parsed apply(@NonNull Key key, @NonNull Raw raw) throws Exception {
+    public Parsed apply(@NonNull Key key, @NonNull Raw raw) {
         return parser.apply(raw);
     }
 }

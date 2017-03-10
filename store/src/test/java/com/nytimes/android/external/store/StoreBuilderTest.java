@@ -50,7 +50,7 @@ public class StoreBuilderTest {
                 })
                 .parser(new Parser<String, Date>() {
                     @Override
-                    public Date apply(@NonNull String s) throws Exception {
+                    public Date apply(@NonNull String s) {
                         return DATE;
                     }
                 })

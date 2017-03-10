@@ -21,7 +21,7 @@ public class NoopPersisterTest {
     }
 
     @Test
-    public void noopParserFuncTest() throws Exception {
+    public void noopParserFuncTest() {
         NoopParserFunc<String, String> noopParserFunc = new NoopParserFunc<>();
         String input = "foo";
         String output = (String) noopParserFunc.apply(input);

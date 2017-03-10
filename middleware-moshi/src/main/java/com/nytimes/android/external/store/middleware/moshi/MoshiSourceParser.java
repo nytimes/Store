@@ -23,8 +23,8 @@ public class MoshiSourceParser<Parsed> implements Parser<BufferedSource, Parsed>
     }
 
     @Override
-    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
-    public Parsed apply(@NonNull BufferedSource bufferedSource) throws Exception {
+    @SuppressWarnings({"PMD.EmptyCatchBlock"})
+    public Parsed apply(@NonNull BufferedSource bufferedSource) {
         try {
             return jsonAdapter.fromJson(bufferedSource);
         } catch (IOException e) {

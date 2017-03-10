@@ -31,10 +31,10 @@ final class RepeatWhenEmits<T> implements ObservableTransformer<T, T> {
     public ObservableSource<T> apply(Observable<T> upstream) {
         return upstream.repeatWhen(new Function<Observable<Object>, ObservableSource<?>>() {
             @Override
-            public ObservableSource<?> apply(@NonNull Observable<Object> objectObservable) throws Exception {
+            public ObservableSource<?> apply(@NonNull Observable<Object> objectObservable) {
                 return objectObservable.switchMap(new Function<Object, ObservableSource<?>>() {
                     @Override
-                    public ObservableSource<?> apply(@NonNull Object o) throws Exception {
+                    public ObservableSource<?> apply(@NonNull Object o) {
                         return source;
                     }
                 });

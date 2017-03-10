@@ -42,8 +42,8 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
     }
 
     @Override
-    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
-    public Parsed apply(@NonNull BufferedSource bufferedSource) throws Exception {
+    @SuppressWarnings({"PMD.EmptyCatchBlock"})
+    public Parsed apply(@NonNull BufferedSource bufferedSource) {
         try (InputStreamReader reader = new InputStreamReader(bufferedSource.inputStream(), Charset.forName("UTF-8"))) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {
