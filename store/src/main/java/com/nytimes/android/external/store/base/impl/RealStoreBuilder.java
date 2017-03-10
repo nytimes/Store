@@ -1,7 +1,6 @@
 package com.nytimes.android.external.store.base.impl;
 
 
-import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.store.base.DiskRead;
 import com.nytimes.android.external.store.base.DiskWrite;
 import com.nytimes.android.external.store.base.Fetcher;
@@ -26,8 +25,8 @@ import io.reactivex.Observable;
 public class RealStoreBuilder<Raw, Parsed, Key> {
     private final List<KeyParser> parsers = new ArrayList<>();
     private Persister<Raw, Key> persister;
-    private Cache<Key, Observable<Parsed>> memCache;
     private Fetcher<Raw, Key> fetcher;
+    private MemoryPolicy memoryPolicy;
 
     @SuppressWarnings("PMD.UnusedPrivateField") //remove when it is implemented...
     private StalePolicy stalePolicy = StalePolicy.UNSPECIFIED;
@@ -94,8 +93,8 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     }
 
     @Nonnull
-    public RealStoreBuilder<Raw, Parsed, Key> memory(Cache<Key, Observable<Parsed>> memCache) {
-        this.memCache = memCache;
+    public RealStoreBuilder<Raw, Parsed, Key> memoryPolicy(MemoryPolicy memoryPolicy) {
+        this.memoryPolicy = memoryPolicy;
         return this;
     }
 
@@ -117,7 +116,7 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
     @Nonnull
     public Store<Parsed, Key> open() {
         if (persister == null) {
-            persister = new NoopPersister<>();
+            persister = NoopPersister.create(memoryPolicy);
         }
 
         if (parsers.isEmpty()) {
@@ -125,13 +124,9 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         }
 
         KeyParser<Key, Raw, Parsed> multiParser = new MultiParser<>(parsers);
-        RealInternalStore<Raw, Parsed, Key> realInternalStore;
 
-        if (memCache == null) {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, stalePolicy);
-        } else {
-            realInternalStore = new RealInternalStore<>(fetcher, persister, multiParser, memCache, stalePolicy);
-        }
+        RealInternalStore<Raw, Parsed, Key> realInternalStore
+            = new RealInternalStore<>(fetcher, persister, multiParser, memoryPolicy, stalePolicy);
 
         return new RealStore<>(realInternalStore);
     }
