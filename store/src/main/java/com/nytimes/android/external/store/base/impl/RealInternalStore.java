@@ -130,7 +130,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
             return memCache.get(key, new Callable<Observable<Parsed>>() {
                 @Nonnull
                 @Override
-                @SuppressWarnings("PMD.SignatureDeclareThrowsException")
                 public Observable<Parsed> call() {
                     return disk(key);
                 }
@@ -297,7 +296,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Override
     public Observable<Parsed> stream(@Nonnull Key key) {
 
-        Observable<Parsed> stream = subject;
+        Observable<Parsed> stream = subject.hide();
 
         //If nothing was emitted through the subject yet, start stream with get() value
         if (!subject.hasValue()) {
@@ -310,7 +309,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Observable<Parsed> stream() {
-        return subject;
+        return subject.hide();
     }
 
     /**
