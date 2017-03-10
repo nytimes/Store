@@ -3,6 +3,7 @@ package com.nytimes.android.external.store.middleware;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store.util.ParserException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,11 +44,11 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
 
     @Override
     @SuppressWarnings({"PMD.EmptyCatchBlock"})
-    public Parsed apply(@NonNull BufferedSource bufferedSource) {
+    public Parsed apply(@NonNull BufferedSource bufferedSource) throws ParserException {
         try (InputStreamReader reader = new InputStreamReader(bufferedSource.inputStream(), Charset.forName("UTF-8"))) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ParserException(e);
         }
     }
 }

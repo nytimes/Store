@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store.util.ParserException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -32,12 +33,12 @@ public class JacksonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     }
 
     @Override
-    @SuppressWarnings({"PMD.EmptyCatchBlock"})
-    public Parsed apply(@NonNull Reader reader) {
+    @NonNull
+    public Parsed apply(@NonNull Reader reader) throws ParserException {
         try {
             return objectMapper.readValue(reader, parsedType);
         } catch (IOException e) {
-            return null;
+            throw new ParserException(e);
         }
     }
 }

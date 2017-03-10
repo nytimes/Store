@@ -10,7 +10,8 @@ import io.reactivex.annotations.NonNull;
 public class NoopParserFunc<Raw, Parsed> implements Parser<Raw, Parsed> {
 
     @Override
-    public Parsed apply(@NonNull Raw raw) {
+    @NonNull
+    public Parsed apply(@NonNull Raw raw) throws ParserException {
         return (Parsed) raw;
     }
 }

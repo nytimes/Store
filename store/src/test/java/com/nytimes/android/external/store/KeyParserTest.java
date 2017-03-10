@@ -49,8 +49,11 @@ public class KeyParserTest {
         testObservable.assertNoErrors()
                 .assertValues(NETWORK + KEY)
                 .awaitTerminalEvent();
-        // TODO assertTrue(testObservable.isDisposed()); ??
 
+        // This check doesn't work in RxJava 2.0.7
+        // See https://github.com/ReactiveX/RxJava/issues/4514
+        // TODO
+        // assertTrue(testObservable.isDisposed());
 
     }
 }

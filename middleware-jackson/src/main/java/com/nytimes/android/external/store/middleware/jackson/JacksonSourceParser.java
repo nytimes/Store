@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.store.base.Parser;
+import com.nytimes.android.external.store.util.ParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,12 +34,12 @@ public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parse
 
     @Override
     @SuppressWarnings({"PMD.EmptyCatchBlock"})
-    public Parsed apply(@NonNull BufferedSource bufferedSource) {
+    public Parsed apply(@NonNull BufferedSource bufferedSource) throws ParserException {
         InputStream inputStream = bufferedSource.inputStream();
         try {
             return objectMapper.readValue(inputStream, parsedType);
         } catch (IOException e) {
-            return null;
+            throw new ParserException(e);
         } finally {
             try {
                 if (inputStream != null) {
