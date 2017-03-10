@@ -18,9 +18,9 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.Observable;
 import okio.BufferedSource;
 import okio.Okio;
-import rx.Observable;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,7 +76,7 @@ public class GsonSourceListParserTest {
         when(persister.write(barCode, source))
                 .thenReturn(Observable.just(true));
 
-        List<Foo> result = simpleStore.get(barCode).toBlocking().first();
+        List<Foo> result = simpleStore.get(barCode).blockingFirst();
         assertThat(result.get(0).value).isEqualTo("a");
         assertThat(result.get(1).value).isEqualTo("b");
         assertThat(result.get(2).value).isEqualTo("c");

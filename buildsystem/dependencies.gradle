@@ -26,12 +26,15 @@ ext.versions = [
 
         // Reactive.
         rxJava               : '1.2.6',
+        rxJava2              : '2.0.7',
+        rxJava2Interop       : '0.9.3',
         rxJavaProGuardRules  : '1.1.6.0',
         rxJavaAsyncUtil      : '0.21.0',
         rxAndroid            : '1.2.1',
+        rxAndroid2           : '2.0.1',
 
         // Others.
-        retrofit             : '2.0.0-beta3',
+        retrofit             : '2.2.0',
         retrolambda          : '2.3.0',
         dagger               : '2.9',
         jsr305               : '3.0.1',
@@ -80,14 +83,17 @@ ext.libraries = [
 
         // Reactive.
         rxJava                  : "io.reactivex:rxjava:$versions.rxJava",
+        rxJava2                 : "io.reactivex.rxjava2:rxjava:$versions.rxJava2",
+        rxJava2Interop          : "com.github.akarnokd:rxjava2-interop:$versions.rxJava2Interop",
         rxJavaAsyncUtil         : "io.reactivex:rxjava-async-util:$versions.rxJavaAsyncUtil",
         rxJavaProGuardRules     : "com.artemzin.rxjava:proguard-rules:$versions.rxJavaProGuardRules",
         rxAndroid               : "io.reactivex:rxandroid:$versions.rxAndroid",
+        rxAndroid2              : "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid2",
 
         // Others.
         retrofit                : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitGsonConverter   : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
-        retrofitRx              : "com.squareup.retrofit2:adapter-rxjava:$versions.retrofit",
+        retrofitRx2             : "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit",
         retrolambda             : "net.orfjackal.retrolambda:retrolambda:$versions.retrolambda",
         dagger                  : "com.google.dagger:dagger:$versions.dagger",
         daggerCompiler          : "com.google.dagger:dagger-compiler:$versions.dagger",

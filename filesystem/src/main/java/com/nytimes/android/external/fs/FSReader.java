@@ -7,9 +7,10 @@ import java.io.FileNotFoundException;
 
 import javax.annotation.Nonnull;
 
+import hu.akarnokd.rxjava.interop.RxJavaInterop;
+import io.reactivex.Observable;
 import okio.BufferedSource;
 import rx.Emitter;
-import rx.Observable;
 import rx.functions.Action1;
 
 /**
@@ -31,12 +32,12 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final T key) {
-        return Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
+        return RxJavaInterop.toV2Observable(rx.Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
             @Override
             public void call(Emitter<BufferedSource> emitter) {
                 String resolvedKey = pathResolver.resolve(key);
                 boolean exists = fileSystem.exists(resolvedKey);
-              
+
                 if (exists) {
                     try {
                         BufferedSource bufferedSource = fileSystem.read(resolvedKey);
@@ -49,6 +50,6 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
                     emitter.onCompleted();
                 }
             }
-        }, Emitter.BackpressureMode.NONE);
+        }, Emitter.BackpressureMode.NONE));
     }
 }

@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Observable;
 import okio.BufferedSource;
-import rx.Observable;
 
 /**
  * FileSystemRecordPersister is used when persisting to/from file system while being stale aware

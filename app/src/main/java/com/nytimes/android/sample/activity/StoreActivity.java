@@ -19,9 +19,13 @@ import com.nytimes.android.sample.reddit.PostAdapter;
 
 import java.util.List;
 
+import hu.akarnokd.rxjava.interop.RxJavaInterop;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 import static android.widget.Toast.makeText;
 
@@ -51,12 +55,18 @@ public class StoreActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("CheckReturnValue")
     public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
 
         this.nonPersistedStore
                 .get(awwRequest)
-                .flatMap(this::sanitizeData)
+                .flatMap(new Function<RedditData, ObservableSource<Post>>() {
+                    @Override
+                    public ObservableSource<Post> apply(@NonNull RedditData redditData) throws Exception {
+                        return RxJavaInterop.toV2Observable(sanitizeData(redditData));
+                    }
+                })
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

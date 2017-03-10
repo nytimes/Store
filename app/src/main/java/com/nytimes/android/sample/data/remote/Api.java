@@ -2,12 +2,11 @@ package com.nytimes.android.sample.data.remote;
 
 import com.nytimes.android.sample.data.model.RedditData;
 
-import okhttp3.Response;
+import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import rx.Observable;
 
 public interface Api {
 

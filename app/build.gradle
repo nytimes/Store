@@ -29,6 +29,10 @@ android {
         abortOnError false
         disable 'InvalidPackage'
     }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
 }
 
 dependencies {
@@ -41,7 +45,7 @@ dependencies {
     compile libraries.supportDesign
     compile libraries.retrofit
     compile libraries.retrofitGsonConverter
-    compile libraries.retrofitRx
+    compile libraries.retrofitRx2
     compile libraries.picasso
     compile libraries.guava
     apt libraries.immutablesValue // <-- for annotation processor
@@ -52,6 +56,5 @@ dependencies {
     compile project(path: ':middleware')
     compile project(path: ':filesystem')
     retrolambdaConfig libraries.retrolambda
-    compile libraries.rxAndroid
-
+    compile libraries.rxAndroid2
 }

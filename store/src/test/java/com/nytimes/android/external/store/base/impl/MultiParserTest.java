@@ -19,21 +19,21 @@ public class MultiParserTest {
 
     private static final Parser<Integer, String> PARSER_1 = new Parser<Integer, String>() {
         @Override
-        public String call(Integer value) {
+        public String apply(Integer value) {
             return String.valueOf(value);
         }
     };
 
     private static final Parser<String, BarCode> PARSER_2 = new Parser<String, BarCode>() {
         @Override
-        public BarCode call(String value) {
+        public BarCode apply(String value) {
             return new BarCode(value, "KEY");
         }
     };
 
     private static final Parser<BarCode, UUID> PARSER_3 = new Parser<BarCode, UUID>() {
         @Override
-        public UUID call(BarCode barCode) {
+        public UUID apply(BarCode barCode) {
             return UUID.randomUUID();
         }
     };
@@ -42,20 +42,20 @@ public class MultiParserTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void shouldParseChainProperly() {
+    public void shouldParseChainProperly() throws Exception {
         List<KeyParser> parsersChain = new ArrayList<>();
         parsersChain.add(new NoKeyParser<>(PARSER_1));
         parsersChain.add(new NoKeyParser<>(PARSER_2));
         parsersChain.add(new NoKeyParser<>(PARSER_3));
 
         KeyParser<Object, Integer, UUID> parser = new MultiParser<>(parsersChain);
-        UUID parsed = parser.call(new Object(), 100);
+        UUID parsed = parser.apply(new Object(), 100);
 
         assertNotNull(parsed);
     }
 
     @Test
-    public void shouldFailIfOneOfParsersIsInvalid() {
+    public void shouldFailIfOneOfParsersIsInvalid() throws Exception {
         expectedException.expect(ParserException.class);
 
         List<KeyParser> parsersChain = new ArrayList<>();
@@ -64,7 +64,7 @@ public class MultiParserTest {
         parsersChain.add(new NoKeyParser<>(PARSER_2));
 
         KeyParser<Object, Integer, UUID> parser = new MultiParser<>(parsersChain);
-        UUID parsed = parser.call(new Object(), 100);
+        UUID parsed = parser.apply(new Object(), 100);
 
         assertNotNull(parsed);
     }

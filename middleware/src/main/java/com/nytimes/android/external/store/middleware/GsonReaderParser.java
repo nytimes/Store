@@ -6,8 +6,9 @@ import com.nytimes.android.external.store.base.Parser;
 import java.io.Reader;
 import java.lang.reflect.Type;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
+
+import io.reactivex.annotations.NonNull;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
@@ -25,7 +26,8 @@ public class GsonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     }
 
     @Override
-    public Parsed call(@Nonnull Reader reader) {
+    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
+    public Parsed apply(@NonNull Reader reader) throws Exception {
         return gson.fromJson(reader, type);
     }
 }

@@ -9,9 +9,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import io.reactivex.annotations.NonNull;
 import okio.BufferedSource;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
@@ -42,8 +42,9 @@ public class GsonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> 
     }
 
     @Override
-    public Parsed call(@Nonnull BufferedSource source) {
-        try (InputStreamReader reader = new InputStreamReader(source.inputStream(), Charset.forName("UTF-8"))) {
+    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
+    public Parsed apply(@NonNull BufferedSource bufferedSource) throws Exception {
+        try (InputStreamReader reader = new InputStreamReader(bufferedSource.inputStream(), Charset.forName("UTF-8"))) {
             return gson.fromJson(reader, type);
         } catch (IOException e) {
             throw new RuntimeException(e);

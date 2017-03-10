@@ -12,7 +12,8 @@ import com.nytimes.android.external.store.util.NoopPersister;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import static com.nytimes.android.external.store.base.impl.StalePolicy.UNSPECIFIED;
 

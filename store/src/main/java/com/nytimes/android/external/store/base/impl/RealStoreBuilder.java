@@ -17,7 +17,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+import io.reactivex.Observable;
+
 
 /**
  * Builder where there parser is used.

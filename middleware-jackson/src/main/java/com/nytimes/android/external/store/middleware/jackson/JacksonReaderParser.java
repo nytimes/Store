@@ -13,6 +13,8 @@ import java.lang.reflect.Type;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import io.reactivex.annotations.NonNull;
+
 public class JacksonReaderParser<Parsed> implements Parser<Reader, Parsed> {
 
     private final ObjectMapper objectMapper;
@@ -30,7 +32,8 @@ public class JacksonReaderParser<Parsed> implements Parser<Reader, Parsed> {
     }
 
     @Override
-    public Parsed call(@Nonnull Reader reader) {
+    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
+    public Parsed apply(@NonNull Reader reader) throws Exception {
         try {
             return objectMapper.readValue(reader, parsedType);
         } catch (IOException e) {

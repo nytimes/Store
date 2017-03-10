@@ -18,8 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
-import rx.observers.AssertableSubscriber;
+
+import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
+import io.reactivex.subscribers.TestSubscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -63,16 +65,16 @@ public class GetRefreshingTest {
         when(persister.write(barcode, 2)).thenReturn(Observable.just(true));
 
 
-        AssertableSubscriber<Integer> refreshingObservable = store.getRefreshing(barcode).test();
-        assertThat(refreshingObservable.getValueCount()).isEqualTo(1);
+        TestObserver<Integer> refreshingObservable = store.getRefreshing(barcode).test();
+        refreshingObservable.assertValueCount(1);
         assertThat(networkCalls.intValue()).isEqualTo(1);
         //clearing the store should produce another network call
         store.clear(barcode);
-        assertThat(refreshingObservable.getValueCount()).isEqualTo(2);
+        refreshingObservable.assertValueCount(2);
         assertThat(networkCalls.intValue()).isEqualTo(2);
 
         store.get(barcode).test().awaitTerminalEvent();
-        assertThat(refreshingObservable.getValueCount()).isEqualTo(2);
+        refreshingObservable.assertValueCount(2);
         assertThat(networkCalls.intValue()).isEqualTo(2);
     }
 
@@ -98,10 +100,10 @@ public class GetRefreshingTest {
         when(persister.write(barcode2, 1)).thenReturn(Observable.just(true));
         when(persister.write(barcode2, 2)).thenReturn(Observable.just(true));
 
-        AssertableSubscriber<Integer> testObservable1 = store.getRefreshing(barcode1).test();
-        AssertableSubscriber<Integer> testObservable2 = store.getRefreshing(barcode2).test();
-        assertThat(testObservable1.getValueCount()).isEqualTo(1);
-        assertThat(testObservable2.getValueCount()).isEqualTo(1);
+        TestObserver<Integer> testObservable1 = store.getRefreshing(barcode1).test();
+        TestObserver<Integer> testObservable2 = store.getRefreshing(barcode2).test();
+        testObservable1.assertValueCount(1);
+        testObservable2.assertValueCount(1);
 
         assertThat(networkCalls.intValue()).isEqualTo(2);
 

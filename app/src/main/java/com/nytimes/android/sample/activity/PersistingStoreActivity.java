@@ -18,9 +18,11 @@ import com.nytimes.android.sample.reddit.PostAdapter;
 
 import java.util.List;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+
+import hu.akarnokd.rxjava.interop.RxJavaInterop;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.widget.Toast.makeText;
 
@@ -52,8 +54,10 @@ public class PersistingStoreActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("CheckReturnValue")
     public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
+
 
         this.persistedStore
                 .get(awwRequest)
@@ -74,8 +78,8 @@ public class PersistingStoreActivity extends AppCompatActivity {
     }
 
     private Observable<Post> sanitizeData(RedditData redditData) {
-        return Observable.from(redditData.data().children())
-                .map(Children::data);
+        return RxJavaInterop.toV2Observable(rx.Observable.from(redditData.data().children())
+                .map(Children::data));
     }
 
     @Override

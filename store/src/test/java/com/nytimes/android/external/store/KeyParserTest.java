@@ -12,8 +12,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
-import rx.observers.AssertableSubscriber;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.TestObserver;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class KeyParserTest {
@@ -27,7 +29,7 @@ public class KeyParserTest {
         store = StoreBuilder.<Integer, String, String>parsedWithKey()
                 .parser(new KeyParser<Integer, String, String>() {
                     @Override
-                    public String call(Integer integer, String s) {
+                    public String apply(@NonNull Integer integer, @NonNull String s) throws Exception {
                         return s + integer;
                     }
                 })
@@ -43,10 +45,11 @@ public class KeyParserTest {
 
     @Test
     public void testStoreWithKeyParserFuncNoPersister() throws Exception {
-        AssertableSubscriber<String> testObservable = store.get(KEY).test().awaitTerminalEvent();
+        TestObserver<String> testObservable = store.get(KEY).test().await();
         testObservable.assertNoErrors()
                 .assertValues(NETWORK + KEY)
-                .assertUnsubscribed();
+                .awaitTerminalEvent();
+        // TODO assertTrue(testObservable.isDisposed()); ??
 
 
     }

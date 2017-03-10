@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import io.reactivex.annotations.NonNull;
 import okio.BufferedSource;
 
 public class MoshiSourceParser<Parsed> implements Parser<BufferedSource, Parsed> {
@@ -23,10 +23,10 @@ public class MoshiSourceParser<Parsed> implements Parser<BufferedSource, Parsed>
     }
 
     @Override
-    @Nullable
-    public Parsed call(BufferedSource source) {
+    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
+    public Parsed apply(@NonNull BufferedSource bufferedSource) throws Exception {
         try {
-            return jsonAdapter.fromJson(source);
+            return jsonAdapter.fromJson(bufferedSource);
         } catch (IOException e) {
             return null;
         }

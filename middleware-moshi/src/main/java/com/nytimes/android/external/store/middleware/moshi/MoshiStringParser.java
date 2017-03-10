@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import io.reactivex.annotations.NonNull;
 
 public class MoshiStringParser<Parsed> implements Parser<String, Parsed> {
 
@@ -20,11 +21,12 @@ public class MoshiStringParser<Parsed> implements Parser<String, Parsed> {
         jsonAdapter = moshi.adapter(type);
     }
 
+
     @Override
-    @Nullable
-    public Parsed call(@Nonnull String source) {
+    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
+    public Parsed apply(@NonNull String s) throws Exception {
         try {
-            return jsonAdapter.fromJson(source);
+            return jsonAdapter.fromJson(s);
         } catch (IOException e) {
             return null;
         }

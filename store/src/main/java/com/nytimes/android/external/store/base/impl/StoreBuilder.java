@@ -2,7 +2,7 @@ package com.nytimes.android.external.store.base.impl;
 
 import javax.annotation.Nonnull;
 
-import rx.annotations.Beta;
+import io.reactivex.annotations.Beta;
 
 
 /**

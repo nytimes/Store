@@ -2,9 +2,12 @@ package com.nytimes.android.external.store.middleware;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.store.base.Parser;
+
 import java.lang.reflect.Type;
 
 import javax.inject.Inject;
+
+import io.reactivex.annotations.NonNull;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
@@ -22,7 +25,8 @@ public class GsonStringParser<Parsed> implements Parser<String, Parsed> {
     }
 
     @Override
-    public Parsed call(String source) {
-        return gson.fromJson(source, type);
+    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
+    public Parsed apply(@NonNull String s) throws Exception {
+        return gson.fromJson(s, type);
     }
 }

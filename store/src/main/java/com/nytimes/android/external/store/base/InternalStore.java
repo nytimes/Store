@@ -4,7 +4,7 @@ import com.nytimes.android.external.store.base.impl.Store;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * this interface allows us to mark a {@link Store} as "internal", exposing methods for retrieving data

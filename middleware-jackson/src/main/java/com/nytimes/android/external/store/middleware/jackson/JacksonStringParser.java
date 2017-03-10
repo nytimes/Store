@@ -9,8 +9,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import io.reactivex.annotations.NonNull;
 
 public class JacksonStringParser<Parsed> implements Parser<String, Parsed> {
 
@@ -29,10 +30,10 @@ public class JacksonStringParser<Parsed> implements Parser<String, Parsed> {
     }
 
     @Override
-    @Nullable
-    public Parsed call(@Nonnull String source) {
+    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
+    public Parsed apply(@NonNull String s) throws Exception {
         try {
-            return objectMapper.readValue(source, parsedType);
+            return objectMapper.readValue(s, parsedType);
         } catch (IOException e) {
             return null;
         }

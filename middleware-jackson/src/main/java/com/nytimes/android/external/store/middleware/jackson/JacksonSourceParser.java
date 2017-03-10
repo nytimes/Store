@@ -10,9 +10,9 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import io.reactivex.annotations.NonNull;
 import okio.BufferedSource;
 
 public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parsed> {
@@ -32,10 +32,9 @@ public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parse
     }
 
     @Override
-    @Nullable
-    @SuppressWarnings("PMD.EmptyCatchBlock")
-    public Parsed call(@Nonnull BufferedSource source) {
-        InputStream inputStream = source.inputStream();
+    @SuppressWarnings({"PMD.EmptyCatchBlock", "PMD.SignatureDeclareThrowsException"})
+    public Parsed apply(@NonNull BufferedSource bufferedSource) throws Exception {
+        InputStream inputStream = bufferedSource.inputStream();
         try {
             return objectMapper.readValue(inputStream, parsedType);
         } catch (IOException e) {
