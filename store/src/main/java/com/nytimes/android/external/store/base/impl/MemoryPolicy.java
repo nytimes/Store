@@ -3,6 +3,18 @@ package com.nytimes.android.external.store.base.impl;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * MemoryPolicy holds all required info to create MemoryCache and
+ * {@link com.nytimes.android.external.store.util.NoopPersister NoopPersister}
+ * <p>
+ * This class is used, in order to define the appropriate parameters for the MemoryCache
+ * to be built.
+ * <p>
+ * MemoryPolicy is used by a {@link com.nytimes.android.external.store.base.impl.Store Store}
+ * and defines the in-memory cache behavior. It is also used by
+ * {@link com.nytimes.android.external.store.util.NoopPersister NoopPersister}
+ * to define a basic caching mechanism.
+ */
 public class MemoryPolicy {
 
     private final long expireAfter;
@@ -13,6 +25,10 @@ public class MemoryPolicy {
         this.expireAfter = expireAfter;
         this.expireAfterTimeUnit = expireAfterTimeUnit;
         this.maxSize = maxSize;
+    }
+
+    public static MemoryPolicyBuilder builder() {
+        return new MemoryPolicyBuilder();
     }
 
     public long getExpireAfter() {
@@ -29,10 +45,6 @@ public class MemoryPolicy {
 
     public boolean isDefaultPolicy() {
         return expireAfter == -1;
-    }
-
-    public static MemoryPolicyBuilder builder() {
-        return new MemoryPolicyBuilder();
     }
 
     public static class MemoryPolicyBuilder {
