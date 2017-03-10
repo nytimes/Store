@@ -144,7 +144,7 @@ public class StoreTest {
     @Test
     public void testNoopAndDefault() {
 
-        Persister<String, BarCode> persister = spy(new NoopPersister<String, BarCode>());
+        Persister<String, BarCode> persister = spy(NoopPersister.<String, BarCode>create());
         RealStore<String, BarCode> simpleStore = new SampleStore(fetcher, persister);
 
 

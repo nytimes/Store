@@ -1,13 +1,15 @@
 package com.nytimes.android.sample;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.fs.SourcePersisterFactory;
+import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.MemoryPolicy;
 import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.middleware.GsonParserFactory;
@@ -17,6 +19,8 @@ import com.nytimes.android.sample.data.remote.Api;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 import retrofit2.GsonConverterFactory;
@@ -58,10 +62,13 @@ public class SampleApp extends Application {
     private Store<RedditData, BarCode> provideRedditStore() {
         return StoreBuilder.<RedditData>barcode()
                 .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
-                .memory(CacheBuilder.newBuilder()
-                        .maximumSize(1)
-                        .expireAfterWrite(10, TimeUnit.SECONDS)
-                        .build())
+                .memoryPolicy(
+                    MemoryPolicy
+                        .builder()
+                        .setExpireAfter(10)
+                        .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+                        .build()
+                )
                 .open();
     }
 
