@@ -18,8 +18,6 @@ import com.nytimes.android.sample.reddit.PostAdapter;
 
 import java.util.List;
 
-
-import hu.akarnokd.rxjava.interop.RxJavaInterop;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -77,8 +75,8 @@ public class PersistingStoreActivity extends AppCompatActivity {
     }
 
     private Observable<Post> sanitizeData(RedditData redditData) {
-        return RxJavaInterop.toV2Observable(rx.Observable.from(redditData.data().children())
-                .map(Children::data));
+        return Observable.fromIterable(redditData.data().children())
+                .map(Children::data);
     }
 
     @Override
