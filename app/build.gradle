@@ -47,10 +47,14 @@ dependencies {
     apt libraries.immutablesValue // <-- for annotation processor
     provided libraries.immutablesValue // <-- for annotation API
     provided libraries.immutablesGson // for annotations
-    compile project(path: ':store')
-    compile project(path: ':cache')
-    compile project(path: ':middleware')
-    compile project(path: ':filesystem')
+    compile 'com.nytimes.android:store:2.0.2'
+    compile'com.nytimes.android:cache:2.0.2'
+    compile'com.nytimes.android:middleware:2.0.2'
+    compile 'com.nytimes.android:filesystem:2.0.2'
+    //compile project(path: ':store')
+    //compile project(path: ':cache')
+    //compile project(path: ':middleware')
+    //compile project(path: ':filesystem')
     retrolambdaConfig libraries.retrolambda
     compile libraries.rxAndroid
 
