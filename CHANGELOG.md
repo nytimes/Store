@@ -1,5 +1,16 @@
 Change Log
 ==========
+Version 2.0.1 *(2017-03-13)*
+----------------------------
+
+**New Features**
+* (#146) Remove dagger dependency and unused dependencies clean up
+
+**Bug Fixes and Stability Improvements**
+* (#144) clearMemory() (deprecated) now calls clear()
+* (#149) fix sample app, store should be created within application class
+* (#151) NoopParser should mimic Memcache settings
+* (#154) Readme typos
 
 Version 2.0.1 *(2017-02-28)*
 ----------------------------
