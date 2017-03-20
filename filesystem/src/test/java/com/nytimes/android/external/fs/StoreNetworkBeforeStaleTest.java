@@ -69,7 +69,6 @@ public class StoreNetworkBeforeStaleTest {
         inOrder.verify(fetcher, times(1)).fetch(barCode);
         inOrder.verify(persister, times(1)).read(barCode);
         verify(persister, never()).write(barCode, network1);
-
     }
 
     @Test
@@ -77,7 +76,8 @@ public class StoreNetworkBeforeStaleTest {
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(network1));
         when(persister.read(barCode))
-                .thenReturn(Observable.just(disk1));  //get should return from disk
+                .thenReturn(Observable.<BufferedSource>empty(), Observable.just(disk1));  //first call should return
+        // empty, second call after network should return the network value
         when(persister.getRecordState(barCode)).thenReturn(RecordState.MISSING);
 
         when(persister.write(barCode, network1))
@@ -86,6 +86,7 @@ public class StoreNetworkBeforeStaleTest {
         store.get(barCode).test().awaitTerminalEvent();
 
         InOrder inOrder = inOrder(fetcher, persister);
+        inOrder.verify(persister, times(1)).read(barCode);
         inOrder.verify(fetcher, times(1)).fetch(barCode);
         inOrder.verify(persister, times(1)).write(barCode, network1);
         inOrder.verify(persister, times(1)).read(barCode);
