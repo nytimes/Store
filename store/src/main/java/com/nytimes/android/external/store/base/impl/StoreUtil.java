@@ -10,7 +10,6 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
-import static com.nytimes.android.external.store.base.RecordState.FRESH;
 import static com.nytimes.android.external.store.base.RecordState.STALE;
 
 final class StoreUtil {
