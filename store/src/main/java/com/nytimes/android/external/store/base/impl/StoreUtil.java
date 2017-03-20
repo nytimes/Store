@@ -11,6 +11,7 @@ import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 import static com.nytimes.android.external.store.base.RecordState.FRESH;
+import static com.nytimes.android.external.store.base.RecordState.STALE;
 
 final class StoreUtil {
     private StoreUtil() {
@@ -38,7 +39,7 @@ final class StoreUtil {
         if (persister instanceof RecordProvider) {
             RecordProvider<Key> provider = (RecordProvider<Key>) persister;
             RecordState recordState = provider.getRecordState(key);
-            return recordState != FRESH;
+            return recordState == STALE;
         }
         return false;
     }
