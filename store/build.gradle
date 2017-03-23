@@ -5,7 +5,7 @@ version = VERSION_NAME
 
 dependencies {
     compile project(path: ':cache')
-    compile libraries.rxJava
+    compile libraries.rxJava2
     compile libraries.jsr305
 
     testCompile libraries.mockito

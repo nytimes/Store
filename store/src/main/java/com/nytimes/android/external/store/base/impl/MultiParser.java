@@ -6,6 +6,8 @@ import com.nytimes.android.external.store.util.ParserException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
+
 import static com.nytimes.android.external.cache.Preconditions.checkArgument;
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
@@ -28,12 +30,13 @@ public class MultiParser<Key, Raw, Parsed> implements KeyParser<Key, Raw, Parsed
     }
 
     @Override
+    @NonNull
     @SuppressWarnings("unchecked")
-    public Parsed call(Key key, Raw raw) {
+    public Parsed apply(@NonNull Key key, @NonNull Raw raw) throws ParserException {
         Object parsed = raw;
         for (KeyParser parser : parsers) {
             try {
-                parsed = parser.call(key, parsed);
+                parsed = parser.apply(key, parsed);
             } catch (ClassCastException exception) {
                 throw createParserException();
             }

@@ -6,9 +6,12 @@ import com.nytimes.android.external.store.base.RecordState;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
-import rx.functions.Func1;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Predicate;
+import io.reactivex.subjects.PublishSubject;
+
 
 import static com.nytimes.android.external.store.base.RecordState.STALE;
 
@@ -17,11 +20,11 @@ final class StoreUtil {
     }
 
     @Nonnull
-    static <Parsed, Key> Observable.Transformer<Parsed, Parsed>
+    static <Parsed, Key> ObservableTransformer<Parsed, Parsed>
     repeatWhenCacheEvicted(PublishSubject<Key> refreshSubject, @Nonnull final Key keyForRepeat) {
-        Observable<Key> filter = refreshSubject.filter(new Func1<Key, Boolean>() {
+        Observable<Key> filter = refreshSubject.filter(new Predicate<Key>() {
             @Override
-            public Boolean call(Key key) {
+            public boolean test(@NonNull Key key) throws Exception {
                 return key.equals(keyForRepeat);
             }
         });

@@ -4,9 +4,9 @@ import org.junit.Test;
 
 import java.util.concurrent.Callable;
 
-import rx.Observable;
-import rx.observers.AssertableSubscriber;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
+import io.reactivex.subjects.PublishSubject;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -25,7 +25,7 @@ public class RepeatWhenEmitsTest {
 
         // create an observable and apply the transformer to test
         PublishSubject<String> source = PublishSubject.create();
-        AssertableSubscriber<String> testSubscriber = Observable.fromCallable(mockCallable)
+        TestObserver<String> testSubscriber = Observable.fromCallable(mockCallable)
                 .compose(RepeatWhenEmits.<String>from(source))
                 .test();
 

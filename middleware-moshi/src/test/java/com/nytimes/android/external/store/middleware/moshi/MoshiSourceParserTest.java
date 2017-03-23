@@ -18,9 +18,9 @@ import org.mockito.MockitoAnnotations;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 
+import io.reactivex.Observable;
 import okio.BufferedSource;
 import okio.Okio;
-import rx.Observable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -74,7 +74,7 @@ public class MoshiSourceParserTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(barCode).toBlocking().first();
+        Foo result = store.get(barCode).blockingFirst();
 
         assertEquals(result.number, 123);
         assertEquals(result.string, "abc");

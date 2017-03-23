@@ -4,9 +4,9 @@ import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.RealStore;
+import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.nytimes.android.external.store.util.NoopPersister;
 
@@ -18,10 +18,11 @@ import org.mockito.MockitoAnnotations;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import rx.Emitter;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func2;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
@@ -65,10 +66,10 @@ public class StoreTest {
         when(persister.write(barCode, NETWORK))
                 .thenReturn(Observable.just(true));
 
-        String value = simpleStore.get(barCode).toBlocking().first();
+        String value = simpleStore.get(barCode).blockingFirst();
 
         assertThat(value).isEqualTo(DISK);
-        value = simpleStore.get(barCode).toBlocking().first();
+        value = simpleStore.get(barCode).blockingFirst();
         assertThat(value).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -83,9 +84,9 @@ public class StoreTest {
                 .open();
 
         Observable<String> networkObservable =
-                Observable.fromEmitter(new Action1<Emitter<String>>() {
+                Observable.create(new ObservableOnSubscribe<String>() {
                     @Override
-                    public void call(Emitter<String> emitter) {
+                    public void subscribe(ObservableEmitter<String> emitter) {
                         if (counter.incrementAndGet() == 1) {
                             emitter.onNext(NETWORK);
 
@@ -93,7 +94,9 @@ public class StoreTest {
                             emitter.onError(new RuntimeException("Yo Dawg your inflight is broken"));
                         }
                     }
-                }, Emitter.BackpressureMode.NONE);
+                });
+
+
         when(fetcher.fetch(barCode))
                 .thenReturn(networkObservable);
 
@@ -106,14 +109,13 @@ public class StoreTest {
 
 
         String response = simpleStore.get(barCode).zipWith(simpleStore.get(barCode),
-                new Func2<String, String, String>() {
+                new BiFunction<String, String, String>() {
                     @Override
-                    public String call(String s, String s2) {
+                    public String apply(@NonNull String s, @NonNull String s2) {
                         return "hello";
                     }
                 })
-                .toBlocking()
-                .first();
+                .blockingFirst();
         assertThat(response).isEqualTo("hello");
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -133,9 +135,9 @@ public class StoreTest {
                 .thenReturn(Observable.just(DISK));
         when(persister.write(barCode, NETWORK)).thenReturn(Observable.just(true));
 
-        String value = simpleStore.get(barCode).toBlocking().first();
+        String value = simpleStore.get(barCode).blockingFirst();
         assertThat(value).isEqualTo(DISK);
-        value = simpleStore.get(barCode).toBlocking().first();
+        value = simpleStore.get(barCode).blockingFirst();
         assertThat(value).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -151,14 +153,14 @@ public class StoreTest {
         when(fetcher.fetch(barCode))
                 .thenReturn(Observable.just(NETWORK));
 
-        String value = simpleStore.get(barCode).toBlocking().first();
+        String value = simpleStore.get(barCode).blockingFirst();
         verify(fetcher, times(1)).fetch(barCode);
         verify(persister, times(1)).write(barCode, NETWORK);
         verify(persister, times(2)).read(barCode);
         assertThat(value).isEqualTo(NETWORK);
 
 
-        value = simpleStore.get(barCode).toBlocking().first();
+        value = simpleStore.get(barCode).blockingFirst();
         verify(persister, times(2)).read(barCode);
         verify(persister, times(1)).write(barCode, NETWORK);
         verify(fetcher, times(1)).fetch(barCode);

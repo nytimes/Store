@@ -13,10 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import io.reactivex.Observable;
+import io.reactivex.observers.TestObserver;
 import okio.BufferedSource;
-import rx.Observable;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -81,20 +81,22 @@ public class StoreRefreshWhenStaleTest {
         when(persister.write(barCode, network1))
                 .thenReturn(Observable.just(true));
 
-        BufferedSource result = store.get(barCode)
-                .test()
-                .awaitTerminalEvent()
-                .getOnNextEvents()
-                .get(0);
-        assertThat(result).isEqualTo(disk1);
+        TestObserver testObserver = store
+                .get(barCode)
+                .test();
+        testObserver.awaitTerminalEvent();
+        testObserver.assertNoErrors();
+        testObserver.assertResult(disk1);
         verify(fetcher, times(0)).fetch(barCode);
         verify(persister, times(1)).getRecordState(barCode);
 
         store.clear(barCode);
-        result = store.get(barCode).test().awaitTerminalEvent().getOnNextEvents().get(0);
-        assertThat(result).isEqualTo(disk2);
+        testObserver = store
+                .get(barCode)
+                .test();
+        testObserver.awaitTerminalEvent();
+        testObserver.assertResult(disk2);
         verify(fetcher, times(0)).fetch(barCode);
         verify(persister, times(2)).getRecordState(barCode);
-
     }
 }

@@ -1,12 +1,10 @@
 package com.nytimes.android.sample;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nytimes.android.external.fs.SourcePersisterFactory;
-import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.MemoryPolicy;
@@ -20,13 +18,11 @@ import com.nytimes.android.sample.data.remote.Api;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-
+import io.reactivex.Observable;
 import okio.BufferedSource;
-import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
-import retrofit2.RxJavaCallAdapterFactory;
-import rx.Observable;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SampleApp extends Application {
 
@@ -63,11 +59,11 @@ public class SampleApp extends Application {
         return StoreBuilder.<RedditData>barcode()
                 .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
                 .memoryPolicy(
-                    MemoryPolicy
-                        .builder()
-                        .setExpireAfter(10)
-                        .setExpireAfterTimeUnit(TimeUnit.SECONDS)
-                        .build()
+                        MemoryPolicy
+                                .builder()
+                                .setExpireAfter(10)
+                                .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+                                .build()
                 )
                 .open();
     }
@@ -93,7 +89,7 @@ public class SampleApp extends Application {
         return new Retrofit.Builder()
                 .baseUrl("http://reddit.com/")
                 .addConverterFactory(GsonConverterFactory.create(provideGson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .validateEagerly(BuildConfig.DEBUG)  // Fail early: check Retrofit configuration at creation time in Debug build.
                 .build()
                 .create(Api.class);

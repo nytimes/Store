@@ -7,7 +7,8 @@ import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -36,7 +37,7 @@ public class StoreIntegrationTest {
 
     @Test
     public void testRepeatedGet() throws Exception {
-        String first = testStore.get(BarCode.empty()).toBlocking().first();
+        String first = testStore.get(BarCode.empty()).blockingFirst();
         assertEquals(first, "hello");
 
     }

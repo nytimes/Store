@@ -8,8 +8,8 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import okio.BufferedSource;
-import rx.Observable;
 
 /**
  * Persister to be used when storing something to persister from a BufferedSource

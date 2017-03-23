@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+import io.reactivex.Observable;
+
 
 /**
  * Pass-through diskdao for stores that don't want to use persister

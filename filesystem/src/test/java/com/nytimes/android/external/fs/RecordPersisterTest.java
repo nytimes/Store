@@ -45,7 +45,7 @@ public class RecordPersisterTest {
                 .thenReturn(true);
         when(fileSystem.read(simple.toString())).thenReturn(bufferedSource);
 
-        BufferedSource returnedValue = sourcePersister.read(simple).toBlocking().single();
+        BufferedSource returnedValue = sourcePersister.read(simple).blockingFirst();
         assertThat(returnedValue).isEqualTo(bufferedSource);
     }
 
@@ -74,17 +74,18 @@ public class RecordPersisterTest {
     }
 
     @Test
+    @SuppressWarnings("CheckReturnValue")
     public void readDoesNotExist() throws FileNotFoundException {
         expectedException.expect(NoSuchElementException.class);
         when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
                 .thenReturn(false);
 
-        sourcePersister.read(simple).toBlocking().single();
+        sourcePersister.read(simple).blockingFirst();
     }
 
     @Test
     public void write() throws IOException {
-        assertThat(sourcePersister.write(simple, bufferedSource).toBlocking().single()).isTrue();
+        assertThat(sourcePersister.write(simple, bufferedSource).blockingSingle()).isTrue();
     }
 
     @Test

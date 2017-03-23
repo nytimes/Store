@@ -3,8 +3,9 @@ package com.nytimes.android.external.store.base.impl;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
-import rx.annotations.Experimental;
+import io.reactivex.Observable;
+import io.reactivex.annotations.Experimental;
+
 
 /**
  * a {@link com.nytimes.android.external.store.base.impl.StoreBuilder StoreBuilder}

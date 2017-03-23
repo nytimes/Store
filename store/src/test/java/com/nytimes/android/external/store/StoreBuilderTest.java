@@ -14,7 +14,8 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +49,7 @@ public class StoreBuilderTest {
                 })
                 .parser(new Parser<String, Date>() {
                     @Override
-                    public Date call(String s) {
+                    public Date apply(@NonNull String s) {
                         return DATE;
                     }
                 })
@@ -73,9 +74,9 @@ public class StoreBuilderTest {
                     }
                 })
                 .open();
-        Date result = store.get(5).toBlocking().first();
-        result = barCodeStore.get(new BarCode("test", "5")).toBlocking().first();
-        result = keyStore.get(5).toBlocking().first();
+        Date result = store.get(5).blockingFirst();
+        result = barCodeStore.get(new BarCode("test", "5")).blockingFirst();
+        result = keyStore.get(5).blockingFirst();
         assertThat(result).isNotNull();
 
     }

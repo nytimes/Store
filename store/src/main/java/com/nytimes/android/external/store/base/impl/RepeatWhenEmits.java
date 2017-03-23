@@ -2,8 +2,11 @@ package com.nytimes.android.external.store.base.impl;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
@@ -11,7 +14,7 @@ import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
  * A Transformer that takes a source observable and re-subscribes to the upstream Observable when
  * it emits.
  */
-final class RepeatWhenEmits<T> implements Observable.Transformer<T, T> {
+final class RepeatWhenEmits<T> implements ObservableTransformer<T, T> {
 
     private final Observable source;
 
@@ -25,13 +28,13 @@ final class RepeatWhenEmits<T> implements Observable.Transformer<T, T> {
     }
 
     @Override
-    public Observable<T> call(Observable<T> upstream) {
-        return upstream.repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+    public ObservableSource<T> apply(Observable<T> upstream) {
+        return upstream.repeatWhen(new Function<Observable<Object>, ObservableSource<?>>() {
             @Override
-            public Observable<?> call(Observable<? extends Void> events) {
-                return events.switchMap(new Func1<Void, Observable<?>>() {
+            public ObservableSource<?> apply(@NonNull Observable<Object> objectObservable) {
+                return objectObservable.switchMap(new Function<Object, ObservableSource<?>>() {
                     @Override
-                    public Observable<?> call(Void aVoid) {
+                    public ObservableSource<?> apply(@NonNull Object o) {
                         return source;
                     }
                 });

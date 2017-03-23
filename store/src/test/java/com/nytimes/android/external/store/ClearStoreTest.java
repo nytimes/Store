@@ -16,7 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
-import rx.Observable;
+
+import io.reactivex.Observable;
 
 import static com.nytimes.android.external.store.GetRefreshingTest.ClearingPersister;
 import static org.assertj.core.api.Assertions.assertThat;
