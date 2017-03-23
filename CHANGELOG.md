@@ -1,5 +1,16 @@
 Change Log
 ==========
+
+Version 2.0.3 *(2017-03-23)*
+----------------------------
+
+**New Features**
+*#153 Translate Readme to Russian
+
+**Bug Fixes and Stability Improvements**
+#164 FileSystemPersister.persisterIsStale() should return false if record is missing or policy is unspecified
+#166 Remove apt dependency and use annotationProcessor instead
+
 Version 2.0.2 *(2017-03-13)*
 ----------------------------
 
