@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.getkeepsafe.dexcount'
-apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -44,7 +43,7 @@ dependencies {
     compile libraries.retrofitRx
     compile libraries.picasso
     compile libraries.guava
-    apt libraries.immutablesValue // <-- for annotation processor
+    annotationProcessor libraries.immutablesValue // <-- for annotation processor
     provided libraries.immutablesValue // <-- for annotation API
     provided libraries.immutablesGson // for annotations
     compile 'com.nytimes.android:store:2.0.2'
