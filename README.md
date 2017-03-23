@@ -314,7 +314,15 @@ Note: Release is in Sync with current state of master (not develop) branch
 	```groovy
 	compile 'com.nytimes.android:filesystem:CurrentVersion'
 	```
-
+**RxJava2**
+There is an experimental RxJava2 Branch as well.  
+feature/rx2 which has artifacts, use at your own risk for :-)
+    ```groovy
+    'com.nytimes.android:store2:0.0.1-SNAPSHOT'
+    'com.nytimes.android:cache:0.0.1-SNAPSHOT'
+    'com.nytimes.android:middleware2:0.0.1-SNAPSHOT'
+    'com.nytimes.android:filesystem2:0.0.1-SNAPSHOT'
+	```
 
 ### Sample Project
 
