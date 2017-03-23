@@ -3,7 +3,7 @@ package com.nytimes.android.external.fs2.impl;
 
 import com.nytimes.android.external.fs2.filesystem.FileSystem;
 import com.nytimes.android.external.fs2.filesystem.FileSystemFactory;
-import com.nytimes.android.external.store.base.RecordState;
+import com.nytimes.android.external.store2.base.RecordState;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -1,9 +1,9 @@
 package com.nytimes.android.external.fs2;
 
 import com.nytimes.android.external.fs2.filesystem.FileSystem;
-import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.RecordProvider;
-import com.nytimes.android.external.store.base.RecordState;
+import com.nytimes.android.external.store2.base.Persister;
+import com.nytimes.android.external.store2.base.RecordProvider;
+import com.nytimes.android.external.store2.base.RecordState;
 
 import java.util.concurrent.TimeUnit;
 

@@ -1,7 +1,7 @@
 package com.nytimes.android.external.fs2;
 
 import com.nytimes.android.external.fs2.filesystem.FileSystem;
-import com.nytimes.android.external.store.base.DiskRead;
+import com.nytimes.android.external.store2.base.DiskRead;
 
 import java.io.FileNotFoundException;
 

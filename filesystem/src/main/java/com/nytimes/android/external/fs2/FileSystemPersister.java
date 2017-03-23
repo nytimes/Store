@@ -1,7 +1,7 @@
 package com.nytimes.android.external.fs2;
 
 import com.nytimes.android.external.fs2.filesystem.FileSystem;
-import com.nytimes.android.external.store.base.Persister;
+import com.nytimes.android.external.store2.base.Persister;
 
 import javax.annotation.Nonnull;
 

@@ -1,11 +1,11 @@
 package com.nytimes.android.external.fs2;
 
 import com.google.gson.Gson;
-import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.Store;
-import com.nytimes.android.external.store.base.impl.StoreBuilder;
-import com.nytimes.android.external.store.middleware.GsonSourceParser;
+import com.nytimes.android.external.store2.base.Fetcher;
+import com.nytimes.android.external.store2.base.impl.BarCode;
+import com.nytimes.android.external.store2.base.impl.Store;
+import com.nytimes.android.external.store2.base.impl.StoreBuilder;
+import com.nytimes.android.external.store2.middleware.GsonSourceParser;
 
 import org.junit.Test;
 import org.mockito.Mock;

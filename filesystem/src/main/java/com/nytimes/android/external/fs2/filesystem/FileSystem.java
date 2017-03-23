@@ -1,6 +1,6 @@
 package com.nytimes.android.external.fs2.filesystem;
 
-import com.nytimes.android.external.store.base.RecordState;
+import com.nytimes.android.external.store2.base.RecordState;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -8,8 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.Store;
+import com.nytimes.android.external.store2.base.impl.BarCode;
+import com.nytimes.android.external.store2.base.impl.Store;
 import com.nytimes.android.sample.R;
 import com.nytimes.android.sample.SampleApp;
 import com.nytimes.android.sample.data.model.Children;

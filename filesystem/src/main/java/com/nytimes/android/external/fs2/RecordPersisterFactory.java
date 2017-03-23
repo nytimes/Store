@@ -2,8 +2,8 @@ package com.nytimes.android.external.fs2;
 
 import com.nytimes.android.external.fs2.filesystem.FileSystem;
 import com.nytimes.android.external.fs2.filesystem.FileSystemFactory;
-import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store2.base.Persister;
+import com.nytimes.android.external.store2.base.impl.BarCode;
 
 import java.io.File;
 import java.io.IOException;

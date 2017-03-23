@@ -49,13 +49,11 @@ allprojects {
 }
 
 ext {
-    // SDK versions
-
     // POM file
     GROUP = "com.nytimes.android"
-    VERSION_NAME = "2.0.3-SNAPSHOT"
+    VERSION_NAME = "0.0.1-SNAPSHOT"
     POM_PACKAGING = "pom"
-    POM_DESCRIPTION = "Store"
+    POM_DESCRIPTION = "Store2 is built with RxJava2"
 
     POM_URL = "https://github.com/nytimes/Store/"
     POM_SCM_URL = "https://github.com/nytimes/Store/"

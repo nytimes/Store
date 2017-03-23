@@ -1,10 +1,10 @@
 package com.nytimes.android.external.fs2;
 
-import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.RecordState;
-import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.Store;
-import com.nytimes.android.external.store.base.impl.StoreBuilder;
+import com.nytimes.android.external.store2.base.Fetcher;
+import com.nytimes.android.external.store2.base.RecordState;
+import com.nytimes.android.external.store2.base.impl.BarCode;
+import com.nytimes.android.external.store2.base.impl.Store;
+import com.nytimes.android.external.store2.base.impl.StoreBuilder;
 
 import org.junit.Before;
 import org.junit.Test;

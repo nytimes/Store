@@ -1,6 +1,6 @@
 package com.nytimes.android.external.fs2;
 
-import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store2.base.impl.BarCode;
 
 import javax.annotation.Nonnull;
 
