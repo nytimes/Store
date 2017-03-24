@@ -31,6 +31,8 @@ public final class FileSystemPersister<T> implements Persister<BufferedSource, T
         return new FileSystemPersister<>(fileSystem, pathResolver);
     }
 
+
+
     @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final T key) {

@@ -74,9 +74,6 @@ public final class BarCode implements Serializable {
 
     @Override
     public String toString() {
-        return "BarCode{" +
-                "key='" + key + '\'' +
-                ", type='" + type + '\'' +
-                '}';
+        return getType() + getKey();
     }
 }

@@ -31,7 +31,7 @@ public class SourcePersisterTest {
 
     private SourcePersister sourcePersister;
     private final BarCode simple = new BarCode("type", "key");
-
+    private final BarCodePathResolver resolver=new BarCodePathResolver();
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -51,7 +51,7 @@ public class SourcePersisterTest {
     @Test
     public void readDoesNotExist() throws FileNotFoundException {
         expectedException.expect(NoSuchElementException.class);
-        when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.exists(resolver.resolve(simple)))
                 .thenReturn(false);
 
         sourcePersister.read(simple).toBlocking().single();
@@ -64,6 +64,6 @@ public class SourcePersisterTest {
 
     @Test
     public void pathForBarcode() {
-        assertThat(SourcePersister.pathForBarcode(simple)).isEqualTo("typekey");
+        assertThat(resolver.resolve(simple)).isEqualTo("typekey");
     }
 }
