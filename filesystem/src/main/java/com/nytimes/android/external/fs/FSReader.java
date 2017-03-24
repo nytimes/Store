@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import okio.BufferedSource;
 import rx.Emitter;
 import rx.Observable;
+import rx.exceptions.Exceptions;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -63,7 +64,7 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
                             try {
                                 return fileSystem.read(s);
                             } catch (FileNotFoundException e) {
-                                throw new RuntimeException(e);
+                                throw Exceptions.propagate(e);
                             }
                         }
                 });
