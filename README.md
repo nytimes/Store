@@ -266,6 +266,7 @@ public class SampleStore extends RealStore<String, BarCode> {
         super(fetcher, persister);
     }
 }
+```
 
 Subclassing is useful when you’d like to inject Store dependencies or add a few helper methods to a store:
 
