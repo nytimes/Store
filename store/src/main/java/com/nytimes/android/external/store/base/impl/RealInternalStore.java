@@ -220,7 +220,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     /**
      * Will check to see if there exists an in flight observable and return it before
-     * going to nerwork
+     * going to network
      *
      * @return data from fetch and store it in memory and persister
      */
