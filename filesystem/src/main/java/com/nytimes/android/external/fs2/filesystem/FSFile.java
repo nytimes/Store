@@ -71,6 +71,9 @@ class FSFile {
             if (sink != null) {
                 sink.close();
             }
+            if (source != null) {
+                source.close();
+            }
         }
     }
 
