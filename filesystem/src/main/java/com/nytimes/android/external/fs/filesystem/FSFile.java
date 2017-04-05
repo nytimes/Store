@@ -51,7 +51,7 @@ class FSFile {
         return pathValue;
     }
 
-    public void write(BufferedSource source) throws IOException {
+    public void write(@Nonnull BufferedSource source) throws IOException {
 
         File tmpFile = File.createTempFile("new", "tmp", file.getParentFile());
         BufferedSink sink = null;
@@ -71,9 +71,7 @@ class FSFile {
             if (sink != null) {
                 sink.close();
             }
-            if (source != null) {
-                source.close();
-            }
+            source.close();
         }
     }
 
