@@ -23,7 +23,6 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.nytimes.android.external.store.base.impl.StoreUtil.persisterIsStale;
@@ -47,7 +46,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
-    private BehaviorSubject<Parsed> subject;
+    private PublishSubject<Parsed> subject;
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
@@ -79,7 +78,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         initMemCache(memoryPolicy);
         initFlightRequests(memoryPolicy);
 
-        subject = BehaviorSubject.create();
+        subject = PublishSubject.create();
     }
 
     private void initFlightRequests(MemoryPolicy memoryPolicy) {
@@ -313,15 +312,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Observable<Parsed> stream(@Nonnull Key key) {
-
-        Observable<Parsed> stream = subject.asObservable();
-
-        //If nothing was emitted through the subject yet, start stream with get() value
-        if (!subject.hasValue()) {
-            return stream.startWith(get(key));
-        }
-
-        return stream;
+        return subject.asObservable().startWith(get(key));
     }
 
     @Nonnull
