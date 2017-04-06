@@ -30,9 +30,9 @@ import static com.nytimes.android.external.store.base.impl.StoreUtil.persisterIs
 import static com.nytimes.android.external.store.base.impl.StoreUtil.shouldReturnNetworkBeforeStale;
 
 /**
- * Store to be used for loading an object different data sources
+ * Store to be used for loading an object from different data sources
  *
- * @param <Raw>    data type before parsing usually String, Reader or BufferedSource
+ * @param <Raw>    data type before parsing, usually a String, Reader or BufferedSource
  * @param <Parsed> data type after parsing
  *                 <p>
  *                 Example usage:  @link
@@ -166,7 +166,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     /**
-     * Fetch data from persister and update memory after. If an error occurs, emit and empty observable
+     * Fetch data from persister and update memory after. If an error occurs, emit an empty observable
      * so that the concat call in {@link #get(Key)} moves on to {@link #fetch(Key)}
      *
      * @param key
@@ -220,7 +220,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     /**
      * Will check to see if there exists an in flight observable and return it before
-     * going to nerwork
+     * going to network
      *
      * @return data from fetch and store it in memory and persister
      */
@@ -331,7 +331,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     /**
-     * Only update memory after persister has been successfully update
+     * Only update memory after persister has been successfully updated
      *
      * @param key
      * @param data

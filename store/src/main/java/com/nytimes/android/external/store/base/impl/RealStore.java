@@ -82,7 +82,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
     /**
      * Will check to see if there exists an in flight observable and return it before
-     * going to nerwork
+     * going to network
      *
      * @return data from fetch and store it in memory and persister
      */
