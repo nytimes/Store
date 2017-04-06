@@ -19,7 +19,6 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.annotations.Experimental;
-import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -40,7 +39,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
-    private BehaviorSubject<Parsed> subject;
+    private PublishSubject<Parsed> subject;
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
@@ -72,7 +71,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         initMemCache(memoryPolicy);
         initFlightRequests(memoryPolicy);
 
-        subject = BehaviorSubject.create();
+        subject = PublishSubject.create();
     }
 
     private void initFlightRequests(MemoryPolicy memoryPolicy) {
@@ -249,15 +248,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Observable<Parsed> stream(@Nonnull Key key) {
-
-        Observable<Parsed> stream = subject.hide();
-
-        //If nothing was emitted through the subject yet, start stream with get() value
-        if (!subject.hasValue()) {
-            return stream.startWith(get(key).toObservable());
-        }
-
-        return stream;
+        return subject.hide().startWith(get(key).toObservable());
     }
 
     @Nonnull
