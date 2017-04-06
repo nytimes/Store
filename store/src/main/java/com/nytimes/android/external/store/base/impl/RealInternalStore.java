@@ -312,7 +312,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Observable<Parsed> stream(@Nonnull Key key) {
-        return subject.asObservable().startWith(get(key));
+        return subject.startWith(get(key));
     }
 
     @Nonnull
