@@ -32,6 +32,7 @@ public class RecordPersisterTest {
 
     private RecordPersister sourcePersister;
     private final BarCode simple = new BarCode("type", "key");
+    private BarCodePathResolver resolver = new BarCodePathResolver();
 
     @Before
     public void setUp() {
@@ -41,9 +42,9 @@ public class RecordPersisterTest {
 
     @Test
     public void readExists() throws FileNotFoundException {
-        when(fileSystem.exists(simple.toString()))
+        when(fileSystem.exists(resolver.resolve(simple)))
                 .thenReturn(true);
-        when(fileSystem.read(simple.toString())).thenReturn(bufferedSource);
+        when(fileSystem.read(resolver.resolve(simple))).thenReturn(bufferedSource);
 
         BufferedSource returnedValue = sourcePersister.read(simple).toBlocking().single();
         assertThat(returnedValue).isEqualTo(bufferedSource);
@@ -51,7 +52,7 @@ public class RecordPersisterTest {
 
     @Test
     public void freshTest() {
-        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolver.resolve(simple)))
                 .thenReturn(RecordState.FRESH);
 
         assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.FRESH);
@@ -59,7 +60,7 @@ public class RecordPersisterTest {
 
     @Test
     public void staleTest() {
-        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolver.resolve(simple)))
                 .thenReturn(RecordState.STALE);
 
         assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.STALE);
@@ -67,7 +68,7 @@ public class RecordPersisterTest {
 
     @Test
     public void missingTest() {
-        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolver.resolve(simple)))
                 .thenReturn(RecordState.MISSING);
 
         assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.MISSING);
@@ -76,7 +77,7 @@ public class RecordPersisterTest {
     @Test
     public void readDoesNotExist() throws FileNotFoundException {
         expectedException.expect(NoSuchElementException.class);
-        when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.exists(resolver.resolve(simple)))
                 .thenReturn(false);
 
         sourcePersister.read(simple).toBlocking().single();
@@ -89,6 +90,6 @@ public class RecordPersisterTest {
 
     @Test
     public void pathForBarcode() {
-        assertThat(SourcePersister.pathForBarcode(simple)).isEqualTo("typekey");
+        assertThat(resolver.resolve(simple)).isEqualTo("typekey");
     }
 }

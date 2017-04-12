@@ -5,6 +5,8 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
+import java.io.FileNotFoundException;
+
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
@@ -38,11 +40,6 @@ public class SourcePersister implements Persister<BufferedSource, BarCode> {
     }
 
     @Nonnull
-    static String pathForBarcode(@Nonnull BarCode barCode) {
-        return barCode.getType() + barCode.getKey();
-    }
-
-    @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final BarCode barCode) {
         return sourceFileReader.read(barCode);
@@ -52,6 +49,11 @@ public class SourcePersister implements Persister<BufferedSource, BarCode> {
     @Override
     public Observable<Boolean> write(@Nonnull final BarCode barCode, @Nonnull final BufferedSource data) {
         return sourceFileWriter.write(barCode, data);
+    }
+
+    @Nonnull
+    public Observable<BufferedSource> readAll(String type) throws FileNotFoundException {
+       return sourceFileReader.readAll(type);
     }
 
 }

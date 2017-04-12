@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 class BarCodePathResolver implements PathResolver<BarCode> {
     @Nonnull
     @Override
-    public String resolve(@Nonnull BarCode key) {
-        return key.toString();
+    public String resolve(@Nonnull BarCode barCode) {
+        return barCode.getType()+"/"+barCode.getKey();
     }
 }
