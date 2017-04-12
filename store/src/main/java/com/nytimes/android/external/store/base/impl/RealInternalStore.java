@@ -50,7 +50,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         this(fetcher, persister, parser, null, stalePolicy);
     }
 
-    @SuppressWarnings("PMD.AvoidReassigningParameters")
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
                       KeyParser<Key, Raw, Parsed> parser,
@@ -61,15 +60,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         this.persister = persister;
         this.parser = parser;
         this.stalePolicy = stalePolicy;
-
-        if (memoryPolicy == null) {
-            memoryPolicy = MemoryPolicy
-                .builder()
-                .setMemorySize(StoreUtil.getCacheSize())
-                .setExpireAfter(StoreUtil.getCacheTTL())
-                .setExpireAfterTimeUnit(StoreUtil.getCacheTTLTimeUnit())
-                .build();
-        }
 
         this.memCache = StoreUtil.initMemCache(memoryPolicy);
         this.inFlightRequests = StoreUtil.initFlightRequests(memoryPolicy);
