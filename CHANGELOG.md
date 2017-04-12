@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+Version 2.0.4 *(2017-04-12)*
+----------------------------
+
+**Bug Fixes and Stability Improvements**
+
+* #178 Standardize store.stream() to emit only new items
+* #177 Fix typos
+* #176 Close source after write to filesystem
+* #166 Remove apt dependency and use annotationProcessor instead
+
+
 Version 2.0.3 *(2017-03-23)*
 ----------------------------
 
