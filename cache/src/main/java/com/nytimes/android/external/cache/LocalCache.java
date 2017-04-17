@@ -77,6 +77,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
      * constructors with arguments. MUST be a power of two <= 1<<30 to ensure that entries are
      * indexable using ints.
      */
+
     static final int MAXIMUM_CAPACITY = 1 << 30;
 
     /**
@@ -1892,7 +1893,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
      * This method is a convenience for testing. Code should call {@link Segment#getLiveValue}
      * instead.
      */
-     
+
     boolean isLive(@Nonnull ReferenceEntry<K, V> entry, long now) {
         return segmentFor(entry.getHash()).getLiveValue(entry, now) != null;
     }

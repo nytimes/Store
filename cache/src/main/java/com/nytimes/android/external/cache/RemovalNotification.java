@@ -35,24 +35,19 @@ public final class RemovalNotification<K, V> implements Map.Entry<K, V> {
     this.cause = checkNotNull(cause);
   }
 
-// --Commented out by Inspection START (11/29/16, 5:04 PM):
-//  /**
-//   * Returns the cause for which the entry was removed.
-//   */
-//  public RemovalCause getCause() {
-//    return cause;
-//  }
-// --Commented out by Inspection STOP (11/29/16, 5:04 PM)
-
-// --Commented out by Inspection START (11/29/16, 5:04 PM):
-//  /**
-//   * Returns {@code true} if there was an automatic removal due to eviction (the cause is neither
-//   * {@link RemovalCause#EXPLICIT} nor {@link RemovalCause#REPLACED}).
-//   */
-//  public boolean wasEvicted() {
-//    return cause.wasEvicted();
-//  }
-// --Commented out by Inspection STOP (11/29/16, 5:04 PM)
+  /**
+   * Returns the cause for which the entry was removed.
+   */
+  public RemovalCause getCause() {
+    return cause;
+  }
+  /**
+   * Returns {@code true} if there was an automatic removal due to eviction (the cause is neither
+   * {@link RemovalCause#EXPLICIT} nor {@link RemovalCause#REPLACED}).
+   */
+  public boolean wasEvicted() {
+    return cause.wasEvicted();
+  }
 
     @Override public K getKey() {
     return key;

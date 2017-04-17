@@ -2,6 +2,8 @@ package com.nytimes.android.external.store;
 
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
+import com.nytimes.android.external.cache.RemovalListener;
+import com.nytimes.android.external.cache.RemovalNotification;
 import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.Store;
@@ -180,5 +182,24 @@ public class StoreTest {
 
         value = cache.getIfPresent(new BarCode(barCode.getType(), barCode.getKey()));
         assertThat(value).isEqualTo(MEMORY);
+    }
+
+    @Test
+    public void testRemovalListener() {
+        final AtomicInteger integer=new AtomicInteger(0);
+        Cache<Integer, String> cache = CacheBuilder.newBuilder()
+                .maximumSize(1)
+                .removalListener(new RemovalListener<Integer, String>() {
+                    @Override
+                    public void onRemoval(RemovalNotification<Integer, String> notification) {
+                      integer.incrementAndGet();
+                    }
+                })
+                .build();
+
+        cache.put(1,"1");
+        cache.put(1,"1");
+        cache.put(1,"1");
+        assertThat(integer.intValue()).isEqualTo(2);
     }
 }
