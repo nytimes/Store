@@ -15,7 +15,7 @@ public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, 
     /**
      * @param key to use to get data from persister
      *                If data is not available implementer needs to
-     *                either return Observable.empty or throw an exception
+     *                throw an exception
      */
     @Override
     @Nonnull

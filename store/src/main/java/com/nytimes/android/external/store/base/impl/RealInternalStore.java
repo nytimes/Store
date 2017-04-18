@@ -38,13 +38,12 @@ import static com.nytimes.android.external.store.base.impl.StoreUtil.shouldRetur
  */
 @SuppressWarnings("PMD")
 final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
+    private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     Cache<Key, Observable<Parsed>> inFlightRequests;
     Cache<Key, Observable<Parsed>> memCache;
     Persister<Raw, Key> persister;
     KeyParser<Key, Raw, Parsed> parser;
     StalePolicy stalePolicy;
-
-    private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
     private PublishSubject<Parsed> subject;
 
@@ -68,11 +67,11 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
         if (memoryPolicy == null) {
             memoryPolicy = MemoryPolicy
-                .builder()
-                .setMemorySize(getCacheSize())
-                .setExpireAfter(getCacheTTL())
-                .setExpireAfterTimeUnit(getCacheTTLTimeUnit())
-                .build();
+                    .builder()
+                    .setMemorySize(getCacheSize())
+                    .setExpireAfter(getCacheTTL())
+                    .setExpireAfterTimeUnit(getCacheTTLTimeUnit())
+                    .build();
         }
 
         initMemCache(memoryPolicy);
@@ -87,22 +86,22 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
         if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
             inFlightRequests = CacheBuilder
-                .newBuilder()
-                .expireAfterWrite(maximumInFlightRequestsDuration, TimeUnit.SECONDS)
-                .build();
+                    .newBuilder()
+                    .expireAfterWrite(maximumInFlightRequestsDuration, TimeUnit.SECONDS)
+                    .build();
         } else {
             inFlightRequests = CacheBuilder.newBuilder()
-                .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-                .build();
+                    .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
+                    .build();
         }
     }
 
     private void initMemCache(MemoryPolicy memoryPolicy) {
         memCache = CacheBuilder
-            .newBuilder()
-            .maximumSize(memoryPolicy.getMaxSize())
-            .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-            .build();
+                .newBuilder()
+                .maximumSize(memoryPolicy.getMaxSize())
+                .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
+                .build();
     }
 
     /**
@@ -113,8 +112,8 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Override
     public Observable<Parsed> get(@Nonnull final Key key) {
         return Observable.concat(
-            lazyCache(key),
-            fetch(key)
+                lazyCache(key),
+                fetch(key)
         ).take(1);
     }
 
@@ -123,7 +122,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Experimental
     public Observable<Parsed> getRefreshing(@Nonnull final Key key) {
         return get(key)
-            .compose(StoreUtil.<Parsed, Key>repeatWhenCacheEvicted(refreshSubject, key));
+                .compose(StoreUtil.<Parsed, Key>repeatWhenCacheEvicted(refreshSubject, key));
     }
 
 
@@ -132,13 +131,13 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     private Observable<Parsed> lazyCache(@Nonnull final Key key) {
         return Observable
-            .defer(new Func0<Observable<Parsed>>() {
-                @Override
-                public Observable<Parsed> call() {
-                    return cache(key);
-                }
-            })
-            .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
+                .defer(new Func0<Observable<Parsed>>() {
+                    @Override
+                    public Observable<Parsed> call() {
+                        return cache(key);
+                    }
+                })
+                .onErrorResumeNext(new OnErrorResumeWithEmpty<Parsed>());
     }
 
     Observable<Parsed> cache(@Nonnull final Key key) {
@@ -182,24 +181,37 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     Observable<Parsed> readDisk(@Nonnull final Key key) {
+        return readDisk(key, null);
+    }
+
+    Observable<Parsed> readDisk(@Nonnull final Key key, final Throwable error) {
         return persister().read(key)
-            .onErrorResumeNext(new OnErrorResumeWithEmpty<Raw>())
-            .map(new Func1<Raw, Parsed>() {
-                @Override
-                public Parsed call(Raw raw) {
-                    return parser.call(key, raw);
-                }
-            })
-            .doOnNext(new Action1<Parsed>() {
-                @Override
-                public void call(Parsed parsed) {
-                    updateMemory(key, parsed);
-                    if (stalePolicy == StalePolicy.REFRESH_ON_STALE
-                        && persisterIsStale(key, persister)) {
-                        backfillCache(key);
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Raw>>() {
+                    @Override
+                    public Observable<? extends Raw> call(Throwable throwable) {
+                        if (error != null) {
+                            return Observable.error(error);
+                        } else {
+                            return Observable.empty();
+                        }
                     }
-                }
-            }).cache();
+                })
+                .map(new Func1<Raw, Parsed>() {
+                    @Override
+                    public Parsed call(Raw raw) {
+                        return parser.call(key, raw);
+                    }
+                })
+                .doOnNext(new Action1<Parsed>() {
+                    @Override
+                    public void call(Parsed parsed) {
+                        updateMemory(key, parsed);
+                        if (stalePolicy == StalePolicy.REFRESH_ON_STALE
+                                && persisterIsStale(key, persister)) {
+                            backfillCache(key);
+                        }
+                    }
+                }).cache();
     }
 
     void backfillCache(@Nonnull Key key) {
@@ -263,41 +275,41 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     Observable<Parsed> response(@Nonnull final Key key) {
         return fetcher()
-            .fetch(key)
-            .flatMap(new Func1<Raw, Observable<Parsed>>() {
-                @Override
-                public Observable<Parsed> call(Raw raw) {
-                    return persister().write(key, raw)
-                        .flatMap(new Func1<Boolean, Observable<Parsed>>() {
-                            @Override
-                            public Observable<Parsed> call(Boolean aBoolean) {
-                                return readDisk(key);
-                            }
-                        });
-                }
-            })
-            .onErrorResumeNext(new Func1<Throwable, Observable<? extends Parsed>>() {
-                @Override
-                public Observable<? extends Parsed> call(Throwable throwable) {
-                    if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
-                        return readDisk(key);
+                .fetch(key)
+                .flatMap(new Func1<Raw, Observable<Parsed>>() {
+                    @Override
+                    public Observable<Parsed> call(Raw raw) {
+                        return persister().write(key, raw)
+                                .flatMap(new Func1<Boolean, Observable<Parsed>>() {
+                                    @Override
+                                    public Observable<Parsed> call(Boolean aBoolean) {
+                                        return readDisk(key);
+                                    }
+                                });
                     }
-                    return Observable.error(throwable);
-                }
-            })
-            .doOnNext(new Action1<Parsed>() {
-                @Override
-                public void call(Parsed data) {
-                    notifySubscribers(data);
-                }
-            })
-            .doOnTerminate(new Action0() {
-                @Override
-                public void call() {
-                    inFlightRequests.invalidate(key);
-                }
-            })
-            .cache();
+                })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Parsed>>() {
+                    @Override
+                    public Observable<? extends Parsed> call(Throwable throwable) {
+                        if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
+                            return readDisk(key, throwable);
+                        }
+                        return Observable.error(throwable);
+                    }
+                })
+                .doOnNext(new Action1<Parsed>() {
+                    @Override
+                    public void call(Parsed data) {
+                        notifySubscribers(data);
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        inFlightRequests.invalidate(key);
+                    }
+                })
+                .cache();
     }
 
     void notifySubscribers(Parsed data) {
