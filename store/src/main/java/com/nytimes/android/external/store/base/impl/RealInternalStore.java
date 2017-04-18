@@ -38,12 +38,12 @@ import static com.nytimes.android.external.store.base.impl.StoreUtil.shouldRetur
  */
 @SuppressWarnings("PMD")
 final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
-    private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     Cache<Key, Observable<Parsed>> inFlightRequests;
     Cache<Key, Observable<Parsed>> memCache;
     Persister<Raw, Key> persister;
     KeyParser<Key, Raw, Parsed> parser;
     StalePolicy stalePolicy;
+    private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
     private PublishSubject<Parsed> subject;
 

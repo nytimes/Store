@@ -20,7 +20,7 @@ import rx.functions.Action1;
  * @param <T> key type
  */
 public class FSReader<T> implements DiskRead<BufferedSource, T> {
-    public static final String ErrorMessage = "resolvedKey does not resolve to a file";
+    private static final String ERROR_MESSAGE = "resolvedKey does not resolve to a file";
     final FileSystem fileSystem;
     final PathResolver<T> pathResolver;
 
@@ -46,7 +46,7 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
                         emitter.onError(e);
                     }
                 } else {
-                    emitter.onError(new FileNotFoundException(ErrorMessage + resolvedKey));
+                    emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
                 }
             }
         }, Emitter.BackpressureMode.NONE);

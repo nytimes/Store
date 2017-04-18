@@ -26,8 +26,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StoreNetworkBeforeStaleTest {
-    private final BarCode barCode = new BarCode("key", "value");
-    private final Exception sorry = new Exception("sorry");
+    final BarCode barCode = new BarCode("key", "value");
+    final Exception sorry = new Exception("sorry");
     @Mock
     Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
@@ -41,7 +41,6 @@ public class StoreNetworkBeforeStaleTest {
     @Mock
     BufferedSource disk2;
     private Store<BufferedSource, BarCode> store;
-    ;
 
     @Before
     public void setUp() {

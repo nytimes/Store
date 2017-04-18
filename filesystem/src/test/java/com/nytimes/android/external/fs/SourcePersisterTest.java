@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class SourcePersisterTest {
-    private final BarCode simple = new BarCode("type", "key");
+    private static final BarCode simple = new BarCode("type", "key");
     @Mock
     FileSystem fileSystem;
     @Mock

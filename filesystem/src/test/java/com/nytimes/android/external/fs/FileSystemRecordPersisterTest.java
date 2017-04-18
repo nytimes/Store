@@ -23,8 +23,8 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
 
 public class FileSystemRecordPersisterTest {
-    private final BarCode simple = new BarCode("type", "key");
-    private final String resolvedPath = new BarCodePathResolver().resolve(simple);
+    private static final BarCode simple = new BarCode("type", "key");
+    private static final String resolvedPath = new BarCodePathResolver().resolve(simple);
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
     @Mock

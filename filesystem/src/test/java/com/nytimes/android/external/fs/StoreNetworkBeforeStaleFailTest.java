@@ -27,8 +27,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StoreNetworkBeforeStaleFailTest {
-    final Exception sorry = new Exception("sorry");
-    private final BarCode barCode = new BarCode("key", "value");
+    static final Exception sorry = new Exception("sorry");
+    static final BarCode barCode = new BarCode("key", "value");
     @Mock
     Fetcher<BufferedSource, BarCode> fetcher;
     Store<BufferedSource, BarCode> store;
