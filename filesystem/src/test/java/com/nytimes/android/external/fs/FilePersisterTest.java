@@ -14,7 +14,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 import okio.BufferedSource;
 
@@ -23,16 +22,14 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
 
 public class FilePersisterTest {
+    private static final BarCode simple = new BarCode("type", "key");
+    private static final String resolvedPath = new BarCodePathResolver().resolve(simple);
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
     FileSystem fileSystem;
     @Mock
     BufferedSource bufferedSource;
-
-    private final BarCode simple = new BarCode("type", "key");
-    private final String resolvedPath = new BarCodePathResolver().resolve(simple);
     private Persister<BufferedSource, BarCode> fileSystemPersister;
 
     @Before
@@ -52,12 +49,10 @@ public class FilePersisterTest {
     }
 
     @Test
-    public void readDoesNotExist() throws FileNotFoundException {
-        expectedException.expect(NoSuchElementException.class);
+    public void readDoesNotExist() {
         when(fileSystem.exists(resolvedPath))
                 .thenReturn(false);
-
-        fileSystemPersister.read(simple).toBlocking().single();
+        fileSystemPersister.read(simple).test().awaitTerminalEvent().assertError(FileNotFoundException.class);
     }
 
     @Test
@@ -72,8 +67,6 @@ public class FilePersisterTest {
         inOrder.verify(fileSystem).read(resolvedPath);
 
         assertThat(source).isEqualTo(bufferedSource);
-
-
     }
 
 }

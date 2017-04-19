@@ -4,15 +4,12 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 import okio.BufferedSource;
 
@@ -20,17 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class SourcePersisterTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
+    private static final BarCode simple = new BarCode("type", "key");
     @Mock
     FileSystem fileSystem;
     @Mock
     BufferedSource bufferedSource;
-
     private SourcePersister sourcePersister;
-    private final BarCode simple = new BarCode("type", "key");
 
     @Before
     public void setUp() {
@@ -50,11 +42,13 @@ public class SourcePersisterTest {
 
     @Test
     public void readDoesNotExist() throws FileNotFoundException {
-        expectedException.expect(NoSuchElementException.class);
         when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
                 .thenReturn(false);
 
-        sourcePersister.read(simple).toBlocking().single();
+        sourcePersister.read(simple)
+                .test()
+                .awaitTerminalEvent()
+                .assertError(FileNotFoundException.class);
     }
 
     @Test

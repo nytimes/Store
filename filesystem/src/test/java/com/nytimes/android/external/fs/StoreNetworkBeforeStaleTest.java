@@ -16,6 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import okio.BufferedSource;
 import rx.Observable;
+import rx.observers.AssertableSubscriber;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -25,6 +26,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StoreNetworkBeforeStaleTest {
+    final BarCode barCode = new BarCode("key", "value");
+    final Exception sorry = new Exception("sorry");
     @Mock
     Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
@@ -37,8 +40,6 @@ public class StoreNetworkBeforeStaleTest {
     BufferedSource disk1;
     @Mock
     BufferedSource disk2;
-
-    private final BarCode barCode = new BarCode("key", "value");
     private Store<BufferedSource, BarCode> store;
 
     @Before
@@ -103,5 +104,27 @@ public class StoreNetworkBeforeStaleTest {
         verify(fetcher, never()).fetch(barCode);
         verify(persister, never()).write(barCode, network1);
         verify(persister, times(1)).read(barCode);
+    }
+
+    @Test
+    public void networkBeforeStaleNoNetworkResponse() {
+        Observable<BufferedSource> exception = Observable.error(sorry);
+        when(fetcher.fetch(barCode))
+                .thenReturn(exception);
+        when(persister.read(barCode))
+                .thenReturn(exception, exception);  //first call should return
+        // empty, second call after network should return the network value
+        when(persister.getRecordState(barCode)).thenReturn(RecordState.MISSING);
+
+        when(persister.write(barCode, network1))
+                .thenReturn(Observable.just(true));
+
+        AssertableSubscriber<BufferedSource> subscriber = store.get(barCode).test().awaitTerminalEvent();
+        subscriber.assertError(sorry);
+
+        InOrder inOrder = inOrder(fetcher, persister);
+        inOrder.verify(persister, times(1)).read(barCode);
+        inOrder.verify(fetcher, times(1)).fetch(barCode);
+        inOrder.verify(persister, times(1)).read(barCode);
     }
 }
