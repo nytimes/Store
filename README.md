@@ -334,3 +334,7 @@ feature/rx2 which has artifacts, use at your own risk for :-)
 See the app for example usage of Store. Alternatively, the Wiki contains a set of recipes for common use cases
 + Simple Example: Retrofit + Store
 + Complex Example: BufferedSource from Retrofit (Can be OKHTTP too) + our FileSystem + our GsonSourceParser
+
+### Talks
+![DroidCon Italy](https://youtu.be/TvsOsgd0--c)
+
