@@ -1,13 +1,10 @@
 package com.nytimes.android.external.store.base.impl;
 
-import com.nytimes.android.external.cache.Cache;
-import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.RecordProvider;
 import com.nytimes.android.external.store.base.RecordState;
 
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
@@ -53,65 +50,5 @@ final class StoreUtil {
         if (isPersisterClearable) {
             ((Clearable<Key>) persister).clear(key);
         }
-    }
-
-    static <Key, Parsed> Cache<Key, Observable<Parsed>> initMemCache(MemoryPolicy memoryPolicy) {
-        if (memoryPolicy == null) {
-            return CacheBuilder
-                    .newBuilder()
-                    .maximumSize(StoreUtil.getCacheSize())
-                    .expireAfterWrite(StoreUtil.getCacheTTL(), StoreUtil.getCacheTTLTimeUnit())
-                    .build();
-        } else {
-            return CacheBuilder
-                    .newBuilder()
-                    .maximumSize(memoryPolicy.getMaxSize())
-                    .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-                    .build();
-        }
-    }
-
-    static <Key, Parsed> Cache<Key, Observable<Parsed>> initFlightRequests(MemoryPolicy memoryPolicy) {
-        long expireAfterToSeconds = memoryPolicy == null ? StoreUtil.getCacheTTLTimeUnit()
-                .toSeconds(StoreUtil.getCacheTTL())
-                : memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfter());
-        long maximumInFlightRequestsDuration = TimeUnit.MINUTES.toSeconds(1);
-
-        if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
-            return CacheBuilder
-                    .newBuilder()
-                    .expireAfterWrite(maximumInFlightRequestsDuration, TimeUnit.SECONDS)
-                    .build();
-        } else {
-            long expireAfter = memoryPolicy == null ? StoreUtil.getCacheTTL() :
-                    memoryPolicy.getExpireAfter();
-            TimeUnit expireAfterUnit = memoryPolicy == null ? StoreUtil.getCacheTTLTimeUnit() :
-                    memoryPolicy.getExpireAfterTimeUnit();
-            return CacheBuilder.newBuilder()
-                    .expireAfterWrite(expireAfter, expireAfterUnit)
-                    .build();
-        }
-    }
-
-    /**
-     * Default Cache TTL, can be overridden
-     *
-     * @return memory persister ttl
-     */
-    static long getCacheTTL() {
-        return TimeUnit.HOURS.toSeconds(24);
-    }
-
-    /**
-     * Default mem persister is 1, can be overridden otherwise
-     *
-     * @return memory persister size
-     */
-    static long getCacheSize() {
-        return 100;
-    }
-
-    static TimeUnit getCacheTTLTimeUnit() {
-        return TimeUnit.SECONDS;
     }
 }
