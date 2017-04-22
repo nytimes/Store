@@ -14,7 +14,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import okio.BufferedSource;
 
 import static org.mockito.Mockito.inOrder;
@@ -55,13 +56,13 @@ public class StoreNetworkBeforeStaleTest {
     @Test
     public void networkBeforeDiskWhenStale() {
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.<BufferedSource>error(new Exception()));
+                .thenReturn(Single.<BufferedSource>error(new Exception()));
         when(persister.read(barCode))
-                .thenReturn(Observable.just(disk1));  //get should return from disk
+                .thenReturn(Maybe.just(disk1));  //get should return from disk
         when(persister.getRecordState(barCode)).thenReturn(RecordState.STALE);
 
         when(persister.write(barCode, network1))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
         store.get(barCode).test().awaitTerminalEvent();
 
@@ -74,14 +75,14 @@ public class StoreNetworkBeforeStaleTest {
     @Test
     public void noNetworkBeforeStaleWhenMissingRecord() {
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(network1));
+                .thenReturn(Single.just(network1));
         when(persister.read(barCode))
-                .thenReturn(Observable.<BufferedSource>empty(), Observable.just(disk1));  //first call should return
+                .thenReturn(Maybe.<BufferedSource>empty(), Maybe.just(disk1));  //first call should return
         // empty, second call after network should return the network value
         when(persister.getRecordState(barCode)).thenReturn(RecordState.MISSING);
 
         when(persister.write(barCode, network1))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
         store.get(barCode).test().awaitTerminalEvent();
 
@@ -95,7 +96,7 @@ public class StoreNetworkBeforeStaleTest {
     @Test
     public void noNetworkBeforeStaleWhenFreshRecord() {
         when(persister.read(barCode))
-                .thenReturn(Observable.just(disk1));  //get should return from disk
+                .thenReturn(Maybe.just(disk1));  //get should return from disk
         when(persister.getRecordState(barCode)).thenReturn(RecordState.FRESH);
 
         store.get(barCode).test().awaitTerminalEvent();

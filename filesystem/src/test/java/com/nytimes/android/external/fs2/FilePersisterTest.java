@@ -5,16 +5,13 @@ import com.nytimes.android.external.store2.base.Persister;
 import com.nytimes.android.external.store2.base.impl.BarCode;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 import okio.BufferedSource;
 
@@ -23,8 +20,6 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
 
 public class FilePersisterTest {
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     FileSystem fileSystem;
@@ -47,18 +42,18 @@ public class FilePersisterTest {
                 .thenReturn(true);
         when(fileSystem.read(resolvedPath)).thenReturn(bufferedSource);
 
-        BufferedSource returnedValue = fileSystemPersister.read(simple).blockingFirst();
+        BufferedSource returnedValue = fileSystemPersister.read(simple).blockingGet();
         assertThat(returnedValue).isEqualTo(bufferedSource);
     }
 
     @Test
     @SuppressWarnings("CheckReturnValue")
     public void readDoesNotExist() throws FileNotFoundException {
-        expectedException.expect(NoSuchElementException.class);
         when(fileSystem.exists(resolvedPath))
                 .thenReturn(false);
 
-        fileSystemPersister.read(simple).blockingFirst();
+        Boolean isEmpty = fileSystemPersister.read(simple).isEmpty().blockingGet();
+        assertThat(isEmpty).isEqualTo(true);
     }
 
     @Test
@@ -66,16 +61,13 @@ public class FilePersisterTest {
     public void writeThenRead() throws IOException {
         when(fileSystem.read(resolvedPath)).thenReturn(bufferedSource);
         when(fileSystem.exists(resolvedPath)).thenReturn(true);
-        fileSystemPersister.write(simple, bufferedSource).blockingFirst();
-        BufferedSource source = fileSystemPersister.read(simple).blockingFirst();
+        fileSystemPersister.write(simple, bufferedSource).blockingGet();
+        BufferedSource source = fileSystemPersister.read(simple).blockingGet();
         InOrder inOrder = inOrder(fileSystem);
         inOrder.verify(fileSystem).write(resolvedPath, bufferedSource);
         inOrder.verify(fileSystem).exists(resolvedPath);
         inOrder.verify(fileSystem).read(resolvedPath);
 
         assertThat(source).isEqualTo(bufferedSource);
-
-
     }
-
 }

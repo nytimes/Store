@@ -2,7 +2,8 @@ package com.nytimes.android.external.store2.base;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  * Interface for fetching data from persister
@@ -19,7 +20,7 @@ public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, 
      */
     @Override
     @Nonnull
-    Observable<Raw> read(@Nonnull final Key key);
+    Maybe<Raw> read(@Nonnull final Key key);
 
     /**
      * @param key to use to store data to persister
@@ -27,5 +28,5 @@ public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, 
      */
     @Override
     @Nonnull
-    Observable<Boolean> write(@Nonnull final Key key, @Nonnull final Raw raw);
+    Single<Boolean> write(@Nonnull final Key key, @Nonnull final Raw raw);
 }

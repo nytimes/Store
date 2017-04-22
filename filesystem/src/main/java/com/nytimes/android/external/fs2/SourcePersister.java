@@ -8,7 +8,8 @@ import com.nytimes.android.external.store2.base.impl.BarCode;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import okio.BufferedSource;
 
 /**
@@ -44,13 +45,13 @@ public class SourcePersister implements Persister<BufferedSource, BarCode> {
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> read(@Nonnull final BarCode barCode) {
+    public Maybe<BufferedSource> read(@Nonnull final BarCode barCode) {
         return sourceFileReader.read(barCode);
     }
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(@Nonnull final BarCode barCode, @Nonnull final BufferedSource data) {
+    public Single<Boolean> write(@Nonnull final BarCode barCode, @Nonnull final BufferedSource data) {
         return sourceFileWriter.write(barCode, data);
     }
 

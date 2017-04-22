@@ -13,7 +13,9 @@ import com.nytimes.android.external.store2.util.NoopPersister;
 import javax.annotation.Nonnull;
 
 
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
@@ -69,7 +71,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
 
     @Nonnull
     @Override
-    public Observable<Parsed> get(@Nonnull final Key key) {
+    public Single<Parsed> get(@Nonnull final Key key) {
         return internalStore.get(key);
     }
 
@@ -87,7 +89,7 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
      */
     @Nonnull
     @Override
-    public Observable<Parsed> fetch(@Nonnull final Key key) {
+    public Single<Parsed> fetch(@Nonnull final Key key) {
         return internalStore.fetch(key);
     }
 
@@ -128,12 +130,12 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
         internalStore.clear(key);
     }
 
-    protected Observable<Parsed> memory(@Nonnull Key key) {
+    protected Maybe<Parsed> memory(@Nonnull Key key) {
         return internalStore.memory(key);
     }
 
     @Nonnull
-    protected Observable<Parsed> disk(@Nonnull Key key) {
+    protected Maybe<Parsed> disk(@Nonnull Key key) {
         return internalStore.disk(key);
     }
 

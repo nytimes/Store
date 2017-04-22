@@ -4,6 +4,7 @@ package com.nytimes.android.external.store2.base.impl;
 import javax.annotation.Nonnull;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.annotations.Experimental;
 
 
@@ -24,7 +25,7 @@ public interface Store<T, V> {
      * Sources are Memory Cache, Disk Cache, Inflight, Network Response
      */
     @Nonnull
-    Observable<T> get(@Nonnull V key);
+    Single<T> get(@Nonnull V key);
 
     /**
      * Calls store.get(), additionally will repeat anytime store.clear(barcode) is called
@@ -39,7 +40,7 @@ public interface Store<T, V> {
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
      */
     @Nonnull
-    Observable<T> fetch(@Nonnull V key);
+    Single<T> fetch(@Nonnull V key);
 
     /**
      * @return an Observable that emits "fresh" new response from the store that hit the fetcher

@@ -18,7 +18,8 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import okio.BufferedSource;
 import okio.Okio;
 
@@ -65,18 +66,18 @@ public class GsonSourceListParserTest {
 
 
         BufferedSource source = source(sourceData);
-        Observable<BufferedSource> value = Observable.just(source);
+        Single<BufferedSource> value = Single.just(source);
         when(fetcher.fetch(barCode))
                 .thenReturn(value);
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<BufferedSource>empty())
-                .thenReturn(value);
+                .thenReturn(Maybe.<BufferedSource>empty())
+                .thenReturn(value.toMaybe());
 
         when(persister.write(barCode, source))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
-        List<Foo> result = simpleStore.get(barCode).blockingFirst();
+        List<Foo> result = simpleStore.get(barCode).blockingGet();
         assertThat(result.get(0).value).isEqualTo("a");
         assertThat(result.get(1).value).isEqualTo("b");
         assertThat(result.get(2).value).isEqualTo("c");

@@ -18,7 +18,8 @@ import com.nytimes.android.sample.data.remote.Api;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
+import okhttp3.ResponseBody;
 import okio.BufferedSource;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -80,9 +81,9 @@ public class SampleApp extends Application {
         return SourcePersisterFactory.create(getApplicationContext().getCacheDir());
     }
 
-    private Observable<BufferedSource> fetcher(BarCode barCode) {
+    private Single<BufferedSource> fetcher(BarCode barCode) {
         return provideRetrofit().fetchSubredditForPersister(barCode.getKey(), "10")
-                .map(responseBody -> responseBody.source());
+                .map(ResponseBody::source);
     }
 
     private Api provideRetrofit() {

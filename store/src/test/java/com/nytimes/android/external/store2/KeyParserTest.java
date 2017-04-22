@@ -12,7 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.TestObserver;
 
@@ -36,8 +36,8 @@ public class KeyParserTest {
                 .fetcher(new Fetcher<String, Integer>() {
                     @Nonnull
                     @Override
-                    public Observable<String> fetch(@Nonnull Integer integer) {
-                        return Observable.just(NETWORK);
+                    public Single<String> fetch(@Nonnull Integer integer) {
+                        return Single.just(NETWORK);
                     }
                 }).open();
 

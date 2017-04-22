@@ -18,7 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,8 +39,8 @@ public class GetRefreshingTest {
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override
-                    public Observable<Integer> fetch(@Nonnull BarCode barCode) {
-                        return Observable.fromCallable(new Callable<Integer>() {
+                    public Single<Integer> fetch(@Nonnull BarCode barCode) {
+                        return Single.fromCallable(new Callable<Integer>() {
                             @Override
                             public Integer call() {
                                 return networkCalls.incrementAndGet();
@@ -55,12 +56,12 @@ public class GetRefreshingTest {
     public void testRefreshOnClear() {
         BarCode barcode = new BarCode("type", "key");
         when(persister.read(barcode))
-                .thenReturn(Observable.<Integer>empty()) //read from disk
-                .thenReturn(Observable.just(1)) //read from disk after fetching from network
-                .thenReturn(Observable.<Integer>empty()) //read from disk after clearing disk cache
-                .thenReturn(Observable.just(1)); //read from disk after making additional network call
-        when(persister.write(barcode, 1)).thenReturn(Observable.just(true));
-        when(persister.write(barcode, 2)).thenReturn(Observable.just(true));
+                .thenReturn(Maybe.<Integer>empty()) //read from disk
+                .thenReturn(Maybe.just(1)) //read from disk after fetching from network
+                .thenReturn(Maybe.<Integer>empty()) //read from disk after clearing disk cache
+                .thenReturn(Maybe.just(1)); //read from disk after making additional network call
+        when(persister.write(barcode, 1)).thenReturn(Single.just(true));
+        when(persister.write(barcode, 2)).thenReturn(Single.just(true));
 
 
         TestObserver<Integer> refreshingObservable = store.getRefreshing(barcode).test();
@@ -82,21 +83,21 @@ public class GetRefreshingTest {
         BarCode barcode2 = new BarCode("type", "key2");
 
         when(persister.read(barcode1))
-                .thenReturn(Observable.<Integer>empty()) //read from disk
-                .thenReturn(Observable.just(1)) //read from disk after fetching from network
-                .thenReturn(Observable.<Integer>empty()) //read from disk after clearing disk cache
-                .thenReturn(Observable.just(1)); //read from disk after making additional network call
-        when(persister.write(barcode1, 1)).thenReturn(Observable.just(true));
-        when(persister.write(barcode1, 2)).thenReturn(Observable.just(true));
+                .thenReturn(Maybe.<Integer>empty()) //read from disk
+                .thenReturn(Maybe.just(1)) //read from disk after fetching from network
+                .thenReturn(Maybe.<Integer>empty()) //read from disk after clearing disk cache
+                .thenReturn(Maybe.just(1)); //read from disk after making additional network call
+        when(persister.write(barcode1, 1)).thenReturn(Single.just(true));
+        when(persister.write(barcode1, 2)).thenReturn(Single.just(true));
 
         when(persister.read(barcode2))
-                .thenReturn(Observable.<Integer>empty()) //read from disk
-                .thenReturn(Observable.just(1)) //read from disk after fetching from network
-                .thenReturn(Observable.<Integer>empty()) //read from disk after clearing disk cache
-                .thenReturn(Observable.just(1)); //read from disk after making additional network call
+                .thenReturn(Maybe.<Integer>empty()) //read from disk
+                .thenReturn(Maybe.just(1)) //read from disk after fetching from network
+                .thenReturn(Maybe.<Integer>empty()) //read from disk after clearing disk cache
+                .thenReturn(Maybe.just(1)); //read from disk after making additional network call
 
-        when(persister.write(barcode2, 1)).thenReturn(Observable.just(true));
-        when(persister.write(barcode2, 2)).thenReturn(Observable.just(true));
+        when(persister.write(barcode2, 1)).thenReturn(Single.just(true));
+        when(persister.write(barcode2, 2)).thenReturn(Single.just(true));
 
         TestObserver<Integer> testObservable1 = store.getRefreshing(barcode1).test();
         TestObserver<Integer> testObservable2 = store.getRefreshing(barcode2).test();
@@ -120,13 +121,13 @@ public class GetRefreshingTest {
 
         @Nonnull
         @Override
-        public Observable<Integer> read(@Nonnull BarCode barCode) {
+        public Maybe<Integer> read(@Nonnull BarCode barCode) {
             throw new RuntimeException();
         }
 
         @Nonnull
         @Override
-        public Observable<Boolean> write(@Nonnull BarCode barCode, @Nonnull Integer integer) {
+        public Single<Boolean> write(@Nonnull BarCode barCode, @Nonnull Integer integer) {
             throw new RuntimeException();
         }
     }

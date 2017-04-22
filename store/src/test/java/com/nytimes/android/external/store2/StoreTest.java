@@ -18,9 +18,10 @@ import org.mockito.MockitoAnnotations;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
 
@@ -57,19 +58,19 @@ public class StoreTest {
 
 
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(NETWORK));
+                .thenReturn(Single.just(NETWORK));
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<String>empty())
-                .thenReturn(Observable.just(DISK));
+                .thenReturn(Maybe.<String>empty())
+                .thenReturn(Maybe.just(DISK));
 
         when(persister.write(barCode, NETWORK))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
-        String value = simpleStore.get(barCode).blockingFirst();
+        String value = simpleStore.get(barCode).blockingGet();
 
         assertThat(value).isEqualTo(DISK);
-        value = simpleStore.get(barCode).blockingFirst();
+        value = simpleStore.get(barCode).blockingGet();
         assertThat(value).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -83,13 +84,12 @@ public class StoreTest {
                 .fetcher(fetcher)
                 .open();
 
-        Observable<String> networkObservable =
-                Observable.create(new ObservableOnSubscribe<String>() {
+        Single<String> networkSingle =
+                Single.create(new SingleOnSubscribe<String>() {
                     @Override
-                    public void subscribe(ObservableEmitter<String> emitter) {
+                    public void subscribe(SingleEmitter<String> emitter) {
                         if (counter.incrementAndGet() == 1) {
-                            emitter.onNext(NETWORK);
-
+                            emitter.onSuccess(NETWORK);
                         } else {
                             emitter.onError(new RuntimeException("Yo Dawg your inflight is broken"));
                         }
@@ -98,14 +98,14 @@ public class StoreTest {
 
 
         when(fetcher.fetch(barCode))
-                .thenReturn(networkObservable);
+                .thenReturn(networkSingle);
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<String>empty())
-                .thenReturn(Observable.just(DISK));
+                .thenReturn(Maybe.<String>empty())
+                .thenReturn(Maybe.just(DISK));
 
         when(persister.write(barCode, NETWORK))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
 
         String response = simpleStore.get(barCode).zipWith(simpleStore.get(barCode),
@@ -115,7 +115,7 @@ public class StoreTest {
                         return "hello";
                     }
                 })
-                .blockingFirst();
+                .blockingGet();
         assertThat(response).isEqualTo("hello");
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -128,16 +128,16 @@ public class StoreTest {
         simpleStore.clear();
 
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(NETWORK));
+                .thenReturn(Single.just(NETWORK));
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<String>empty())
-                .thenReturn(Observable.just(DISK));
-        when(persister.write(barCode, NETWORK)).thenReturn(Observable.just(true));
+                .thenReturn(Maybe.<String>empty())
+                .thenReturn(Maybe.just(DISK));
+        when(persister.write(barCode, NETWORK)).thenReturn(Single.just(true));
 
-        String value = simpleStore.get(barCode).blockingFirst();
+        String value = simpleStore.get(barCode).blockingGet();
         assertThat(value).isEqualTo(DISK);
-        value = simpleStore.get(barCode).blockingFirst();
+        value = simpleStore.get(barCode).blockingGet();
         assertThat(value).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -151,16 +151,16 @@ public class StoreTest {
 
 
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(NETWORK));
+                .thenReturn(Single.just(NETWORK));
 
-        String value = simpleStore.get(barCode).blockingFirst();
+        String value = simpleStore.get(barCode).blockingGet();
         verify(fetcher, times(1)).fetch(barCode);
         verify(persister, times(1)).write(barCode, NETWORK);
         verify(persister, times(2)).read(barCode);
         assertThat(value).isEqualTo(NETWORK);
 
 
-        value = simpleStore.get(barCode).blockingFirst();
+        value = simpleStore.get(barCode).blockingGet();
         verify(persister, times(2)).read(barCode);
         verify(persister, times(1)).write(barCode, NETWORK);
         verify(fetcher, times(1)).fetch(barCode);

@@ -12,7 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -44,20 +45,20 @@ public class StoreWithParserTest {
                 .open();
 
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(NETWORK));
+                .thenReturn(Single.just(NETWORK));
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<String>empty())
-                .thenReturn(Observable.just(DISK));
+                .thenReturn(Maybe.<String>empty())
+                .thenReturn(Maybe.just(DISK));
 
         when(persister.write(barCode, NETWORK))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
         when(parser.apply(DISK)).thenReturn(barCode.getKey());
 
-        String value = simpleStore.get(barCode).blockingFirst();
+        String value = simpleStore.get(barCode).blockingGet();
         assertThat(value).isEqualTo(barCode.getKey());
-        value = simpleStore.get(barCode).blockingFirst();
+        value = simpleStore.get(barCode).blockingGet();
         assertThat(value).isEqualTo(barCode.getKey());
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -69,20 +70,20 @@ public class StoreWithParserTest {
         Store<String, BarCode> simpleStore = new SampleParsingStore(fetcher, persister, parser);
 
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(NETWORK));
+                .thenReturn(Single.just(NETWORK));
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<String>empty())
-                .thenReturn(Observable.just(DISK));
+                .thenReturn(Maybe.<String>empty())
+                .thenReturn(Maybe.just(DISK));
 
         when(persister.write(barCode, NETWORK))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
         when(parser.apply(DISK)).thenReturn(barCode.getKey());
 
-        String value = simpleStore.get(barCode).blockingFirst();
+        String value = simpleStore.get(barCode).blockingGet();
         assertThat(value).isEqualTo(barCode.getKey());
-        value = simpleStore.get(barCode).blockingFirst();
+        value = simpleStore.get(barCode).blockingGet();
         assertThat(value).isEqualTo(barCode.getKey());
         verify(fetcher, times(1)).fetch(barCode);
     }
