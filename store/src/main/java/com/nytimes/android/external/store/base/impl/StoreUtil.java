@@ -1,5 +1,6 @@
 package com.nytimes.android.external.store.base.impl;
 
+import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.RecordProvider;
 import com.nytimes.android.external.store.base.RecordState;
@@ -41,5 +42,13 @@ final class StoreUtil {
             return recordState == STALE;
         }
         return false;
+    }
+
+    static <Raw, Key> void clearPersister(Persister<Raw, Key> persister, @Nonnull Key key) {
+        boolean isPersisterClearable = persister instanceof Clearable;
+
+        if (isPersisterClearable) {
+            ((Clearable<Key>) persister).clear(key);
+        }
     }
 }
