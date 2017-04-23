@@ -152,10 +152,10 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends Raw>>() {
                     @Override
                     public Observable<? extends Raw> call(Throwable throwable) {
-                        if (error != null) {
-                            return Observable.error(error);
-                        } else {
+                        if (error == null) {
                             return Observable.empty();
+                        } else {
+                            return Observable.error(error);
                         }
                     }
                 })
