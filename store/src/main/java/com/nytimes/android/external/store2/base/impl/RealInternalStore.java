@@ -1,8 +1,6 @@
 package com.nytimes.android.external.store2.base.impl;
 
 import com.nytimes.android.external.cache.Cache;
-import com.nytimes.android.external.cache.CacheBuilder;
-import com.nytimes.android.external.store2.base.Clearable;
 import com.nytimes.android.external.store2.base.Fetcher;
 import com.nytimes.android.external.store2.base.InternalStore;
 import com.nytimes.android.external.store2.base.Persister;
@@ -10,7 +8,6 @@ import com.nytimes.android.external.store2.util.KeyParser;
 
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,7 +26,6 @@ import io.reactivex.subjects.PublishSubject;
  *                 <p>
  *                 Example usage:  @link
  */
-@SuppressWarnings("PMD")
 final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
     Cache<Key, Single<Parsed>> inFlightRequests;
     Cache<Key, Maybe<Parsed>> memCache;
@@ -59,43 +55,10 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         this.parser = parser;
         this.stalePolicy = stalePolicy;
 
-        if (memoryPolicy == null) {
-            memoryPolicy = MemoryPolicy
-                    .builder()
-                    .setMemorySize(getCacheSize())
-                    .setExpireAfter(getCacheTTL())
-                    .setExpireAfterTimeUnit(getCacheTTLTimeUnit())
-                    .build();
-        }
-
-        initMemCache(memoryPolicy);
-        initFlightRequests(memoryPolicy);
+        this.memCache = CacheFactory.createCache(memoryPolicy);
+        this.inFlightRequests = CacheFactory.createInflighter(memoryPolicy);
 
         subject = PublishSubject.create();
-    }
-
-    private void initFlightRequests(MemoryPolicy memoryPolicy) {
-        long expireAfterToSeconds = memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfter());
-        long maximumInFlightRequestsDuration = TimeUnit.MINUTES.toSeconds(1);
-
-        if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
-            inFlightRequests = CacheBuilder
-                    .newBuilder()
-                    .expireAfterWrite(maximumInFlightRequestsDuration, TimeUnit.SECONDS)
-                    .build();
-        } else {
-            inFlightRequests = CacheBuilder.newBuilder()
-                    .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-                    .build();
-        }
-    }
-
-    private void initMemCache(MemoryPolicy memoryPolicy) {
-        memCache = CacheBuilder
-                .newBuilder()
-                .maximumSize(memoryPolicy.getMaxSize())
-                .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-                .build();
     }
 
     /**
@@ -296,42 +259,12 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     public void clear(@Nonnull Key key) {
         inFlightRequests.invalidate(key);
         memCache.invalidate(key);
-        clearPersister(key);
+        StoreUtil.clearPersister(persister(), key);
         notifyRefresh(key);
     }
 
-    private void notifyRefresh(Key key) {
+    private void notifyRefresh(@Nonnull Key key) {
         refreshSubject.onNext(key);
-    }
-
-    private void clearPersister(Key key) {
-        boolean isPersisterClearable = persister instanceof Clearable;
-
-        if (isPersisterClearable) {
-            ((Clearable<Key>) persister).clear(key);
-        }
-    }
-
-    /**
-     * Default Cache TTL, can be overridden
-     *
-     * @return memory persister ttl
-     */
-    private long getCacheTTL() {
-        return TimeUnit.HOURS.toSeconds(24);
-    }
-
-    /**
-     * Default mem persister is 1, can be overridden otherwise
-     *
-     * @return memory persister size
-     */
-    private long getCacheSize() {
-        return 100;
-    }
-
-    private TimeUnit getCacheTTLTimeUnit() {
-        return TimeUnit.SECONDS;
     }
 
     /**
