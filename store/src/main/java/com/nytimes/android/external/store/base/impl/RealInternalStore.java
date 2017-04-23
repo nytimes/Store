@@ -61,8 +61,8 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         this.parser = parser;
         this.stalePolicy = stalePolicy;
 
-        this.memCache = StoreInitializer.initMemCache(memoryPolicy);
-        this.inFlightRequests = StoreInitializer.initFlightRequests(memoryPolicy);
+        this.memCache = CacheFactory.createCache(memoryPolicy);
+        this.inFlightRequests = CacheFactory.createInflighter(memoryPolicy);
 
         subject = PublishSubject.create();
     }

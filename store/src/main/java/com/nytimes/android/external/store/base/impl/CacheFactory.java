@@ -7,12 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 
-final class StoreInitializer {
-    private StoreInitializer() {
+final class CacheFactory {
+    private CacheFactory() {
 
     }
 
-    static <Key, Parsed> Cache<Key, Observable<Parsed>> initMemCache(MemoryPolicy memoryPolicy) {
+    static <Key, Parsed> Cache<Key, Observable<Parsed>> createCache(MemoryPolicy memoryPolicy) {
         if (memoryPolicy == null) {
             return CacheBuilder
                     .newBuilder()
@@ -28,7 +28,7 @@ final class StoreInitializer {
         }
     }
 
-    static <Key, Parsed> Cache<Key, Observable<Parsed>> initFlightRequests(MemoryPolicy memoryPolicy) {
+    static <Key, Parsed> Cache<Key, Observable<Parsed>> createInflighter(MemoryPolicy memoryPolicy) {
         long expireAfterToSeconds = memoryPolicy == null ? StoreDefaults.getCacheTTLTimeUnit()
                 .toSeconds(StoreDefaults.getCacheTTL())
                 : memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfter());
