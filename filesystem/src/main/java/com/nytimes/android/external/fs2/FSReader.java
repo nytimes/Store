@@ -20,6 +20,7 @@ import okio.BufferedSource;
  * @param <T> key type
  */
 public class FSReader<T> implements DiskRead<BufferedSource, T> {
+    private static final String ERROR_MESSAGE = "resolvedKey does not resolve to a file";
     final FileSystem fileSystem;
     final PathResolver<T> pathResolver;
 
@@ -46,7 +47,7 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
                         emitter.onError(e);
                     }
                 } else {
-                    emitter.onComplete();
+                    emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
                 }
             }
         });

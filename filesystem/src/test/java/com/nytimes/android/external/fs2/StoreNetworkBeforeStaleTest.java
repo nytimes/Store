@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StoreNetworkBeforeStaleTest {
+
+    Exception sorry = new Exception("sorry");
     @Mock
     Fetcher<BufferedSource, BarCode> fetcher;
     @Mock
@@ -104,5 +106,27 @@ public class StoreNetworkBeforeStaleTest {
         verify(fetcher, never()).fetch(barCode);
         verify(persister, never()).write(barCode, network1);
         verify(persister, times(1)).read(barCode);
+    }
+
+    @Test
+    public void networkBeforeStaleNoNetworkResponse() {
+        Single<BufferedSource> singleError = Single.error(sorry);
+        Maybe<BufferedSource> maybeError = Maybe.error(sorry);
+        when(fetcher.fetch(barCode))
+                .thenReturn(singleError);
+        when(persister.read(barCode))
+                .thenReturn(maybeError, maybeError);  //first call should return
+        // empty, second call after network should return the network value
+        when(persister.getRecordState(barCode)).thenReturn(RecordState.MISSING);
+
+        when(persister.write(barCode, network1))
+                .thenReturn(Single.just(true));
+
+        store.get(barCode).test().assertError(sorry);
+
+        InOrder inOrder = inOrder(fetcher, persister);
+        inOrder.verify(persister, times(1)).read(barCode);
+        inOrder.verify(fetcher, times(1)).fetch(barCode);
+        inOrder.verify(persister, times(1)).read(barCode);
     }
 }

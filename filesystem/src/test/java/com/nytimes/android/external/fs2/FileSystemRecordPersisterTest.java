@@ -55,8 +55,7 @@ public class FileSystemRecordPersisterTest {
         when(fileSystem.exists(resolvedPath))
                 .thenReturn(false);
 
-        Boolean isEmpty = fileSystemPersister.read(simple).isEmpty().blockingGet();
-        assertThat(isEmpty).isEqualTo(true);
+        fileSystemPersister.read(simple).test().assertError(FileNotFoundException.class);
     }
 
     @Test

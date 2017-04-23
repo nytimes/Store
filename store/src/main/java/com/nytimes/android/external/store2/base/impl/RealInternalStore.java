@@ -182,8 +182,21 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     Maybe<Parsed> readDisk(@Nonnull final Key key) {
+        return readDisk(key, null);
+    }
+
+    Maybe<Parsed> readDisk(@Nonnull final Key key, final Throwable error) {
         return persister().read(key)
-                .onErrorResumeNext(Maybe.<Raw>empty())
+                .onErrorResumeNext(new Function<Throwable, MaybeSource<? extends Raw>>() {
+                    @Override
+                    public MaybeSource<? extends Raw> apply(@NonNull Throwable throwable) throws Exception {
+                        if (error != null) {
+                            return Maybe.error(error);
+                        } else {
+                            return Maybe.empty();
+                        }
+                    }
+                })
                 .map(new Function<Raw, Parsed>() {
                     @Override
                     public Parsed apply(@NonNull Raw raw) {
@@ -201,6 +214,8 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                     }
                 }).cache();
     }
+
+
 
     @SuppressWarnings("CheckReturnValue")
     void backfillCache(@Nonnull Key key) {
@@ -280,7 +295,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                     @Override
                     public SingleSource<? extends Parsed> apply(@NonNull Throwable throwable) {
                         if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
-                            return readDisk(key).toSingle();
+                            return readDisk(key, throwable).toSingle();
                         }
                         return Single.error(throwable);
                     }

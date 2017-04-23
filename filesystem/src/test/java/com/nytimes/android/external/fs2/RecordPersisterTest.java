@@ -74,7 +74,7 @@ public class RecordPersisterTest {
         when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
                 .thenReturn(false);
 
-        assertThat(sourcePersister.read(simple).isEmpty().blockingGet()).isEqualTo(true);
+        sourcePersister.read(simple).test().assertError(FileNotFoundException.class);
     }
 
     @Test
