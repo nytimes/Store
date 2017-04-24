@@ -15,7 +15,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayInputStream;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import okio.BufferedSource;
 import okio.Okio;
 
@@ -56,20 +57,20 @@ public class GenericParserStoreTest {
 
 
         BufferedSource source = source(sourceData);
-        Observable<BufferedSource> value = Observable.just(source);
+        Single<BufferedSource> value = Single.just(source);
         when(fetcher.fetch(barCode))
                 .thenReturn(value);
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<BufferedSource>empty())
-                .thenReturn(value);
+                .thenReturn(Maybe.<BufferedSource>empty())
+                .thenReturn(value.toMaybe());
 
         when(persister.write(barCode, source))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
-        Foo result = simpleStore.get(barCode).blockingFirst();
+        Foo result = simpleStore.get(barCode).blockingGet();
         assertThat(result.bar).isEqualTo(KEY);
-        result = simpleStore.get(barCode).blockingFirst();
+        result = simpleStore.get(barCode).blockingGet();
         assertThat(result.bar).isEqualTo(KEY);
         verify(fetcher, times(1)).fetch(barCode);
     }

@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import okio.BufferedSource;
 
 /**
@@ -59,13 +60,13 @@ public final class FileSystemRecordPersister<Key> implements Persister<BufferedS
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> read(@Nonnull Key key) {
+    public Maybe<BufferedSource> read(@Nonnull Key key) {
         return fileReader.read(key);
     }
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(@Nonnull Key key, @Nonnull BufferedSource bufferedSource) {
+    public Single<Boolean> write(@Nonnull Key key, @Nonnull BufferedSource bufferedSource) {
         return fileWriter.write(key, bufferedSource);
     }
 }

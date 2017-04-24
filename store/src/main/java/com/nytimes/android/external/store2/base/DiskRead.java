@@ -2,10 +2,9 @@ package com.nytimes.android.external.store2.base;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
-
+import io.reactivex.Maybe;
 
 public interface DiskRead<Raw, Key> {
     @Nonnull
-    Observable<Raw> read(@Nonnull Key key);
+    Maybe<Raw> read(@Nonnull Key key);
 }

@@ -12,7 +12,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 import okio.BufferedSource;
 
@@ -44,23 +43,22 @@ public class SourcePersisterTest {
                 .thenReturn(true);
         when(fileSystem.read(simple.toString())).thenReturn(bufferedSource);
 
-        BufferedSource returnedValue = sourcePersister.read(simple).blockingSingle();
+        BufferedSource returnedValue = sourcePersister.read(simple).blockingGet();
         assertThat(returnedValue).isEqualTo(bufferedSource);
     }
 
     @Test
     @SuppressWarnings("CheckReturnValue")
     public void readDoesNotExist() throws FileNotFoundException {
-        expectedException.expect(NoSuchElementException.class);
         when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
                 .thenReturn(false);
 
-        sourcePersister.read(simple).blockingSingle();
+        sourcePersister.read(simple).test().assertError(FileNotFoundException.class);
     }
 
     @Test
     public void write() throws IOException {
-        assertThat(sourcePersister.write(simple, bufferedSource).blockingSingle()).isTrue();
+        assertThat(sourcePersister.write(simple, bufferedSource).blockingGet()).isTrue();
     }
 
     @Test

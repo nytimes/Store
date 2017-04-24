@@ -14,7 +14,8 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,21 +31,21 @@ public class StoreBuilderTest {
                 .fetcher(new Fetcher<String, Integer>() {
                     @Nonnull
                     @Override
-                    public Observable<String> fetch(@Nonnull Integer key) {
-                        return Observable.just(String.valueOf(key));
+                    public Single<String> fetch(@Nonnull Integer key) {
+                        return Single.just(String.valueOf(key));
                     }
                 })
                 .persister(new Persister<String, Integer>() {
                     @Nonnull
                     @Override
-                    public Observable<String> read(@Nonnull Integer key) {
-                        return Observable.just(String.valueOf(key));
+                    public Maybe<String> read(@Nonnull Integer key) {
+                        return Maybe.just(String.valueOf(key));
                     }
 
                     @Nonnull
                     @Override
-                    public Observable<Boolean> write(@Nonnull Integer key, @Nonnull String s) {
-                        return Observable.empty();
+                    public Single<Boolean> write(@Nonnull Integer key, @Nonnull String s) {
+                        return Single.just(true);
                     }
                 })
                 .parser(new Parser<String, Date>() {
@@ -59,8 +60,8 @@ public class StoreBuilderTest {
         Store<Date, BarCode> barCodeStore = StoreBuilder.<Date>barcode().fetcher(new Fetcher<Date, BarCode>() {
             @Nonnull
             @Override
-            public Observable<Date> fetch(@Nonnull BarCode barCode) {
-                return Observable.just(DATE);
+            public Single<Date> fetch(@Nonnull BarCode barCode) {
+                return Single.just(DATE);
             }
         }).open();
 
@@ -69,14 +70,14 @@ public class StoreBuilderTest {
                 .fetcher(new Fetcher<Date, Integer>() {
                     @Nonnull
                     @Override
-                    public Observable<Date> fetch(@Nonnull Integer key) {
-                        return Observable.just(DATE);
+                    public Single<Date> fetch(@Nonnull Integer key) {
+                        return Single.just(DATE);
                     }
                 })
                 .open();
-        Date result = store.get(5).blockingFirst();
-        result = barCodeStore.get(new BarCode("test", "5")).blockingFirst();
-        result = keyStore.get(5).blockingFirst();
+        Date result = store.get(5).blockingGet();
+        result = barCodeStore.get(new BarCode("test", "5")).blockingGet();
+        result = keyStore.get(5).blockingGet();
         assertThat(result).isNotNull();
 
     }

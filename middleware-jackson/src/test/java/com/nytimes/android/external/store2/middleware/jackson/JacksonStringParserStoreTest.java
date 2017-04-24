@@ -18,7 +18,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,14 +45,14 @@ public class JacksonStringParserStoreTest {
         MockitoAnnotations.initMocks(this);
 
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(source));
+                .thenReturn(Single.just(source));
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<String>empty())
-                .thenReturn(Observable.just(source));
+                .thenReturn(Maybe.<String>empty())
+                .thenReturn(Maybe.just(source));
 
         when(persister.write(barCode, source))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class JacksonStringParserStoreTest {
                 .parser(JacksonParserFactory.createStringParser(Foo.class))
                 .open();
 
-        Foo result = store.get(barCode).blockingFirst();
+        Foo result = store.get(barCode).blockingGet();
 
         validateFoo(result);
 
@@ -81,7 +82,7 @@ public class JacksonStringParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(barCode).blockingFirst();
+        Foo result = store.get(barCode).blockingGet();
 
         validateFoo(result);
 

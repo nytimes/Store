@@ -12,8 +12,7 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
-
-import io.reactivex.Observable;
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,8 +28,8 @@ public class ClearStoreMemoryTest {
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override
-                    public Observable<Integer> fetch(@Nonnull BarCode barCode) {
-                        return Observable.fromCallable(new Callable<Integer>() {
+                    public Single<Integer> fetch(@Nonnull BarCode barCode) {
+                        return Single.fromCallable(new Callable<Integer>() {
                             @Override
                             public Integer call() {
                                 return networkCalls++;

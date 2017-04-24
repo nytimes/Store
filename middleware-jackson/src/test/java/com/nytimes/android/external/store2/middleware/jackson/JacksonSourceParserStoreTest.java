@@ -20,7 +20,8 @@ import org.mockito.MockitoAnnotations;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import okio.BufferedSource;
 import okio.Okio;
 
@@ -55,14 +56,14 @@ public class JacksonSourceParserStoreTest {
         assertNotNull(bufferedSource);
 
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(bufferedSource));
+                .thenReturn(Single.just(bufferedSource));
 
         when(persister.read(barCode))
-                .thenReturn(Observable.<BufferedSource>empty())
-                .thenReturn(Observable.just(bufferedSource));
+                .thenReturn(Maybe.<BufferedSource>empty())
+                .thenReturn(Maybe.just(bufferedSource));
 
         when(persister.write(barCode, bufferedSource))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
     }
 
     @Test
@@ -74,7 +75,7 @@ public class JacksonSourceParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(barCode).blockingFirst();
+        Foo result = store.get(barCode).blockingGet();
 
         validateFoo(result);
 
@@ -93,7 +94,7 @@ public class JacksonSourceParserStoreTest {
                 .parser(parser)
                 .open();
 
-        Foo result = store.get(barCode).blockingFirst();
+        Foo result = store.get(barCode).blockingGet();
 
         validateFoo(result);
 

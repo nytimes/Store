@@ -16,7 +16,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 
 /**
@@ -54,13 +55,13 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         persister = new Persister<Raw, Key>() {
             @Nonnull
             @Override
-            public Observable<Raw> read(@Nonnull Key key) {
+            public Maybe<Raw> read(@Nonnull Key key) {
                 return diskRead.read(key);
             }
 
             @Nonnull
             @Override
-            public Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
+            public Single<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
                 return diskWrite.write(key, raw);
             }
         };
@@ -80,7 +81,6 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
         this.parsers.add(parser);
         return this;
     }
-
 
     @Nonnull
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")

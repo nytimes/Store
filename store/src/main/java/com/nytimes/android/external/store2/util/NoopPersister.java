@@ -1,6 +1,5 @@
 package com.nytimes.android.external.store2.util;
 
-
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.store2.base.Clearable;
@@ -11,14 +10,15 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 
 /**
  * Pass-through diskdao for stores that don't want to use persister
  */
 public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<Key> {
-    protected final Cache<Key, Observable<Raw>> networkResponses;
+    protected final Cache<Key, Maybe<Raw>> networkResponses;
 
     NoopPersister(MemoryPolicy memoryPolicy) {
         this.networkResponses = CacheBuilder
@@ -50,16 +50,16 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
 
     @Nonnull
     @Override
-    public Observable<Raw> read(@Nonnull Key key) {
-        Observable<Raw> cachedValue = networkResponses.getIfPresent(key);
-        return cachedValue == null ? Observable.<Raw>empty() : cachedValue;
+    public Maybe<Raw> read(@Nonnull Key key) {
+        Maybe<Raw> cachedValue = networkResponses.getIfPresent(key);
+        return cachedValue == null ? Maybe.<Raw>empty() : cachedValue;
     }
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
-        networkResponses.put(key, Observable.<Raw>just(raw));
-        return Observable.just(true);
+    public Single<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
+        networkResponses.put(key, Maybe.just(raw));
+        return Single.just(true);
     }
 
     @Override

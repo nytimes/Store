@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 
 
 public class DontCacheErrorsTest {
@@ -26,8 +26,8 @@ public class DontCacheErrorsTest {
                 .fetcher(new Fetcher<Integer, BarCode>() {
                     @Nonnull
                     @Override
-                    public Observable<Integer> fetch(@Nonnull BarCode barCode) {
-                        return Observable.fromCallable(new Callable<Integer>() {
+                    public Single<Integer> fetch(@Nonnull BarCode barCode) {
+                        return Single.fromCallable(new Callable<Integer>() {
                             @Override
                             public Integer call() {
                                 if (shouldThrow) {

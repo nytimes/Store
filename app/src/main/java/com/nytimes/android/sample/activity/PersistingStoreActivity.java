@@ -58,7 +58,7 @@ public class PersistingStoreActivity extends AppCompatActivity {
 
         this.persistedStore
                 .get(awwRequest)
-                .flatMap(this::sanitizeData)
+                .flatMapObservable(this::sanitizeData)
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

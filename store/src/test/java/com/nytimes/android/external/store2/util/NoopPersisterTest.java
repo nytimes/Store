@@ -13,9 +13,9 @@ public class NoopPersisterTest {
     @Test
     public void writeReadTest() {
         NoopPersister<String, BarCode> persister = NoopPersister.create();
-        boolean success = persister.write(barCode, "foo").blockingFirst();
+        boolean success = persister.write(barCode, "foo").blockingGet();
         assertThat(success).isTrue();
-        String rawValue = persister.read(barCode).blockingFirst();
+        String rawValue = persister.read(barCode).blockingGet();
         assertThat(rawValue).isEqualTo("foo");
     }
 

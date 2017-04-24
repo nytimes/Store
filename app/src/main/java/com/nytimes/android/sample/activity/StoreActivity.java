@@ -60,7 +60,7 @@ public class StoreActivity extends AppCompatActivity {
 
         this.nonPersistedStore
                 .get(awwRequest)
-                .flatMap(new Function<RedditData, ObservableSource<Post>>() {
+                .flatMapObservable(new Function<RedditData, ObservableSource<Post>>() {
                     @Override
                     public ObservableSource<Post> apply(@NonNull RedditData redditData) throws Exception {
                         return sanitizeData(redditData);

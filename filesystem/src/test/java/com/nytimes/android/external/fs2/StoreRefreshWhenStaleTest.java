@@ -13,7 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 import okio.BufferedSource;
 
@@ -53,13 +54,13 @@ public class StoreRefreshWhenStaleTest {
     @Test
     public void diskWasRefreshedWhenStaleRecord() {
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(network1));
+                .thenReturn(Single.just(network1));
         when(persister.read(barCode))
-                .thenReturn(Observable.just(disk1));  //get should return from disk
+                .thenReturn(Maybe.just(disk1));  //get should return from disk
         when(persister.getRecordState(barCode)).thenReturn(RecordState.STALE);
 
         when(persister.write(barCode, network1))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
         store.get(barCode).test().awaitTerminalEvent();
         verify(fetcher, times(1)).fetch(barCode);
@@ -72,14 +73,14 @@ public class StoreRefreshWhenStaleTest {
     @Test
     public void diskWasNotRefreshedWhenFreshRecord() {
         when(fetcher.fetch(barCode))
-                .thenReturn(Observable.just(network1));
+                .thenReturn(Single.just(network1));
         when(persister.read(barCode))
-                .thenReturn(Observable.just(disk1))  //get should return from disk
-                .thenReturn(Observable.just(disk2)); //backfill should read from disk again
+                .thenReturn(Maybe.just(disk1))  //get should return from disk
+                .thenReturn(Maybe.just(disk2)); //backfill should read from disk again
         when(persister.getRecordState(barCode)).thenReturn(RecordState.FRESH);
 
         when(persister.write(barCode, network1))
-                .thenReturn(Observable.just(true));
+                .thenReturn(Single.just(true));
 
         TestObserver testObserver = store
                 .get(barCode)

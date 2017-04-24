@@ -2,7 +2,7 @@ package com.nytimes.android.external.store2.base;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 
 
 /**
@@ -17,5 +17,5 @@ public interface Fetcher<Raw, Key> {
      * @return Observable that emits {@link Raw} data
      */
     @Nonnull
-    Observable<Raw> fetch(@Nonnull Key key);
+    Single<Raw> fetch(@Nonnull Key key);
 }

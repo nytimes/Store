@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import okio.BufferedSource;
 
 /**
@@ -27,8 +27,8 @@ public class FSWriter<T> implements DiskWrite<BufferedSource, T> {
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
-        return Observable.fromCallable(new Callable<Boolean>() {
+    public Single<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
+        return Single.fromCallable(new Callable<Boolean>() {
             @Nonnull
             @Override
             @SuppressWarnings("PMD.SignatureDeclareThrowsException")

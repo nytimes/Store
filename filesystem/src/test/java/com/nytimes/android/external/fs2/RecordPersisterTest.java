@@ -5,15 +5,12 @@ import com.nytimes.android.external.store2.base.RecordState;
 import com.nytimes.android.external.store2.base.impl.BarCode;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import okio.BufferedSource;
@@ -22,8 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class RecordPersisterTest {
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     FileSystem fileSystem;
@@ -45,7 +40,7 @@ public class RecordPersisterTest {
                 .thenReturn(true);
         when(fileSystem.read(simple.toString())).thenReturn(bufferedSource);
 
-        BufferedSource returnedValue = sourcePersister.read(simple).blockingFirst();
+        BufferedSource returnedValue = sourcePersister.read(simple).blockingGet();
         assertThat(returnedValue).isEqualTo(bufferedSource);
     }
 
@@ -76,16 +71,15 @@ public class RecordPersisterTest {
     @Test
     @SuppressWarnings("CheckReturnValue")
     public void readDoesNotExist() throws FileNotFoundException {
-        expectedException.expect(NoSuchElementException.class);
         when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
                 .thenReturn(false);
 
-        sourcePersister.read(simple).blockingFirst();
+        sourcePersister.read(simple).test().assertError(FileNotFoundException.class);
     }
 
     @Test
     public void write() throws IOException {
-        assertThat(sourcePersister.write(simple, bufferedSource).blockingSingle()).isTrue();
+        assertThat(sourcePersister.write(simple, bufferedSource).blockingGet()).isTrue();
     }
 
     @Test

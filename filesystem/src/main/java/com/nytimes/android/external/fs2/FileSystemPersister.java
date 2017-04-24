@@ -5,7 +5,8 @@ import com.nytimes.android.external.store2.base.Persister;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import okio.BufferedSource;
 
 /**
@@ -34,13 +35,13 @@ public final class FileSystemPersister<T> implements Persister<BufferedSource, T
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> read(@Nonnull final T key) {
+    public Maybe<BufferedSource> read(@Nonnull final T key) {
         return fileReader.read(key);
     }
 
     @Nonnull
     @Override
-    public Observable<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
+    public Single<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
         return fileWriter.write(key, data);
     }
 }

@@ -4,7 +4,7 @@ import com.nytimes.android.external.store2.base.impl.Store;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
 
 /**
 2 * this interface allows us to mark a {@link Store} as "internal", exposing methods for retrieving data
@@ -12,8 +12,8 @@ import io.reactivex.Observable;
  */
 public interface InternalStore<Parsed, Key> extends Store<Parsed, Key> {
     @Nonnull
-    Observable<Parsed> memory(@Nonnull final Key key);
+    Maybe<Parsed> memory(@Nonnull final Key key);
 
     @Nonnull
-    Observable<Parsed> disk(@Nonnull final Key key);
+    Maybe<Parsed> disk(@Nonnull final Key key);
 }

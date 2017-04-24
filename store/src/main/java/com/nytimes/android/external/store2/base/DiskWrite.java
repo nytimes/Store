@@ -2,7 +2,7 @@ package com.nytimes.android.external.store2.base;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public interface DiskWrite<Raw, Key> {
     /**
@@ -11,5 +11,5 @@ public interface DiskWrite<Raw, Key> {
      *            either return Observable.empty or throw an exception
      */
     @Nonnull
-    Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw);
+    Single<Boolean> write(@Nonnull Key key, @Nonnull Raw raw);
 }
