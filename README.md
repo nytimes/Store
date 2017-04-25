@@ -337,4 +337,6 @@ See the app for example usage of Store. Alternatively, the Wiki contains a set o
 
 ### Talks
 [DroidCon Italy](https://youtu.be/TvsOsgd0--c)
+[Android Makers](https://www.youtube.com/watch?time_continue=170&v=G1MebI2k9aA)
+
 
