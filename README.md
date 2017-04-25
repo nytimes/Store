@@ -302,7 +302,7 @@ Note: Release is in Sync with current state of master (not develop) branch
 + **Middleware-Jackson** Sample Jackon parsers, (feel free to create more and open PRs)
 
     ```groovy
-    compile 'com.nytimes.android:middleware:-jackson:CurrentVersion'
+    compile 'com.nytimes.android:middleware-jackson:CurrentVersion'
     ```
 + **Middleware-Moshi** Sample Moshi parsers, (feel free to create more and open PRs)
 
