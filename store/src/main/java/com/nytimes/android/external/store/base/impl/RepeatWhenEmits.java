@@ -26,16 +26,6 @@ final class RepeatWhenEmits<T> implements Observable.Transformer<T, T> {
 
     @Override
     public Observable<T> call(Observable<T> upstream) {
-        return upstream.repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
-            @Override
-            public Observable<?> call(Observable<? extends Void> events) {
-                return events.switchMap(new Func1<Void, Observable<?>>() {
-                    @Override
-                    public Observable<?> call(Void aVoid) {
-                        return source;
-                    }
-                });
-            }
-        });
+        return upstream.repeatWhen(events -> events.switchMap(aVoid -> source));
     }
 }

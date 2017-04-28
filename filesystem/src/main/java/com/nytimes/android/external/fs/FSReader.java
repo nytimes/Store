@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import okio.BufferedSource;
 import rx.Emitter;
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * FSReader is used when persisting from file system
@@ -32,22 +31,19 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final T key) {
-        return Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
-            @Override
-            public void call(Emitter<BufferedSource> emitter) {
-                String resolvedKey = pathResolver.resolve(key);
-                boolean exists = fileSystem.exists(resolvedKey);
-                if (exists) {
-                    try {
-                        BufferedSource bufferedSource = fileSystem.read(resolvedKey);
-                        emitter.onNext(bufferedSource);
-                        emitter.onCompleted();
-                    } catch (FileNotFoundException e) {
-                        emitter.onError(e);
-                    }
-                } else {
-                    emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
+        return Observable.fromEmitter(emitter -> {
+            String resolvedKey = pathResolver.resolve(key);
+            boolean exists = fileSystem.exists(resolvedKey);
+            if (exists) {
+                try {
+                    BufferedSource bufferedSource = fileSystem.read(resolvedKey);
+                    emitter.onNext(bufferedSource);
+                    emitter.onCompleted();
+                } catch (FileNotFoundException e) {
+                    emitter.onError(e);
                 }
+            } else {
+                emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
             }
         }, Emitter.BackpressureMode.NONE);
     }

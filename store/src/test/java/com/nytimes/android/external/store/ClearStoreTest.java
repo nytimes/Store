@@ -1,6 +1,5 @@
 package com.nytimes.android.external.store;
 
-import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
@@ -11,10 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Nonnull;
 
 import rx.Observable;
 
@@ -34,18 +30,7 @@ public class ClearStoreTest {
     public void setUp() {
         networkCalls = new AtomicInteger(0);
         store = StoreBuilder.<Integer>barcode()
-                .fetcher(new Fetcher<Integer, BarCode>() {
-                    @Nonnull
-                    @Override
-                    public Observable<Integer> fetch(@Nonnull BarCode barCode) {
-                        return Observable.fromCallable(new Callable<Integer>() {
-                            @Override
-                            public Integer call() {
-                                return networkCalls.incrementAndGet();
-                            }
-                        });
-                    }
-                })
+                .fetcher(barCode -> Observable.fromCallable(() -> networkCalls.incrementAndGet()))
                 .persister(persister)
                 .open();
     }

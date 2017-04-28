@@ -1,16 +1,12 @@
 package com.nytimes.android.external.store;
 
-import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
-import com.nytimes.android.external.store.util.KeyParser;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import javax.annotation.Nonnull;
 
 import rx.Observable;
 import rx.observers.AssertableSubscriber;
@@ -25,19 +21,9 @@ public class KeyParserTest {
     @Before
     public void setUp() throws Exception {
         store = StoreBuilder.<Integer, String, String>parsedWithKey()
-                .parser(new KeyParser<Integer, String, String>() {
-                    @Override
-                    public String call(Integer integer, String s) {
-                        return s + integer;
-                    }
-                })
-                .fetcher(new Fetcher<String, Integer>() {
-                    @Nonnull
-                    @Override
-                    public Observable<String> fetch(@Nonnull Integer integer) {
-                        return Observable.just(NETWORK);
-                    }
-                }).open();
+                .parser((integer, s) -> s + integer)
+                .fetcher(integer -> Observable.just(NETWORK))
+                .open();
 
     }
 

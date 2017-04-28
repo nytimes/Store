@@ -3,8 +3,6 @@ package com.nytimes.android.external.fs;
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskWrite;
 
-import java.util.concurrent.Callable;
-
 import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
@@ -27,14 +25,9 @@ public class FSWriter<T> implements DiskWrite<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
-        return Observable.fromCallable(new Callable<Boolean>() {
-            @Nonnull
-            @Override
-            @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-            public Boolean call() throws Exception {
-                fileSystem.write(pathResolver.resolve(key), data);
-                return true;
-            }
+        return Observable.fromCallable(() -> {
+            fileSystem.write(pathResolver.resolve(key), data);
+            return true;
         });
     }
 }
