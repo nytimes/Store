@@ -8,7 +8,6 @@ import com.nytimes.android.external.store.base.RecordState;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 import static com.nytimes.android.external.store.base.RecordState.STALE;

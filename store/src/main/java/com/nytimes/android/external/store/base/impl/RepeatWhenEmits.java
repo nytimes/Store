@@ -3,7 +3,6 @@ package com.nytimes.android.external.store.base.impl;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
