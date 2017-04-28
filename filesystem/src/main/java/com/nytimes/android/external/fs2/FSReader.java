@@ -8,8 +8,6 @@ import java.io.FileNotFoundException;
 import javax.annotation.Nonnull;
 
 import io.reactivex.Maybe;
-import io.reactivex.MaybeEmitter;
-import io.reactivex.MaybeOnSubscribe;
 import okio.BufferedSource;
 
 /**
@@ -32,23 +30,20 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Maybe<BufferedSource> read(@Nonnull final T key) {
-        return Maybe.create(new MaybeOnSubscribe<BufferedSource>() {
-            @Override
-            public void subscribe(MaybeEmitter<BufferedSource> emitter) {
-                String resolvedKey = pathResolver.resolve(key);
-                boolean exists = fileSystem.exists(resolvedKey);
+        return Maybe.create(emitter -> {
+            String resolvedKey = pathResolver.resolve(key);
+            boolean exists = fileSystem.exists(resolvedKey);
 
-                if (exists) {
-                    try {
-                        BufferedSource bufferedSource = fileSystem.read(resolvedKey);
-                        emitter.onSuccess(bufferedSource);
-                        emitter.onComplete();
-                    } catch (FileNotFoundException e) {
-                        emitter.onError(e);
-                    }
-                } else {
-                    emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
+            if (exists) {
+                try {
+                    BufferedSource bufferedSource = fileSystem.read(resolvedKey);
+                    emitter.onSuccess(bufferedSource);
+                    emitter.onComplete();
+                } catch (FileNotFoundException e) {
+                    emitter.onError(e);
                 }
+            } else {
+                emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
             }
         });
     }

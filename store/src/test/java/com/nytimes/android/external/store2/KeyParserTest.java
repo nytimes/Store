@@ -1,19 +1,14 @@
 package com.nytimes.android.external.store2;
 
-import com.nytimes.android.external.store2.base.Fetcher;
 import com.nytimes.android.external.store2.base.impl.Store;
 import com.nytimes.android.external.store2.base.impl.StoreBuilder;
-import com.nytimes.android.external.store2.util.KeyParser;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.annotation.Nonnull;
-
 import io.reactivex.Single;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.TestObserver;
 
 
@@ -27,19 +22,9 @@ public class KeyParserTest {
     @Before
     public void setUp() throws Exception {
         store = StoreBuilder.<Integer, String, String>parsedWithKey()
-                .parser(new KeyParser<Integer, String, String>() {
-                    @Override
-                    public String apply(@NonNull Integer integer, @NonNull String s) {
-                        return s + integer;
-                    }
-                })
-                .fetcher(new Fetcher<String, Integer>() {
-                    @Nonnull
-                    @Override
-                    public Single<String> fetch(@Nonnull Integer integer) {
-                        return Single.just(NETWORK);
-                    }
-                }).open();
+                .parser((integer, s) -> s + integer)
+                .fetcher(integer -> Single.just(NETWORK))
+                .open();
 
     }
 

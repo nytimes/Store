@@ -20,10 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.BiFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
@@ -85,14 +81,11 @@ public class StoreTest {
                 .open();
 
         Single<String> networkSingle =
-                Single.create(new SingleOnSubscribe<String>() {
-                    @Override
-                    public void subscribe(SingleEmitter<String> emitter) {
-                        if (counter.incrementAndGet() == 1) {
-                            emitter.onSuccess(NETWORK);
-                        } else {
-                            emitter.onError(new RuntimeException("Yo Dawg your inflight is broken"));
-                        }
+                Single.create(emitter -> {
+                    if (counter.incrementAndGet() == 1) {
+                        emitter.onSuccess(NETWORK);
+                    } else {
+                        emitter.onError(new RuntimeException("Yo Dawg your inflight is broken"));
                     }
                 });
 
@@ -108,13 +101,8 @@ public class StoreTest {
                 .thenReturn(Single.just(true));
 
 
-        String response = simpleStore.get(barCode).zipWith(simpleStore.get(barCode),
-                new BiFunction<String, String, String>() {
-                    @Override
-                    public String apply(@NonNull String s, @NonNull String s2) {
-                        return "hello";
-                    }
-                })
+        String response = simpleStore.get(barCode)
+                .zipWith(simpleStore.get(barCode), (s, s2) -> "hello")
                 .blockingGet();
         assertThat(response).isEqualTo("hello");
         verify(fetcher, times(1)).fetch(barCode);
