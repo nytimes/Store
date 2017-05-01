@@ -17,26 +17,11 @@ import static org.junit.Assert.assertNotNull;
 
 public class MultiParserTest {
 
-    private static final Parser<Integer, String> PARSER_1 = new Parser<Integer, String>() {
-        @Override
-        public String call(Integer value) {
-            return String.valueOf(value);
-        }
-    };
+    private static final Parser<Integer, String> PARSER_1 = String::valueOf;
 
-    private static final Parser<String, BarCode> PARSER_2 = new Parser<String, BarCode>() {
-        @Override
-        public BarCode call(String value) {
-            return new BarCode(value, "KEY");
-        }
-    };
+    private static final Parser<String, BarCode> PARSER_2 = value -> new BarCode(value, "KEY");
 
-    private static final Parser<BarCode, UUID> PARSER_3 = new Parser<BarCode, UUID>() {
-        @Override
-        public UUID call(BarCode barCode) {
-            return UUID.randomUUID();
-        }
-    };
+    private static final Parser<BarCode, UUID> PARSER_3 = barCode -> UUID.randomUUID();
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();

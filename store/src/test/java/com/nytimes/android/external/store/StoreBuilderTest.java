@@ -1,8 +1,5 @@
 package com.nytimes.android.external.store;
 
-
-import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Parser;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.Store;
@@ -26,13 +23,7 @@ public class StoreBuilderTest {
     public void testBuildersBuildWithCorrectTypes() {
         //test  is checking whether types are correct in builders
         Store<Date, Integer> store = StoreBuilder.<Integer, String, Date>parsedWithKey()
-                .fetcher(new Fetcher<String, Integer>() {
-                    @Nonnull
-                    @Override
-                    public Observable<String> fetch(@Nonnull Integer key) {
-                        return Observable.just(String.valueOf(key));
-                    }
-                })
+                .fetcher(key -> Observable.just(String.valueOf(key)))
                 .persister(new Persister<String, Integer>() {
                     @Nonnull
                     @Override
@@ -46,32 +37,16 @@ public class StoreBuilderTest {
                         return Observable.empty();
                     }
                 })
-                .parser(new Parser<String, Date>() {
-                    @Override
-                    public Date call(String s) {
-                        return DATE;
-                    }
-                })
+                .parser(s -> DATE)
                 .open();
 
 
-        Store<Date, BarCode> barCodeStore = StoreBuilder.<Date>barcode().fetcher(new Fetcher<Date, BarCode>() {
-            @Nonnull
-            @Override
-            public Observable<Date> fetch(@Nonnull BarCode barCode) {
-                return Observable.just(DATE);
-            }
-        }).open();
-
+        Store<Date, BarCode> barCodeStore = StoreBuilder.<Date>barcode()
+                .fetcher(barCode -> Observable.just(DATE))
+                .open();
 
         Store<Date, Integer> keyStore = StoreBuilder.<Integer, Date>key()
-                .fetcher(new Fetcher<Date, Integer>() {
-                    @Nonnull
-                    @Override
-                    public Observable<Date> fetch(@Nonnull Integer key) {
-                        return Observable.just(DATE);
-                    }
-                })
+                .fetcher(key -> Observable.just(DATE))
                 .open();
         Date result = store.get(5).toBlocking().first();
         result = barCodeStore.get(new BarCode("test", "5")).toBlocking().first();

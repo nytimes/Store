@@ -20,8 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import rx.Emitter;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
@@ -83,15 +81,12 @@ public class StoreTest {
                 .open();
 
         Observable<String> networkObservable =
-                Observable.fromEmitter(new Action1<Emitter<String>>() {
-                    @Override
-                    public void call(Emitter<String> emitter) {
-                        if (counter.incrementAndGet() == 1) {
-                            emitter.onNext(NETWORK);
+                Observable.fromEmitter(emitter -> {
+                    if (counter.incrementAndGet() == 1) {
+                        emitter.onNext(NETWORK);
 
-                        } else {
-                            emitter.onError(new RuntimeException("Yo Dawg your inflight is broken"));
-                        }
+                    } else {
+                        emitter.onError(new RuntimeException("Yo Dawg your inflight is broken"));
                     }
                 }, Emitter.BackpressureMode.NONE);
         when(fetcher.fetch(barCode))
@@ -105,13 +100,8 @@ public class StoreTest {
                 .thenReturn(Observable.just(true));
 
 
-        String response = simpleStore.get(barCode).zipWith(simpleStore.get(barCode),
-                new Func2<String, String, String>() {
-                    @Override
-                    public String call(String s, String s2) {
-                        return "hello";
-                    }
-                })
+        String response = simpleStore.get(barCode)
+                .zipWith(simpleStore.get(barCode), (s, s2) -> "hello")
                 .toBlocking()
                 .first();
         assertThat(response).isEqualTo("hello");

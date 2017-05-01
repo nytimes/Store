@@ -1,16 +1,11 @@
 package com.nytimes.android.external.store;
 
-import com.nytimes.android.external.store.base.Fetcher;
 import com.nytimes.android.external.store.base.impl.BarCode;
 import com.nytimes.android.external.store.base.impl.Store;
 import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.concurrent.Callable;
-
-import javax.annotation.Nonnull;
 
 import rx.Observable;
 
@@ -25,18 +20,7 @@ public class SequentialTest {
     public void setUp() {
         networkCalls = 0;
         store = StoreBuilder.<Integer>barcode()
-                .fetcher(new Fetcher<Integer, BarCode>() {
-                    @Nonnull
-                    @Override
-                    public Observable<Integer> fetch(@Nonnull BarCode barCode) {
-                        return Observable.fromCallable(new Callable<Integer>() {
-                            @Override
-                            public Integer call() {
-                                return networkCalls++;
-                            }
-                        });
-                    }
-                })
+                .fetcher(barCode -> Observable.fromCallable(() -> networkCalls++))
                 .open();
     }
 
