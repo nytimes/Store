@@ -5,8 +5,6 @@ import javax.annotation.Nonnull;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 
 import static com.nytimes.android.external.cache.Preconditions.checkNotNull;
 
@@ -29,16 +27,6 @@ final class RepeatWhenEmits<T> implements ObservableTransformer<T, T> {
 
     @Override
     public ObservableSource<T> apply(Observable<T> upstream) {
-        return upstream.repeatWhen(new Function<Observable<Object>, ObservableSource<?>>() {
-            @Override
-            public ObservableSource<?> apply(@NonNull Observable<Object> objectObservable) {
-                return objectObservable.switchMap(new Function<Object, ObservableSource<?>>() {
-                    @Override
-                    public ObservableSource<?> apply(@NonNull Object o) {
-                        return source;
-                    }
-                });
-            }
-        });
+        return upstream.repeatWhen(events -> events.switchMap(aVoid -> source));
     }
 }

@@ -8,7 +8,6 @@ import com.nytimes.android.external.store2.base.InternalStore;
 import com.nytimes.android.external.store2.base.Persister;
 import com.nytimes.android.external.store2.util.KeyParser;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -17,15 +16,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import io.reactivex.Maybe;
-import io.reactivex.MaybeSource;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import io.reactivex.annotations.Experimental;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
@@ -133,24 +126,13 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     private Maybe<Parsed> lazyCache(@Nonnull final Key key) {
         return Maybe
-                .defer(new Callable<MaybeSource<? extends Parsed>>() {
-                    @Override
-                    public MaybeSource<? extends Parsed> call() {
-                        return cache(key);
-                    }
-                })
+                .defer(() -> cache(key))
                 .onErrorResumeNext(Maybe.<Parsed>empty());
     }
 
     Maybe<Parsed> cache(@Nonnull final Key key) {
         try {
-            return memCache.get(key, new Callable<Maybe<Parsed>>() {
-                @Nonnull
-                @Override
-                public Maybe<Parsed> call() {
-                    return disk(key);
-                }
-            });
+            return memCache.get(key, () -> disk(key));
         } catch (ExecutionException e) {
             return Maybe.empty();
         }
@@ -184,36 +166,22 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     Maybe<Parsed> readDisk(@Nonnull final Key key) {
         return persister().read(key)
                 .onErrorResumeNext(Maybe.<Raw>empty())
-                .map(new Function<Raw, Parsed>() {
-                    @Override
-                    public Parsed apply(@NonNull Raw raw) {
-                        return parser.apply(key, raw);
-                    }
-                })
-                .doOnSuccess(new Consumer<Parsed>() {
-                    @Override
-                    public void accept(@NonNull Parsed parsed) {
-                        updateMemory(key, parsed);
-                        if (stalePolicy == StalePolicy.REFRESH_ON_STALE
-                                && StoreUtil.persisterIsStale(key, persister)) {
-                            backfillCache(key);
-                        }
+                .map(raw -> parser.apply(key, raw))
+                .doOnSuccess(parsed -> {
+                    updateMemory(key, parsed);
+                    if (stalePolicy == StalePolicy.REFRESH_ON_STALE
+                            && StoreUtil.persisterIsStale(key, persister)) {
+                        backfillCache(key);
                     }
                 }).cache();
     }
 
     @SuppressWarnings("CheckReturnValue")
     void backfillCache(@Nonnull Key key) {
-        fetch(key).subscribe(new Consumer<Parsed>() {
-            @Override
-            public void accept(@NonNull Parsed parsed) {
-                // do Nothing we are just backfilling cache
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(@NonNull Throwable throwable) {
-                // do nothing as we are just backfilling cache
-            }
+        fetch(key).subscribe(parsed -> {
+            // do Nothing we are just backfilling cache
+        }, throwable -> {
+            // do nothing as we are just backfilling cache
         });
     }
 
@@ -227,12 +195,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Single<Parsed> fetch(@Nonnull final Key key) {
-        return Single.defer(new Callable<SingleSource<? extends Parsed>>() {
-            @Override
-            public SingleSource<? extends Parsed> call() {
-                return fetchAndPersist(key);
-            }
-        });
+        return Single.defer(() -> fetchAndPersist(key));
     }
 
     /**
@@ -248,13 +211,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nullable
     Single<Parsed> fetchAndPersist(@Nonnull final Key key) {
         try {
-            return inFlightRequests.get(key, new Callable<Single<Parsed>>() {
-                @Nonnull
-                @Override
-                public Single<Parsed> call() {
-                    return response(key);
-                }
-            });
+            return inFlightRequests.get(key, () -> response(key));
         } catch (ExecutionException e) {
             return Single.error(e);
         }
@@ -264,41 +221,19 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     Single<Parsed> response(@Nonnull final Key key) {
         return fetcher()
                 .fetch(key)
-                .flatMap(new Function<Raw, SingleSource<Parsed>>() {
-                    @Override
-                    public SingleSource<Parsed> apply(@NonNull Raw raw) {
-                        return persister().write(key, raw)
-                                .flatMap(new Function<Boolean, SingleSource<Parsed>>() {
-                                    @Override
-                                    public SingleSource<Parsed> apply(@NonNull Boolean aBoolean) {
-                                        return readDisk(key).toSingle();
-                                    }
-                                });
+                .flatMap(raw -> persister()
+                        .write(key, raw)
+                        .flatMap(aBoolean -> readDisk(key).toSingle()))
+                .onErrorResumeNext(throwable -> {
+                    if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
+                        return readDisk(key)
+                                .switchIfEmpty(Maybe.<Parsed>error(throwable))
+                                .toSingle();
                     }
+                    return Single.error(throwable);
                 })
-                .onErrorResumeNext(new Function<Throwable, SingleSource<? extends Parsed>>() {
-                    @Override
-                    public SingleSource<? extends Parsed> apply(@NonNull Throwable throwable) {
-                        if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
-                            return readDisk(key)
-                                    .switchIfEmpty(Maybe.<Parsed>error(throwable))
-                                    .toSingle();
-                        }
-                        return Single.error(throwable);
-                    }
-                })
-                .doOnSuccess(new Consumer<Parsed>() {
-                    @Override
-                    public void accept(@NonNull Parsed parsed) {
-                        notifySubscribers(parsed);
-                    }
-                })
-                .doAfterTerminate(new Action() {
-                    @Override
-                    public void run() {
-                        inFlightRequests.invalidate(key);
-                    }
-                })
+                .doOnSuccess(this::notifySubscribers)
+                .doAfterTerminate(() -> inFlightRequests.invalidate(key))
                 .cache();
     }
 

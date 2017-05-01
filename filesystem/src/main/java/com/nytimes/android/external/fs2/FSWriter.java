@@ -3,8 +3,6 @@ package com.nytimes.android.external.fs2;
 import com.nytimes.android.external.fs2.filesystem.FileSystem;
 import com.nytimes.android.external.store2.base.DiskWrite;
 
-import java.util.concurrent.Callable;
-
 import javax.annotation.Nonnull;
 
 import io.reactivex.Single;
@@ -28,14 +26,9 @@ public class FSWriter<T> implements DiskWrite<BufferedSource, T> {
     @Nonnull
     @Override
     public Single<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Nonnull
-            @Override
-            @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-            public Boolean call() throws Exception {
-                fileSystem.write(pathResolver.resolve(key), data);
-                return true;
-            }
+        return Single.fromCallable(() -> {
+            fileSystem.write(pathResolver.resolve(key), data);
+            return true;
         });
     }
 }

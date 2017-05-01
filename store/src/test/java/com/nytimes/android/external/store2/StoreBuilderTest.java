@@ -2,7 +2,6 @@ package com.nytimes.android.external.store2;
 
 
 import com.nytimes.android.external.store2.base.Fetcher;
-import com.nytimes.android.external.store2.base.Parser;
 import com.nytimes.android.external.store2.base.Persister;
 import com.nytimes.android.external.store2.base.impl.BarCode;
 import com.nytimes.android.external.store2.base.impl.Store;
@@ -16,7 +15,6 @@ import javax.annotation.Nonnull;
 
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import io.reactivex.annotations.NonNull;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,13 +26,7 @@ public class StoreBuilderTest {
     public void testBuildersBuildWithCorrectTypes() {
         //test  is checking whether types are correct in builders
         Store<Date, Integer> store = StoreBuilder.<Integer, String, Date>parsedWithKey()
-                .fetcher(new Fetcher<String, Integer>() {
-                    @Nonnull
-                    @Override
-                    public Single<String> fetch(@Nonnull Integer key) {
-                        return Single.just(String.valueOf(key));
-                    }
-                })
+                .fetcher(key -> Single.just(String.valueOf(key)))
                 .persister(new Persister<String, Integer>() {
                     @Nonnull
                     @Override
@@ -48,12 +40,7 @@ public class StoreBuilderTest {
                         return Single.just(true);
                     }
                 })
-                .parser(new Parser<String, Date>() {
-                    @Override
-                    public Date apply(@NonNull String s) {
-                        return DATE;
-                    }
-                })
+                .parser(s -> DATE)
                 .open();
 
 
