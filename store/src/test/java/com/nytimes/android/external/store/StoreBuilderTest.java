@@ -7,6 +7,7 @@ import com.nytimes.android.external.store.base.impl.StoreBuilder;
 
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.util.Date;
 
 import javax.annotation.Nonnull;
@@ -35,6 +36,12 @@ public class StoreBuilderTest {
                     @Override
                     public Observable<Boolean> write(@Nonnull Integer key, @Nonnull String s) {
                         return Observable.empty();
+                    }
+
+                    @Nonnull
+                    @Override
+                    public Observable<String> readAll(@Nonnull Integer key) throws FileNotFoundException {
+                        return Observable.just(String.valueOf(key));
                     }
                 })
                 .parser(s -> DATE)

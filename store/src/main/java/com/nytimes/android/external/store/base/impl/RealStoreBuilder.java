@@ -11,6 +11,7 @@ import com.nytimes.android.external.store.util.NoKeyParser;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +62,12 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
             @Override
             public Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
                 return diskWrite.write(key, raw);
+            }
+
+            @Nonnull
+            @Override
+            public Observable<Raw> readAll(@Nonnull Key key) throws FileNotFoundException {
+                return diskRead.readAll(key);
             }
         };
         return this;

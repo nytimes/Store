@@ -5,6 +5,7 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.RecordProvider;
 import com.nytimes.android.external.store.base.RecordState;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -67,5 +68,11 @@ public final class FileSystemRecordPersister<Key> implements Persister<BufferedS
     @Override
     public Observable<Boolean> write(@Nonnull Key key, @Nonnull BufferedSource bufferedSource) {
         return fileWriter.write(key, bufferedSource);
+    }
+
+    @Nonnull
+    @Override
+    public Observable<BufferedSource> readAll(@Nonnull Key key) throws FileNotFoundException {
+        return fileReader.read(key);
     }
 }

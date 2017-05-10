@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
@@ -114,6 +115,12 @@ public class GetRefreshingTest {
         @Nonnull
         @Override
         public Observable<Boolean> write(@Nonnull BarCode barCode, @Nonnull Integer integer) {
+            throw new RuntimeException();
+        }
+
+        @Nonnull
+        @Override
+        public Observable<Integer> readAll(@Nonnull BarCode barCode) throws FileNotFoundException {
             throw new RuntimeException();
         }
     }

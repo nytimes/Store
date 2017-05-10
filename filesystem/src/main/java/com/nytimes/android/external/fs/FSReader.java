@@ -11,6 +11,9 @@ import javax.annotation.Nonnull;
 import okio.BufferedSource;
 import rx.Emitter;
 import rx.Observable;
+import rx.exceptions.Exceptions;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * FSReader is used when persisting from file system
@@ -32,29 +35,41 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final T key) {
-        return Observable.fromEmitter(emitter -> {
-            String resolvedKey = pathResolver.resolve(key);
-            boolean exists = fileSystem.exists(resolvedKey);
-            if (exists) {
-                BufferedSource bufferedSource = null;
-                try {
-                    bufferedSource = fileSystem.read(resolvedKey);
-                    emitter.onNext(bufferedSource);
-                    emitter.onCompleted();
-                } catch (FileNotFoundException e) {
-                    emitter.onError(e);
-                } finally {
-                    if (bufferedSource != null) {
-                        try {
-                            bufferedSource.close();
-                        } catch (IOException e) {
-                            e.printStackTrace(System.err);
-                        }
+        return Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
+            @Override
+            public void call(Emitter<BufferedSource> emitter) {
+                String resolvedKey = pathResolver.resolve(key);
+                boolean exists = fileSystem.exists(resolvedKey);
+
+                if (exists) {
+                    try {
+                        BufferedSource bufferedSource = fileSystem.read(resolvedKey);
+                        emitter.onNext(bufferedSource);
+                        emitter.onCompleted();
+                    } catch (FileNotFoundException e) {
+                        emitter.onError(e);
                     }
+                } else {
+                    emitter.onCompleted();
                 }
-            } else {
-                emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
             }
         }, Emitter.BackpressureMode.NONE);
+    }
+
+    @Nonnull
+    @Override
+    public Observable<BufferedSource> readAll(@Nonnull final T type) throws FileNotFoundException {
+        return Observable
+                .from(fileSystem.list(pathResolver.resolve(type)))
+                .map(new Func1<String, BufferedSource>() {
+                    @Override
+                    public BufferedSource call(String s) {
+                        try {
+                            return fileSystem.read(s);
+                        } catch (FileNotFoundException e) {
+                            throw Exceptions.propagate(e);
+                        }
+                    }
+                });
     }
 }

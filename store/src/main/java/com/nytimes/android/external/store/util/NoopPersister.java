@@ -8,6 +8,10 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.MemoryPolicy;
 
 import java.util.concurrent.TimeUnit;
+import java.io.FileNotFoundException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 
@@ -64,5 +68,11 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
     @Override
     public void clear(@Nonnull Key key) {
         networkResponses.invalidate(key);
+    }
+
+    @Nonnull
+    @Override
+    public Observable<Raw> readAll(@Nonnull Key key) throws FileNotFoundException {
+        return null;
     }
 }

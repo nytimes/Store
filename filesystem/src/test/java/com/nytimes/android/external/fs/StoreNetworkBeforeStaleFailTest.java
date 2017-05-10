@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.FileNotFoundException;
+
 import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
@@ -74,6 +76,12 @@ public class StoreNetworkBeforeStaleFailTest {
         public Observable<Boolean> write(@Nonnull BarCode barCode,
                                          @Nonnull BufferedSource bufferedSource) {
             return Observable.just(true);
+        }
+
+        @Nonnull
+        @Override
+        public Observable<BufferedSource> readAll(@Nonnull BarCode barCode) throws FileNotFoundException {
+            return Observable.error(sorry);
         }
     }
 }
