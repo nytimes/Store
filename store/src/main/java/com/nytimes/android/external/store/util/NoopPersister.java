@@ -4,6 +4,8 @@ package com.nytimes.android.external.store.util;
 import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Persister;
 
+import java.io.FileNotFoundException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -34,5 +36,11 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
     @Override
     public void clear(@Nonnull Key key) {
         networkResponses.remove(key);
+    }
+
+    @Nonnull
+    @Override
+    public Observable<Raw> readAll(@Nonnull Key key) throws FileNotFoundException {
+        return null;
     }
 }
