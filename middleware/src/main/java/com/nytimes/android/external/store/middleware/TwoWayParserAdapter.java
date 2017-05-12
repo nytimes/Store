@@ -1,4 +1,4 @@
-package com.nytimes.android.sample.util;
+package com.nytimes.android.external.store.middleware;
 
 import com.google.gson.Gson;
 import com.nytimes.android.external.fs.BufferedSourceAdapter;

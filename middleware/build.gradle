@@ -5,6 +5,7 @@ version = VERSION_NAME
 
 dependencies {
     compile project(path: ':store')
+    compile project(path: ':filesystem')
     compile libraries.okio
     compile libraries.gson
     compile libraries.jsr305

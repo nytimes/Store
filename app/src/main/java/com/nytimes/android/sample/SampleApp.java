@@ -4,8 +4,6 @@ import android.app.Application;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nytimes.android.external.fs.BufferedSourceAdapter;
-import com.nytimes.android.external.fs.ObjectToSourceTransformer;
 import com.nytimes.android.external.fs.SourcePersisterFactory;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
@@ -16,7 +14,6 @@ import com.nytimes.android.external.store.middleware.GsonParserFactory;
 import com.nytimes.android.sample.data.model.GsonAdaptersModel;
 import com.nytimes.android.sample.data.model.RedditData;
 import com.nytimes.android.sample.data.remote.Api;
-import com.nytimes.android.sample.util.TwoWayParserAdapter;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -79,17 +76,13 @@ public class SampleApp extends Application {
                 .open();
     }
 
-    private BufferedSourceAdapter<RedditData> provideBufferedSourceAdapter() {
-        return new TwoWayParserAdapter<>(provideGson(), RedditData.class);
-    }
-
     private Persister<BufferedSource, BarCode> newPersister() throws IOException {
         return SourcePersisterFactory.create(getApplicationContext().getCacheDir());
     }
 
     private Observable<BufferedSource> fetcher(BarCode barCode) {
-        return provideRetrofit().fetchSubreddit(barCode.getKey(), "10").compose(new ObjectToSourceTransformer<>
-                (provideBufferedSourceAdapter()));
+        return provideRetrofit().fetchSubredditForPersister(barCode.getKey(), "10")
+                .map(responseBody -> responseBody.source());
     }
 
     private Api provideRetrofit() {
