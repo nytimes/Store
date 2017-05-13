@@ -17,12 +17,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class MemoryPolicy {
 
-    private final long expireAfter;
+    private final long expireAfterWrite;
+    private final long expireAfterAccess;
     private final TimeUnit expireAfterTimeUnit;
     private final long maxSize;
 
-    MemoryPolicy(long expireAfter, TimeUnit expireAfterTimeUnit, long maxSize) {
-        this.expireAfter = expireAfter;
+    MemoryPolicy(long expireAfterWrite, long expireAfterAccess, TimeUnit expireAfterTimeUnit, long maxSize) {
+        this.expireAfterWrite = expireAfterWrite;
+        this.expireAfterAccess = expireAfterAccess;
         this.expireAfterTimeUnit = expireAfterTimeUnit;
         this.maxSize = maxSize;
     }
@@ -31,8 +33,12 @@ public class MemoryPolicy {
         return new MemoryPolicyBuilder();
     }
 
-    public long getExpireAfter() {
-        return expireAfter;
+    public long getExpireAfterWrite() {
+        return expireAfterWrite;
+    }
+
+    public long getExpireAfterAccess() {
+        return expireAfterAccess;
     }
 
     public TimeUnit getExpireAfterTimeUnit() {
@@ -44,16 +50,28 @@ public class MemoryPolicy {
     }
 
     public boolean isDefaultPolicy() {
-        return expireAfter == -1;
+        return expireAfterWrite == -1;
     }
 
     public static class MemoryPolicyBuilder {
-        private long expireAfter = -1;
+        private long expireAfterWrite = -1;
+        private long expireAfterAccess = -1;
         private TimeUnit expireAfterTimeUnit = TimeUnit.SECONDS;
         private long maxSize = 1;
 
-        public MemoryPolicyBuilder setExpireAfter(long expireAfter) {
-            this.expireAfter = expireAfter;
+        public MemoryPolicyBuilder setExpireAfterWrite(long expireAfterWrite) {
+            if (expireAfterAccess != -1) {
+                throw new IllegalStateException("Cannot set expireAfterWrite with expireAfterAccess already set");
+            }
+            this.expireAfterWrite = expireAfterWrite;
+            return this;
+        }
+
+        public MemoryPolicyBuilder setExpireAfterAccess(long expireAfterAccess) {
+            if (expireAfterWrite != -1) {
+                throw new IllegalStateException("Cannot set expireAfterAccess with expireAfterWrite already set");
+            }
+            this.expireAfterAccess = expireAfterAccess;
             return this;
         }
 
@@ -68,7 +86,8 @@ public class MemoryPolicy {
         }
 
         public MemoryPolicy build() {
-            return new MemoryPolicy(expireAfter, expireAfterTimeUnit, maxSize);
+
+            return new MemoryPolicy(expireAfterWrite, expireAfterAccess, expireAfterTimeUnit, maxSize);
         }
     }
 }

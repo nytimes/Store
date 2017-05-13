@@ -22,7 +22,7 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
     NoopPersister(MemoryPolicy memoryPolicy) {
         this.networkResponses = CacheBuilder
             .newBuilder()
-            .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
+            .expireAfterWrite(memoryPolicy.getExpireAfterWrite(), memoryPolicy.getExpireAfterTimeUnit())
             .build();
     }
 
@@ -37,7 +37,7 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
         if (memoryPolicy == null) {
             memPolicy = MemoryPolicy
                 .builder()
-                .setExpireAfter(TimeUnit.HOURS.toSeconds(24))
+                .setExpireAfterWrite(TimeUnit.HOURS.toSeconds(24))
                 .setExpireAfterTimeUnit(TimeUnit.SECONDS)
                 .build();
         } else {
