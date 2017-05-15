@@ -9,7 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import okio.BufferedSource;
 import rx.Observable;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +34,6 @@ public class ObjectToSourceTransformerTest {
                 .toBlocking()
                 .first();
 
-        assertEquals(source, mockBufferedSource);
+        assertThat(source).isEqualTo(mockBufferedSource);
     }
 }
