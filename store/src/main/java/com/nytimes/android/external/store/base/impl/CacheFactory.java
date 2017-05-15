@@ -20,7 +20,7 @@ final class CacheFactory {
                     .expireAfterWrite(StoreDefaults.getCacheTTL(), StoreDefaults.getCacheTTLTimeUnit())
                     .build();
         } else {
-            if (memoryPolicy.getExpireAfterAccess() == -1) {
+            if (memoryPolicy.getExpireAfterAccess() == memoryPolicy.DEFAULT_POLICY) {
                 return CacheBuilder
                         .newBuilder()
                         .maximumSize(memoryPolicy.getMaxSize())

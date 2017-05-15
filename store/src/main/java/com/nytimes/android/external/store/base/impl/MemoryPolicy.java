@@ -21,7 +21,7 @@ public class MemoryPolicy {
     private final long expireAfterAccess;
     private final TimeUnit expireAfterTimeUnit;
     private final long maxSize;
-    private final long DEFAULT_POLICY = -1;
+    public final long DEFAULT_POLICY = -1;
 
     MemoryPolicy(long expireAfterWrite, long expireAfterAccess, TimeUnit expireAfterTimeUnit, long maxSize) {
         this.expireAfterWrite = expireAfterWrite;
