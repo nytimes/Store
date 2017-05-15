@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class MemoryPolicy {
 
+    public static final long DEFAULT_POLICY = -1;
     private final long expireAfterWrite;
     private final long expireAfterAccess;
     private final TimeUnit expireAfterTimeUnit;
     private final long maxSize;
-    public final long DEFAULT_POLICY = -1;
 
     MemoryPolicy(long expireAfterWrite, long expireAfterAccess, TimeUnit expireAfterTimeUnit, long maxSize) {
         this.expireAfterWrite = expireAfterWrite;
@@ -55,13 +55,13 @@ public class MemoryPolicy {
     }
 
     public static class MemoryPolicyBuilder {
-        private long expireAfterWrite = -1;
-        private long expireAfterAccess = -1;
+        private long expireAfterWrite = DEFAULT_POLICY;
+        private long expireAfterAccess = DEFAULT_POLICY;
         private TimeUnit expireAfterTimeUnit = TimeUnit.SECONDS;
         private long maxSize = 1;
 
         public MemoryPolicyBuilder setExpireAfterWrite(long expireAfterWrite) {
-            if (expireAfterAccess != -1) {
+            if (expireAfterAccess != DEFAULT_POLICY) {
                 throw new IllegalStateException("Cannot set expireAfterWrite with expireAfterAccess already set");
             }
             this.expireAfterWrite = expireAfterWrite;
@@ -69,7 +69,7 @@ public class MemoryPolicy {
         }
 
         public MemoryPolicyBuilder setExpireAfterAccess(long expireAfterAccess) {
-            if (expireAfterWrite != -1) {
+            if (expireAfterWrite != DEFAULT_POLICY) {
                 throw new IllegalStateException("Cannot set expireAfterAccess with expireAfterWrite already set");
             }
             this.expireAfterAccess = expireAfterAccess;
