@@ -45,7 +45,7 @@ You create a Store using a builder. The only requirement is to include a `.Fetch
 
 
 ``` java
-        Store<ArticleAsset, Integer> store = StoreBuilder.<ArticleAsset,Integer>key()
+        Store<ArticleAsset, Integer> store = StoreBuilder.<Integer,ArticleAsset>key()
                 .fetcher(articleId -> api.getArticle(articleId))  //OkHttp responseBody.source()
                 .open();
 ```
