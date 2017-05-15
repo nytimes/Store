@@ -10,6 +10,9 @@ import javax.annotation.Nonnull;
  */
 public class JacksonTransformerFactory {
 
+    private JacksonTransformerFactory() {
+    }
+
     /**
      * Returns a new {@link ObjectToSourceTransformer}, which uses a {@link JacksonBufferedSourceAdapter} to parse from
      * objects of the specified type to JSON using the provided

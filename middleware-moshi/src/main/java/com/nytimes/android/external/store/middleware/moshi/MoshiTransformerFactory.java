@@ -12,6 +12,9 @@ import javax.annotation.Nonnull;
  */
 public class MoshiTransformerFactory {
 
+    private MoshiTransformerFactory() {
+    }
+
     /**
      * Returns a new {@link ObjectToSourceTransformer}, which uses a {@link MoshiBufferedSourceAdapter} to parse from
      * objects of the specified type.

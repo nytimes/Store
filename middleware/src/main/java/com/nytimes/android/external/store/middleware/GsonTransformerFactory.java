@@ -10,6 +10,9 @@ import javax.annotation.Nonnull;
  */
 public class GsonTransformerFactory {
 
+    private GsonTransformerFactory() {
+    }
+
     /**
      * Returns a new {@link ObjectToSourceTransformer}, which uses a {@link GsonBufferedSourceAdapter} to parse from
      * objects of the specified type to JSON using the provided {@link Gson} instance.
