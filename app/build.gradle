@@ -6,7 +6,7 @@ android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
     defaultConfig {
-        applicationId "com.nytimes.android.sample"
+        applicationId "com.nytimes.android.store.sample"
         minSdkVersion 19
         compileSdkVersion versions.compileSdk
         targetSdkVersion versions.targetSdk
