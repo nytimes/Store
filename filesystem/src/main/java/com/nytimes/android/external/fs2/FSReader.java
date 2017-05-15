@@ -4,6 +4,7 @@ import com.nytimes.android.external.fs2.filesystem.FileSystem;
 import com.nytimes.android.external.store2.base.DiskRead;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
@@ -35,12 +36,21 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
             boolean exists = fileSystem.exists(resolvedKey);
 
             if (exists) {
+                BufferedSource bufferedSource = null;
                 try {
-                    BufferedSource bufferedSource = fileSystem.read(resolvedKey);
+                    bufferedSource = fileSystem.read(resolvedKey);
                     emitter.onSuccess(bufferedSource);
                     emitter.onComplete();
                 } catch (FileNotFoundException e) {
                     emitter.onError(e);
+                } finally {
+                    if (bufferedSource != null) {
+                        try {
+                            bufferedSource.close();
+                        } catch (IOException e) {
+                            e.printStackTrace(System.err);
+                        }
+                    }
                 }
             } else {
                 emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
