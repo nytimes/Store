@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 /**
  * Factory which returns Gson {@link rx.Observable.Transformer} implementations.
  */
-public class GsonTransformerFactory {
+public final class GsonTransformerFactory {
 
     private GsonTransformerFactory() {
     }

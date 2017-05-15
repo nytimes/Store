@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 /**
  * Factory which returns Jackson {@link rx.Observable.Transformer} implementations.
  */
-public class JacksonTransformerFactory {
+public final class JacksonTransformerFactory {
 
     private JacksonTransformerFactory() {
     }

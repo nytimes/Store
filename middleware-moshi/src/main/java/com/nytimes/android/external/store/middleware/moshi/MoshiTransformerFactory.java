@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 /**
  * Factory which returns Moshi {@link rx.Observable.Transformer} implementations.
  */
-public class MoshiTransformerFactory {
+public final class MoshiTransformerFactory {
 
     private MoshiTransformerFactory() {
     }
