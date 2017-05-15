@@ -5,12 +5,9 @@ import javax.annotation.Nonnull;
 import okio.BufferedSource;
 
 /**
- * Converts Java values to JSON, and JSON values to Java.
+ * Converts Java values to JSON.
  */
 public interface BufferedSourceAdapter<Parsed> {
     @Nonnull
     BufferedSource toJson(@Nonnull Parsed value);
-
-    @Nonnull
-    Parsed fromJson(@Nonnull BufferedSource source);
 }
