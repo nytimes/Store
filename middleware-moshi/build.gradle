@@ -6,6 +6,7 @@ version = VERSION_NAME
 
 dependencies {
     compile project(path: ':store')
+    compile project(path: ':filesystem')
     compile libraries.moshi
     compile libraries.jsr305
     compile libraries.javax
