@@ -32,9 +32,9 @@ public class MemoryPolicyBuilderTest {
         assertThat(policy.getExpireAfterWrite()).isEqualTo(MemoryPolicy.DEFAULT_POLICY);
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void testCannotSetBothExpirationPolicies() {
-        MemoryPolicy policy = MemoryPolicy.builder()
+        MemoryPolicy.builder()
                 .setExpireAfterAccess(4L)
                 .setExpireAfterWrite(4L)
                 .build();
