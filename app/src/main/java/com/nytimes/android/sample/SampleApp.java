@@ -11,6 +11,7 @@ import com.nytimes.android.external.store2.base.impl.MemoryPolicy;
 import com.nytimes.android.external.store2.base.impl.Store;
 import com.nytimes.android.external.store2.base.impl.StoreBuilder;
 import com.nytimes.android.external.store2.middleware.GsonParserFactory;
+import com.nytimes.android.external.store2.middleware.GsonTransformerFactory;
 import com.nytimes.android.sample.data.model.GsonAdaptersModel;
 import com.nytimes.android.sample.data.model.RedditData;
 import com.nytimes.android.sample.data.remote.Api;
