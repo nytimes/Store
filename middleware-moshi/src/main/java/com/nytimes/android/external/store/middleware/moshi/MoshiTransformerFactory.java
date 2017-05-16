@@ -7,6 +7,8 @@ import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
 
+import rx.annotations.Experimental;
+
 /**
  * Factory which returns Moshi {@link rx.Observable.Transformer} implementations.
  */
@@ -20,6 +22,7 @@ public final class MoshiTransformerFactory {
      * objects of the specified type.
      */
     @Nonnull
+    @Experimental
     public static <Parsed> ObjectToSourceTransformer<Parsed> createObjectToSourceTransformer(@Nonnull Type type) {
         return new ObjectToSourceTransformer<>(new MoshiBufferedSourceAdapter<Parsed>(new Moshi.Builder().build(),
                 type));

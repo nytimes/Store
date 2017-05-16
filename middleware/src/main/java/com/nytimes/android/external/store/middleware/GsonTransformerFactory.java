@@ -5,6 +5,8 @@ import com.nytimes.android.external.fs.ObjectToSourceTransformer;
 
 import javax.annotation.Nonnull;
 
+import rx.annotations.Experimental;
+
 /**
  * Factory which returns Gson {@link rx.Observable.Transformer} implementations.
  */
@@ -18,6 +20,7 @@ public final class GsonTransformerFactory {
      * objects of the specified type to JSON using the provided {@link Gson} instance.
      */
     @Nonnull
+    @Experimental
     public static <Parsed> ObjectToSourceTransformer<Parsed> createObjectToSourceTransformer(@Nonnull Gson gson) {
         return new ObjectToSourceTransformer<>(new GsonBufferedSourceAdapter<Parsed>(gson));
     }

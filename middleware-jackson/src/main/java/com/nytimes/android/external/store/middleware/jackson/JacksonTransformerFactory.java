@@ -5,6 +5,8 @@ import com.nytimes.android.external.fs.ObjectToSourceTransformer;
 
 import javax.annotation.Nonnull;
 
+import rx.annotations.Experimental;
+
 /**
  * Factory which returns Jackson {@link rx.Observable.Transformer} implementations.
  */
@@ -19,6 +21,7 @@ public final class JacksonTransformerFactory {
      * {@link com.fasterxml.jackson.databind.ObjectMapper ObjectMapper} instance.
      */
     @Nonnull
+    @Experimental
     public static <Parsed> ObjectToSourceTransformer<Parsed> createObjectToSourceTransformer(@Nonnull ObjectMapper
                                                                                                          objectMapper) {
         return new ObjectToSourceTransformer<>(new JacksonBufferedSourceAdapter<Parsed>(objectMapper));
