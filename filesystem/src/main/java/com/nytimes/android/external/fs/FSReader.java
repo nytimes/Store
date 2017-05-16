@@ -13,6 +13,7 @@ import rx.Emitter;
 import rx.Observable;
 import rx.exceptions.Exceptions;
 import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.functions.Func1;
 
 /**
@@ -59,17 +60,28 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> readAll(@Nonnull final T type) throws FileNotFoundException {
-        return Observable
-                .from(fileSystem.list(pathResolver.resolve(type)))
-                .map(new Func1<String, BufferedSource>() {
-                    @Override
-                    public BufferedSource call(String s) {
-                        try {
-                            return fileSystem.read(s);
-                        } catch (FileNotFoundException e) {
-                            throw Exceptions.propagate(e);
-                        }
-                    }
-                });
+        return Observable.defer(new Func0<Observable<BufferedSource>>() {
+            @Override
+            public Observable<BufferedSource> call() {
+                Observable<BufferedSource> bufferedSourceObservable = null;
+                try {
+                    bufferedSourceObservable = Observable
+                            .from(fileSystem.list(pathResolver.resolve(type)))
+                            .map(new Func1<String, BufferedSource>() {
+                                @Override
+                                public BufferedSource call(String s) {
+                                    try {
+                                        return fileSystem.read(s);
+                                    } catch (FileNotFoundException e) {
+                                        throw Exceptions.propagate(e);
+                                    }
+                                }
+                            });
+                } catch (FileNotFoundException e) {
+                    throw Exceptions.propagate(e);
+                }
+                return bufferedSourceObservable;
+            }
+        });
     }
 }
