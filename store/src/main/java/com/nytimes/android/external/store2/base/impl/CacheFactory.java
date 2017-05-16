@@ -21,18 +21,26 @@ final class CacheFactory {
                     .expireAfterWrite(StoreDefaults.getCacheTTL(), StoreDefaults.getCacheTTLTimeUnit())
                     .build();
         } else {
-            return CacheBuilder
-                    .newBuilder()
-                    .maximumSize(memoryPolicy.getMaxSize())
-                    .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-                    .build();
+            if (memoryPolicy.getExpireAfterAccess() == memoryPolicy.DEFAULT_POLICY) {
+                return CacheBuilder
+                        .newBuilder()
+                        .maximumSize(memoryPolicy.getMaxSize())
+                        .expireAfterWrite(memoryPolicy.getExpireAfterWrite(), memoryPolicy.getExpireAfterTimeUnit())
+                        .build();
+            } else {
+                return CacheBuilder
+                        .newBuilder()
+                        .maximumSize(memoryPolicy.getMaxSize())
+                        .expireAfterAccess(memoryPolicy.getExpireAfterAccess(), memoryPolicy.getExpireAfterTimeUnit())
+                        .build();
+            }
         }
     }
 
     static <Key, Parsed> Cache<Key, Single<Parsed>> createInflighter(MemoryPolicy memoryPolicy) {
         long expireAfterToSeconds = memoryPolicy == null ? StoreDefaults.getCacheTTLTimeUnit()
                 .toSeconds(StoreDefaults.getCacheTTL())
-                : memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfter());
+                : memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfterWrite());
         long maximumInFlightRequestsDuration = TimeUnit.MINUTES.toSeconds(1);
 
         if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
@@ -42,7 +50,7 @@ final class CacheFactory {
                     .build();
         } else {
             long expireAfter = memoryPolicy == null ? StoreDefaults.getCacheTTL() :
-                    memoryPolicy.getExpireAfter();
+                    memoryPolicy.getExpireAfterWrite();
             TimeUnit expireAfterUnit = memoryPolicy == null ? StoreDefaults.getCacheTTLTimeUnit() :
                     memoryPolicy.getExpireAfterTimeUnit();
             return CacheBuilder.newBuilder()
