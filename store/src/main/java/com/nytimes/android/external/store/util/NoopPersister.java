@@ -9,9 +9,6 @@ import com.nytimes.android.external.store.base.impl.MemoryPolicy;
 
 import java.util.concurrent.TimeUnit;
 import java.io.FileNotFoundException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
 

@@ -1,7 +1,5 @@
 package com.nytimes.android.external.fs;
 
-import com.nytimes.android.external.fs.BarCodeReadAllPathResolver;
-import com.nytimes.android.external.fs.FSReader;
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
 import com.nytimes.android.external.store.base.impl.BarCode;
