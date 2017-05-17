@@ -1,4 +1,4 @@
-package com.nytimes.android.external.fs.filesystem;
+package com.nytimes.android.external.fs2.filesystem;
 
 import org.junit.Before;
 import org.junit.Rule;

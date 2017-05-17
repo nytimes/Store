@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'me.tatarka.retrolambda'
 
 group = GROUP
 version = VERSION_NAME
