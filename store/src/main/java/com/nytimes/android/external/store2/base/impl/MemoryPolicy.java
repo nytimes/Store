@@ -36,6 +36,14 @@ public class MemoryPolicy {
         return new MemoryPolicyBuilder();
     }
 
+    /**
+     * @deprecated Use {@link MemoryPolicy#getExpireAfterWrite()} or {@link MemoryPolicy#getExpireAfterAccess()}.
+     */
+    @Deprecated
+    public long getExpireAfter() {
+        return expireAfterWrite;
+    }
+
     public long getExpireAfterWrite() {
         return expireAfterWrite;
     }
@@ -61,6 +69,15 @@ public class MemoryPolicy {
         private long expireAfterAccess = DEFAULT_POLICY;
         private TimeUnit expireAfterTimeUnit = TimeUnit.SECONDS;
         private long maxSize = 1;
+
+        /**
+         * @deprecated Use {@link MemoryPolicyBuilder#setExpireAfterWrite(long)} or
+         * {@link MemoryPolicyBuilder#setExpireAfterAccess(long)}.
+         */
+        @Deprecated
+        public MemoryPolicyBuilder setExpireAfter(long expireAfter) {
+            return setExpireAfterWrite(expireAfter);
+        }
 
         public MemoryPolicyBuilder setExpireAfterWrite(long expireAfterWrite) {
             if (expireAfterAccess != DEFAULT_POLICY) {
