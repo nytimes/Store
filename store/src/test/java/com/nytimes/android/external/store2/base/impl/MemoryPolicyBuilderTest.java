@@ -1,4 +1,4 @@
-package com.nytimes.android.external.store.base.impl;
+package com.nytimes.android.external.store2.base.impl;
 
 import org.junit.Test;
 
