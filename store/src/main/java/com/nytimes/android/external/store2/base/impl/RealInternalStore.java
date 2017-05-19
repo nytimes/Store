@@ -1,8 +1,6 @@
 package com.nytimes.android.external.store2.base.impl;
 
 import com.nytimes.android.external.cache.Cache;
-import com.nytimes.android.external.cache.CacheBuilder;
-import com.nytimes.android.external.store2.base.Clearable;
 import com.nytimes.android.external.store2.base.Fetcher;
 import com.nytimes.android.external.store2.base.InternalStore;
 import com.nytimes.android.external.store2.base.Persister;
@@ -10,7 +8,6 @@ import com.nytimes.android.external.store2.util.KeyParser;
 
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,18 +16,16 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.annotations.Experimental;
-import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
 /**
- * Store to be used for loading an object different data sources
+ * Store to be used for loading an object from different data sources
  *
- * @param <Raw>    data type before parsing usually String, Reader or BufferedSource
+ * @param <Raw>    data type before parsing, usually a String, Reader or BufferedSource
  * @param <Parsed> data type after parsing
  *                 <p>
  *                 Example usage:  @link
  */
-@SuppressWarnings("PMD")
 final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
     Cache<Key, Single<Parsed>> inFlightRequests;
     Cache<Key, Maybe<Parsed>> memCache;
@@ -40,7 +35,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
-    private BehaviorSubject<Parsed> subject;
+    private PublishSubject<Parsed> subject;
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
@@ -60,43 +55,10 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         this.parser = parser;
         this.stalePolicy = stalePolicy;
 
-        if (memoryPolicy == null) {
-            memoryPolicy = MemoryPolicy
-                    .builder()
-                    .setMemorySize(getCacheSize())
-                    .setExpireAfter(getCacheTTL())
-                    .setExpireAfterTimeUnit(getCacheTTLTimeUnit())
-                    .build();
-        }
+        this.memCache = CacheFactory.createCache(memoryPolicy);
+        this.inFlightRequests = CacheFactory.createInflighter(memoryPolicy);
 
-        initMemCache(memoryPolicy);
-        initFlightRequests(memoryPolicy);
-
-        subject = BehaviorSubject.create();
-    }
-
-    private void initFlightRequests(MemoryPolicy memoryPolicy) {
-        long expireAfterToSeconds = memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfter());
-        long maximumInFlightRequestsDuration = TimeUnit.MINUTES.toSeconds(1);
-
-        if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
-            inFlightRequests = CacheBuilder
-                    .newBuilder()
-                    .expireAfterWrite(maximumInFlightRequestsDuration, TimeUnit.SECONDS)
-                    .build();
-        } else {
-            inFlightRequests = CacheBuilder.newBuilder()
-                    .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-                    .build();
-        }
-    }
-
-    private void initMemCache(MemoryPolicy memoryPolicy) {
-        memCache = CacheBuilder
-                .newBuilder()
-                .maximumSize(memoryPolicy.getMaxSize())
-                .expireAfterWrite(memoryPolicy.getExpireAfter(), memoryPolicy.getExpireAfterTimeUnit())
-                .build();
+        subject = PublishSubject.create();
     }
 
     /**
@@ -147,7 +109,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     /**
-     * Fetch data from persister and update memory after. If an error occurs, emit and empty observable
+     * Fetch data from persister and update memory after. If an error occurs, emit an empty observable
      * so that the concat call in {@link #get(Key)} moves on to {@link #fetch(Key)}
      *
      * @param key
@@ -188,7 +150,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     /**
      * Will check to see if there exists an in flight observable and return it before
-     * going to nerwork
+     * going to network
      *
      * @return data from fetch and store it in memory and persister
      */
@@ -249,15 +211,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Observable<Parsed> stream(@Nonnull Key key) {
-
-        Observable<Parsed> stream = subject.hide();
-
-        //If nothing was emitted through the subject yet, start stream with get() value
-        if (!subject.hasValue()) {
-            return stream.startWith(get(key).toObservable());
-        }
-
-        return stream;
+        return subject.hide().startWith(get(key).toObservable());
     }
 
     @Nonnull
@@ -267,7 +221,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     }
 
     /**
-     * Only update memory after persister has been successfully update
+     * Only update memory after persister has been successfully updated
      *
      * @param key
      * @param data
@@ -305,42 +259,12 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     public void clear(@Nonnull Key key) {
         inFlightRequests.invalidate(key);
         memCache.invalidate(key);
-        clearPersister(key);
+        StoreUtil.clearPersister(persister(), key);
         notifyRefresh(key);
     }
 
-    private void notifyRefresh(Key key) {
+    private void notifyRefresh(@Nonnull Key key) {
         refreshSubject.onNext(key);
-    }
-
-    private void clearPersister(Key key) {
-        boolean isPersisterClearable = persister instanceof Clearable;
-
-        if (isPersisterClearable) {
-            ((Clearable<Key>) persister).clear(key);
-        }
-    }
-
-    /**
-     * Default Cache TTL, can be overridden
-     *
-     * @return memory persister ttl
-     */
-    private long getCacheTTL() {
-        return TimeUnit.HOURS.toSeconds(24);
-    }
-
-    /**
-     * Default mem persister is 1, can be overridden otherwise
-     *
-     * @return memory persister size
-     */
-    private long getCacheSize() {
-        return 100;
-    }
-
-    private TimeUnit getCacheTTLTimeUnit() {
-        return TimeUnit.SECONDS;
     }
 
     /**

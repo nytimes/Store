@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
  * Barcode will be passed to   Fetcher
  * and {@link Persister  Persister}
  **/
+@SuppressWarnings("PMD.SimplifyBooleanReturns")
 public final class BarCode implements Serializable {
 
     private static final BarCode EMPTY_BARCODE = new BarCode("", "");

@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=master)](https://travis-ci.org/NYTimes/Store)
 
-
-# Store
+![Store](https://www.milkadeal.com/storage/128000/118240/68ccf50a75b5277678c52752077c19b5.jpg)
 
 Store is an Android library for effortless, reactive data loading.  
 
@@ -46,7 +45,7 @@ You create a Store using a builder. The only requirement is to include a `.Fetch
 
 
 ``` java
-        Store<ArticleAsset, Integer> store = StoreBuilder.<ArticleAsset,Integer>key()
+        Store<ArticleAsset, Integer> store = StoreBuilder.<>key()
                 .fetcher(articleId -> api.getArticle(articleId))  //OkHttp responseBody.source()
                 .open();
 ```
@@ -266,6 +265,7 @@ public class SampleStore extends RealStore<String, BarCode> {
         super(fetcher, persister);
     }
 }
+```
 
 Subclassing is useful when you’d like to inject Store dependencies or add a few helper methods to a store:
 
@@ -302,7 +302,7 @@ Note: Release is in Sync with current state of master (not develop) branch
 + **Middleware-Jackson** Sample Jackon parsers, (feel free to create more and open PRs)
 
     ```groovy
-    compile 'com.nytimes.android:middleware:-jackson:CurrentVersion'
+    compile 'com.nytimes.android:middleware-jackson:CurrentVersion'
     ```
 + **Middleware-Moshi** Sample Moshi parsers, (feel free to create more and open PRs)
 
@@ -314,10 +314,29 @@ Note: Release is in Sync with current state of master (not develop) branch
 	```groovy
 	compile 'com.nytimes.android:filesystem:CurrentVersion'
 	```
+**RxJava2**
 
+There is an experimental RxJava2 Branch as well.  
+feature/rx2 which has artifacts, use at your own risk for :-)
+   
+```
+    com.nytimes.android:store2:0.0.1-SNAPSHOT
+    
+    com.nytimes.android:cache:0.0.1-SNAPSHOT
+    
+    com.nytimes.android:middleware2:0.0.1-SNAPSHOT
+    
+    com.nytimes.android:filesystem2:0.0.1-SNAPSHOT
+```
 
 ### Sample Project
 
 See the app for example usage of Store. Alternatively, the Wiki contains a set of recipes for common use cases
 + Simple Example: Retrofit + Store
 + Complex Example: BufferedSource from Retrofit (Can be OKHTTP too) + our FileSystem + our GsonSourceParser
+
+### Talks
+[DroidCon Italy](https://youtu.be/TvsOsgd0--c)
+[Android Makers](https://www.youtube.com/watch?time_continue=170&v=G1MebI2k9aA)
+
+

@@ -19,12 +19,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class MemoryPolicy {
 
-    private final long expireAfter;
+    public static final long DEFAULT_POLICY = -1;
+    private final long expireAfterWrite;
+    private final long expireAfterAccess;
     private final TimeUnit expireAfterTimeUnit;
     private final long maxSize;
 
-    MemoryPolicy(long expireAfter, TimeUnit expireAfterTimeUnit, long maxSize) {
-        this.expireAfter = expireAfter;
+    MemoryPolicy(long expireAfterWrite, long expireAfterAccess, TimeUnit expireAfterTimeUnit, long maxSize) {
+        this.expireAfterWrite = expireAfterWrite;
+        this.expireAfterAccess = expireAfterAccess;
         this.expireAfterTimeUnit = expireAfterTimeUnit;
         this.maxSize = maxSize;
     }
@@ -33,8 +36,20 @@ public class MemoryPolicy {
         return new MemoryPolicyBuilder();
     }
 
+    /**
+     * @deprecated Use {@link MemoryPolicy#getExpireAfterWrite()} or {@link MemoryPolicy#getExpireAfterAccess()}.
+     */
+    @Deprecated
     public long getExpireAfter() {
-        return expireAfter;
+        return expireAfterWrite;
+    }
+
+    public long getExpireAfterWrite() {
+        return expireAfterWrite;
+    }
+
+    public long getExpireAfterAccess() {
+        return expireAfterAccess;
     }
 
     public TimeUnit getExpireAfterTimeUnit() {
@@ -46,16 +61,37 @@ public class MemoryPolicy {
     }
 
     public boolean isDefaultPolicy() {
-        return expireAfter == -1;
+        return expireAfterWrite == DEFAULT_POLICY;
     }
 
     public static class MemoryPolicyBuilder {
-        private long expireAfter = -1;
+        private long expireAfterWrite = DEFAULT_POLICY;
+        private long expireAfterAccess = DEFAULT_POLICY;
         private TimeUnit expireAfterTimeUnit = TimeUnit.SECONDS;
         private long maxSize = 1;
 
+        /**
+         * @deprecated Use {@link MemoryPolicyBuilder#setExpireAfterWrite(long)} or
+         * {@link MemoryPolicyBuilder#setExpireAfterAccess(long)}.
+         */
+        @Deprecated
         public MemoryPolicyBuilder setExpireAfter(long expireAfter) {
-            this.expireAfter = expireAfter;
+            return setExpireAfterWrite(expireAfter);
+        }
+
+        public MemoryPolicyBuilder setExpireAfterWrite(long expireAfterWrite) {
+            if (expireAfterAccess != DEFAULT_POLICY) {
+                throw new IllegalStateException("Cannot set expireAfterWrite with expireAfterAccess already set");
+            }
+            this.expireAfterWrite = expireAfterWrite;
+            return this;
+        }
+
+        public MemoryPolicyBuilder setExpireAfterAccess(long expireAfterAccess) {
+            if (expireAfterWrite != DEFAULT_POLICY) {
+                throw new IllegalStateException("Cannot set expireAfterAccess with expireAfterWrite already set");
+            }
+            this.expireAfterAccess = expireAfterAccess;
             return this;
         }
 
@@ -70,7 +106,7 @@ public class MemoryPolicy {
         }
 
         public MemoryPolicy build() {
-            return new MemoryPolicy(expireAfter, expireAfterTimeUnit, maxSize);
+            return new MemoryPolicy(expireAfterWrite, expireAfterAccess, expireAfterTimeUnit, maxSize);
         }
     }
 }
