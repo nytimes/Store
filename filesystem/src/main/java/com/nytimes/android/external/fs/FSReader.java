@@ -32,7 +32,7 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final T key) {
-        return Observable.fromEmitter(emitter -> {
+        return Observable.create(emitter -> {
             String resolvedKey = pathResolver.resolve(key);
             boolean exists = fileSystem.exists(resolvedKey);
             if (exists) {
