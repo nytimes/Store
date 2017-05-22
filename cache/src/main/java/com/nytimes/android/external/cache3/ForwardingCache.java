@@ -7,13 +7,13 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nullable;
 
-public abstract class ForwardingCache<K, V> extends ForwardingObject implements com.nytimes.android.external.cache3.Cache<K, V> {
+public abstract class ForwardingCache<K, V> extends ForwardingObject implements Cache<K, V> {
 
   /** Constructor for use by subclasses. */
   protected ForwardingCache() {}
 
   @Override
-  protected abstract com.nytimes.android.external.cache3.Cache<K, V> delegate();
+  protected abstract Cache<K, V> delegate();
 
   /**
    * @since 11.0

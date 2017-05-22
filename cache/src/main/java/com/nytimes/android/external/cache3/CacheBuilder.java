@@ -33,7 +33,7 @@ public final class CacheBuilder<K, V> {
   private static final int DEFAULT_EXPIRATION_NANOS = 0;
   private static final int DEFAULT_REFRESH_NANOS = 0;
 
-  enum NullListener implements com.nytimes.android.external.cache3.RemovalListener<Object, Object> {
+  enum NullListener implements RemovalListener<Object, Object> {
     INSTANCE;
 
     @Override
@@ -68,17 +68,17 @@ public final class CacheBuilder<K, V> {
   long maximumWeight = UNSET_INT;
   Weigher<? super K, ? super V> weigher;
 
-  com.nytimes.android.external.cache3.LocalCache.Strength keyStrength;
-  com.nytimes.android.external.cache3.LocalCache.Strength valueStrength;
+  LocalCache.Strength keyStrength;
+  LocalCache.Strength valueStrength;
 
   long expireAfterWriteNanos = UNSET_INT;
   long expireAfterAccessNanos = UNSET_INT;
   long refreshNanos = UNSET_INT;
 
-  com.nytimes.android.external.cache3.Equivalence<Object> keyEquivalence;
-  com.nytimes.android.external.cache3.Equivalence<Object> valueEquivalence;
+  Equivalence<Object> keyEquivalence;
+  Equivalence<Object> valueEquivalence;
 
-  com.nytimes.android.external.cache3.RemovalListener<? super K, ? super V> removalListener;
+  RemovalListener<? super K, ? super V> removalListener;
   Ticker ticker;
 
 
@@ -97,39 +97,39 @@ public final class CacheBuilder<K, V> {
   /**
    * Sets a custom {@code Equivalence} strategy for comparing keys.
    *
-   * <p>By default, the cache uses {@link com.nytimes.android.external.cache3.Equivalence#identity} to determine key equality when
-   * @link #weakKeys} is specified, and {@link com.nytimes.android.external.cache3.Equivalence#equals()} otherwise.
+   * <p>By default, the cache uses {@link Equivalence#identity} to determine key equality when
+   * @link #weakKeys} is specified, and {@link Equivalence#equals()} otherwise.
    */
   @Nonnull
-  CacheBuilder<K, V> keyEquivalence(@Nonnull com.nytimes.android.external.cache3.Equivalence<Object> equivalence) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(keyEquivalence == null, "key equivalence was already set to %s", keyEquivalence);
-    keyEquivalence = com.nytimes.android.external.cache3.Preconditions.checkNotNull(equivalence);
+  CacheBuilder<K, V> keyEquivalence(@Nonnull Equivalence<Object> equivalence) {
+    Preconditions.checkState(keyEquivalence == null, "key equivalence was already set to %s", keyEquivalence);
+    keyEquivalence = Preconditions.checkNotNull(equivalence);
     return this;
   }
 
   @Nullable
-  com.nytimes.android.external.cache3.Equivalence<Object> getKeyEquivalence() {
-    return com.nytimes.android.external.cache3.MoreObjects.firstNonNull(keyEquivalence, getKeyStrength().defaultEquivalence());
+  Equivalence<Object> getKeyEquivalence() {
+    return MoreObjects.firstNonNull(keyEquivalence, getKeyStrength().defaultEquivalence());
   }
 
   /**
    * Sets a custom {@code Equivalence} strategy for comparing values.
    *
-   * <p>By default, the cache uses {@link com.nytimes.android.external.cache3.Equivalence#identity} to determine value equality when
-   * @link #weakValues} or @link #softValues} is specified, and {@link com.nytimes.android.external.cache3.Equivalence#equals()}
+   * <p>By default, the cache uses {@link Equivalence#identity} to determine value equality when
+   * @link #weakValues} or @link #softValues} is specified, and {@link Equivalence#equals()}
    * otherwise.
    */
   @Nonnull
-  CacheBuilder<K, V> valueEquivalence(@Nonnull com.nytimes.android.external.cache3.Equivalence<Object> equivalence) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(valueEquivalence == null,
+  CacheBuilder<K, V> valueEquivalence(@Nonnull Equivalence<Object> equivalence) {
+    Preconditions.checkState(valueEquivalence == null,
         "value equivalence was already set to %s", valueEquivalence);
-    this.valueEquivalence = com.nytimes.android.external.cache3.Preconditions.checkNotNull(equivalence);
+    this.valueEquivalence = Preconditions.checkNotNull(equivalence);
     return this;
   }
 
   @Nullable
-  com.nytimes.android.external.cache3.Equivalence<Object> getValueEquivalence() {
-    return com.nytimes.android.external.cache3.MoreObjects.firstNonNull(valueEquivalence, getValueStrength().defaultEquivalence());
+  Equivalence<Object> getValueEquivalence() {
+    return MoreObjects.firstNonNull(valueEquivalence, getValueStrength().defaultEquivalence());
   }
 
   int getInitialCapacity() {
@@ -168,9 +168,9 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public CacheBuilder<K, V> concurrencyLevel(int concurrencyLevel) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.concurrencyLevel == UNSET_INT, "concurrency level was already set to %s",
+    Preconditions.checkState(this.concurrencyLevel == UNSET_INT, "concurrency level was already set to %s",
         this.concurrencyLevel);
-    com.nytimes.android.external.cache3.Preconditions.checkArgument(concurrencyLevel > 0);
+    Preconditions.checkArgument(concurrencyLevel > 0);
     this.concurrencyLevel = concurrencyLevel;
     return this;
   }
@@ -196,12 +196,12 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public CacheBuilder<K, V> maximumSize(long size) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.maximumSize == UNSET_INT, "maximum size was already set to %s",
+    Preconditions.checkState(this.maximumSize == UNSET_INT, "maximum size was already set to %s",
         this.maximumSize);
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.maximumWeight == UNSET_INT, "maximum weight was already set to %s",
+    Preconditions.checkState(this.maximumWeight == UNSET_INT, "maximum weight was already set to %s",
         this.maximumWeight);
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.weigher == null, "maximum size can not be combined with weigher");
-    com.nytimes.android.external.cache3.Preconditions.checkArgument(size >= 0, "maximum size must not be negative");
+    Preconditions.checkState(this.weigher == null, "maximum size can not be combined with weigher");
+    Preconditions.checkArgument(size >= 0, "maximum size must not be negative");
     this.maximumSize = size;
     return this;
   }
@@ -232,12 +232,12 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public CacheBuilder<K, V> maximumWeight(long weight) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.maximumWeight == UNSET_INT, "maximum weight was already set to %s",
+    Preconditions.checkState(this.maximumWeight == UNSET_INT, "maximum weight was already set to %s",
         this.maximumWeight);
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.maximumSize == UNSET_INT, "maximum size was already set to %s",
+    Preconditions.checkState(this.maximumSize == UNSET_INT, "maximum size was already set to %s",
         this.maximumSize);
     this.maximumWeight = weight;
-    com.nytimes.android.external.cache3.Preconditions.checkArgument(weight >= 0, "maximum weight must not be negative");
+    Preconditions.checkArgument(weight >= 0, "maximum weight must not be negative");
     return this;
   }
 
@@ -272,16 +272,16 @@ public final class CacheBuilder<K, V> {
   @Nonnull
   public <K1 extends K, V1 extends V> CacheBuilder<K1, V1> weigher(
       @Nonnull Weigher<? super K1, ? super V1> weigher) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.weigher == null);
+    Preconditions.checkState(this.weigher == null);
     if (strictParsing) {
-      com.nytimes.android.external.cache3.Preconditions.checkState(this.maximumSize == UNSET_INT, "weigher can not be combined with maximum size",
+      Preconditions.checkState(this.maximumSize == UNSET_INT, "weigher can not be combined with maximum size",
           this.maximumSize);
     }
 
     // safely limiting the kinds of caches this can produce
     @SuppressWarnings("unchecked")
     CacheBuilder<K1, V1> me = (CacheBuilder<K1, V1>) this;
-    me.weigher = com.nytimes.android.external.cache3.Preconditions.checkNotNull(weigher);
+    me.weigher = Preconditions.checkNotNull(weigher);
     return me;
   }
 
@@ -296,33 +296,33 @@ public final class CacheBuilder<K, V> {
   @Nullable
   @SuppressWarnings("unchecked")
   <K1 extends K, V1 extends V> Weigher<K1, V1> getWeigher() {
-    return (Weigher<K1, V1>) com.nytimes.android.external.cache3.MoreObjects.firstNonNull(weigher, OneWeigher.INSTANCE);
+    return (Weigher<K1, V1>) MoreObjects.firstNonNull(weigher, OneWeigher.INSTANCE);
   }
 
 
   @Nonnull
-  CacheBuilder<K, V> setKeyStrength(@Nonnull com.nytimes.android.external.cache3.LocalCache.Strength strength) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(keyStrength == null, "Key strength was already set to %s", keyStrength);
-    keyStrength = com.nytimes.android.external.cache3.Preconditions.checkNotNull(strength);
+  CacheBuilder<K, V> setKeyStrength(@Nonnull LocalCache.Strength strength) {
+    Preconditions.checkState(keyStrength == null, "Key strength was already set to %s", keyStrength);
+    keyStrength = Preconditions.checkNotNull(strength);
     return this;
   }
 
   @Nullable
-  com.nytimes.android.external.cache3.LocalCache.Strength getKeyStrength() {
-    return com.nytimes.android.external.cache3.MoreObjects.firstNonNull(keyStrength, com.nytimes.android.external.cache3.LocalCache.Strength.STRONG);
+  LocalCache.Strength getKeyStrength() {
+    return MoreObjects.firstNonNull(keyStrength, LocalCache.Strength.STRONG);
   }
 
 
   @Nonnull
-  CacheBuilder<K, V> setValueStrength(@Nonnull com.nytimes.android.external.cache3.LocalCache.Strength strength) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(valueStrength == null, "Value strength was already set to %s", valueStrength);
-    valueStrength = com.nytimes.android.external.cache3.Preconditions.checkNotNull(strength);
+  CacheBuilder<K, V> setValueStrength(@Nonnull LocalCache.Strength strength) {
+    Preconditions.checkState(valueStrength == null, "Value strength was already set to %s", valueStrength);
+    valueStrength = Preconditions.checkNotNull(strength);
     return this;
   }
 
   @Nullable
-  com.nytimes.android.external.cache3.LocalCache.Strength getValueStrength() {
-    return com.nytimes.android.external.cache3.MoreObjects.firstNonNull(valueStrength, com.nytimes.android.external.cache3.LocalCache.Strength.STRONG);
+  LocalCache.Strength getValueStrength() {
+    return MoreObjects.firstNonNull(valueStrength, LocalCache.Strength.STRONG);
   }
 
   /**
@@ -346,9 +346,9 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public CacheBuilder<K, V> expireAfterWrite(long duration, @Nonnull TimeUnit unit) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(expireAfterWriteNanos == UNSET_INT, "expireAfterWrite was already set to %s ns",
+    Preconditions.checkState(expireAfterWriteNanos == UNSET_INT, "expireAfterWrite was already set to %s ns",
         expireAfterWriteNanos);
-    com.nytimes.android.external.cache3.Preconditions.checkArgument(duration >= 0, "duration cannot be negative: %s %s", duration, unit);
+    Preconditions.checkArgument(duration >= 0, "duration cannot be negative: %s %s", duration, unit);
     this.expireAfterWriteNanos = unit.toNanos(duration);
     return this;
   }
@@ -381,9 +381,9 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public CacheBuilder<K, V> expireAfterAccess(long duration, @Nonnull TimeUnit unit) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(expireAfterAccessNanos == UNSET_INT, "expireAfterAccess was already set to %s ns",
+    Preconditions.checkState(expireAfterAccessNanos == UNSET_INT, "expireAfterAccess was already set to %s ns",
         expireAfterAccessNanos);
-    com.nytimes.android.external.cache3.Preconditions.checkArgument(duration >= 0, "duration cannot be negative: %s %s", duration, unit);
+    Preconditions.checkArgument(duration >= 0, "duration cannot be negative: %s %s", duration, unit);
     this.expireAfterAccessNanos = unit.toNanos(duration);
     return this;
   }
@@ -409,8 +409,8 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public CacheBuilder<K, V> ticker(@Nonnull Ticker ticker) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.ticker == null);
-    this.ticker = com.nytimes.android.external.cache3.Preconditions.checkNotNull(ticker);
+    Preconditions.checkState(this.ticker == null);
+    this.ticker = Preconditions.checkNotNull(ticker);
     return this;
   }
 
@@ -423,7 +423,7 @@ public final class CacheBuilder<K, V> {
 
   /**
    * Specifies a listener instance that caches should notify each time an entry is removed for any
-   * {@linkplain com.nytimes.android.external.cache3.RemovalCause reason}. Each cache created by this builder will invoke this listener
+   * {@linkplain RemovalCause reason}. Each cache created by this builder will invoke this listener
    * as part of the routine maintenance described in the class documentation above.
    *
    * <p><b>Warning:</b> after invoking this method, do not continue to use <i>this</i> cache
@@ -444,22 +444,22 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public <K1 extends K, V1 extends V> CacheBuilder<K1, V1> removalListener(
-      @Nonnull com.nytimes.android.external.cache3.RemovalListener<? super K1, ? super V1> listener) {
-    com.nytimes.android.external.cache3.Preconditions.checkState(this.removalListener == null);
+      @Nonnull RemovalListener<? super K1, ? super V1> listener) {
+    Preconditions.checkState(this.removalListener == null);
 
     // safely limiting the kinds of caches this can produce
     @SuppressWarnings("unchecked")
     CacheBuilder<K1, V1> me = (CacheBuilder<K1, V1>) this;
-    me.removalListener = com.nytimes.android.external.cache3.Preconditions.checkNotNull(listener);
+    me.removalListener = Preconditions.checkNotNull(listener);
     return me;
   }
 
   // Make a safe contravariant cast now so we don't have to do it over and over.
   @Nullable
   @SuppressWarnings("unchecked")
-  <K1 extends K, V1 extends V> com.nytimes.android.external.cache3.RemovalListener<K1, V1> getRemovalListener() {
-    return (com.nytimes.android.external.cache3.RemovalListener<K1, V1>)
-        com.nytimes.android.external.cache3.MoreObjects.firstNonNull(removalListener, NullListener.INSTANCE);
+  <K1 extends K, V1 extends V> RemovalListener<K1, V1> getRemovalListener() {
+    return (RemovalListener<K1, V1>)
+        MoreObjects.firstNonNull(removalListener, NullListener.INSTANCE);
   }
 
   /**
@@ -476,30 +476,30 @@ public final class CacheBuilder<K, V> {
    */
   @Nonnull
   public <K1 extends K, V1 extends V> LoadingCache<K1, V1> build(
-          @Nonnull com.nytimes.android.external.cache3.CacheLoader<? super K1, V1> loader) {
+          @Nonnull CacheLoader<? super K1, V1> loader) {
     checkWeightWithWeigher();
-    return new com.nytimes.android.external.cache3.LocalCache.LocalLoadingCache<>(this, loader);
+    return new LocalCache.LocalLoadingCache<>(this, loader);
   }
 
   @Nonnull
-  public <K1 extends K, V1 extends V> com.nytimes.android.external.cache3.Cache<K1, V1> build() {
+  public <K1 extends K, V1 extends V> Cache<K1, V1> build() {
     checkWeightWithWeigher();
     checkNonLoadingCache();
-    return new com.nytimes.android.external.cache3.LocalCache.LocalManualCache<>(this);
+    return new LocalCache.LocalManualCache<>(this);
   }
 
 
 
   private void checkNonLoadingCache() {
-    com.nytimes.android.external.cache3.Preconditions.checkState(refreshNanos == UNSET_INT, "refreshAfterWrite requires a LoadingCache");
+    Preconditions.checkState(refreshNanos == UNSET_INT, "refreshAfterWrite requires a LoadingCache");
   }
 
   private void checkWeightWithWeigher() {
     if (weigher == null) {
-      com.nytimes.android.external.cache3.Preconditions.checkState(maximumWeight == UNSET_INT, "maximumWeight requires weigher");
+      Preconditions.checkState(maximumWeight == UNSET_INT, "maximumWeight requires weigher");
     } else {
       if (strictParsing) {
-        com.nytimes.android.external.cache3.Preconditions.checkState(maximumWeight != UNSET_INT, "weigher requires maximumWeight");
+        Preconditions.checkState(maximumWeight != UNSET_INT, "weigher requires maximumWeight");
       } else {
         if (maximumWeight == UNSET_INT) {
           logger.log(Level.WARNING, "ignoring weigher specified without maximumWeight");
@@ -514,7 +514,7 @@ public final class CacheBuilder<K, V> {
    */
   @Override
   public String toString() {
-    com.nytimes.android.external.cache3.MoreObjects.ToStringHelper s = com.nytimes.android.external.cache3.MoreObjects.toStringHelper(this);
+    MoreObjects.ToStringHelper s = MoreObjects.toStringHelper(this);
     if (initialCapacity != UNSET_INT) {
       s.add("initialCapacity", initialCapacity);
     }
@@ -534,10 +534,10 @@ public final class CacheBuilder<K, V> {
       s.add("expireAfterAccess", expireAfterAccessNanos + "ns");
     }
     if (keyStrength != null) {
-      s.add("keyStrength", com.nytimes.android.external.cache3.Ascii.toLowerCase(keyStrength.toString()));
+      s.add("keyStrength", Ascii.toLowerCase(keyStrength.toString()));
     }
     if (valueStrength != null) {
-      s.add("valueStrength", com.nytimes.android.external.cache3.Ascii.toLowerCase(valueStrength.toString()));
+      s.add("valueStrength", Ascii.toLowerCase(valueStrength.toString()));
     }
     if (keyEquivalence != null) {
       s.addValue("keyEquivalence");

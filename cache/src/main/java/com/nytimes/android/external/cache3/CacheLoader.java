@@ -78,20 +78,20 @@ public abstract class CacheLoader<K, V> {
    * implement {@link #load load} instead.
    *
    * @param supplier the supplier to be used for loading values; must never return {@code null}
-   * @return a cache loader that loads values by calling {@link com.nytimes.android.external.cache3.Supplier#get}, irrespective of the
+   * @return a cache loader that loads values by calling {@link Supplier#get}, irrespective of the
    *     key
    */
   @Nonnull
-  public static <V> CacheLoader<Object, V> from(@Nonnull com.nytimes.android.external.cache3.Supplier<V> supplier) {
+  public static <V> CacheLoader<Object, V> from(@Nonnull Supplier<V> supplier) {
     return new SupplierToCacheLoader<>(supplier);
   }
 
 
   private static final class SupplierToCacheLoader<V>
       extends CacheLoader<Object, V> implements Serializable {
-    private final com.nytimes.android.external.cache3.Supplier<V> computingSupplier;
+    private final Supplier<V> computingSupplier;
 
-    public SupplierToCacheLoader(@Nonnull com.nytimes.android.external.cache3.Supplier<V> computingSupplier) {
+    public SupplierToCacheLoader(@Nonnull Supplier<V> computingSupplier) {
       this.computingSupplier = Preconditions.checkNotNull(computingSupplier);
     }
 

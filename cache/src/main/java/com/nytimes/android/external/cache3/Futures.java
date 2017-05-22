@@ -20,10 +20,10 @@ public final class Futures {
 
 
     @Nullable
-    public static <V> com.nytimes.android.external.cache3.ListenableFuture<V> immediateFuture(@Nullable V value) {
+    public static <V> ListenableFuture<V> immediateFuture(@Nullable V value) {
         if (value == null) {
             //noinspection unchecked safe because of erasure
-            return (com.nytimes.android.external.cache3.ListenableFuture<V>) ImmediateSuccessfulFuture.NULL;
+            return (ListenableFuture<V>) ImmediateSuccessfulFuture.NULL;
         } else {
             return new Futures.ImmediateSuccessfulFuture<>(value);
         }
@@ -31,13 +31,13 @@ public final class Futures {
 
 
     @Nonnull
-    public static <V> com.nytimes.android.external.cache3.ListenableFuture<V> immediateFailedFuture(Throwable throwable) {
+    public static <V> ListenableFuture<V> immediateFailedFuture(Throwable throwable) {
         Preconditions.checkNotNull(throwable);
         return new Futures.ImmediateFailedFuture<>(throwable);
     }
 
     @Nonnull
-    public static <I, O> com.nytimes.android.external.cache3.ListenableFuture<O> transform(@Nonnull com.nytimes.android.external.cache3.ListenableFuture<I> input, com.nytimes.android.external.cache3.Function<? super I, ? extends O> function) {
+    public static <I, O> ListenableFuture<O> transform(@Nonnull ListenableFuture<I> input, Function<? super I, ? extends O> function) {
         Preconditions.checkNotNull(function);
         Futures.ChainingFuture<I,O> output = new Futures.ChainingFuture(input, function);
         input.addListener(output, DirectExecutor.INSTANCE);
@@ -45,39 +45,39 @@ public final class Futures {
     }
 
     public static <V, X extends Exception> V getChecked(@Nonnull Future<V> future, Class<X> exceptionClass) throws X {
-        return com.nytimes.android.external.cache3.FuturesGetChecked.getChecked(future, exceptionClass);
+        return FuturesGetChecked.getChecked(future, exceptionClass);
     }
 
     public static <V, X extends Exception> V getChecked(@Nonnull Future<V> future, Class<X> exceptionClass, long timeout, @Nonnull TimeUnit unit) throws X {
-        return com.nytimes.android.external.cache3.FuturesGetChecked.getChecked(future, exceptionClass, timeout, unit);
+        return FuturesGetChecked.getChecked(future, exceptionClass, timeout, unit);
     }
 
 
 
-    private static final class ChainingFuture<I, O> extends Futures.AbstractChainingFuture<I, O, com.nytimes.android.external.cache3.Function<? super I, ? extends O>> {
-        ChainingFuture(com.nytimes.android.external.cache3.ListenableFuture<? extends I> inputFuture, com.nytimes.android.external.cache3.Function<? super I, ? extends O> function) {
+    private static final class ChainingFuture<I, O> extends Futures.AbstractChainingFuture<I, O, Function<? super I, ? extends O>> {
+        ChainingFuture(ListenableFuture<? extends I> inputFuture, Function<? super I, ? extends O> function) {
             super(inputFuture, function);
         }
 
         @Override
-        void doTransform(@Nonnull com.nytimes.android.external.cache3.Function<? super I, ? extends O> function, I input) {
+        void doTransform(@Nonnull Function<? super I, ? extends O> function, I input) {
             this.set(function.apply(input));
         }
     }
 
 
     private abstract static class AbstractChainingFuture<I, O, F>
-            extends com.nytimes.android.external.cache3.AbstractFuture.TrustedFuture<O> implements Runnable {
+            extends AbstractFuture.TrustedFuture<O> implements Runnable {
         // In theory, this field might not be visible to a cancel() call in certain circumstances. For
         // details, see the comments on the fields of TimeoutFuture.
 
         @Nullable
-        com.nytimes.android.external.cache3.ListenableFuture<? extends I> inputFuture;
+        ListenableFuture<? extends I> inputFuture;
 
         @Nullable
         F function;
 
-        AbstractChainingFuture(com.nytimes.android.external.cache3.ListenableFuture<? extends I> inputFuture, F function) {
+        AbstractChainingFuture(ListenableFuture<? extends I> inputFuture, F function) {
             this.inputFuture = Preconditions.checkNotNull(inputFuture);
             this.function = Preconditions.checkNotNull(function);
         }
@@ -85,7 +85,7 @@ public final class Futures {
         @Override
         public final void run() {
             try {
-                com.nytimes.android.external.cache3.ListenableFuture<? extends I> localInputFuture = inputFuture;
+                ListenableFuture<? extends I> localInputFuture = inputFuture;
                 F localFunction = function;
                 if (isCancelled() | localInputFuture == null | localFunction == null) {
                     return;
@@ -95,7 +95,7 @@ public final class Futures {
 
                 I sourceResult;
                 try {
-                    sourceResult = com.nytimes.android.external.cache3.Uninterruptibles.getUninterruptibly(localInputFuture);
+                    sourceResult = Uninterruptibles.getUninterruptibly(localInputFuture);
                 } catch (CancellationException e) {
                     // Cancel this future and return.
                     // At this point, inputFuture is cancelled and outputFuture doesn't
@@ -161,7 +161,7 @@ public final class Futures {
         }
     }
 
-    private abstract static class ImmediateFuture<V> implements com.nytimes.android.external.cache3.ListenableFuture<V> {
+    private abstract static class ImmediateFuture<V> implements ListenableFuture<V> {
         private static final Logger log = Logger.getLogger(Futures.ImmediateFuture.class.getName());
 
         private ImmediateFuture() {

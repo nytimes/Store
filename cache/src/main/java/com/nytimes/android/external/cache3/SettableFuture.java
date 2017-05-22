@@ -3,7 +3,7 @@ package com.nytimes.android.external.cache3;
 
 import javax.annotation.Nonnull;
 
-public final class SettableFuture<V> extends com.nytimes.android.external.cache3.AbstractFuture.TrustedFuture<V> {
+public final class SettableFuture<V> extends AbstractFuture.TrustedFuture<V> {
 
   /**
    * Creates a new {@code SettableFuture} in the default state.
@@ -28,7 +28,7 @@ public final class SettableFuture<V> extends com.nytimes.android.external.cache3
   }
 
   @Override
-  public boolean setFuture(@Nonnull com.nytimes.android.external.cache3.ListenableFuture<? extends V> future) {
+  public boolean setFuture(@Nonnull ListenableFuture<? extends V> future) {
     return super.setFuture(future);
   }
 }

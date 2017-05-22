@@ -30,9 +30,9 @@ public interface Cache<K, V> {
    * {@code null}; it may either return a non-null value or throw an exception.
    *
    * @throws ExecutionException if a checked exception was thrown while loading the value
-   * @throws com.nytimes.android.external.cache3.UncheckedExecutionException if an unchecked exception was thrown while loading the
+   * @throws UncheckedExecutionException if an unchecked exception was thrown while loading the
    *     value
-   * @throws com.nytimes.android.external.cache3.ExecutionError if an error was thrown while loading the value
+   * @throws ExecutionError if an error was thrown while loading the value
    *
    * @since 11.0
    */

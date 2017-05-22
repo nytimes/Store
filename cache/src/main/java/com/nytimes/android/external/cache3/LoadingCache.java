@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nullable;
 
-public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.external.cache3.Function<K, V> {
+public interface LoadingCache<K, V> extends Cache<K, V>, Function<K, V> {
 
   /**
    * Returns the value associated with {@code key} in this cache, first loading that value if
@@ -16,7 +16,7 @@ public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.ext
    * {@code key}, simply waits for that thread to finish and returns its loaded value. Note that
    * multiple threads can concurrently load values for distinct keys.
    *
-   * <p>Caches loaded by a {@link com.nytimes.android.external.cache3.CacheLoader} will call {@link com.nytimes.android.external.cache3.CacheLoader#load} to load new values
+   * <p>Caches loaded by a {@link CacheLoader} will call {@link CacheLoader#load} to load new values
    * into the cache. Newly loaded values are added to the cache using
    * {@code Cache.asMap().putIfAbsent} after loading has completed; if another value was associated
    * with {@code key} while the new value was loading then a removal notification will be sent for
@@ -29,9 +29,9 @@ public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.ext
    *     ExecutionException} is thrown <a
    *     href="https://github.com/google/guava/wiki/CachesExplained#interruption">even if
    *     computation was interrupted by an {@code InterruptedException}</a>.)
-   * @throws com.nytimes.android.external.cache3.UncheckedExecutionException if an unchecked exception was thrown while loading the
+   * @throws UncheckedExecutionException if an unchecked exception was thrown while loading the
    *     value
-   * @throws com.nytimes.android.external.cache3.ExecutionError if an error was thrown while loading the value
+   * @throws ExecutionError if an error was thrown while loading the value
    */
   @Nullable
   V get(K key) throws ExecutionException;
@@ -46,7 +46,7 @@ public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.ext
    * {@code key}, simply waits for that thread to finish and returns its loaded value. Note that
    * multiple threads can concurrently load values for distinct keys.
    *
-   * <p>Caches loaded by a {@link com.nytimes.android.external.cache3.CacheLoader} will call {@link com.nytimes.android.external.cache3.CacheLoader#load} to load new values
+   * <p>Caches loaded by a {@link CacheLoader} will call {@link CacheLoader#load} to load new values
    * into the cache. Newly loaded values are added to the cache using
    * {@code Cache.asMap().putIfAbsent} after loading has completed; if another value was associated
    * with {@code key} while the new value was loading then a removal notification will be sent for
@@ -56,9 +56,9 @@ public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.ext
    * and should not be used with cache loaders which throw checked exceptions. In such cases use
    * {@link #get} instead.
    *
-   * @throws com.nytimes.android.external.cache3.UncheckedExecutionException if an exception was thrown while loading the value. (As
+   * @throws UncheckedExecutionException if an exception was thrown while loading the value. (As
    *     explained in the last paragraph above, this should be an unchecked exception only.)
-   * @throws com.nytimes.android.external.cache3.ExecutionError if an error was thrown while loading the value
+   * @throws ExecutionError if an error was thrown while loading the value
    */
   @Nullable
   V getUnchecked(K key);
@@ -68,11 +68,11 @@ public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.ext
    * if necessary. The returned map contains entries that were already cached, combined with newly
    * loaded entries; it will never contain null keys or values.
    *
-   * <p>Caches loaded by a {@link com.nytimes.android.external.cache3.CacheLoader} will issue a single request to
-   * {@link com.nytimes.android.external.cache3.CacheLoader#loadAll} for all keys which are not already present in the cache. All
-   * entries returned by {@link com.nytimes.android.external.cache3.CacheLoader#loadAll} will be stored in the cache, over-writing
+   * <p>Caches loaded by a {@link CacheLoader} will issue a single request to
+   * {@link CacheLoader#loadAll} for all keys which are not already present in the cache. All
+   * entries returned by {@link CacheLoader#loadAll} will be stored in the cache, over-writing
    * any previously cached values. This method will throw an exception if
-   * {@link com.nytimes.android.external.cache3.CacheLoader#loadAll} returns {@code null}, returns a map containing null keys or values,
+   * {@link CacheLoader#loadAll} returns {@code null}, returns a map containing null keys or values,
    * or fails to return an entry for each requested key.
    *
    * <p>Note that duplicate elements in {@code keys}, as determined by {@link Object#equals}, will
@@ -82,9 +82,9 @@ public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.ext
    *     ExecutionException} is thrown <a
    *     href="https://github.com/google/guava/wiki/CachesExplained#interruption">even if
    *     computation was interrupted by an {@code InterruptedException}</a>.)
-   * @throws com.nytimes.android.external.cache3.UncheckedExecutionException if an unchecked exception was thrown while loading the
+   * @throws UncheckedExecutionException if an unchecked exception was thrown while loading the
    *     values
-   * @throws com.nytimes.android.external.cache3.ExecutionError if an error was thrown while loading the values
+   * @throws ExecutionError if an error was thrown while loading the values
    * @since 11.0
    */
   Map<K, V> getAll(Iterable<? extends K> keys) throws ExecutionException;
@@ -92,7 +92,7 @@ public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.ext
   /**
    * @deprecated Provided to satisfy the {@code Function} interface; use {@link #get} or
    *     {@link #getUnchecked} instead.
-   * @throws com.nytimes.android.external.cache3.UncheckedExecutionException if an exception was thrown while loading the value. (As
+   * @throws UncheckedExecutionException if an exception was thrown while loading the value. (As
    *     described in the documentation for {@link #getUnchecked}, {@code LoadingCache} should be
    *     used as a {@code Function} only with cache loaders that throw only unchecked exceptions.)
    */
@@ -108,9 +108,9 @@ public interface LoadingCache<K, V> extends Cache<K, V>, com.nytimes.android.ext
    * cache; if an exception is thrown while refreshing the previous value will remain, <i>and the
    * exception will be logged (using {@link java.util.logging.Logger}) and swallowed</i>.
    *
-   * <p>Caches loaded by a {@link com.nytimes.android.external.cache3.CacheLoader} will call {@link com.nytimes.android.external.cache3.CacheLoader#reload} if the
-   * cache currently contains a value for {@code key}, and {@link com.nytimes.android.external.cache3.CacheLoader#load} otherwise.
-   * Loading is asynchronous only if {@link com.nytimes.android.external.cache3.CacheLoader#reload} was overridden with an
+   * <p>Caches loaded by a {@link CacheLoader} will call {@link CacheLoader#reload} if the
+   * cache currently contains a value for {@code key}, and {@link CacheLoader#load} otherwise.
+   * Loading is asynchronous only if {@link CacheLoader#reload} was overridden with an
    * asynchronous implementation.
    *
    * <p>Returns without doing anything if another thread is currently loading the value for
