@@ -53,7 +53,7 @@ ext {
 
     // POM file
     GROUP = "com.nytimes.android"
-    VERSION_NAME = "3.0.0-alpha"
+    VERSION_NAME = "3.0.1-SNAPSHOT"
     POM_PACKAGING = "pom"
     POM_DESCRIPTION = "Store"
 
