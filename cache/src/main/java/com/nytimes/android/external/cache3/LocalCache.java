@@ -1,5 +1,7 @@
 package com.nytimes.android.external.cache3;
 
+import com.nytimes.android.external.cache3.CacheLoader.InvalidCacheLoadException;
+import com.nytimes.android.external.cache3.CacheLoader.UnsupportedLoadingOperationException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -35,6 +37,8 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static com.nytimes.android.external.cache3.CacheBuilder.NULL_TICKER;
+import static com.nytimes.android.external.cache3.CacheBuilder.UNSET_INT;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> {
@@ -282,7 +286,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
         } else {
             for (int i = 0; i < this.segments.length; ++i) {
                 this.segments[i] =
-                        createSegment(segmentSize, CacheBuilder.UNSET_INT);
+                        createSegment(segmentSize, UNSET_INT);
             }
         }
     }
@@ -2337,7 +2341,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
             try {
                 V value = valueReference.waitForValue();
                 if (value == null) {
-                    throw new CacheLoader.InvalidCacheLoadException("CacheLoader returned null for key " + key + ".");
+                    throw new InvalidCacheLoadException("CacheLoader returned null for key " + key + ".");
                 }
                 // re-read ticker now that loading has completed
                 long now = map.ticker.read();
@@ -2385,7 +2389,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
             try {
                 value = Uninterruptibles.getUninterruptibly(newValue);
                 if (value == null) {
-                    throw new CacheLoader.InvalidCacheLoadException("CacheLoader returned null for key " + key + ".");
+                    throw new InvalidCacheLoadException("CacheLoader returned null for key " + key + ".");
                 }
                 storeLoadedValue(key, hash, loadingValueReference, value);
                 return value;
@@ -4033,11 +4037,11 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
                     for (K key : keysToLoad) {
                         V value = newEntries.get(key);
                         if (value == null) {
-                            throw new CacheLoader.InvalidCacheLoadException("loadAll failed to return a value for " + key);
+                            throw new InvalidCacheLoadException("loadAll failed to return a value for " + key);
                         }
                         result.put(key, value);
                     }
-                } catch (CacheLoader.UnsupportedLoadingOperationException e) {
+                } catch (UnsupportedLoadingOperationException e) {
                     // loadAll not implemented, fallback to load
                     for (K key : keysToLoad) {
                         misses--; // get will count this miss
@@ -4068,7 +4072,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
                     Map<K, V> map = (Map<K, V>) loader.loadAll(keys);
             result = map;
             success = true;
-        } catch (CacheLoader.UnsupportedLoadingOperationException e) {
+        } catch (UnsupportedLoadingOperationException e) {
             success = true;
             throw e;
         } catch (InterruptedException e) {
@@ -4083,7 +4087,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
         }
 
         if (result == null) {
-            throw new CacheLoader.InvalidCacheLoadException(loader + " returned null map from loadAll");
+            throw new InvalidCacheLoadException(loader + " returned null map from loadAll");
         }
 
         stopwatch.stop();
@@ -4101,7 +4105,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
         }
 
         if (nullsPresent) {
-            throw new CacheLoader.InvalidCacheLoadException(loader + " returned null keys or values from loadAll");
+            throw new InvalidCacheLoadException(loader + " returned null keys or values from loadAll");
         }
 
         // TODO(fry): record count of loaded entries
@@ -4701,7 +4705,7 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
             this.weigher = weigher;
             this.concurrencyLevel = concurrencyLevel;
             this.removalListener = removalListener;
-            this.ticker = (ticker == Ticker.systemTicker() || ticker == CacheBuilder.NULL_TICKER)
+            this.ticker = (ticker == Ticker.systemTicker() || ticker == NULL_TICKER)
                     ? null : ticker;
             this.loader = loader;
         }
@@ -4724,11 +4728,11 @@ class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> 
             }
             if (weigher != CacheBuilder.OneWeigher.INSTANCE) {
                 builder.weigher(weigher);
-                if (maxWeight != CacheBuilder.UNSET_INT) {
+                if (maxWeight != UNSET_INT) {
                     builder.maximumWeight(maxWeight);
                 }
             } else {
-                if (maxWeight != CacheBuilder.UNSET_INT) {
+                if (maxWeight != UNSET_INT) {
                     builder.maximumSize(maxWeight);
                 }
             }
