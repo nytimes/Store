@@ -1,15 +1,34 @@
 Change Log
 ==========
 
+Version 3.0.0-alpha *(2017-05-22)*
+----------------------------
+
+**New Features**
+
+* (#199) expireAfterAccess added to MemoryPolicy
+* (#211) Deprecate setExpireAfter and getExpireAfter -- use new expireAfterWrite or expireAfterAccess, see #199 for 
+MemoryPolicy changes
+* (#188) Add lambdas to Store and Filesystem modules
+* (#198) Add Raw to BufferedSource transformer
+* (#217) Add community projects section to README
+
+**Bug Fixes and Stability Improvements**
+
+* (#182) Fix networkBeforeStale on cold start with no connectivity
+* (#200) Add a missing source.close() call
+* (#205) Add Retrolambda plugin to all modules
+* (#218) Update to RxJava 1.3.0 and use stable create(Action)
+
 Version 2.0.4 *(2017-04-12)*
 ----------------------------
 
 **Bug Fixes and Stability Improvements**
 
-* #178 Standardize store.stream() to emit only new items
-* #177 Fix typos
-* #176 Close source after write to filesystem
-* #166 Remove apt dependency and use annotationProcessor instead
+* (#178) Standardize store.stream() to emit only new items
+* (#177) Fix typos
+* (#176) Close source after write to filesystem
+* (#166) Remove apt dependency and use annotationProcessor instead
 
 
 Version 2.0.3 *(2017-03-23)*
@@ -17,12 +36,12 @@ Version 2.0.3 *(2017-03-23)*
 
 **New Features**
 
-* #153 Translate Readme to Russian
+* (#153) Translate Readme to Russian
 
 **Bug Fixes and Stability Improvements**
 
-* #164 FileSystemPersister.persisterIsStale() should return false if record is missing or policy is unspecified
-* #166 Remove apt dependency and use annotationProcessor instead
+* (#164) FileSystemPersister.persisterIsStale() should return false if record is missing or policy is unspecified
+* (#166) Remove apt dependency and use annotationProcessor instead
 
 Version 2.0.2 *(2017-03-13)*
 ----------------------------
