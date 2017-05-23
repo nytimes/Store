@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=master)](https://travis-ci.org/NYTimes/Store)
+[![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=feature/rx2)](https://travis-ci.org/NYTimes/Store)
 
 ![Store](https://www.milkadeal.com/storage/128000/118240/68ccf50a75b5277678c52752077c19b5.jpg)
 
@@ -280,54 +280,39 @@ public class SampleStore extends RealStore<String, BarCode> {
 
 
 ### Artifacts
-Note: Release is in Sync with current state of master (not develop) branch
 
-**CurrentVersion = 2.0.2**
+**CurrentVersion = 3.0.0-alpha**
 
 + **Cache** Cache extracted from Guava (keeps method count to a minimum)
 
 	```groovy
-	compile 'com.nytimes.android:cache:CurrentVersion'
+	compile 'com.nytimes.android:cache3:CurrentVersion'
 	```
 + **Store** This contains only Store classes and has a dependecy on RxJava + the above cache.  
 
 	```groovy
-	compile 'com.nytimes.android:store:CurrentVersion'
+	compile 'com.nytimes.android:store3:CurrentVersion'
 	```
 + **Middleware** Sample Gson parsers, (feel free to create more and open PRs) 
 
     ```groovy
-    compile 'com.nytimes.android:middleware:CurrentVersion'
+    compile 'com.nytimes.android:middleware3:CurrentVersion'
     ```
 + **Middleware-Jackson** Sample Jackon parsers, (feel free to create more and open PRs)
 
     ```groovy
-    compile 'com.nytimes.android:middleware-jackson:CurrentVersion'
+    compile 'com.nytimes.android:middleware-jackson3:CurrentVersion'
     ```
 + **Middleware-Moshi** Sample Moshi parsers, (feel free to create more and open PRs)
 
     ```groovy
-    compile 'com.nytimes.android:middleware-moshi:CurrentVersion'
+    compile 'com.nytimes.android:middleware-moshi3:CurrentVersion'
     ```
 + **File System** Persistence Library built using OKIO Source/Sink + Middleware for streaming from Network to FileSystem 
 
 	```groovy
-	compile 'com.nytimes.android:filesystem:CurrentVersion'
+	compile 'com.nytimes.android:filesystem3:CurrentVersion'
 	```
-**RxJava2**
-
-There is an experimental RxJava2 Branch as well.  
-feature/rx2 which has artifacts, use at your own risk for :-)
-   
-```
-    com.nytimes.android:store2:0.0.1-SNAPSHOT
-    
-    com.nytimes.android:cache:0.0.1-SNAPSHOT
-    
-    com.nytimes.android:middleware2:0.0.1-SNAPSHOT
-    
-    com.nytimes.android:filesystem2:0.0.1-SNAPSHOT
-```
 
 ### Sample Project
 
