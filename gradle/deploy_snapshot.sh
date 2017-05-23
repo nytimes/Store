@@ -7,7 +7,7 @@
 
 SLUG="NYTimes/Store"
 JDK="oraclejdk8"
-BRANCH="develop"
+BRANCH="feature/rx2"
 
 set -e
 
