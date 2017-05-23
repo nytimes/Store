@@ -1,8 +1,8 @@
 package com.nytimes.android.sample;
 
-import com.nytimes.android.external.store2.base.impl.Store;
-import com.nytimes.android.external.store2.base.impl.BarCode;
-import com.nytimes.android.external.store2.base.impl.StoreBuilder;
+import com.nytimes.android.external.store3.base.impl.Store;
+import com.nytimes.android.external.store3.base.impl.BarCode;
+import com.nytimes.android.external.store3.base.impl.StoreBuilder;
 
 import org.junit.Before;
 import org.junit.Test;

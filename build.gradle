@@ -53,7 +53,7 @@ ext {
     GROUP = "com.nytimes.android"
     VERSION_NAME = "0.0.1-SNAPSHOT"
     POM_PACKAGING = "pom"
-    POM_DESCRIPTION = "Store2 is built with RxJava2"
+    POM_DESCRIPTION = "Store3 is built with RxJava2"
 
     POM_URL = "https://github.com/nytimes/Store/"
     POM_SCM_URL = "https://github.com/nytimes/Store/"
