@@ -23,3 +23,5 @@ buildscript {
 apply from: rootProject.file("gradle/maven-push.gradle")
 apply from: rootProject.file("gradle/checkstyle.gradle")
 apply from: rootProject.file("gradle/pmd.gradle")
+targetCompatibility = 1.8
+sourceCompatibility = 1.8

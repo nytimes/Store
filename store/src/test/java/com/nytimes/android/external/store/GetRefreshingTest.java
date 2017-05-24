@@ -117,12 +117,6 @@ public class GetRefreshingTest {
         public Observable<Boolean> write(@Nonnull BarCode barCode, @Nonnull Integer integer) {
             throw new RuntimeException();
         }
-
-        @Nonnull
-        @Override
-        public Observable<Integer> readAll(@Nonnull BarCode barCode) throws FileNotFoundException {
-            throw new RuntimeException();
-        }
     }
 
 }

@@ -4,7 +4,6 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskRead;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
@@ -24,7 +23,6 @@ import rx.functions.Func1;
  * @param <T> key type
  */
 public class FSReader<T> implements DiskRead<BufferedSource, T> {
-    private static final String ERROR_MESSAGE = "resolvedKey does not resolve to a file";
     final FileSystem fileSystem;
     final PathResolver<T> pathResolver;
 
@@ -55,33 +53,5 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
                 }
             }
         }, Emitter.BackpressureMode.NONE);
-    }
-
-    @Nonnull
-    @Override
-    public Observable<BufferedSource> readAll(@Nonnull final T type) throws FileNotFoundException {
-        return Observable.defer(new Func0<Observable<BufferedSource>>() {
-            @Override
-            public Observable<BufferedSource> call() {
-                Observable<BufferedSource> bufferedSourceObservable = null;
-                try {
-                    bufferedSourceObservable = Observable
-                            .from(fileSystem.list(pathResolver.resolve(type)))
-                            .map(new Func1<String, BufferedSource>() {
-                                @Override
-                                public BufferedSource call(String s) {
-                                    try {
-                                        return fileSystem.read(s);
-                                    } catch (FileNotFoundException e) {
-                                        throw Exceptions.propagate(e);
-                                    }
-                                }
-                            });
-                } catch (FileNotFoundException e) {
-                    throw Exceptions.propagate(e);
-                }
-                return bufferedSourceObservable;
-            }
-        });
     }
 }

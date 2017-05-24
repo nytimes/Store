@@ -7,6 +7,7 @@ import com.nytimes.android.external.store.base.impl.BarCode;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 
 import okio.BufferedSource;
@@ -19,10 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FSReaderTest {
 
-    public static final String TYPE = "type";
+    public static final String TYPE = "typee";
     public static final String CHALLAH = "Challah";
     public static final String CHALLAH_CHALLAH = "Challah_CHALLAH";
-    private BarCodeReadAllPathResolver barCodePathResolver = new BarCodeReadAllPathResolver();
+    private final BarCodeReadAllPathResolver barCodePathResolver = new BarCodeReadAllPathResolver();
+    private final BarCodePathResolver barCodeWritePathResolver = new BarCodePathResolver();
 
     private static BufferedSource source(String data) {
         return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
@@ -31,16 +33,20 @@ public class FSReaderTest {
     @Test
     public void readAll() throws IOException {
         //create 2 barcodes with same type
-        BarCode barCode = new BarCode(TYPE, "key");
-        BarCode barCode1 = new BarCode(TYPE, "key2");
+        BarCode barCode = new BarCode(TYPE, "keyy.txt");
+        BarCode barCode1 = new BarCode(TYPE, "key2.txt");
 
-        FileSystem fileSystem = FileSystemFactory.create(createTempDir());
+        File tempDir = createTempDir();
+        String str = tempDir.getAbsolutePath();
+        System.out.println(str);
+        FileSystem fileSystem = FileSystemFactory.create(tempDir);
+
         //write different data to File System for each barcode
-        fileSystem.write(barCodePathResolver.resolve(barCode), source(CHALLAH));
-        fileSystem.write(barCodePathResolver.resolve(barCode1), source(CHALLAH_CHALLAH));
+        fileSystem.write(barCodeWritePathResolver.resolve(barCode), source(CHALLAH));
+        fileSystem.write(barCodeWritePathResolver.resolve(barCode1), source(CHALLAH_CHALLAH));
         FSReader<BarCode> reader = new FSReader<>(fileSystem, barCodePathResolver);
         //read back all values for the TYPE
-        BlockingObservable<BufferedSource> observable = reader.readAll(barCode).toBlocking();
+        BlockingObservable<BufferedSource> observable = reader.read(barCode).toBlocking();
         assertThat(observable.first().readUtf8()).isEqualTo(CHALLAH);
         assertThat(observable.last().readUtf8()).isEqualTo(CHALLAH_CHALLAH);
     }

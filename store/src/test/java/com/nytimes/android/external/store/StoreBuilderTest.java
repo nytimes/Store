@@ -37,12 +37,6 @@ public class StoreBuilderTest {
                     public Observable<Boolean> write(@Nonnull Integer key, @Nonnull String s) {
                         return Observable.empty();
                     }
-
-                    @Nonnull
-                    @Override
-                    public Observable<String> readAll(@Nonnull Integer key) throws FileNotFoundException {
-                        return Observable.just(String.valueOf(key));
-                    }
                 })
                 .parser(s -> DATE)
                 .open();

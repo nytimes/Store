@@ -11,8 +11,6 @@ import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 
-import static com.nytimes.android.external.fs.SourcePersister.pathForBarcode;
-
 public class SourceFileReader extends FSReader<BarCode> implements DiskRead<BufferedSource, BarCode> {
 
     public SourceFileReader(FileSystem fileSystem) {

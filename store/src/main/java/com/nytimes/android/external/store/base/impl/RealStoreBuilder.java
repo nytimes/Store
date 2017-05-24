@@ -63,12 +63,6 @@ public class RealStoreBuilder<Raw, Parsed, Key> {
             public Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
                 return diskWrite.write(key, raw);
             }
-
-            @Nonnull
-            @Override
-            public Observable<Raw> readAll(@Nonnull Key key) throws FileNotFoundException {
-                return diskRead.readAll(key);
-            }
         };
         return this;
     }

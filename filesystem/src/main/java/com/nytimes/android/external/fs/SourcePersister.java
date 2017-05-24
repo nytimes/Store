@@ -52,12 +52,6 @@ public class SourcePersister implements Persister<BufferedSource, BarCode> {
     }
 
     @Nonnull
-    @Override
-    public Observable<BufferedSource> readAll(@Nonnull BarCode barCode) throws FileNotFoundException {
-        return sourceFileReader.readAll(barCode);
-    }
-
-    @Nonnull
     static String pathForBarcode(@Nonnull BarCode barCode) {
         return barCode.toString();
     }

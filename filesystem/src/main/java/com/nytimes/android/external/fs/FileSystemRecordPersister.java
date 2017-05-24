@@ -69,10 +69,4 @@ public final class FileSystemRecordPersister<Key> implements Persister<BufferedS
     public Observable<Boolean> write(@Nonnull Key key, @Nonnull BufferedSource bufferedSource) {
         return fileWriter.write(key, bufferedSource);
     }
-
-    @Nonnull
-    @Override
-    public Observable<BufferedSource> readAll(@Nonnull Key key) throws FileNotFoundException {
-        return fileReader.read(key);
-    }
 }

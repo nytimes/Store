@@ -67,9 +67,4 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
         networkResponses.invalidate(key);
     }
 
-    @Nonnull
-    @Override
-    public Observable<Raw> readAll(@Nonnull Key key) throws FileNotFoundException {
-        return null;
-    }
 }

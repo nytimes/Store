@@ -13,28 +13,28 @@ import javax.inject.Inject;
 import okio.BufferedSource;
 import rx.Observable;
 
-public class SourceAllPersister implements AllPersister<BufferedSource, BarCode> {
+public class SourceAllPersister implements AllPersister<BufferedSource> {
 
     @Nonnull
-    final SourceFileReader sourceFileReader;
+    final SourceFileAllReader sourceFileAllReader;
     @Nonnull
-    final SourceFileEraser sourceFileEraser;
+    final SourceFileAllEraser sourceFileAllEraser;
 
     @Inject
     public SourceAllPersister(FileSystem fileSystem) {
-        sourceFileReader = new SourceFileReader(fileSystem, new BarCodeReadAllPathResolver());
-        sourceFileEraser = new SourceFileEraser(fileSystem, new BarCodeReadAllPathResolver());
+        sourceFileAllReader = new SourceFileAllReader(fileSystem);
+        sourceFileAllEraser = new SourceFileAllEraser(fileSystem);
     }
 
     @Nonnull
     @Override
-    public Observable<BufferedSource> readAll(@Nonnull final BarCode barCode) throws FileNotFoundException {
-        return sourceFileReader.readAll(barCode);
+    public Observable<BufferedSource> readAll(@Nonnull final String path) throws FileNotFoundException {
+        return sourceFileAllReader.readAll(path);
     }
 
     @Nonnull
     @Override
-    public Observable<Boolean> deleteAll(@Nonnull final BarCode barCode) {
-        return sourceFileEraser.deleteAll(barCode);
+    public Observable<Boolean> deleteAll(@Nonnull final String path) {
+        return sourceFileAllEraser.deleteAll(path);
     }
 }

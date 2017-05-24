@@ -77,11 +77,5 @@ public class StoreNetworkBeforeStaleFailTest {
                                          @Nonnull BufferedSource bufferedSource) {
             return Observable.just(true);
         }
-
-        @Nonnull
-        @Override
-        public Observable<BufferedSource> readAll(@Nonnull BarCode barCode) throws FileNotFoundException {
-            return Observable.error(sorry);
-        }
     }
 }

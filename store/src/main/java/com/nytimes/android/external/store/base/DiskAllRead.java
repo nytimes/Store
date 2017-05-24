@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 
 import rx.Observable;
 
-public interface DiskRead<Raw, Key> {
+public interface DiskAllRead<Raw> {
     @Nonnull
-    Observable<Raw> read(@Nonnull Key key);
+    Observable<Raw> readAll(@Nonnull String path) throws FileNotFoundException;
 }

@@ -10,10 +10,4 @@ public interface DiskErase<Raw, Key> {
      */
     @Nonnull
     Observable<Boolean> delete(@Nonnull Key key);
-
-    /**
-     * @param key to use to delete all data data using persister
-     */
-    @Nonnull
-    Observable<Boolean> deleteAll(@Nonnull Key key);
 }
