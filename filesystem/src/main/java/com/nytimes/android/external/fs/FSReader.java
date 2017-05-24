@@ -20,6 +20,7 @@ import rx.Observable;
  * @param <T> key type
  */
 public class FSReader<T> implements DiskRead<BufferedSource, T> {
+    private static final String ERROR_MESSAGE = "resolvedKey does not resolve to a file";
     final FileSystem fileSystem;
     final PathResolver<T> pathResolver;
 
@@ -31,7 +32,7 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final T key) {
-        return Observable.create(emitter -> {
+        return Observable.fromEmitter(emitter -> {
             String resolvedKey = pathResolver.resolve(key);
             boolean exists = fileSystem.exists(resolvedKey);
             if (exists) {

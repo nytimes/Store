@@ -81,7 +81,7 @@ public class StoreTest {
                 .open();
 
         Observable<String> networkObservable =
-                Observable.create(emitter -> {
+                Observable.fromEmitter(emitter -> {
                     if (counter.incrementAndGet() == 1) {
                         emitter.onNext(NETWORK);
 
