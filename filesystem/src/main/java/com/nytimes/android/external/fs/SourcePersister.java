@@ -40,6 +40,11 @@ public class SourcePersister implements Persister<BufferedSource, BarCode> {
     }
 
     @Nonnull
+    static String pathForBarcode(@Nonnull BarCode barCode) {
+        return barCode.getType() + barCode.getKey();
+    }
+
+    @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final BarCode barCode) {
         return sourceFileReader.read(barCode);
@@ -49,11 +54,6 @@ public class SourcePersister implements Persister<BufferedSource, BarCode> {
     @Override
     public Observable<Boolean> write(@Nonnull final BarCode barCode, @Nonnull final BufferedSource data) {
         return sourceFileWriter.write(barCode, data);
-    }
-
-    @Nonnull
-    static String pathForBarcode(@Nonnull BarCode barCode) {
-        return barCode.toString();
     }
 
 }

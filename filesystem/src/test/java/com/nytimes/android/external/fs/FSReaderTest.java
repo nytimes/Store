@@ -44,11 +44,11 @@ public class FSReaderTest {
         //write different data to File System for each barcode
         fileSystem.write(barCodeWritePathResolver.resolve(barCode), source(CHALLAH));
         fileSystem.write(barCodeWritePathResolver.resolve(barCode1), source(CHALLAH_CHALLAH));
-        FSReader<BarCode> reader = new FSReader<>(fileSystem, barCodePathResolver);
+        FSAllReader<BarCode> reader = new FSAllReader<>(fileSystem);
         //read back all values for the TYPE
-        BlockingObservable<BufferedSource> observable = reader.read(barCode).toBlocking();
-        assertThat(observable.first().readUtf8()).isEqualTo(CHALLAH);
-        assertThat(observable.last().readUtf8()).isEqualTo(CHALLAH_CHALLAH);
+        BlockingObservable<BufferedSource> observable = reader.readAll(barCodePathResolver.resolve(barCode)).toBlocking();
+        assertThat(observable.first().readUtf8()).isEqualTo(CHALLAH_CHALLAH);
+        assertThat(observable.last().readUtf8()).isEqualTo(CHALLAH);
     }
 
 }
