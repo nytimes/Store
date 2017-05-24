@@ -37,8 +37,6 @@ public class FSReaderTest {
         BarCode barCode1 = new BarCode(TYPE, "key2.txt");
 
         File tempDir = createTempDir();
-        String str = tempDir.getAbsolutePath();
-        System.out.println(str);
         FileSystem fileSystem = FileSystemFactory.create(tempDir);
 
         //write different data to File System for each barcode
