@@ -20,7 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FSAllOperationTest {
 
-    public static final String TYPE = "typee";
+    public static final String FOLDER = "type";
+    public static final String INNER_FOLDER = "type2";
     public static final String CHALLAH = "Challah";
     public static final String CHALLAH_CHALLAH = "Challah_CHALLAH";
     private final BarCodeReadAllPathResolver barCodePathResolver = new BarCodeReadAllPathResolver();
@@ -32,39 +33,30 @@ public class FSAllOperationTest {
 
     @Test
     public void readAll() throws IOException {
-        //create 2 barcodes with same type
-        BarCode barCode = new BarCode(TYPE, "key.txt");
-        BarCode barCode1 = new BarCode(TYPE, "key2.txt");
-
         File tempDir = createTempDir();
         FileSystem fileSystem = FileSystemFactory.create(tempDir);
 
         //write different data to File System for each barcode
-        fileSystem.write("type/key.txt", source(CHALLAH));
-        fileSystem.write("type/key2.txt", source(CHALLAH_CHALLAH));
+        fileSystem.write(FOLDER + "/key.txt", source(CHALLAH));
+        fileSystem.write(FOLDER + "/" + INNER_FOLDER + "/key2.txt", source(CHALLAH_CHALLAH));
         FSAllReader<BarCode> reader = new FSAllReader<>(fileSystem);
-        //read back all values for the TYPE
-        BlockingObservable<BufferedSource> observable = reader.readAll("type").toBlocking();
+        //read back all values for the FOLDER
+        BlockingObservable<BufferedSource> observable = reader.readAll(FOLDER).toBlocking();
         assertThat(observable.first().readUtf8()).isEqualTo(CHALLAH);
         assertThat(observable.last().readUtf8()).isEqualTo(CHALLAH_CHALLAH);
     }
 
     @Test
     public void deleteAll() throws IOException {
-        //create 2 barcodes with same type
-        BarCode barCode = new BarCode(TYPE, "key.txt");
-        BarCode barCode1 = new BarCode(TYPE, "key2.txt");
-
         File tempDir = createTempDir();
         FileSystem fileSystem = FileSystemFactory.create(tempDir);
-
         //write different data to File System for each barcode
-        fileSystem.write("type/key.txt", source(CHALLAH));
-        fileSystem.write("type/key2.txt", source(CHALLAH_CHALLAH));
+        fileSystem.write(FOLDER + "/key.txt", source(CHALLAH));
+        fileSystem.write(FOLDER + "/" + INNER_FOLDER + "/key2.txt", source(CHALLAH_CHALLAH));
+
         FSAllEraser eraser = new FSAllEraser(fileSystem);
-        BlockingObservable<Boolean> observable = eraser.deleteAll("type").toBlocking();
+        BlockingObservable<Boolean> observable = eraser.deleteAll(FOLDER).toBlocking();
         assertThat(observable.first()).isEqualTo(true);
-        assertThat(observable.last()).isEqualTo(true);
     }
 
 }
