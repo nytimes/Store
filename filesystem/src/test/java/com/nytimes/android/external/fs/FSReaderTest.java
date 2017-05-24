@@ -33,7 +33,7 @@ public class FSReaderTest {
     @Test
     public void readAll() throws IOException {
         //create 2 barcodes with same type
-        BarCode barCode = new BarCode(TYPE, "keyy.txt");
+        BarCode barCode = new BarCode(TYPE, "key.txt");
         BarCode barCode1 = new BarCode(TYPE, "key2.txt");
 
         File tempDir = createTempDir();
@@ -42,13 +42,13 @@ public class FSReaderTest {
         FileSystem fileSystem = FileSystemFactory.create(tempDir);
 
         //write different data to File System for each barcode
-        fileSystem.write(barCodeWritePathResolver.resolve(barCode), source(CHALLAH));
-        fileSystem.write(barCodeWritePathResolver.resolve(barCode1), source(CHALLAH_CHALLAH));
+        fileSystem.write("type/key.txt", source(CHALLAH));
+        fileSystem.write("type/key2.txt", source(CHALLAH_CHALLAH));
         FSAllReader<BarCode> reader = new FSAllReader<>(fileSystem);
         //read back all values for the TYPE
-        BlockingObservable<BufferedSource> observable = reader.readAll(barCodePathResolver.resolve(barCode)).toBlocking();
-        assertThat(observable.first().readUtf8()).isEqualTo(CHALLAH_CHALLAH);
-        assertThat(observable.last().readUtf8()).isEqualTo(CHALLAH);
+        BlockingObservable<BufferedSource> observable = reader.readAll("type").toBlocking();
+        assertThat(observable.first().readUtf8()).isEqualTo(CHALLAH);
+        assertThat(observable.last().readUtf8()).isEqualTo(CHALLAH_CHALLAH);
     }
 
 }
