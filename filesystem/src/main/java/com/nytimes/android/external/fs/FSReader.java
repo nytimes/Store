@@ -4,16 +4,13 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskRead;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 import rx.Emitter;
 import rx.Observable;
-import rx.exceptions.Exceptions;
-import rx.functions.Action1;
-import rx.functions.Func0;
-import rx.functions.Func1;
 
 /**
  * FSReader is used when persisting from file system
@@ -34,23 +31,28 @@ public class FSReader<T> implements DiskRead<BufferedSource, T> {
     @Nonnull
     @Override
     public Observable<BufferedSource> read(@Nonnull final T key) {
-        return Observable.fromEmitter(new Action1<Emitter<BufferedSource>>() {
-            @Override
-            public void call(Emitter<BufferedSource> emitter) {
-                String resolvedKey = pathResolver.resolve(key);
-                boolean exists = fileSystem.exists(resolvedKey);
-
-                if (exists) {
-                    try {
-                        BufferedSource bufferedSource = fileSystem.read(resolvedKey);
-                        emitter.onNext(bufferedSource);
-                        emitter.onCompleted();
-                    } catch (FileNotFoundException e) {
-                        emitter.onError(e);
-                    }
-                } else {
+        return Observable.create(emitter -> {
+            String resolvedKey = pathResolver.resolve(key);
+            boolean exists = fileSystem.exists(resolvedKey);
+            if (exists) {
+                BufferedSource bufferedSource = null;
+                try {
+                    bufferedSource = fileSystem.read(resolvedKey);
+                    emitter.onNext(bufferedSource);
                     emitter.onCompleted();
+                } catch (FileNotFoundException e) {
+                    emitter.onError(e);
+                } finally {
+                    if (bufferedSource != null) {
+                        try {
+                            bufferedSource.close();
+                        } catch (IOException e) {
+                            e.printStackTrace(System.err);
+                        }
+                    }
                 }
+            } else {
+                emitter.onError(new FileNotFoundException(ERROR_MESSAGE + resolvedKey));
             }
         }, Emitter.BackpressureMode.NONE);
     }

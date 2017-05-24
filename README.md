@@ -280,9 +280,8 @@ public class SampleStore extends RealStore<String, BarCode> {
 
 
 ### Artifacts
-Note: Release is in Sync with current state of master (not develop) branch
 
-**CurrentVersion = 2.0.4**
+**CurrentVersion = 2.1.0**
 
 + **Cache** Cache extracted from Guava (keeps method count to a minimum)
 
@@ -339,4 +338,7 @@ See the app for example usage of Store. Alternatively, the Wiki contains a set o
 [DroidCon Italy](https://youtu.be/TvsOsgd0--c)
 [Android Makers](https://www.youtube.com/watch?time_continue=170&v=G1MebI2k9aA)
 
+### Community projects
+
++ https://github.com/stoyicker/master-slave-clean-store: An offline-first Master-Slave project with scroll-driven pagination using Store for the data layer.
 
