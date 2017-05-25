@@ -2,13 +2,11 @@ package com.nytimes.android.external.fs;
 
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskAllErase;
-import com.nytimes.android.external.store.base.DiskErase;
 
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
-import okio.BufferedSource;
 import rx.Observable;
 
 

@@ -3,9 +3,7 @@ package com.nytimes.android.external.store.base;
 
 import java.io.FileNotFoundException;
 
-
 import javax.annotation.Nonnull;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import rx.Observable;
 

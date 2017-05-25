@@ -11,7 +11,6 @@ import com.nytimes.android.external.store.util.NoKeyParser;
 import com.nytimes.android.external.store.util.NoopParserFunc;
 import com.nytimes.android.external.store.util.NoopPersister;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 

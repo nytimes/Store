@@ -3,8 +3,6 @@ package com.nytimes.android.external.fs;
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.Persister;
 
-import java.io.FileNotFoundException;
-
 import javax.annotation.Nonnull;
 
 import okio.BufferedSource;

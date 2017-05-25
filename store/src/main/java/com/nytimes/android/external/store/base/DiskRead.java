@@ -1,7 +1,5 @@
 package com.nytimes.android.external.store.base;
 
-import java.io.FileNotFoundException;
-
 import javax.annotation.Nonnull;
 
 import rx.Observable;

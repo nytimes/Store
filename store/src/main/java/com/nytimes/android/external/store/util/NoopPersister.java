@@ -8,7 +8,6 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.MemoryPolicy;
 
 import java.util.concurrent.TimeUnit;
-import java.io.FileNotFoundException;
 
 import javax.annotation.Nonnull;
 

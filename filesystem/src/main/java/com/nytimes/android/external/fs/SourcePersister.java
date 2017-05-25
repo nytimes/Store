@@ -5,8 +5,6 @@ import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.BarCode;
 
-import java.io.FileNotFoundException;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 

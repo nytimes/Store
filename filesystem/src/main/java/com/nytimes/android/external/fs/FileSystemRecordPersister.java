@@ -5,7 +5,6 @@ import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.RecordProvider;
 import com.nytimes.android.external.store.base.RecordState;
 
-import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;

@@ -15,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.FileNotFoundException;
-
 import javax.annotation.Nonnull;
 
 import okio.BufferedSource;

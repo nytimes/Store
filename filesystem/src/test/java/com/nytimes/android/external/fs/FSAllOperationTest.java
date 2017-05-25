@@ -2,7 +2,6 @@ package com.nytimes.android.external.fs;
 
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.fs.filesystem.FileSystemFactory;
-import com.nytimes.android.external.store.base.impl.BarCode;
 
 import org.junit.Test;
 

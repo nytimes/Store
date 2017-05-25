@@ -2,17 +2,14 @@ package com.nytimes.android.external.fs;
 
 import com.nytimes.android.external.fs.filesystem.FileSystem;
 import com.nytimes.android.external.store.base.DiskAllRead;
-import com.nytimes.android.external.store.base.DiskRead;
 
 import java.io.FileNotFoundException;
 
 import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
-import rx.Emitter;
 import rx.Observable;
 import rx.exceptions.Exceptions;
-import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
 

@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
