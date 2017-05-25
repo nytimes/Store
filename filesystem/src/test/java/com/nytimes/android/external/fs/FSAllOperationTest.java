@@ -24,8 +24,7 @@ public class FSAllOperationTest {
     public static final String INNER_FOLDER = "type2";
     public static final String CHALLAH = "Challah";
     public static final String CHALLAH_CHALLAH = "Challah_CHALLAH";
-    private final BarCodeReadAllPathResolver barCodePathResolver = new BarCodeReadAllPathResolver();
-    private final BarCodePathResolver barCodeWritePathResolver = new BarCodePathResolver();
+
 
     private static BufferedSource source(String data) {
         return Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))));
