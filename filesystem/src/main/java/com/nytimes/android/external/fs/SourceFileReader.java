@@ -11,6 +11,8 @@ import javax.annotation.Nonnull;
 
 import okio.BufferedSource;
 
+import static com.nytimes.android.external.fs.SourcePersister.pathForBarcode;
+
 public class SourceFileReader extends FSReader<BarCode> implements DiskRead<BufferedSource, BarCode> {
 
     public SourceFileReader(FileSystem fileSystem) {
@@ -25,7 +27,6 @@ public class SourceFileReader extends FSReader<BarCode> implements DiskRead<Buff
     public RecordState getRecordState(@Nonnull BarCode barCode,
                                       @Nonnull TimeUnit expirationUnit,
                                       long expirationDuration) {
-        String path = this.pathResolver.resolve(barCode);
-        return fileSystem.getRecordState(expirationUnit, expirationDuration, path);
+        return fileSystem.getRecordState(expirationUnit, expirationDuration, pathForBarcode(barCode));
     }
 }
