@@ -38,7 +38,7 @@ public class FSAllOperationTest {
         //write different data to File System for each barcode
         fileSystem.write(FOLDER + "/key.txt", source(CHALLAH));
         fileSystem.write(FOLDER + "/" + INNER_FOLDER + "/key2.txt", source(CHALLAH_CHALLAH));
-        FSAllReader<BarCode> reader = new FSAllReader<>(fileSystem);
+        FSAllReader reader = new FSAllReader(fileSystem);
         //read back all values for the FOLDER
         BlockingObservable<BufferedSource> observable = reader.readAll(FOLDER).toBlocking();
         assertThat(observable.first().readUtf8()).isEqualTo(CHALLAH);

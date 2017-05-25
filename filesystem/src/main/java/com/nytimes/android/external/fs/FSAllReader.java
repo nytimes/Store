@@ -21,9 +21,8 @@ import rx.functions.Func1;
  * PathResolver will be used in creating file system paths based on cache keys.
  * Make sure to have keys containing same data resolve to same "path"
  *
- * @param <T> key type
  */
-public class FSAllReader<T> implements DiskAllRead {
+public class FSAllReader implements DiskAllRead {
     final FileSystem fileSystem;
 
     public FSAllReader(FileSystem fileSystem) {
