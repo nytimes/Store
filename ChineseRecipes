@@ -1,0 +1,138 @@
+欢迎浏览Store使用手册！
+### 创建 Stores
+构建StoreBuilder时有3个切入口。您使用哪一个切入口取决于您是否有自己的关键数据类型和分析器。
+```java
+public final class StoreBuilder {
+...
+    public static <Parsed> RealStoreBuilder<Parsed, Parsed, BarCode> barcode()
+    public static <Key, Parsed> RealStoreBuilder<Parsed, Parsed, Key> key()
+    public static <Key, Raw, Parsed> RealStoreBuilder<Raw, Parsed, Key> parsedWithKey()
+...
+}
+```
+### 缓存并得到新数据
+首先调用get和concat来取得结果。然后添加distinct操作符来筛选唯一的发布。 如果缓存和网络返回了同样的结果或者第一个被调用的需要通过网络来执行，那它将只会返回一个结果。
+```java
+store.get(barCode)
+                .concatWith(store.fetch(barCode))
+                .distinct()
+                .subscribe()
+```
+注意：如果您省略了`distinct()`那您将得到两个值。
+###Staying Subscribed for future emissions. 
+###保持订阅以获得后续发布
+    
+```java
+store.stream()
+                .subscribe()
+```
+ * 注意: 任何条形码都会使得订阅流发布。您可使用过滤操作符来选取结果子集。
+ 
+###清除缓存后刷新
+有时您想在当缓存清空时获取新的数据。一个常用的适用场景是您想要在用户递交不同的POST请求时从网络得到数据。公共储存方法getRefreshing(key)使得您可以在任何时候调用store.clear(key)来重新连接网络执行。举例说明：
+```java
+allNotesStore.getRefreshing(barCode)
+                .subscribe(observer);
+notesApi.submitNewNote(barcode);
+allNotesStore.clear(barcode); //when clear is called store will hit network again
+```
+### 刷新过期数据
+使用Persister时，当纪录过期时您可能会想回填磁盘缓存。您可以通过往您的`StoreBuilder`添加方法并使用`RecordProvider`或者使用我们内建的 `RecordPersister`
+store = StoreBuilder.<BufferedSource>barcode()
+                .fetcher(fetcher)
+                .persister(persister)
+                .refreshOnStale()
+                .open();
+        Store<ArticleAsset, Integer> store = StoreBuilder.<ArticleAsset>barcode()
+                .fetcher(articleBarcode -> api.getAsset(articleBarcode.getKey(),articleBarcode.getType()))
+              .persister(new RecordPersister(FileSystemFactory.create(context.getFilesDir()),5, TimeUnit.HOURS))
+                .open();
+### 过期数据联网
+使用Persister时，您可能想在返回过期纪录前联网。您可以通过往您的`StoreBuilder`添加方法并使用`RecordProvider`或者使用我们内建的`RecordPersister`
+store = StoreBuilder.<BufferedSource>barcode()
+                .fetcher(fetcher)
+                .persister(persister)
+                .networkBeforeStale()
+                .open();
+        Store<ArticleAsset, Integer> store = StoreBuilder.<ArticleAsset>barcode()
+                .fetcher(articleBarcode -> api.getAsset(articleBarcode.getKey(),articleBarcode.getType()))
+              .persister(new RecordPersister(FileSystemFactory.create(context.getFilesDir()),5, TimeUnit.HOURS))
+                .open();
+### 可清除的磁盘缓存
+如果您希望store.clear(key)也可以清空您的磁盘缓存，请让Persister应用`Clearable`
+#### 多重解析器
+您可能会想使用中间件解析器解析json至pojo，然后使用另一个解析器来打开数据。
+ ```java
+        Parser<BufferedSource, RedditData> sourceParser = GsonParserFactory.createSourceParser(provideGson(), RedditData.class);
+        Parser<RedditData, Data> envelopeParser = redditData -> redditData.data();
+        ParsingStoreBuilder.<BufferedSource,RedditData>builder()
+                .fetcher(this::fetcher)
+                .persister(persister)
+                .parser(new MultiParser<>(Arrays.asList(sourceParser,envelopeParser)))
+                .open();
+```
+####最上层 JSON 数列
+In some cases you may need to parse a top level JSONArray, in which case you can provide a TypeToken.
+```java
+Store<List<Article>> Store = ParsingStoreBuilder.<BufferedSource, List<Article>>builder()
+                .nonObservableFetcher(this::getResponse)
+                .parser(GsonParserFactory.createSourceParser(gson, new TypeToken<List<Article>>() {}))
+                .open();
+```
+###自定义缓存政策
+通过使用expireAfterAccess 政策，stores默认会为上限100项条目缓存至多24小时。您可以使用您的自定义来覆盖改写缓存的时间和类型。下例将会展现永久缓存1项条目来保存下一层级的内存占用。
+```java
+ParsingStoreBuilder.<BufferedSource,RedditData>builder()
+                .fetcher(this::fetcher)
+                .parser(GsonParserFactory.createSourceParser(provideGson(),RedditData.class))
+                .memory(CacheBuilder.newBuilder()
+                        .maximumSize(1)
+                        .expireAfterWrite(Long.MAX_VALUE, TimeUnit.SECONDS)
+                        .build())
+                .open();
+```
+###下划Stores层级
+当您想要构建有其他添加功能方法的store时，下划Stores层级可能是最好的方法。store如何构建将取决于您将要添加的内容。
+```java
+public class SampleStore extends RealStore<String, BarCode> {
+   @Inject
+   public SampleStore(Fetcher<String, BarCode> fetcher, Persister<String, BarCode> persister) {
+        super(fetcher, persister);
+    }
+}
+```
+###用FileSystemPersister来缓存
+当您想要允许磁盘缓存时，使用Source Persister通过向您的build.gradle添加'com.nytimes.android:filesystem:VERSION'可能是最简单的方式。
+Source Persisiter可以使得`BufferedSource`持续。您可以方便的从Okhttp `Response` 或者 Retrofit `ResponseBody`得到一个`BufferedSource`。如果您对数据抓取使用了不同的网络客户端，您可以自行创建一个`BufferedSource`：
+```java
+Okio.buffer(Okio.source(new ByteArrayInputStream(data.getBytes(UTF_8))))
+```
+if coming from an `inputStream`
+```java
+Okio.buffer(Okio.source(inputStream))
+```
+当您有一个可以返回`BufferedSource`的`fetcher`后，您可以将它作为一个FileSystemPersister Persister。
+```java        
+Persister<BufferedSource, BarCode> persister = FileSystemPersister.create(fileSystem, key ->"Book"+key.getType()+key.getKey())
+```
+在使用FileSystemFactory时您必须提供一个`PathResolver`，这是为了能在多个 store 中共享同一个`FileSystem`。
+```java 
+StoreBuilder.<BufferedSource>builder()
+                .fetcher(this::fetcher)
+                .persister(persister)
+                .open();
+```
+大多数情况下您会想将数据解析至 pojo 而非返回`BufferedSource`。 中间解析器将帮您实现这一目的。
+```java
+ParsingStoreBuilder.<BufferedSource,RedditData>builder()
+                .fetcher(this::fetcher)
+                .persister(persister)
+                .parser(MoshiParserFactory.createSourceParser(new Moshi.Builder().build(),RedditData.class))
+                .open();
+```
+```java
+                .parser(JacksonParserFactory.createSourceParser(new ObjectMapper(),RedditData.class))
+```
+```java
+                .parser(GsonParserFactory.createSourceParser(new Gson(),RedditData.class))
+```
