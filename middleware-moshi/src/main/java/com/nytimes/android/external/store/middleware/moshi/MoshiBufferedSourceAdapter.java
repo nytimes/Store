@@ -30,6 +30,7 @@ public class MoshiBufferedSourceAdapter<Parsed> implements BufferedSourceAdapter
     @Nonnull
     @Override
     public BufferedSource toJson(@Nonnull Parsed value) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(jsonAdapter.toJson(value).getBytes(Charset.forName("UTF-8")))));
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(jsonAdapter.toJson(value).getBytes(
+                Charset.forName("UTF-8")))));
     }
 }
