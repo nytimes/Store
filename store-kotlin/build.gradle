@@ -17,6 +17,7 @@ dependencies {
     testCompile libraries.mockito
     testCompile libraries.junit
     testCompile libraries.commonsLang3
+    testCompile libraries.assertJ
 }
 
 apply from: rootProject.file("gradle/maven-push.gradle")

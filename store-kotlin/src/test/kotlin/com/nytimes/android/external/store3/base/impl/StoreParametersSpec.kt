@@ -3,8 +3,7 @@ package com.nytimes.android.external.store3.base.impl
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Parser
 import com.nytimes.android.external.store3.util.KeyParser
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.Mockito.mock
 
@@ -16,19 +15,19 @@ open class StoreParametersSpec {
     fun defaultPersisterIsNull() {
         @Suppress("UNCHECKED_CAST")
         val sut = StoreParameters(mock(Fetcher::class.java) as Fetcher<Any, Any>)
-        assertNull(sut.persister)
+        assertThat(sut.persister).isNull()
     }
     @Test
     fun defaultMemoryPolicyIsNull() {
         @Suppress("UNCHECKED_CAST")
         val sut = StoreParameters(mock(Fetcher::class.java) as Fetcher<Any, Any>)
-        assertNull(sut.memoryPolicy)
+        assertThat(sut.memoryPolicy).isNull()
     }
     @Test
     fun defaultStalePolicyIsUnspecified() {
         @Suppress("UNCHECKED_CAST")
         val sut = StoreParameters(mock(Fetcher::class.java) as Fetcher<Any, Any>)
-        assertEquals(StalePolicy.UNSPECIFIED, sut.stalePolicy)
+        assertThat(sut.stalePolicy).isEqualTo(StalePolicy.UNSPECIFIED)
     }
 }
 
@@ -40,13 +39,13 @@ class ParsableStoreParametersSpec : StoreParametersSpec() {
     @Test
     fun defaultParserIsNull() {
         val sut = ParsableStoreParameters<Any, Any, Any>(mock(Fetcher::class.java) as Fetcher<Any, Any>)
-        assertNull(sut.parser)
+        assertThat(sut.parser).isNull()
     }
 
     @Test
     fun defaultParsersIsNull() {
         val sut = ParsableStoreParameters<Any, Any, Any>(mock(Fetcher::class.java) as Fetcher<Any, Any>)
-        assertNull(sut.parsers)
+        assertThat(sut.parsers).isNull()
     }
 
     @Test
@@ -54,7 +53,7 @@ class ParsableStoreParametersSpec : StoreParametersSpec() {
         val sut = ParsableStoreParameters<Any, Any, Any>(mock(Fetcher::class.java) as Fetcher<Any, Any>)
         sut.parser = mock(KeyParser::class.java) as KeyParser<Any, Any, Any>
         sut.parsers = mock(List::class.java) as List<Parser<Any, Any>>
-        assertNull(sut.parser)
+        assertThat(sut.parser).isNull()
     }
 
     @Test
@@ -62,6 +61,6 @@ class ParsableStoreParametersSpec : StoreParametersSpec() {
         val sut = ParsableStoreParameters<Any, Any, Any>(mock(Fetcher::class.java) as Fetcher<Any, Any>)
         sut.parsers = mock(List::class.java) as List<Parser<Any, Any>>
         sut.parser = mock(KeyParser::class.java) as KeyParser<Any, Any, Any>
-        assertNull(sut.parsers)
+        assertThat(sut.parsers).isNull()
     }
 }

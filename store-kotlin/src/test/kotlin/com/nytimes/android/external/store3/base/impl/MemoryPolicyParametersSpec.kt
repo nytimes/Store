@@ -1,6 +1,6 @@
 package com.nytimes.android.external.store3.base.impl
 
-import org.junit.Assert.assertEquals
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
@@ -11,25 +11,25 @@ class MemoryPolicyParametersSpec {
     @Test
     fun shouldHaveExpireAfterWriteBeMemoryPolicyDEFAULT_POLICY() {
         val sut = MemoryPolicyParameters()
-        assertEquals(MemoryPolicy.DEFAULT_POLICY, sut.expireAfterWrite)
+        assertThat(sut.expireAfterWrite).isEqualTo(MemoryPolicy.DEFAULT_POLICY)
     }
 
     @Test
     fun shouldHaveExpireAfterAccessBeMemoryPolicyDEFAULT_POLICY() {
         val sut = MemoryPolicyParameters()
-        assertEquals(MemoryPolicy.DEFAULT_POLICY, sut.expireAfterAccess)
+        assertThat(sut.expireAfterAccess).isEqualTo(MemoryPolicy.DEFAULT_POLICY)
     }
 
     @Test
     fun shouldHaveExpireAfterTimeUnitBeTimeUnitSECONDS() {
         val sut = MemoryPolicyParameters()
-        assertEquals(TimeUnit.SECONDS, sut.expireAfterTimeUnit)
+        assertThat(sut.expireAfterTimeUnit).isEqualTo(TimeUnit.SECONDS)
     }
 
     @Test
     fun shouldHaveMemorySizeBe1() {
         val sut = MemoryPolicyParameters()
-        assertEquals(1, sut.memorySize)
+        assertThat(sut.memorySize).isEqualTo(1)
     }
 
     @Test
@@ -38,9 +38,9 @@ class MemoryPolicyParametersSpec {
         val validValue = 82L
         val invalidValue = -1L
         sut.expireAfterWrite = validValue
-        assertEquals(validValue, sut.expireAfterWrite)
+        assertThat(sut.expireAfterWrite).isEqualTo(validValue)
         sut.expireAfterWrite = invalidValue
-        assertEquals(validValue, sut.expireAfterWrite)
+        assertThat(sut.expireAfterWrite).isEqualTo(validValue)
     }
 
     @Test
@@ -49,9 +49,9 @@ class MemoryPolicyParametersSpec {
         val validValue = 82L
         val invalidValue = -1L
         sut.expireAfterAccess = validValue
-        assertEquals(validValue, sut.expireAfterAccess)
+        assertThat(sut.expireAfterAccess).isEqualTo(validValue)
         sut.expireAfterAccess = invalidValue
-        assertEquals(validValue, sut.expireAfterAccess)
+        assertThat(sut.expireAfterAccess).isEqualTo(validValue)
     }
 
     @Test
@@ -60,8 +60,8 @@ class MemoryPolicyParametersSpec {
         val validValue = 3L
         val invalidValue = -1L
         sut.memorySize = validValue
-        assertEquals(validValue, sut.memorySize)
+        assertThat(sut.memorySize).isEqualTo(validValue)
         sut.memorySize = invalidValue
-        assertEquals(validValue, sut.memorySize)
+        assertThat(sut.memorySize).isEqualTo(validValue)
     }
 }
