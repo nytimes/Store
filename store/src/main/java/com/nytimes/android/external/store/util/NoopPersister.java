@@ -65,4 +65,5 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
     public void clear(@Nonnull Key key) {
         networkResponses.invalidate(key);
     }
+
 }

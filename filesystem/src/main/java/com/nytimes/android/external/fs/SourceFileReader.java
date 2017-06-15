@@ -16,9 +16,12 @@ import static com.nytimes.android.external.fs.SourcePersister.pathForBarcode;
 public class SourceFileReader extends FSReader<BarCode> implements DiskRead<BufferedSource, BarCode> {
 
     public SourceFileReader(FileSystem fileSystem) {
-        super(fileSystem, new BarCodePathResolver());
+        this(fileSystem, new BarCodePathResolver());
     }
 
+    public SourceFileReader(FileSystem fileSystem, PathResolver<BarCode> pathResolver) {
+        super(fileSystem, pathResolver);
+    }
 
     @Nonnull
     public RecordState getRecordState(@Nonnull BarCode barCode,
