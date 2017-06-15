@@ -1,3 +1,4 @@
+apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'org.jetbrains.dokka'
 
@@ -9,6 +10,8 @@ compileKotlin {
     targetCompatibility = JavaVersion.VERSION_1_8
     kotlinOptions.jvmTarget = "1.8"
 }
+
+javadoc.dependsOn dokka
 
 dependencies {
     compile project(':store')
