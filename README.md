@@ -293,6 +293,11 @@ public class SampleStore extends RealStore<String, BarCode> {
 	```groovy
 	compile 'com.nytimes.android:store3:CurrentVersion'
 	```
++ **Store-Kotlin** Store plus a couple of added Kotlin classes for more idiomatic usage.
+
+    ```groovy
+    compile 'com.nytimes.android:store-kotlin3:CurrentVersion'
+    ```
 + **Middleware** Sample Gson parsers, (feel free to create more and open PRs) 
 
     ```groovy
