@@ -1,5 +1,3 @@
-@file:JvmName("DemoUtils")
-
 package com.nytimes.android.external.store3.base.impl
 
 import com.nytimes.android.external.store3.base.Fetcher
