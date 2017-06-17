@@ -58,7 +58,7 @@ BarCode barcode = new BarCode("Article", "42");
 ```
 When using a Barcode as your key, you can use a StoreBuilder convenience method
 ``` java
- Store<ArticleAsset, Integer> store = StoreBuilder.<ArticleAsset>barcode()
+ Store<ArticleAsset, BarCode> store = StoreBuilder.<ArticleAsset>barcode()
                 .fetcher(articleBarcode -> api.getAsset(articleBarcode.getKey(),articleBarcode.getType()))
                 .open();
 ```
