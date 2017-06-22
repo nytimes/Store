@@ -1,8 +1,11 @@
 package com.nytimes.android.external.store3.base.impl
 
+import com.nytimes.android.external.store3.annotations.Experimental
+
 /**
  * Wraps methods for fluent MemoryPolicy instantiation.
  */
+@Experimental
 class FluentMemoryPolicyBuilder private constructor() {
     companion object {
         /**
