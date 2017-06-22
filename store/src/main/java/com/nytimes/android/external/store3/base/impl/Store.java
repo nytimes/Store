@@ -1,11 +1,12 @@
 package com.nytimes.android.external.store3.base.impl;
 
 
+import com.nytimes.android.external.store3.annotations.Experimental;
+
 import javax.annotation.Nonnull;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.annotations.Experimental;
 
 
 /**
