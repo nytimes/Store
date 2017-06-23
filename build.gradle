@@ -15,6 +15,10 @@ buildscript {
         jcenter()
     }
 
+    rootProject.ext.versions = [
+            kotlin: '1.1.2-5'
+    ]
+
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.2'
         classpath 'com.google.gms:google-services:3.0.0'
@@ -22,6 +26,8 @@ buildscript {
         classpath 'me.tatarka:gradle-retrolambda:3.6.1'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$rootProject.ext.versions.kotlin"
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.14'
     }
 
     // this corresponds to the lombok.ast included above. fixes lint for retro-lambda

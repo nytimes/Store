@@ -47,7 +47,6 @@ afterEvaluate { project ->
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
                 pom.groupId = GROUP
                 pom.artifactId = POM_ARTIFACT_ID
                 pom.version = VERSION_NAME
@@ -195,6 +194,11 @@ afterEvaluate { project ->
             classifier = 'javadoc'
             from javadoc.destinationDir
         }
+
+        task kotlinJavadocJar(type: Jar, dependsOn:javadoc) {
+            classifier = 'javadoc'
+            from "$buildDir/dokka"
+        }
     }
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -212,7 +216,11 @@ afterEvaluate { project ->
             archives androidJavadocsJar
         } else {
             archives sourcesJar
-            archives javadocJar
+            if (project.getPlugins().hasPlugin('kotlin')) {
+                archives kotlinJavadocJar
+            } else {
+                archives javadocJar
+            }
         }
     }
 }

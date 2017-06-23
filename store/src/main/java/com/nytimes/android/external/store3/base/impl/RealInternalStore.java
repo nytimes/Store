@@ -1,6 +1,7 @@
 package com.nytimes.android.external.store3.base.impl;
 
 import com.nytimes.android.external.cache3.Cache;
+import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.InternalStore;
 import com.nytimes.android.external.store3.base.Persister;
@@ -15,7 +16,6 @@ import javax.annotation.Nullable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.annotations.Experimental;
 import io.reactivex.subjects.PublishSubject;
 
 /**
