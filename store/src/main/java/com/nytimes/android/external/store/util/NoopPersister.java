@@ -7,6 +7,7 @@ import com.nytimes.android.external.store.base.Clearable;
 import com.nytimes.android.external.store.base.Persister;
 import com.nytimes.android.external.store.base.impl.MemoryPolicy;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -51,13 +52,13 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
     @Override
     public Observable<Raw> read(@Nonnull Key key) {
         Observable<Raw> cachedValue = networkResponses.getIfPresent(key);
-        return cachedValue == null ? Observable.<Raw>empty() : cachedValue;
+        return cachedValue == null ? Observable.error(new FileNotFoundException()) : cachedValue;
     }
 
     @Nonnull
     @Override
     public Observable<Boolean> write(@Nonnull Key key, @Nonnull Raw raw) {
-        networkResponses.put(key, Observable.<Raw>just(raw));
+        networkResponses.put(key, Observable.just(raw));
         return Observable.just(true);
     }
 
