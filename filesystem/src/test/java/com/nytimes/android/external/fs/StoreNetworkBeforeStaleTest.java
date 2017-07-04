@@ -50,7 +50,6 @@ public class StoreNetworkBeforeStaleTest {
                 .persister(persister)
                 .networkBeforeStale()
                 .open();
-
     }
 
     @Test

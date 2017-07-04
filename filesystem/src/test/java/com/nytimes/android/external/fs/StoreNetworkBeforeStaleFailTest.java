@@ -35,8 +35,6 @@ public class StoreNetworkBeforeStaleFailTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-
-
     }
 
     @Test
@@ -52,8 +50,6 @@ public class StoreNetworkBeforeStaleFailTest {
         AssertableSubscriber<BufferedSource> subscriber = store.get(barCode).test().awaitTerminalEvent();
         subscriber.assertError(sorry);
         verify(fetcher, times(1)).fetch(barCode);
-
-
     }
 
     @Test
