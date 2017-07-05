@@ -31,28 +31,39 @@ public class StoreNetworkBeforeStaleFailTest {
     static final BarCode barCode = new BarCode("key", "value");
     @Mock
     Fetcher<BufferedSource, BarCode> fetcher;
-    Store<BufferedSource, BarCode> store;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        store = StoreBuilder.<BufferedSource>barcode()
-                .fetcher(fetcher)
-                .persister(new TestPersister())
-                .networkBeforeStale()
-                .open();
-
     }
 
     @Test
     public void networkBeforeStaleNoNetworkResponse() {
+        Store store = StoreBuilder.<BufferedSource>barcode()
+                .fetcher(fetcher)
+                .persister(new TestPersister())
+                .networkBeforeStale()
+                .open();
         Observable<BufferedSource> exception = Observable.error(sorry);
         when(fetcher.fetch(barCode))
                 .thenReturn(exception);
         AssertableSubscriber<BufferedSource> subscriber = store.get(barCode).test().awaitTerminalEvent();
         subscriber.assertError(sorry);
         verify(fetcher, times(1)).fetch(barCode);
+    }
 
+    @Test
+    public void networkBeforeStaleNoOpTest() {
+        Store<BufferedSource, BarCode> myStore = StoreBuilder.<BufferedSource>barcode()
+                .fetcher(fetcher)
+                .networkBeforeStale()
+                .open();
+        Observable<BufferedSource> exception = Observable.error(sorry);
+        when(fetcher.fetch(barCode))
+                .thenReturn(exception);
+        AssertableSubscriber<BufferedSource> subscriber = myStore.get(barCode).test().awaitTerminalEvent();
+        subscriber.assertError(sorry);
+        verify(fetcher, times(1)).fetch(barCode);
 
     }
 
