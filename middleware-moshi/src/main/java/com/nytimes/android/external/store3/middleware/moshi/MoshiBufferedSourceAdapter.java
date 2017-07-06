@@ -6,7 +6,7 @@ import com.squareup.moshi.Moshi;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -30,7 +30,7 @@ public class MoshiBufferedSourceAdapter<Parsed> implements BufferedSourceAdapter
     @Nonnull
     @Override
     public BufferedSource toJson(@Nonnull Parsed value) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(jsonAdapter.toJson(value).getBytes(StandardCharsets
-                .UTF_8))));
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(jsonAdapter.toJson(value).getBytes(
+                Charset.forName("UTF-8")))));
     }
 }
