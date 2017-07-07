@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.nytimes.android.external.fs3.BufferedSourceAdapter;
 
 import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -28,6 +28,7 @@ public class GsonBufferedSourceAdapter<Parsed> implements BufferedSourceAdapter<
     @Nonnull
     @Override
     public BufferedSource toJson(@Nonnull Parsed value) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(gson.toJson(value).getBytes(StandardCharsets.UTF_8))));
+        return Okio.buffer(Okio.source(new ByteArrayInputStream(gson.toJson(value).getBytes(
+                Charset.forName("UTF-8")))));
     }
 }
