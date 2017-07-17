@@ -3,16 +3,12 @@ package com.nytimes.android.external.store.middleware.moshi;
 import com.nytimes.android.external.fs.BufferedSourceAdapter;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-
+import okio.Buffer;
 import okio.BufferedSource;
-import okio.Okio;
 
 /**
  * An implementation of {@link com.nytimes.android.external.fs.BufferedSourceAdapter BufferedSourceAdapter} that uses
@@ -30,7 +26,12 @@ public class MoshiBufferedSourceAdapter<Parsed> implements BufferedSourceAdapter
     @Nonnull
     @Override
     public BufferedSource toJson(@Nonnull Parsed value) {
-        return Okio.buffer(Okio.source(new ByteArrayInputStream(jsonAdapter.toJson(value).getBytes(
-                Charset.forName("UTF-8")))));
+        Buffer buffer = new Buffer();
+        try {
+            jsonAdapter.toJson(buffer, value);
+        } catch (IOException e) {
+            throw new AssertionError(e); // No I/O writing to a Buffer.
+        }
+        return buffer;
     }
 }
