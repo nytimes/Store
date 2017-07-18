@@ -318,15 +318,44 @@ public class SampleStore extends RealStore<String, BarCode> {
 There is an experimental RxJava2 Branch as well.  
 feature/rx2 which has artifacts, use at your own risk for :-)
    
-```
-    com.nytimes.android:store2:0.0.1-SNAPSHOT
-    
-    com.nytimes.android:cache:0.0.1-SNAPSHOT
-    
-    com.nytimes.android:middleware2:0.0.1-SNAPSHOT
-    
-    com.nytimes.android:filesystem2:0.0.1-SNAPSHOT
-```
+`**CurrentVersion = 3.0.0-alpha**
+
++ **Cache** Cache extracted from Guava (keeps method count to a minimum)
+
+	```groovy
+	compile 'com.nytimes.android:cache3:CurrentVersion'
+	```
++ **Store** This contains only Store classes and has a dependecy on RxJava + the above cache.  
+
+	```groovy
+	compile 'com.nytimes.android:store3:CurrentVersion'
+	```
++ **Store-Kotlin** Store plus a couple of added Kotlin classes for more idiomatic usage.
+
+    ```groovy
+    compile 'com.nytimes.android:store-kotlin3:CurrentVersion'
+    ```
++ **Middleware** Sample Gson parsers, (feel free to create more and open PRs) 
+
+    ```groovy
+    compile 'com.nytimes.android:middleware3:CurrentVersion'
+    ```
++ **Middleware-Jackson** Sample Jackon parsers, (feel free to create more and open PRs)
+
+    ```groovy
+    compile 'com.nytimes.android:middleware-jackson3:CurrentVersion'
+    ```
++ **Middleware-Moshi** Sample Moshi parsers, (feel free to create more and open PRs)
+
+    ```groovy
+    compile 'com.nytimes.android:middleware-moshi3:CurrentVersion'
+    ```
++ **File System** Persistence Library built using OKIO Source/Sink + Middleware for streaming from Network to FileSystem 
+
+	```groovy
+	compile 'com.nytimes.android:filesystem3:CurrentVersion'
+	```
+
 
 ### Sample Project
 
