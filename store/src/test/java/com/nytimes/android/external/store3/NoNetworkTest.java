@@ -31,4 +31,11 @@ public class NoNetworkTest {
                 .test()
                 .assertError(EXCEPTION);
     }
+
+    @Test
+    public void testNoNetworkWithResult() throws Exception {
+        store.getWithResult(new BarCode("test", "test"))
+            .test()
+            .assertError(EXCEPTION);
+    }
 }
