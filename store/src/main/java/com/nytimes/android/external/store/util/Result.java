@@ -38,11 +38,11 @@ public final class Result<Parsed> {
         return new Result<>(SOURCE_NETWORK, value);
     }
 
-    public String getSource() {
+    public String source() {
         return source;
     }
 
-    public Parsed getValue() {
+    public Parsed value() {
         return value;
     }
 

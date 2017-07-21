@@ -90,12 +90,12 @@ public class StoreTest {
 
         Result<String> result = simpleStore.getWithResult(barCode).blockingGet();
 
-        assertThat(result.getSource()).isEqualTo(Result.SOURCE_NETWORK);
-        assertThat(result.getValue()).isEqualTo(DISK);
+        assertThat(result.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(result.value()).isEqualTo(DISK);
 
         result = simpleStore.getWithResult(barCode).blockingGet();
-        assertThat(result.getSource()).isEqualTo(Result.SOURCE_CACHE);
-        assertThat(result.getValue()).isEqualTo(DISK);
+        assertThat(result.source()).isEqualTo(Result.SOURCE_CACHE);
+        assertThat(result.value()).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
 
@@ -169,8 +169,8 @@ public class StoreTest {
             .zipWith(simpleStore.getWithResult(barCode), (s, s2) -> Result.createFromNetwork("hello"))
             .blockingGet();
 
-        assertThat(response.getSource()).isEqualTo(Result.SOURCE_NETWORK);
-        assertThat(response.getValue()).isEqualTo("hello");
+        assertThat(response.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(response.value()).isEqualTo("hello");
         verify(fetcher, times(1)).fetch(barCode);
     }
 
@@ -212,12 +212,12 @@ public class StoreTest {
 
         Result<String> result = simpleStore.getWithResult(barCode).blockingGet();
 
-        assertThat(result.getSource()).isEqualTo(Result.SOURCE_NETWORK);
-        assertThat(result.getValue()).isEqualTo(DISK);
+        assertThat(result.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(result.value()).isEqualTo(DISK);
 
         result = simpleStore.getWithResult(barCode).blockingGet();
-        assertThat(result.getSource()).isEqualTo(Result.SOURCE_CACHE);
-        assertThat(result.getValue()).isEqualTo(DISK);
+        assertThat(result.source()).isEqualTo(Result.SOURCE_CACHE);
+        assertThat(result.value()).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
 
@@ -260,8 +260,8 @@ public class StoreTest {
         verify(fetcher, times(1)).fetch(barCode);
         verify(persister, times(1)).write(barCode, NETWORK);
         verify(persister, times(2)).read(barCode);
-        assertThat(value.getSource()).isEqualTo(Result.SOURCE_NETWORK);
-        assertThat(value.getValue()).isEqualTo(NETWORK);
+        assertThat(value.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(value.value()).isEqualTo(NETWORK);
 
 
         value = simpleStore.getWithResult(barCode).blockingGet();
@@ -269,8 +269,8 @@ public class StoreTest {
         verify(persister, times(1)).write(barCode, NETWORK);
         verify(fetcher, times(1)).fetch(barCode);
 
-        assertThat(value.getSource()).isEqualTo(Result.SOURCE_CACHE);
-        assertThat(value.getValue()).isEqualTo(NETWORK);
+        assertThat(value.source()).isEqualTo(Result.SOURCE_CACHE);
+        assertThat(value.value()).isEqualTo(NETWORK);
     }
 
     @Test
