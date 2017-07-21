@@ -4,9 +4,9 @@ import com.nytimes.android.external.store.util.Result;
 import com.nytimes.android.external.store3.base.impl.BarCode;
 import com.nytimes.android.external.store3.base.impl.Store;
 import com.nytimes.android.external.store3.base.impl.StoreBuilder;
-import io.reactivex.Single;
 import org.junit.Before;
 import org.junit.Test;
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -7,11 +7,11 @@ import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.base.impl.BarCode;
 import com.nytimes.android.external.store3.base.impl.ParsingStoreBuilder;
 import com.nytimes.android.external.store3.base.impl.Store;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;

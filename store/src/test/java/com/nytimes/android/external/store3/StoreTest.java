@@ -10,14 +10,14 @@ import com.nytimes.android.external.store3.base.impl.RealStore;
 import com.nytimes.android.external.store3.base.impl.Store;
 import com.nytimes.android.external.store3.base.impl.StoreBuilder;
 import com.nytimes.android.external.store3.util.NoopPersister;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;

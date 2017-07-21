@@ -65,15 +65,38 @@ public final class Result<Parsed> {
 
         Result<?> result = (Result<?>) o;
 
-        return source != null ? source.equals(result.source)
-            : result.source == null && (value != null ? value.equals(result.value)
-                : result.value == null);
+        if (source == null) {
+            return result.source != null;
+        } else {
+            if (!source.equals(result.source)) {
+                return false;
+            }
+        }
+
+        if (value == null) {
+            return result.value != null;
+        } else {
+            if (!value.equals(result.value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = source != null ? source.hashCode() : 0;
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        int result = 0;
+
+        if (source != null) {
+            result = source.hashCode();
+        }
+
+        result = 31 * result;
+        if (value != null) {
+           result += value.hashCode();
+        }
+
         return result;
     }
 }

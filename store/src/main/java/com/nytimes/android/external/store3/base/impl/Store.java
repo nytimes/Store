@@ -2,10 +2,9 @@ package com.nytimes.android.external.store3.base.impl;
 
 import com.nytimes.android.external.store.util.Result;
 import com.nytimes.android.external.store3.annotations.Experimental;
+import javax.annotation.Nonnull;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import javax.annotation.Nonnull;
-
 
 /**
  * a {@link StoreBuilder StoreBuilder}
