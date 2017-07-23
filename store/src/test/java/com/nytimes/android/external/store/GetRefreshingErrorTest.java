@@ -18,9 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.observers.AssertableSubscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
