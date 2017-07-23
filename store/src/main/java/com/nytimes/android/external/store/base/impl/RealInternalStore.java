@@ -133,9 +133,9 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         return persister().read(key)
                 .onErrorReturn(throwable -> {
                     if (error == null) {
-                        throw Exceptions.propagate(new Error("Internal error"));
+                        throw Exceptions.propagate(throwable);
                     }
-                    throw Exceptions.propagate(throwable);
+                    throw Exceptions.propagate(error);
                 })
                 .map(raw -> parser.call(key, raw))
                 .doOnNext(parsed -> {
