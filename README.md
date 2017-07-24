@@ -318,7 +318,7 @@ public class SampleStore extends RealStore<String, BarCode> {
 There is an experimental RxJava2 Branch as well.  
 feature/rx2 which has artifacts, use at your own risk for :-)
    
-`**CurrentVersion = 3.0.0-alpha**
+`**CurrentVersion = 2.1.1**
 
 + **Cache** Cache extracted from Guava (keeps method count to a minimum)
 

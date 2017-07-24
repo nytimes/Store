@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+Version 2.1.1 *(2017-07-24)*
+----------------------------
+
+**New Features**
+
+* (#207) Add readAll / clearAll operations for a particular BarCode type
+* (#238) Allow refreshable resource subscribers to stay subscribed after error
+
+**Bug Fixes and Stability Improvements**
+
+* (#234) Fix NoOp no connectivity network before stale behavior
+* (#237) Fix NoClassDefFoundError for StandardCharsets GsonBufferedSourceAdapter
+* (#245) Remove intermediate streams
+* (#245) Update to Moshi 1.5.0
+* (#233, #251) README updates
+
 Version 2.1.0 *(2017-05-23)*
 ----------------------------
 
