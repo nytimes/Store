@@ -11,7 +11,7 @@
         android:name=".SampleApp"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.StoreActivity">
+            android:name=".activity.PersistingStoreActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

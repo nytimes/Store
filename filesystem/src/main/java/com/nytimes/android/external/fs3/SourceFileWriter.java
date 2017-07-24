@@ -9,7 +9,11 @@ import okio.BufferedSource;
 public class SourceFileWriter extends FSWriter<BarCode> implements DiskWrite<BufferedSource, BarCode> {
 
     public SourceFileWriter(FileSystem fileSystem) {
-        super(fileSystem, new BarCodePathResolver());
+        this(fileSystem, new BarCodePathResolver());
+    }
+
+    public SourceFileWriter(FileSystem fileSystem, PathResolver<BarCode> pathResolver) {
+        super(fileSystem, pathResolver);
     }
 
 }
