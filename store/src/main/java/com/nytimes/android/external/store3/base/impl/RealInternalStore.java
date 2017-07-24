@@ -6,6 +6,7 @@ import com.nytimes.android.external.store3.base.InternalStore;
 import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.util.KeyParser;
 
+import java.util.AbstractMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 
@@ -35,7 +36,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
-    private PublishSubject<Parsed> subject;
+    private PublishSubject<AbstractMap.SimpleEntry<Key, Parsed>> subject;
 
     RealInternalStore(Fetcher<Raw, Key> fetcher,
                       Persister<Raw, Key> persister,
@@ -79,7 +80,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     public Observable<Parsed> getRefreshing(@Nonnull final Key key) {
         return get(key)
                 .toObservable()
-                .compose(StoreUtil.<Parsed, Key>repeatWhenCacheEvicted(refreshSubject, key));
+                .compose(StoreUtil.<Parsed, Key>repeatWhenSubjectEmits(refreshSubject, key));
     }
 
 
@@ -194,13 +195,13 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                     }
                     return Single.error(throwable);
                 })
-                .doOnSuccess(this::notifySubscribers)
+                .doOnSuccess(data -> notifySubscribers(data, key))
                 .doAfterTerminate(() -> inFlightRequests.invalidate(key))
                 .cache();
     }
 
-    void notifySubscribers(Parsed data) {
-        subject.onNext(data);
+    void notifySubscribers(Parsed data, Key key) {
+        subject.onNext(new AbstractMap.SimpleEntry<>(key, data));
     }
 
     /**
@@ -211,14 +212,20 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Observable<Parsed> stream(@Nonnull Key key) {
-        return subject.hide().startWith(get(key).toObservable());
+        return subject
+                .hide()
+                .startWith(get(key).toObservable().
+                        map(data -> new AbstractMap.SimpleEntry<>(key, data)))
+                .filter(simpleEntry -> simpleEntry.getKey().equals(key))
+                .map(AbstractMap.SimpleEntry::getValue);
     }
 
     @Nonnull
     @Override
     public Observable<Parsed> stream() {
-        return subject.hide();
+        return subject.hide().map(AbstractMap.SimpleEntry::getValue);
     }
+
 
     /**
      * Only update memory after persister has been successfully updated
