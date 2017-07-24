@@ -51,6 +51,7 @@ ext.versions = [
         autoService          : '1.0-rc2',
         autoCommon           : '0.6',
         javaWriter           : '2.5.1',
+        commonsLang3         : '3.0',
         javax                : '1',
 
         // Debugging & Inspecting.
@@ -116,7 +117,8 @@ ext.libraries = [
         autoCommon              : "com.google.auto:auto-common:$versions.autoCommon",
         javaWriter              : "com.squareup:javawriter:$versions.javaWriter",
         javax                   : "javax.inject:javax.inject:$versions.javax",
-
+        kotlinStdLib            : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
+        commonsLang3            : "org.apache.commons:commons-lang3:$versions.commonsLang3",
         // Debugging & Inspecting.
         slf4jNoOp               : "org.slf4j:slf4j-api:$versions.slf4j",
         slf4jTesting            : "org.slf4j:slf4j-simple:$versions.slf4j",
