@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=master)](https://travis-ci.org/NYTimes/Store)
 
-![Store](https://www.milkadeal.com/storage/128000/118240/68ccf50a75b5277678c52752077c19b5.jpg)
+![Store Logo](https://github.com/nytm/Store/blob/master/Images/store-logo.png)
 
 Store is an Android library for effortless, reactive data loading.  
 
