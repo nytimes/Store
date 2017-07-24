@@ -7,13 +7,14 @@ package com.nytimes.android.external.store.util;
  */
 public final class Result<Parsed> {
 
-    public static final String SOURCE_CACHE = "disk";
-    public static final String SOURCE_NETWORK = "network";
+    public enum Source {
+        CACHE, NETWORK
+    }
 
-    private final String source;
+    private final Source source;
     private final Parsed value;
 
-    private Result(String source, Parsed value) {
+    private Result(Source source, Parsed value) {
         this.source = source;
         this.value = value;
     }
@@ -25,7 +26,7 @@ public final class Result<Parsed> {
      * @return a Result object with T passed
      */
     public static <T> Result<T> createFromCache(T value) {
-        return new Result<>(SOURCE_CACHE, value);
+        return new Result<>(Source.CACHE, value);
     }
 
     /**
@@ -35,10 +36,10 @@ public final class Result<Parsed> {
      * @return a Result object with T passed
      */
     public static <T> Result<T> createFromNetwork(T value) {
-        return new Result<>(SOURCE_NETWORK, value);
+        return new Result<>(Source.NETWORK, value);
     }
 
-    public String source() {
+    public Source source() {
         return source;
     }
 
@@ -47,11 +48,11 @@ public final class Result<Parsed> {
     }
 
     public boolean isFromNetwork() {
-        return source.equals(SOURCE_NETWORK);
+        return source == Source.NETWORK;
     }
 
     public boolean isFromCache() {
-        return source.equals(SOURCE_CACHE);
+        return source == Source.CACHE;
     }
 
     @Override

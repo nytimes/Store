@@ -90,11 +90,11 @@ public class StoreTest {
 
         Result<String> result = simpleStore.getWithResult(barCode).blockingGet();
 
-        assertThat(result.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(result.source()).isEqualTo(Result.Source.NETWORK);
         assertThat(result.value()).isEqualTo(DISK);
 
         result = simpleStore.getWithResult(barCode).blockingGet();
-        assertThat(result.source()).isEqualTo(Result.SOURCE_CACHE);
+        assertThat(result.source()).isEqualTo(Result.Source.CACHE);
         assertThat(result.value()).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -169,7 +169,7 @@ public class StoreTest {
             .zipWith(simpleStore.getWithResult(barCode), (s, s2) -> Result.createFromNetwork("hello"))
             .blockingGet();
 
-        assertThat(response.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(response.source()).isEqualTo(Result.Source.NETWORK);
         assertThat(response.value()).isEqualTo("hello");
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -212,11 +212,11 @@ public class StoreTest {
 
         Result<String> result = simpleStore.getWithResult(barCode).blockingGet();
 
-        assertThat(result.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(result.source()).isEqualTo(Result.Source.NETWORK);
         assertThat(result.value()).isEqualTo(DISK);
 
         result = simpleStore.getWithResult(barCode).blockingGet();
-        assertThat(result.source()).isEqualTo(Result.SOURCE_CACHE);
+        assertThat(result.source()).isEqualTo(Result.Source.CACHE);
         assertThat(result.value()).isEqualTo(DISK);
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -260,7 +260,7 @@ public class StoreTest {
         verify(fetcher, times(1)).fetch(barCode);
         verify(persister, times(1)).write(barCode, NETWORK);
         verify(persister, times(2)).read(barCode);
-        assertThat(value.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(value.source()).isEqualTo(Result.Source.NETWORK);
         assertThat(value.value()).isEqualTo(NETWORK);
 
 
@@ -269,7 +269,7 @@ public class StoreTest {
         verify(persister, times(1)).write(barCode, NETWORK);
         verify(fetcher, times(1)).fetch(barCode);
 
-        assertThat(value.source()).isEqualTo(Result.SOURCE_CACHE);
+        assertThat(value.source()).isEqualTo(Result.Source.CACHE);
         assertThat(value.value()).isEqualTo(NETWORK);
     }
 

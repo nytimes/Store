@@ -85,11 +85,11 @@ public class StoreWithParserTest {
         when(parser.apply(DISK)).thenReturn(barCode.getKey());
 
         Result<String> result = simpleStore.getWithResult(barCode).blockingGet();
-        assertThat(result.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(result.source()).isEqualTo(Result.Source.NETWORK);
         assertThat(result.value()).isEqualTo(barCode.getKey());
 
         result = simpleStore.getWithResult(barCode).blockingGet();
-        assertThat(result.source()).isEqualTo(Result.SOURCE_CACHE);
+        assertThat(result.source()).isEqualTo(Result.Source.CACHE);
         assertThat(result.value()).isEqualTo(barCode.getKey());
         verify(fetcher, times(1)).fetch(barCode);
     }
@@ -138,11 +138,11 @@ public class StoreWithParserTest {
         when(parser.apply(DISK)).thenReturn(barCode.getKey());
 
         Result<String> result = simpleStore.getWithResult(barCode).blockingGet();
-        assertThat(result.source()).isEqualTo(Result.SOURCE_NETWORK);
+        assertThat(result.source()).isEqualTo(Result.Source.NETWORK);
         assertThat(result.value()).isEqualTo(barCode.getKey());
 
         result = simpleStore.getWithResult(barCode).blockingGet();
-        assertThat(result.source()).isEqualTo(Result.SOURCE_CACHE);
+        assertThat(result.source()).isEqualTo(Result.Source.CACHE);
         assertThat(result.value()).isEqualTo(barCode.getKey());
         verify(fetcher, times(1)).fetch(barCode);
     }
