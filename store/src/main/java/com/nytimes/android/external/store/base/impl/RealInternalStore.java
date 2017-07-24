@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 
 import rx.Observable;
 import rx.annotations.Experimental;
+import rx.exceptions.Exceptions;
 import rx.subjects.PublishSubject;
 
 import static com.nytimes.android.external.store.base.impl.StoreUtil.persisterIsStale;
@@ -83,7 +84,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .compose(StoreUtil.<Parsed, Key>repeatWhenCacheEvicted(refreshSubject, key));
     }
 
-
     /**
      * @return data from memory
      */
@@ -100,7 +100,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
             return Observable.empty();
         }
     }
-
 
     @Nonnull
     @Override
@@ -132,12 +131,11 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     Observable<Parsed> readDisk(@Nonnull final Key key, final Throwable error) {
         return persister().read(key)
-                .onErrorResumeNext(throwable -> {
+                .onErrorReturn(throwable -> {
                     if (error == null) {
-                        return Observable.empty();
-                    } else {
-                        return Observable.error(error);
+                        throw Exceptions.propagate(throwable);
                     }
+                    throw Exceptions.propagate(error);
                 })
                 .map(raw -> parser.call(key, raw))
                 .doOnNext(parsed -> {
@@ -197,11 +195,11 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .flatMap(raw -> persister()
                         .write(key, raw)
                         .flatMap(aBoolean -> readDisk(key)))
-                .onErrorResumeNext(throwable -> {
+                .onErrorReturn(throwable -> {
                     if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
-                        return readDisk(key, throwable);
+                        return readDisk(key, throwable).toBlocking().first();
                     }
-                    return Observable.error(throwable);
+                    throw Exceptions.propagate(throwable);
                 })
                 .doOnNext(this::notifySubscribers)
                 .doOnTerminate(() -> inFlightRequests.invalidate(key))
@@ -289,5 +287,6 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     Fetcher<Raw, Key> fetcher() {
         return fetcher;
     }
+
 }
 
