@@ -59,29 +59,26 @@ public final class Result<Parsed> {
         if (this == o) {
             return true;
         }
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         Result<?> result = (Result<?>) o;
 
-        if (source == null) {
-            return result.source != null;
-        } else {
-            if (!source.equals(result.source)) {
-                return false;
-            }
+        if (source != null && !source.equals(result.source)) {
+            return false;
         }
 
-        if (value == null) {
-            return result.value != null;
-        } else {
-            if (!value.equals(result.value)) {
-                return false;
-            }
+        if (source == null && result.source != null) {
+            return false;
         }
 
-        return true;
+        if (value != null) {
+            return value.equals(result.value);
+        }
+
+        return result.value == null;
     }
 
     @Override
@@ -94,7 +91,7 @@ public final class Result<Parsed> {
 
         result = 31 * result;
         if (value != null) {
-           result += value.hashCode();
+            result += value.hashCode();
         }
 
         return result;
