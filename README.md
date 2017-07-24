@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=master)](https://travis-ci.org/NYTimes/Store)
 
-![Store Logo](https://github.com/nytm/Store/blob/master/Images/store-logo.png)
+![Store Logo](https://raw.githubusercontent.com/NYTimes/Store/develop/Images/store-logo.png)
 
 Store is an Android library for effortless, reactive data loading.  
 
