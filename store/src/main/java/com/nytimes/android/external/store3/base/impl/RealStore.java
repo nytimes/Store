@@ -1,5 +1,6 @@
 package com.nytimes.android.external.store3.base.impl;
 
+import com.nytimes.android.external.store.util.Result;
 import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.InternalStore;
 import com.nytimes.android.external.store3.base.Parser;
@@ -73,6 +74,12 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
         return internalStore.get(key);
     }
 
+    @Nonnull
+    @Override
+    public Single<Result<Parsed>> getWithResult(@Nonnull Key key) {
+        return internalStore.getWithResult(key);
+    }
+
     @Override
     public Observable<Parsed> getRefreshing(@Nonnull Key key) {
         return internalStore.getRefreshing(key);
@@ -89,6 +96,12 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
     @Override
     public Single<Parsed> fetch(@Nonnull final Key key) {
         return internalStore.fetch(key);
+    }
+
+    @Nonnull
+    @Override
+    public Single<Result<Parsed>> fetchWithResult(@Nonnull Key key) {
+        return internalStore.fetchWithResult(key);
     }
 
     @Nonnull

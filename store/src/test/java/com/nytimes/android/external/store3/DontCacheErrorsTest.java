@@ -43,4 +43,20 @@ public class DontCacheErrorsTest {
                 .assertNoErrors()
                 .awaitTerminalEvent();
     }
+
+  @Test
+  public void testStoreDoesntCacheErrorsWithResult() throws InterruptedException {
+    BarCode barcode = new BarCode("bar", "code");
+
+    shouldThrow = true;
+    store.getWithResult(barcode).test()
+        .assertTerminated()
+        .assertError(Exception.class)
+        .awaitTerminalEvent();
+
+    shouldThrow = false;
+    store.get(barcode).test()
+        .assertNoErrors()
+        .awaitTerminalEvent();
+  }
 }

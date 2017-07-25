@@ -1,18 +1,16 @@
 package com.nytimes.android.external.store3.base.impl;
 
 import com.nytimes.android.external.cache3.Cache;
+import com.nytimes.android.external.store.util.Result;
 import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.InternalStore;
 import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.util.KeyParser;
-
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -73,6 +71,14 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
                 .toSingle();
     }
 
+    @Nonnull
+    @Override
+    public Single<Result<Parsed>> getWithResult(@Nonnull Key key) {
+        return lazyCacheWithResult(key)
+            .switchIfEmpty(fetchWithResult(key).toMaybe())
+            .toSingle();
+    }
+
     @Override
     @Nonnull
     @Experimental
@@ -95,6 +101,24 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     Maybe<Parsed> cache(@Nonnull final Key key) {
         try {
             return memCache.get(key, () -> disk(key));
+        } catch (ExecutionException e) {
+            return Maybe.empty();
+        }
+    }
+
+    /**
+     * @return data from memory
+     */
+    private Maybe<Result<Parsed>> lazyCacheWithResult(@Nonnull final Key key) {
+        return Maybe
+            .defer(() -> cacheWithResult(key))
+            .onErrorResumeNext(Maybe.<Result<Parsed>>empty());
+    }
+
+    Maybe<Result<Parsed>> cacheWithResult(@Nonnull final Key key) {
+        try {
+            Maybe<Parsed> maybeResult = memCache.get(key, () -> disk(key));
+            return maybeResult == null ? Maybe.<Result<Parsed>>empty() : maybeResult.map(Result::createFromCache);
         } catch (ExecutionException e) {
             return Maybe.empty();
         }
@@ -158,6 +182,12 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Override
     public Single<Parsed> fetch(@Nonnull final Key key) {
         return Single.defer(() -> fetchAndPersist(key));
+    }
+
+    @Nonnull
+    @Override
+    public Single<Result<Parsed>> fetchWithResult(@Nonnull Key key) {
+        return fetch(key).map(Result::createFromNetwork);
     }
 
     /**
