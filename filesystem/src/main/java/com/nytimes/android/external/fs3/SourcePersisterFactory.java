@@ -78,7 +78,6 @@ public final class SourcePersisterFactory {
         return SourcePersister.create(fileSystem);
     }
 
-
     /**
      * Returns a new {@link BufferedSource} persister with the provided file as the root of the
      * persistence {@link FileSystem}.
@@ -104,5 +103,4 @@ public final class SourcePersisterFactory {
         }
         return SourceAllPersister.create(fileSystem);
     }
-
 }

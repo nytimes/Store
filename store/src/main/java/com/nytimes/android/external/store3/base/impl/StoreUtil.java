@@ -19,7 +19,7 @@ final class StoreUtil {
 
     @Nonnull
     static <Parsed, Key> ObservableTransformer<Parsed, Parsed>
-    repeatWhenCacheEvicted(PublishSubject<Key> refreshSubject, @Nonnull final Key keyForRepeat) {
+    repeatWhenSubjectEmits(PublishSubject<Key> refreshSubject, @Nonnull final Key keyForRepeat) {
         Observable<Key> filter = refreshSubject.filter(key -> key.equals(keyForRepeat));
         return RepeatWhenEmits.from(filter);
     }

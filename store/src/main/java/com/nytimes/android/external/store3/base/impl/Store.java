@@ -64,11 +64,10 @@ public interface Store<T, V> {
 
     /**
      * Similar to  {@link Store#get(V) Store.get() }
-     * Rather than returning a single response, Stream will stay subscribed for future emissions to the Store
-     * NOTE: Stream will continue to get emissions for ANY keyAndRawType not just starting one
+     * Rather than returning a single response,
+     * Stream will stay subscribed for future emissions to the Store
+     * Errors will be dropped
      *
-     * @deprecated Use {@link Store#stream()}. If you need to start with the first value,
-     * use {@code store.stream().startWith(store.get(keyAndRawType))}
      */
     @Deprecated
     @Nonnull
