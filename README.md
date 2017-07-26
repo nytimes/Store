@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=feature/rx2)](https://travis-ci.org/NYTimes/Store)
 
-![Store Logo](https://raw.githubusercontent.com/NYTimes/Store/develop/Images/store-logo.png)
+![Store Logo](https://raw.githubusercontent.com/NYTimes/Store/feature/rx2/Images/store-logo.png)
 
 Store is an Android library for effortless, reactive data loading.  
 
@@ -75,7 +75,7 @@ The first time you subscribe to `store.get(barCode)`, the response will be store
 
 
 So far our Store’s data flow looks like this:
-![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-1.jpg)
+![Simple Store Flow](https://github.com/nytm/Store/blob/feature/rx2/Images/store-1.jpg)
 
 
 By default, 100 items will be cached in memory for 24 hours. You may pass in your own instance of a Guava Cache to override the default policy.
@@ -87,7 +87,7 @@ Alternatively you can call `store.fetch(barCode)` to get an Observable that skip
 
 
 Fresh data call will look like: `store.fetch()`
-![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-2.jpg)
+![Simple Store Flow](https://github.com/nytm/Store/blob/feature/rx2/Images/store-2.jpg)
 
 
 In the New York Times app, overnight background updates use `fetch` to make sure that calls to `store.get()` will not have to hit the network during normal usage. Another good use case for `fetch` is when a user wants to pull to refresh.
@@ -127,7 +127,7 @@ Store<Article,Integer> store = StoreBuilder.<Integer, BufferedSource, Article>pa
 
 Our updated data flow now looks like this:
 
-`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-3.jpg)
+`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/feature/rx2/Images/store-3.jpg)
 
 
 
@@ -167,7 +167,7 @@ Stores can enable disk caching by passing a Persister into the builder. Whenever
 
 
 Now our data flow looks like:
-`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-5.jpg)
+`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/feature/rx2/Images/store-5.jpg)
 
 
 
