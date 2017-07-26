@@ -3,6 +3,24 @@ Change Log
 
 The change log for Store version 1.x can be found [here](https://github.com/NYTimes/Store/blob/develop/CHANGELOG.md).
 
+Version 3.0.0-beta *(2017-07-26)*
+----------------------------
+
+**New Features**
+
+* (#229) Add store-kotlin module
+* (#254) Add readAll / clearAll operations for a particular BarCode type
+* (#250) Return object with meta data
+* Create Code of Conduct
+
+**Bug Fixes and Stability Improvements**
+
+* (#239) Fix NoClassDefFoundError for StandardCharsets GsonBufferedSourceAdapter
+* (#243) Update README for Rx2
+* (#247) Remove intermediate streams
+* (#246) Update to Moshi 1.5.0
+* (#252) Fix stream for a single barcode
+
 Version 3.0.0-alpha *(2017-05-23)*
 ----------------------------
 
