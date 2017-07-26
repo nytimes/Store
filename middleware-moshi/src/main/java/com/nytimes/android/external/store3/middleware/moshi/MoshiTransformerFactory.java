@@ -1,13 +1,12 @@
 package com.nytimes.android.external.store3.middleware.moshi;
 
 import com.nytimes.android.external.fs3.ObjectToSourceTransformer;
+import com.nytimes.android.external.store3.annotations.Experimental;
 import com.squareup.moshi.Moshi;
 
 import java.lang.reflect.Type;
 
 import javax.annotation.Nonnull;
-
-import io.reactivex.annotations.Experimental;
 
 /**
  * Factory which returns Moshi {@link io.reactivex.SingleTransformer} implementations.

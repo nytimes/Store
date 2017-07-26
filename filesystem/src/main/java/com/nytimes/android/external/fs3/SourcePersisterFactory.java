@@ -77,4 +77,30 @@ public final class SourcePersisterFactory {
         }
         return SourcePersister.create(fileSystem);
     }
+
+    /**
+     * Returns a new {@link BufferedSource} persister with the provided file as the root of the
+     * persistence {@link FileSystem}.
+     *
+     * @throws IOException
+     */
+    @Nonnull
+    public static Persister<BufferedSource, BarCode> createAll(@Nonnull File root) throws IOException {
+        if (root == null) {
+            throw new IllegalArgumentException("root file cannot be null.");
+        }
+        return SourceAllPersister.create(FileSystemFactory.create(root));
+    }
+
+    /**
+     * Returns a new {@link BufferedSource} persister with the provided fileSystem as the root of the
+     * persistence {@link FileSystem}.
+     **/
+    @Nonnull
+    public static Persister<BufferedSource, BarCode> createAll(@Nonnull FileSystem fileSystem) {
+        if (fileSystem == null) {
+            throw new IllegalArgumentException("fileSystem cannot be null.");
+        }
+        return SourceAllPersister.create(fileSystem);
+    }
 }

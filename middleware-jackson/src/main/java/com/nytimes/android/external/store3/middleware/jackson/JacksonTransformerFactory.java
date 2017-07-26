@@ -2,10 +2,9 @@ package com.nytimes.android.external.store3.middleware.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nytimes.android.external.fs3.ObjectToSourceTransformer;
+import com.nytimes.android.external.store3.annotations.Experimental;
 
 import javax.annotation.Nonnull;
-
-import io.reactivex.annotations.Experimental;
 
 /**
  * Factory which returns Jackson {@link io.reactivex.SingleTransformer} implementations.

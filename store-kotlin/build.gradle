@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.dokka'
+
+group = GROUP
+version = VERSION_NAME
+
+compileKotlin {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+javadoc.dependsOn dokka
+
+dependencies {
+    compile project(':store')
+    compile libraries.kotlinStdLib
+
+    testCompile libraries.mockito
+    testCompile libraries.junit
+    testCompile libraries.commonsLang3
+    testCompile libraries.assertJ
+}
+
+apply from: rootProject.file("gradle/maven-push.gradle")

@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=feature/rx2)](https://travis-ci.org/NYTimes/Store)
 
-![Store](https://www.milkadeal.com/storage/128000/118240/68ccf50a75b5277678c52752077c19b5.jpg)
+![Store Logo](https://raw.githubusercontent.com/NYTimes/Store/develop/Images/store-logo.png)
 
 Store is an Android library for effortless, reactive data loading.  
 
@@ -41,7 +41,7 @@ And now for the details:
 
 ### Creating a Store
 
-You create a Store using a builder. The only requirement is to include a `.Fetcher<ReturnType,KeyType>` that returns an Observable<ReturnType> and has a single method `fetch(key)`
+You create a Store using a builder. The only requirement is to include a `.Fetcher<ReturnType,KeyType>` that returns an Single<ReturnType> and has a single method `fetch(key)`
 
 
 ``` java
@@ -68,7 +68,7 @@ When using a Barcode as your key, you can use a StoreBuilder convenience method
 ### Public Interface - Get, Fetch, Stream, GetRefreshing
 
 ```java
-Observable<Article> article = store.get(barCode);
+Single<Article> article = store.get(barCode);
 ```
 
 The first time you subscribe to `store.get(barCode)`, the response will be stored in an in-memory cache. All subsequent calls to `store.get(barCode)` with the same Key will retrieve the cached version of the data, minimizing unnecessary data calls. This prevents your app from fetching fresh data over the network (or from another external data source) in situations when doing so would unnecessarily waste bandwidth and battery. A great use case is any time your views are recreated after a rotation, they will be able to request the cached data from your Store. Having this data available can help you avoid the need to retain this in the view layer.
@@ -178,7 +178,7 @@ Store<Article,Integer> store = StoreBuilder.<Integer, BufferedSource, Article>pa
         .fetcher(articleId -> api.getArticles()) 
            .persister(new Persister<BufferedSource>() {
              @Override
-             public Observable<BufferedSource> read(Integer key) {
+             public Maybe<BufferedSource> read(Integer key) {
                if (dataIsCached) {
                  return Observable.fromCallable(() -> userImplementedCache.get(key));
                } else {
@@ -187,9 +187,9 @@ Store<Article,Integer> store = StoreBuilder.<Integer, BufferedSource, Article>pa
              }
        
              @Override
-             public Observable<Boolean> write(BarCode barCode, BufferedSource source) {
+             public Single<Boolean> write(BarCode barCode, BufferedSource source) {
                userImplementedCache.save(key, source);
-               return Observable.just(true);
+               return Single.just(true);
              }
            })
            .parser(GsonParserFactory.createSourceParser(gson, Article.class))
@@ -293,6 +293,11 @@ public class SampleStore extends RealStore<String, BarCode> {
 	```groovy
 	compile 'com.nytimes.android:store3:CurrentVersion'
 	```
++ **Store-Kotlin** Store plus a couple of added Kotlin classes for more idiomatic usage.
+
+    ```groovy
+    compile 'com.nytimes.android:store-kotlin3:CurrentVersion'
+    ```
 + **Middleware** Sample Gson parsers, (feel free to create more and open PRs) 
 
     ```groovy
