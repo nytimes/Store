@@ -166,7 +166,8 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Observable<Parsed> fetch(@Nonnull final Key key) {
-        return Observable.defer(() -> fetchAndPersist(key));
+        return Observable.defer(() -> fetchAndPersist(key))
+                .doOnCompleted(() -> notifyRefresh(key));
     }
 
     /**

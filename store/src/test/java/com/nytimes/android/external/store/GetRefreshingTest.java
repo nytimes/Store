@@ -64,6 +64,31 @@ public class GetRefreshingTest {
     }
 
     @Test
+    public void testRefreshOnFetch() {
+        BarCode barcode = new BarCode("type", "key");
+        when(persister.read(barcode))
+                .thenReturn(Observable.<Integer>empty()) //read from disk
+                .thenReturn(Observable.just(1)) //read from disk after fetching from network
+                .thenReturn(Observable.<Integer>empty()) //read from disk after clearing disk cache
+                .thenReturn(Observable.just(1)); //read from disk after making additional network call
+        when(persister.write(barcode, 1)).thenReturn(Observable.just(true));
+        when(persister.write(barcode, 2)).thenReturn(Observable.just(true));
+
+
+        AssertableSubscriber<Integer> refreshingObservable = store.getRefreshing(barcode).test();
+        assertThat(refreshingObservable.getValueCount()).isEqualTo(1);
+        assertThat(networkCalls.intValue()).isEqualTo(1);
+        //fetching should produce another network call
+        store.fetch(barcode).test().awaitTerminalEvent();
+        assertThat(refreshingObservable.getValueCount()).isEqualTo(2);
+        assertThat(networkCalls.intValue()).isEqualTo(2);
+
+        store.get(barcode).test().awaitTerminalEvent();
+        assertThat(refreshingObservable.getValueCount()).isEqualTo(2);
+        assertThat(networkCalls.intValue()).isEqualTo(2);
+    }
+
+    @Test
     public void testRefreshOnClearAll() {
         BarCode barcode1 = new BarCode("type", "key");
         BarCode barcode2 = new BarCode("type", "key2");
