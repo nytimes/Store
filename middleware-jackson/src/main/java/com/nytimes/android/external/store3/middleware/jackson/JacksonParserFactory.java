@@ -2,7 +2,6 @@ package com.nytimes.android.external.store3.middleware.jackson;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nytimes.android.external.cache3.Preconditions;
 import com.nytimes.android.external.store3.base.Parser;
 
 import java.io.Reader;
@@ -26,8 +25,12 @@ public final class JacksonParserFactory {
      */
     @Nonnull
     public static <T> Parser<String, T> createStringParser(@Nonnull JsonFactory jsonFactory, @Nonnull Type type) {
-        Preconditions.checkNotNull(jsonFactory, "jsonFactory cannot be null.");
-        Preconditions.checkNotNull(type, "type cannot be null.");
+        if (jsonFactory == null) {
+            throw new NullPointerException("jsonFactory cannot be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null.");
+        }
         return new JacksonStringParser<>(jsonFactory, type);
     }
 
@@ -37,8 +40,12 @@ public final class JacksonParserFactory {
      */
     @Nonnull
     public static <T> Parser<String, T> createStringParser(@Nonnull ObjectMapper objectMapper, @Nonnull Type type) {
-        Preconditions.checkNotNull(objectMapper, "objectMapper cannot be null.");
-        Preconditions.checkNotNull(type, "type cannot be null.");
+        if (objectMapper == null) {
+            throw new NullPointerException("objectMapper cannot be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null.");
+        }
         return new JacksonStringParser<>(objectMapper, type);
     }
 
@@ -58,8 +65,12 @@ public final class JacksonParserFactory {
     @Nonnull
     public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull JsonFactory jsonFactory,
                                                                    @Nonnull Type type) {
-        Preconditions.checkNotNull(jsonFactory, "jsonFactory cannot be null.");
-        Preconditions.checkNotNull(type, "type cannot be null.");
+        if (jsonFactory == null) {
+            throw new NullPointerException("jsonFactory cannot be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null.");
+        }
         return new JacksonSourceParser<>(jsonFactory, type);
     }
 
@@ -70,8 +81,12 @@ public final class JacksonParserFactory {
     @Nonnull
     public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull ObjectMapper objectMapper,
                                                                    @Nonnull Type type) {
-        Preconditions.checkNotNull(objectMapper, "objectMapper cannot be null.");
-        Preconditions.checkNotNull(type, "type cannot be null.");
+        if (objectMapper == null) {
+            throw new NullPointerException("objectMapper cannot be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null.");
+        }
         return new JacksonSourceParser<>(objectMapper, type);
     }
 
@@ -91,8 +106,12 @@ public final class JacksonParserFactory {
     @Nonnull
     public static <T> Parser<Reader, T> createReaderParser(@Nonnull JsonFactory jsonFactory,
                                                            @Nonnull Type type) {
-        Preconditions.checkNotNull(jsonFactory, "jsonFactory cannot be null.");
-        Preconditions.checkNotNull(type, "type cannot be null.");
+        if (jsonFactory == null) {
+            throw new NullPointerException("objectMapper cannot be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null.");
+        }
         return new JacksonReaderParser<>(jsonFactory, type);
     }
 
@@ -103,8 +122,12 @@ public final class JacksonParserFactory {
     @Nonnull
     public static <T> Parser<Reader, T> createReaderParser(@Nonnull ObjectMapper objectMapper,
                                                            @Nonnull Type type) {
-        Preconditions.checkNotNull(objectMapper, "objectMapper cannot be null.");
-        Preconditions.checkNotNull(type, "type cannot be null.");
+        if (objectMapper == null) {
+            throw new NullPointerException("objectMapper cannot be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null.");
+        }
         return new JacksonReaderParser<>(objectMapper, type);
     }
 
