@@ -4,10 +4,12 @@ group = GROUP
 version = VERSION_NAME
 
 dependencies {
+    implementation project(path: ':cache')
     implementation project(path: ':store')
     implementation project(path: ':filesystem')
     implementation libraries.okio
     implementation libraries.gson
+    implementation libraries.rxJava
     compileOnly libraries.jsr305
     compileOnly libraries.javax
     testImplementation libraries.mockito

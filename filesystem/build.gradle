@@ -5,6 +5,7 @@ version = VERSION_NAME
 
 dependencies {
     implementation libraries.okio
+    implementation libraries.rxJava
     compileOnly libraries.jsr305
     compileOnly libraries.javax
     implementation project(path: ':cache')
