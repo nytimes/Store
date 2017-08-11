@@ -14,13 +14,15 @@ compileKotlin {
 javadoc.dependsOn dokka
 
 dependencies {
-    compile project(':store')
-    compile libraries.kotlinStdLib
+    implementation project(':store')
+    apiElements project(':store')
+    implementation libraries.kotlinStdLib
+    apiElements libraries.kotlinStdLib
 
-    testCompile libraries.mockito
-    testCompile libraries.junit
-    testCompile libraries.commonsLang3
-    testCompile libraries.assertJ
+    testImplementation libraries.mockito
+    testImplementation libraries.junit
+    testImplementation libraries.commonsLang3
+    testImplementation libraries.assertJ
 }
 
 apply from: rootProject.file("gradle/maven-push.gradle")

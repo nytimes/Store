@@ -4,16 +4,16 @@ group = GROUP
 version = VERSION_NAME
 
 dependencies {
-    compile project(path: ':store')
-    compile project(path: ':filesystem')
-    compile libraries.okio
-    compile libraries.gson
-    compile libraries.jsr305
-    compile libraries.javax
-    testCompile libraries.mockito
-    testCompile libraries.assertJ
-    testCompile libraries.junit
-    testCompile libraries.guava
+    implementation project(path: ':store')
+    implementation project(path: ':filesystem')
+    implementation libraries.okio
+    implementation libraries.gson
+    compileOnly libraries.jsr305
+    compileOnly libraries.javax
+    testImplementation libraries.mockito
+    testImplementation libraries.assertJ
+    testImplementation libraries.junit
+    testImplementation libraries.guava
 }
 
 buildscript {

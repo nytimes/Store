@@ -4,17 +4,18 @@ group = GROUP
 version = VERSION_NAME
 
 dependencies {
-    compile libraries.okio
-    compile libraries.jsr305
-    compile libraries.javax
-    compile project(path: ':cache')
-    compile project(path: ':store')
-    testCompile libraries.mockito
-    testCompile libraries.assertJ
-    testCompile libraries.junit
-    testCompile libraries.guava
-    testCompile libraries.gson
-    testCompile project(path: ':middleware')
+    implementation libraries.okio
+    compileOnly libraries.jsr305
+    compileOnly libraries.javax
+    implementation project(path: ':cache')
+    implementation project(path: ':store')
+    testImplementation libraries.mockito
+    testImplementation libraries.assertJ
+    testImplementation libraries.junit
+    testImplementation libraries.guava
+    testImplementation libraries.gson
+    testImplementation project(path: ':middleware')
+    testCompileOnly libraries.jsr305
 }
 
 buildscript {

@@ -4,13 +4,15 @@ group = GROUP
 version = VERSION_NAME
 
 dependencies {
-    compile project(path: ':cache')
-    compile libraries.rxJava2
-    compile libraries.jsr305
+    implementation project(path: ':cache')
+    implementation libraries.rxJava2
+    apiElements libraries.rxJava2
+    compileOnly libraries.jsr305
 
-    testCompile libraries.mockito
-    testCompile libraries.assertJ
-    testCompile libraries.junit
+    testImplementation libraries.mockito
+    testImplementation libraries.assertJ
+    testImplementation libraries.junit
+    testCompileOnly libraries.jsr305
 }
 
 buildscript {
