@@ -109,7 +109,6 @@ ext.libraries = [
         immutablesGson          : "org.immutables:gson:$versions.immutables",
         supportAnnotations      : "com.android.support:support-annotations:$versions.supportLibs",
         supportMultiDex         : "com.android.support:multidex:$versions.supportMultiDex",
-        glassfishJavax          : "org.glassfish:javax.annotation:$versions.glassfishJavax",
         javaxInject             : "javax.inject:javax.inject:$versions.javaxInject",
         autoFactory             : "com.google.auto.factory:auto-factory:$versions.autoFactory",
         autoService             : "com.google.auto.service:auto-service:$versions.autoService",
