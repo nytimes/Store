@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
@@ -24,7 +23,10 @@ android {
         abortOnError false
         disable 'InvalidPackage'
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
     }
@@ -50,6 +52,5 @@ dependencies {
     compile 'com.nytimes.android:cache3:3.0.0-alpha'
     compile 'com.nytimes.android:middleware3:3.0.0-alpha'
     compile 'com.nytimes.android:filesystem3:3.0.0-alpha'
-    retrolambdaConfig libraries.retrolambda
     compile libraries.rxAndroid2
 }

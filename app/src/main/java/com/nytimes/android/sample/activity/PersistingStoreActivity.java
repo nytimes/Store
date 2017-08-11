@@ -61,7 +61,6 @@ public class PersistingStoreActivity extends AppCompatActivity {
                 .flatMapObservable(this::sanitizeData)
                 .toList()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showPosts, throwable -> {
                 });
     }

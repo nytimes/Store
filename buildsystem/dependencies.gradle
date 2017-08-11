@@ -35,7 +35,6 @@ ext.versions = [
 
         // Others.
         retrofit             : '2.2.0',
-        retrolambda          : '2.3.0',
         dagger               : '2.9',
         jsr305               : '3.0.1',
         okHttp               : '2.7.5',
@@ -94,7 +93,6 @@ ext.libraries = [
         retrofit                : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitGsonConverter   : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
         retrofitRx2             : "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit",
-        retrolambda             : "net.orfjackal.retrolambda:retrolambda:$versions.retrolambda",
         dagger                  : "com.google.dagger:dagger:$versions.dagger",
         daggerCompiler          : "com.google.dagger:dagger-compiler:$versions.dagger",
         jsr305                  : "com.google.code.findbugs:jsr305:$versions.jsr305",
