@@ -126,7 +126,7 @@ ext.libraries = [
         // Testing.
         junit                   : "junit:junit:$versions.junit",
         assertJ                 : "org.assertj:assertj-core:$versions.assertJ",
-        mockito                 : "org.mockito:mockito-all:$versions.mockito",
+        mockito                 : "org.mockito:mockito-core:$versions.mockito",
         robolectric             : "org.robolectric:robolectric:$versions.robolectric",
         robolectricMultiDex     : "org.robolectric:shadows-multidex:$versions.robolectric",
         supportTestRunner       : "com.android.support.test:runner:$versions.supportTestRunner",
