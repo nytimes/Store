@@ -16,8 +16,9 @@ ext.versions = [
         minSdk               : 16,
         targetSdk            : 25,
         compileSdk           : 25,
-        buildTools           : '26.0.0',
+        buildTools           : '26.0.1',
         kotlin               : '1.1.2-5',
+
         // UI libs.
         supportLibs          : '25.1.1',
         picasso              : '2.5.2',
