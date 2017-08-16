@@ -24,6 +24,7 @@ public final class JacksonParserFactory {
      * the provided {@link JsonFactory} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<String, T> createStringParser(@Nonnull JsonFactory jsonFactory, @Nonnull Type type) {
         if (jsonFactory == null) {
             throw new NullPointerException("jsonFactory cannot be null.");
@@ -39,6 +40,7 @@ public final class JacksonParserFactory {
      * the provided {@link ObjectMapper} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<String, T> createStringParser(@Nonnull ObjectMapper objectMapper, @Nonnull Type type) {
         if (objectMapper == null) {
             throw new NullPointerException("objectMapper cannot be null.");
@@ -63,6 +65,7 @@ public final class JacksonParserFactory {
      * the provided {@link JsonFactory} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull JsonFactory jsonFactory,
                                                                    @Nonnull Type type) {
         if (jsonFactory == null) {
@@ -79,6 +82,7 @@ public final class JacksonParserFactory {
      * the provided {@link ObjectMapper} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull ObjectMapper objectMapper,
                                                                    @Nonnull Type type) {
         if (objectMapper == null) {
@@ -104,6 +108,7 @@ public final class JacksonParserFactory {
      * the provided {@link JsonFactory} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<Reader, T> createReaderParser(@Nonnull JsonFactory jsonFactory,
                                                            @Nonnull Type type) {
         if (jsonFactory == null) {
@@ -120,6 +125,7 @@ public final class JacksonParserFactory {
      * the provided {@link ObjectMapper} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<Reader, T> createReaderParser(@Nonnull ObjectMapper objectMapper,
                                                            @Nonnull Type type) {
         if (objectMapper == null) {

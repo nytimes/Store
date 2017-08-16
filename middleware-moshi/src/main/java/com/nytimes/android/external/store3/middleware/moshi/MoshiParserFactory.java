@@ -22,6 +22,7 @@ public final class MoshiParserFactory {
      * the provided {@link Moshi} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<String, T> createStringParser(@Nonnull Moshi moshi, @Nonnull Type type) {
         if (moshi == null) {
             throw new NullPointerException("moshi cannot be null.");
@@ -46,6 +47,7 @@ public final class MoshiParserFactory {
      * the provided {@link Moshi} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull Moshi moshi, @Nonnull Type type) {
         if (moshi == null) {
             throw new NullPointerException("moshi cannot be null.");
