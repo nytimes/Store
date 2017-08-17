@@ -16,8 +16,9 @@ ext.versions = [
         minSdk               : 16,
         targetSdk            : 25,
         compileSdk           : 25,
-        buildTools           : '26.0.0',
+        buildTools           : '26.0.1',
         kotlin               : '1.1.2-5',
+
         // UI libs.
         supportLibs          : '25.1.1',
         picasso              : '2.5.2',
@@ -34,7 +35,6 @@ ext.versions = [
 
         // Others.
         retrofit             : '2.2.0',
-        retrolambda          : '2.3.0',
         dagger               : '2.9',
         jsr305               : '3.0.1',
         okHttp               : '2.7.5',
@@ -93,7 +93,6 @@ ext.libraries = [
         retrofit                : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitGsonConverter   : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
         retrofitRx2             : "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit",
-        retrolambda             : "net.orfjackal.retrolambda:retrolambda:$versions.retrolambda",
         dagger                  : "com.google.dagger:dagger:$versions.dagger",
         daggerCompiler          : "com.google.dagger:dagger-compiler:$versions.dagger",
         jsr305                  : "com.google.code.findbugs:jsr305:$versions.jsr305",
@@ -110,7 +109,6 @@ ext.libraries = [
         immutablesGson          : "org.immutables:gson:$versions.immutables",
         supportAnnotations      : "com.android.support:support-annotations:$versions.supportLibs",
         supportMultiDex         : "com.android.support:multidex:$versions.supportMultiDex",
-        glassfishJavax          : "org.glassfish:javax.annotation:$versions.glassfishJavax",
         javaxInject             : "javax.inject:javax.inject:$versions.javaxInject",
         autoFactory             : "com.google.auto.factory:auto-factory:$versions.autoFactory",
         autoService             : "com.google.auto.service:auto-service:$versions.autoService",
@@ -127,7 +125,7 @@ ext.libraries = [
         // Testing.
         junit                   : "junit:junit:$versions.junit",
         assertJ                 : "org.assertj:assertj-core:$versions.assertJ",
-        mockito                 : "org.mockito:mockito-all:$versions.mockito",
+        mockito                 : "org.mockito:mockito-core:$versions.mockito",
         robolectric             : "org.robolectric:robolectric:$versions.robolectric",
         robolectricMultiDex     : "org.robolectric:shadows-multidex:$versions.robolectric",
         supportTestRunner       : "com.android.support.test:runner:$versions.supportTestRunner",

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.nytimes.android.external.store3.base.impl.BarCode;
@@ -62,8 +63,9 @@ public class PersistingStoreActivity extends AppCompatActivity {
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showPosts, throwable -> {
-                });
+                .subscribe(this::showPosts, throwable ->
+                        Log.e(StoreActivity.class.getSimpleName(), throwable.getMessage(),
+                                throwable));
     }
 
     private void showPosts(List<Post> posts) {

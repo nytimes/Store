@@ -1,6 +1,5 @@
 package com.nytimes.android.external.store3.middleware.moshi;
 
-import com.nytimes.android.external.cache3.Preconditions;
 import com.nytimes.android.external.store3.base.Parser;
 import com.squareup.moshi.Moshi;
 
@@ -23,9 +22,14 @@ public final class MoshiParserFactory {
      * the provided {@link Moshi} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<String, T> createStringParser(@Nonnull Moshi moshi, @Nonnull Type type) {
-        Preconditions.checkNotNull(moshi, "moshi cannot be null.");
-        Preconditions.checkNotNull(type, "type cannot be null.");
+        if (moshi == null) {
+            throw new NullPointerException("moshi cannot be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null.");
+        }
         return new MoshiStringParser<>(moshi, type);
     }
 
@@ -43,9 +47,14 @@ public final class MoshiParserFactory {
      * the provided {@link Moshi} instance.
      */
     @Nonnull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull Moshi moshi, @Nonnull Type type) {
-        Preconditions.checkNotNull(moshi, "moshi cannot be null.");
-        Preconditions.checkNotNull(type, "type cannot be null.");
+        if (moshi == null) {
+            throw new NullPointerException("moshi cannot be null.");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null.");
+        }
         return new MoshiSourceParser<>(moshi, type);
     }
 

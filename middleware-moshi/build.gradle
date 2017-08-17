@@ -1,17 +1,17 @@
 apply plugin: 'java'
-apply plugin: 'me.tatarka.retrolambda'
 
 group = GROUP
 version = VERSION_NAME
 
 dependencies {
-    compile project(path: ':store')
-    compile project(path: ':filesystem')
-    compile libraries.moshi
-    compile libraries.jsr305
-    compile libraries.javax
-    testCompile libraries.mockito
-    testCompile libraries.junit
+    implementation project(path: ':store')
+    implementation project(path: ':filesystem')
+    implementation libraries.moshi
+    implementation libraries.rxJava
+    compileOnly libraries.jsr305
+    compileOnly libraries.javax
+    testImplementation libraries.mockito
+    testImplementation libraries.junit
 }
 
 buildscript {

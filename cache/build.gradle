@@ -1,11 +1,10 @@
 apply plugin: 'java'
-apply plugin: 'me.tatarka.retrolambda'
 
 group = GROUP
 version = VERSION_NAME
 
 dependencies {
-    compile libraries.jsr305
+    compileOnly libraries.jsr305
 }
 
 buildscript {

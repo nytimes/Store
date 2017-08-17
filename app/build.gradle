@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
@@ -24,7 +23,10 @@ android {
         abortOnError false
         disable 'InvalidPackage'
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
     }
@@ -32,24 +34,23 @@ android {
 
 dependencies {
 
-    testCompile libraries.junit
+    testImplementation libraries.junit
 
-    compile libraries.supportRecyclerView
-    compile libraries.supportAppCompat
-    compile libraries.supportCardView
-    compile libraries.supportDesign
-    compile libraries.retrofit
-    compile libraries.retrofitGsonConverter
-    compile libraries.retrofitRx2
-    compile libraries.picasso
-    compile libraries.guava
+    implementation libraries.supportRecyclerView
+    implementation libraries.supportAppCompat
+    implementation libraries.supportCardView
+    implementation libraries.supportDesign
+    implementation libraries.retrofit
+    implementation libraries.retrofitGsonConverter
+    implementation libraries.retrofitRx2
+    implementation libraries.picasso
+    implementation libraries.guava
     annotationProcessor libraries.immutablesValue // <-- for annotation processor
-    provided libraries.immutablesValue // <-- for annotation API
-    provided libraries.immutablesGson // for annotations
-    compile 'com.nytimes.android:store3:3.0.0-alpha'
-    compile 'com.nytimes.android:cache3:3.0.0-alpha'
-    compile 'com.nytimes.android:middleware3:3.0.0-alpha'
-    compile 'com.nytimes.android:filesystem3:3.0.0-alpha'
-    retrolambdaConfig libraries.retrolambda
-    compile libraries.rxAndroid2
+    compileOnly libraries.immutablesValue // <-- for annotation API
+    compileOnly libraries.immutablesGson // for annotations
+    implementation 'com.nytimes.android:store3:3.0.0-alpha'
+    implementation 'com.nytimes.android:cache3:3.0.0-alpha'
+    implementation 'com.nytimes.android:middleware3:3.0.0-alpha'
+    implementation 'com.nytimes.android:filesystem3:3.0.0-alpha'
+    implementation libraries.rxAndroid2
 }
