@@ -8,6 +8,8 @@ android:
   - build-tools-26.0.1
   - android-25
   - extra-android-m2repository
+  licenses:
+  - 'android-sdk-license-.+'
 script:
 - ./gradlew check --stacktrace
 after_success:
