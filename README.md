@@ -332,3 +332,4 @@ See the app for example usage of Store. Alternatively, the Wiki contains a set o
 ### Community projects
 
 + https://github.com/stoyicker/master-slave-clean-store: An offline-first Master-Slave project with scroll-driven pagination using Store for the data layer.
++ https://github.com/benoberkfell/cat-rates: [Ben Oberkfell's 360AnDev talk, "Android Architecture for the Subway"](https://academy.realm.io/posts/360-andev-2017-ben-oberkfell-android-architecture-offline-first/) illustrates using Store for caching server responses
