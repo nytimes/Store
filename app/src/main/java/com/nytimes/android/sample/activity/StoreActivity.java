@@ -20,10 +20,7 @@ import com.nytimes.android.sample.reddit.PostAdapter;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.widget.Toast.makeText;
@@ -40,7 +37,7 @@ public class StoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        postAdapter = new PostAdapter();
+        postAdapter = new PostAdapter(this);
         recyclerView = (RecyclerView) findViewById(R.id.postRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -60,12 +57,7 @@ public class StoreActivity extends AppCompatActivity {
 
         this.nonPersistedStore
                 .get(awwRequest)
-                .flatMapObservable(new Function<RedditData, ObservableSource<Post>>() {
-                    @Override
-                    public ObservableSource<Post> apply(@NonNull RedditData redditData) throws Exception {
-                        return sanitizeData(redditData);
-                    }
-                })
+                .flatMapObservable(this::sanitizeData)
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

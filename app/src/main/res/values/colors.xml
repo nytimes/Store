@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="windowBackground">#22262d</color>
+    <color name="colorControlNormal">#2c313b</color>
+    <color name="colorPrimary">#a7dbd8</color>
+    <color name="colorPrimaryDark">#85afac</color>
+    <color name="colorAccent">#f28aa8</color>
+
+    <color name="textColorPrimary">#abbdce</color>
+    <color name="textColorSecondary">#cccccc</color>
 
     <color name="primary">#222222</color>
     <color name="primary_dark">#000000</color>
@@ -43,4 +48,5 @@
 
     <color name="white">#fff</color>
     <color name="white50">#80ffffff</color>
+    <color name="textColorTertiary">#b5b6b7</color>
 </resources>

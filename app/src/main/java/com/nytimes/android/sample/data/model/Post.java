@@ -3,6 +3,7 @@ package com.nytimes.android.sample.data.model;
 import android.support.annotation.Nullable;
 
 import com.google.common.base.Optional;
+import com.google.gson.annotations.SerializedName;
 
 import org.immutables.value.Value;
 
@@ -12,6 +13,13 @@ public abstract class Post {
     public abstract Preview preview();
 
     public abstract String title();
+
+    public abstract int score();
+
+    public abstract String author();
+
+    @SerializedName("created_utc")
+    public abstract long created();
 
     public abstract String url();
 

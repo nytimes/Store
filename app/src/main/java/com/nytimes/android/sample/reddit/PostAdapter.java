@@ -1,5 +1,6 @@
 package com.nytimes.android.sample.reddit;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
-    private final List<Post> articles = new ArrayList<>();
+    private List<Post> articles = new ArrayList<>();
+    private LayoutInflater inflater;
+
+    public PostAdapter(Context context) {
+        inflater = LayoutInflater.from(context);
+    }
 
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.article_item, parent, false);
+        View itemView = inflater.inflate(R.layout.item_store, parent, false);
         return new PostViewHolder(itemView);
     }
 
@@ -30,13 +34,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     }
 
     @Override
+    public void onViewRecycled(PostViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onUnbind();
+    }
+
+    @Override
     public int getItemCount() {
         return articles.size();
     }
 
-    public void setPosts(List<Post> articlesToAdd) {
-        articles.clear();
-        articles.addAll(articlesToAdd);
+    public void setPosts(List<Post> posts) {
+        articles = new ArrayList<>(posts);
         notifyDataSetChanged();
     }
 }

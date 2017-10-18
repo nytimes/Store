@@ -1,12 +1,12 @@
 package com.nytimes.android.sample.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.nytimes.android.external.store3.base.impl.BarCode;
 import com.nytimes.android.external.store3.base.impl.Store;
@@ -23,8 +23,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.widget.Toast.makeText;
-
 
 public class PersistingStoreActivity extends AppCompatActivity {
 
@@ -39,12 +37,13 @@ public class PersistingStoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_store);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        postAdapter = new PostAdapter();
+        postAdapter = new PostAdapter(this);
         recyclerView = (RecyclerView) findViewById(R.id.postRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(postAdapter);
+        recyclerView.addItemDecoration(new EmptyItemDecoration(this, R.dimen.activity_vertical_margin));
     }
 
     private void initStore() {
@@ -70,10 +69,7 @@ public class PersistingStoreActivity extends AppCompatActivity {
 
     private void showPosts(List<Post> posts) {
         postAdapter.setPosts(posts);
-        makeText(PersistingStoreActivity.this,
-                "Loaded " + posts.size() + " posts",
-                Toast.LENGTH_SHORT)
-                .show();
+        Snackbar.make(recyclerView, "Loaded " + posts.size() + " posts", Snackbar.LENGTH_SHORT).show();
     }
 
     private Observable<Post> sanitizeData(RedditData redditData) {

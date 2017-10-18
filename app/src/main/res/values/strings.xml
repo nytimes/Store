@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Sample</string>
+    <string name="app_name">Store Sample</string>
+    <string name="byline">Posted %1$s by %2$s</string>
 </resources>

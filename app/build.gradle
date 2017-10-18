@@ -40,6 +40,7 @@ dependencies {
     implementation libraries.supportAppCompat
     implementation libraries.supportCardView
     implementation libraries.supportDesign
+    implementation libraries.supportContraintLayout
     implementation libraries.retrofit
     implementation libraries.retrofitGsonConverter
     implementation libraries.retrofitRx2
