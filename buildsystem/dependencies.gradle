@@ -16,7 +16,7 @@ ext.versions = [
         minSdk               : 16,
         targetSdk            : 25,
         compileSdk           : 25,
-        buildTools           : '26.0.1',
+        buildTools           : '26.0.2',
         kotlin               : '1.1.2-5',
 
         // UI libs.
