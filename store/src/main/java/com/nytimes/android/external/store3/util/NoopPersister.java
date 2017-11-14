@@ -38,8 +38,8 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
         if (memoryPolicy == null) {
             memPolicy = MemoryPolicy
                 .builder()
-                .setExpireAfterWrite(TimeUnit.HOURS.toSeconds(24))
-                .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+                .setExpireAfterWrite(24)
+                .setExpireAfterTimeUnit(TimeUnit.HOURS)
                 .build();
         } else {
             memPolicy = memoryPolicy;
