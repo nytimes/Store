@@ -7,7 +7,7 @@ import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.util.KeyParser
 
 /**
- * A parameter box for Store instantiation, used for Stores the do not make use of parsing.
+ * A parameter box for Store instantiation, used for Stores that do not make use of parsing.
  * @param fetcher The fetcher for the Store.
  */
 @Experimental
