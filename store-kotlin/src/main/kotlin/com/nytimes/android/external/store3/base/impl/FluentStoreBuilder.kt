@@ -1,12 +1,10 @@
 package com.nytimes.android.external.store3.base.impl
 
-import com.nytimes.android.external.store3.annotations.Experimental
 import com.nytimes.android.external.store3.base.Fetcher
 
 /**
  * Wraps methods for fluent Store instantiation.
  */
-@Experimental
 class FluentStoreBuilder private constructor() {
     companion object {
         /**
