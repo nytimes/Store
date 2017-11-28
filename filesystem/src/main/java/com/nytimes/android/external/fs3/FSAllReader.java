@@ -9,10 +9,8 @@ import javax.annotation.Nonnull;
 
 import io.reactivex.Observable;
 import io.reactivex.exceptions.Exceptions;
-import okio.Buffer;
 import okio.BufferedSource;
 import okio.Okio;
-import okio.Source;
 
 /**
  * FSReader is used when persisting from file system
@@ -36,7 +34,7 @@ public class FSAllReader implements DiskAllRead {
                         .fromIterable(fileSystem.list(path))
                         .flatMap(s ->
                             Observable.defer(() -> Observable.just(fileSystem.read(s)))
-                                .onErrorReturn(throwable -> Okio.buffer((Source) new Buffer())));
+                                .onErrorReturn(throwable -> Okio.buffer((ReadResultBufferedSourceFactory.createFailureResult(throwable)))));
             } catch (FileNotFoundException e) {
                 throw Exceptions.propagate(e);
             }
