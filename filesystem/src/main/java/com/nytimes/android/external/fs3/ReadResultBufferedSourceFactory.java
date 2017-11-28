@@ -4,6 +4,9 @@ import javax.annotation.Nonnull;
 
 public final class ReadResultBufferedSourceFactory {
 
+    private ReadResultBufferedSourceFactory() {
+    }
+
     @Nonnull
     public static ReadResultBufferedSource createFailureResult(@Nonnull Throwable throwable) {
         if (throwable == null) {

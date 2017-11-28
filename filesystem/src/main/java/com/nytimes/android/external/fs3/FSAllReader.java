@@ -34,7 +34,8 @@ public class FSAllReader implements DiskAllRead {
                         .fromIterable(fileSystem.list(path))
                         .flatMap(s ->
                             Observable.defer(() -> Observable.just(fileSystem.read(s)))
-                                .onErrorReturn(throwable -> Okio.buffer((ReadResultBufferedSourceFactory.createFailureResult(throwable)))));
+                                .onErrorReturn(throwable -> Okio.buffer(
+                                    ReadResultBufferedSourceFactory.createFailureResult(throwable))));
             } catch (FileNotFoundException e) {
                 throw Exceptions.propagate(e);
             }
