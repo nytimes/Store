@@ -1,6 +1,7 @@
 package com.nytimes.android.external.fs3;
 
 
+import com.nytimes.android.external.fs3.filesystem.CrashOnReadFileSystem;
 import com.nytimes.android.external.fs3.filesystem.FileSystem;
 import com.nytimes.android.external.fs3.filesystem.FileSystemFactory;
 
@@ -37,6 +38,22 @@ public class FSAllOperationTest {
 
         //write different data to File System for each barcode
         fileSystem.write(FOLDER + "/key.txt", source(CHALLAH));
+        fileSystem.write(FOLDER + "/" + INNER_FOLDER + "/key2.txt", source(CHALLAH_CHALLAH));
+        FSAllReader reader = new FSAllReader(fileSystem);
+        //read back all values for the FOLDER
+        Observable<BufferedSource> observable = reader.readAll(FOLDER);
+        assertThat(observable.blockingFirst().readUtf8()).isEqualTo(CHALLAH);
+        assertThat(observable.blockingLast().readUtf8()).isEqualTo(CHALLAH_CHALLAH);
+    }
+
+    @Test
+    public void readAllWithCrash() throws IOException {
+        File tempDir = createTempDir();
+        FileSystem fileSystem = new CrashOnReadFileSystem(tempDir);
+
+        //write different data to File System for each barcode
+        fileSystem.write(FOLDER + "/key.txt", source(CHALLAH));
+        fileSystem.write(FOLDER + "/crash_key.txt", source(CHALLAH));
         fileSystem.write(FOLDER + "/" + INNER_FOLDER + "/key2.txt", source(CHALLAH_CHALLAH));
         FSAllReader reader = new FSAllReader(fileSystem);
         //read back all values for the FOLDER
