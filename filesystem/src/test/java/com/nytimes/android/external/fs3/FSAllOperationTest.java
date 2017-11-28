@@ -53,7 +53,7 @@ public class FSAllOperationTest {
 
         //write different data to File System for each barcode
         fileSystem.write(FOLDER + "/key.txt", source(CHALLAH));
-        fileSystem.write(FOLDER + "/crash_key.txt", source(CHALLAH));
+        fileSystem.write(FOLDER + "/key_crash.txt", source(CHALLAH));
         fileSystem.write(FOLDER + "/" + INNER_FOLDER + "/key2.txt", source(CHALLAH_CHALLAH));
         FSAllReader reader = new FSAllReader(fileSystem);
         //read back all values for the FOLDER

@@ -9,13 +9,15 @@ import javax.annotation.Nonnull;
 
 import io.reactivex.Observable;
 import io.reactivex.exceptions.Exceptions;
+import okio.Buffer;
 import okio.BufferedSource;
+import okio.Okio;
+import okio.Source;
 
 /**
  * FSReader is used when persisting from file system
  * PathResolver will be used in creating file system paths based on cache keys.
  * Make sure to have keys containing same data resolve to same "path"
- *
  */
 public class FSAllReader implements DiskAllRead {
     final FileSystem fileSystem;
@@ -32,13 +34,9 @@ public class FSAllReader implements DiskAllRead {
             try {
                 bufferedSourceObservable = Observable
                         .fromIterable(fileSystem.list(path))
-                        .map(s -> {
-                            try {
-                                return fileSystem.read(s);
-                            } catch (FileNotFoundException e) {
-                                throw Exceptions.propagate(e);
-                            }
-                        });
+                        .flatMap(s ->
+                            Observable.defer(() -> Observable.just(fileSystem.read(s)))
+                                .onErrorReturn(throwable -> Okio.buffer((Source) new Buffer())));
             } catch (FileNotFoundException e) {
                 throw Exceptions.propagate(e);
             }
