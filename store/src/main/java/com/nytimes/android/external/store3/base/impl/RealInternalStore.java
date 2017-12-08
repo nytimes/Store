@@ -304,7 +304,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         refreshSubject.onNext(key);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public Persister<Raw, Key> persister() {
         return persister;
