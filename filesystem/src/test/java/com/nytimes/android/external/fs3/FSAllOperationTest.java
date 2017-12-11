@@ -5,6 +5,7 @@ import com.nytimes.android.external.fs3.filesystem.CrashOnReadFileSystem;
 import com.nytimes.android.external.fs3.filesystem.FileSystem;
 import com.nytimes.android.external.fs3.filesystem.FileSystemFactory;
 
+import com.nytimes.android.external.store3.base.ReadResult;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -47,6 +48,26 @@ public class FSAllOperationTest {
     }
 
     @Test
+    public void safeReadAllWithCrash() throws IOException {
+        File tempDir = createTempDir();
+        FileSystem fileSystem = new CrashOnReadFileSystem(tempDir);
+
+        //write different data to File System for each barcode
+        fileSystem.write(FOLDER + "/key.txt", source(CHALLAH));
+        fileSystem.write(FOLDER + "/key_crash.txt", source(CHALLAH));
+        fileSystem.write(FOLDER + "/" + INNER_FOLDER + "/key2.txt", source(CHALLAH_CHALLAH));
+        FSAllReader reader = new FSAllReader(fileSystem);
+        //read back all values for the FOLDER
+        Observable<ReadResult<BufferedSource>> observable = reader.safeReadAll(FOLDER);
+        observable.test()
+            .assertValueAt(0, bufferedSourceReadResult ->
+                bufferedSourceReadResult.getResult().readUtf8().equals(CHALLAH))
+            .assertValueAt(1, bufferedSourceReadResult -> !bufferedSourceReadResult.isSuccess())
+            .assertValueAt(2, bufferedSourceReadResult ->
+                bufferedSourceReadResult.getResult().readUtf8().equals(CHALLAH_CHALLAH));
+    }
+
+    @Test(expected = RuntimeException.class)
     public void readAllWithCrash() throws IOException {
         File tempDir = createTempDir();
         FileSystem fileSystem = new CrashOnReadFileSystem(tempDir);
