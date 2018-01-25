@@ -62,7 +62,7 @@ public class SampleApp extends Application {
                 .memoryPolicy(
                         MemoryPolicy
                                 .builder()
-                                .setExpireAfter(10)
+                                .setExpireAfterWrite(10)
                                 .setExpireAfterTimeUnit(TimeUnit.SECONDS)
                                 .build()
                 )
