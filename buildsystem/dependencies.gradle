@@ -22,15 +22,12 @@ ext.versions = [
         // UI libs.
         supportLibs          : '25.1.1',
         picasso              : '2.5.2',
-        rxBinding            : '0.3.0',
         butterKnife          : '7.0.1',
 
         // Reactive.
-        rxJava               : '1.3.0',
         rxJava2              : '2.1.2',
         rxJavaProGuardRules  : '1.1.6.0',
         rxJavaAsyncUtil      : '0.21.0',
-        rxAndroid            : '1.3.0',
         rxAndroid2           : '2.0.1',
 
         // Others.
@@ -78,15 +75,12 @@ ext.libraries = [
         supportVectorDrawable   : "com.android.support:support-vector-drawable:$versions.supportLibs",
         supportAnimatedDrawable : "com.android.support:animated-vector-drawable:$versions.supportLibs",
         picasso                 : "com.squareup.picasso:picasso:$versions.picasso",
-        rxBinding               : "com.jakewharton.rxbinding:rxbinding:$versions.rxBinding",
         butterKnife             : "com.jakewharton:butterknife:$versions.butterKnife",
 
         // Reactive.
-        rxJava                  : "io.reactivex:rxjava:$versions.rxJava",
         rxJava2                 : "io.reactivex.rxjava2:rxjava:$versions.rxJava2",
         rxJavaAsyncUtil         : "io.reactivex:rxjava-async-util:$versions.rxJavaAsyncUtil",
         rxJavaProGuardRules     : "com.artemzin.rxjava:proguard-rules:$versions.rxJavaProGuardRules",
-        rxAndroid               : "io.reactivex:rxandroid:$versions.rxAndroid",
         rxAndroid2              : "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid2",
 
         // Others.

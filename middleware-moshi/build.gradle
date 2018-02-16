@@ -7,7 +7,6 @@ dependencies {
     implementation project(path: ':store')
     implementation project(path: ':filesystem')
     implementation libraries.moshi
-    implementation libraries.rxJava
     compileOnly libraries.jsr305
     compileOnly libraries.javax
     testImplementation libraries.mockito

@@ -9,7 +9,6 @@ dependencies {
     implementation project(path: ':filesystem')
     implementation libraries.okio
     implementation libraries.gson
-    implementation libraries.rxJava
     compileOnly libraries.jsr305
     compileOnly libraries.javax
     testImplementation libraries.mockito
