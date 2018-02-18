@@ -64,6 +64,14 @@ public class MemoryPolicy {
         return expireAfterWrite == DEFAULT_POLICY;
     }
 
+    public boolean hasWritePolicy() {
+        return expireAfterWrite != DEFAULT_POLICY;
+    }
+
+    public boolean hasAccessPolicy() {
+        return expireAfterAccess != DEFAULT_POLICY;
+    }
+
     public static class MemoryPolicyBuilder {
         private long expireAfterWrite = DEFAULT_POLICY;
         private long expireAfterAccess = DEFAULT_POLICY;
