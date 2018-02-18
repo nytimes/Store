@@ -38,20 +38,15 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
     }
 
     public static <Raw, Key> NoopPersister<Raw, Key> create(MemoryPolicy memoryPolicy) {
-        //For some reason PMD requires a local variable instead of modifying the passed one.
-        MemoryPolicy memPolicy;
-
         if (memoryPolicy == null) {
-            memPolicy = MemoryPolicy
+            MemoryPolicy defaultPolicy = MemoryPolicy
                 .builder()
                 .setExpireAfterWrite(24)
                 .setExpireAfterTimeUnit(TimeUnit.HOURS)
                 .build();
-        } else {
-            memPolicy = memoryPolicy;
+            return new NoopPersister<>(defaultPolicy);
         }
-
-        return new NoopPersister<>(memPolicy);
+        return new NoopPersister<>(memoryPolicy);
     }
 
     @Nonnull
