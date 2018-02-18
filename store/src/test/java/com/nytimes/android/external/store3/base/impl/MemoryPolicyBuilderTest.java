@@ -16,7 +16,7 @@ public class MemoryPolicyBuilderTest {
 
         assertThat(policy.getExpireAfterWrite()).isEqualTo(4L);
         assertThat(policy.getExpireAfterTimeUnit()).isEqualTo(TimeUnit.SECONDS);
-        assertThat(policy.isDefaultPolicy()).isFalse();
+        assertThat(policy.isDefaultWritePolicy()).isFalse();
         assertThat(policy.getExpireAfterAccess()).isEqualTo(MemoryPolicy.DEFAULT_POLICY);
     }
 
@@ -28,7 +28,7 @@ public class MemoryPolicyBuilderTest {
 
         assertThat(policy.getExpireAfterAccess()).isEqualTo(4L);
         assertThat(policy.getExpireAfterTimeUnit()).isEqualTo(TimeUnit.SECONDS);
-        assertThat(policy.isDefaultPolicy()).isTrue();
+        assertThat(policy.isDefaultWritePolicy()).isTrue();
         assertThat(policy.getExpireAfterWrite()).isEqualTo(MemoryPolicy.DEFAULT_POLICY);
     }
 

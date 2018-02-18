@@ -60,8 +60,20 @@ public class MemoryPolicy {
         return maxSize;
     }
 
+    /**
+     * @deprecated Use {@link MemoryPolicy#isDefaultWritePolicy()} or {@link MemoryPolicy#isDefaultAccessPolicy()}.
+     */
+    @Deprecated
     public boolean isDefaultPolicy() {
         return expireAfterWrite == DEFAULT_POLICY;
+    }
+
+    public boolean isDefaultWritePolicy() {
+        return expireAfterWrite == DEFAULT_POLICY;
+    }
+
+    public boolean isDefaultAccessPolicy() {
+        return expireAfterAccess == DEFAULT_POLICY;
     }
 
     public boolean hasWritePolicy() {
