@@ -53,7 +53,7 @@ public class StoreNetworkBeforeStaleFailTest {
         verify(fetcher, times(1)).fetch(barCode);
     }
 
-    final class TestPersister implements Persister<BufferedSource, BarCode>, RecordProvider<BarCode> {
+    private static final class TestPersister implements Persister<BufferedSource, BarCode>, RecordProvider<BarCode> {
         @Nonnull
         @Override
         public RecordState getRecordState(@Nonnull BarCode barCode) {

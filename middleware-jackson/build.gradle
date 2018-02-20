@@ -9,7 +9,6 @@ dependencies {
     compileOnly libraries.jsr305
     implementation libraries.jacksonCore
     implementation libraries.jacksonDatabind
-    implementation libraries.rxJava
     implementation libraries.okio
     compileOnly libraries.javax
     testImplementation libraries.mockito
