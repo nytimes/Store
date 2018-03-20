@@ -48,9 +48,9 @@ dependencies {
     annotationProcessor libraries.immutablesValue // <-- for annotation processor
     compileOnly libraries.immutablesValue // <-- for annotation API
     compileOnly libraries.immutablesGson // for annotations
-    implementation 'com.nytimes.android:store3:3.0.0-beta'
-    implementation 'com.nytimes.android:cache3:3.0.0-beta'
-    implementation 'com.nytimes.android:middleware3:3.0.0-beta'
-    implementation 'com.nytimes.android:filesystem3:3.0.0-beta'
+    implementation 'com.nytimes.android:store3:3.0.1'
+    implementation 'com.nytimes.android:cache3:3.0.1'
+    implementation 'com.nytimes.android:middleware3:3.0.1'
+    implementation 'com.nytimes.android:filesystem3:3.0.1'
     implementation libraries.rxAndroid2
 }
