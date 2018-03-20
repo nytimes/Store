@@ -3,6 +3,14 @@ Change Log
 
 The change log for Store version 1.x can be found [here](https://github.com/NYTimes/Store/blob/develop/CHANGELOG.md).
 
+Version 3.0.1 *(2018-03-20)*
+----------------------------
+
+**Bug Fixes and Stability Improvements**
+
+* (#311) Update Kotlin & AGP versions
+* (#314) Fix issues occured from RxJava1 dependency
+
 Version 3.0.0 *(2018-02-01)*
 ----------------------------
 
