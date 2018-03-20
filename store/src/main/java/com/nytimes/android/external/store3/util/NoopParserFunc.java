@@ -11,6 +11,7 @@ public class NoopParserFunc<Raw, Parsed> implements Parser<Raw, Parsed> {
 
     @Override
     public Parsed apply(@NonNull Raw raw) throws ParserException {
+        //noinspection unchecked
         return (Parsed) raw;
     }
 }
