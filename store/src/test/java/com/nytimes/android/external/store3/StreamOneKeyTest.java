@@ -66,7 +66,7 @@ public class StreamOneKeyTest {
         //fetch from network, write to disk and notifiy subscribers
         streamObservable.assertValueCount(1);
 
-        store.clear();
+        store.clear().test().awaitTerminalEvent();
         //fetch should notify subscribers again
         store.fetch(barCode).test().awaitCount(1);
         streamObservable.assertValues(TEST_ITEM, TEST_ITEM2);

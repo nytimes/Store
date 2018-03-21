@@ -12,6 +12,7 @@ import com.nytimes.android.external.store3.util.NoopPersister;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -132,13 +133,13 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
     }
 
     @Override
-    public void clear() {
-        internalStore.clear();
+    public Completable clear() {
+        return internalStore.clear();
     }
 
     @Override
-    public void clear(@Nonnull Key key) {
-        internalStore.clear(key);
+    public Completable clear(@Nonnull Key key) {
+        return internalStore.clear(key);
     }
 
     protected Maybe<Parsed> memory(@Nonnull Key key) {

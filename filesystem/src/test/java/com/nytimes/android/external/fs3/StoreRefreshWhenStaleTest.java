@@ -91,7 +91,7 @@ public class StoreRefreshWhenStaleTest {
         verify(fetcher, times(0)).fetch(barCode);
         verify(persister, times(1)).getRecordState(barCode);
 
-        store.clear(barCode);
+        store.clear(barCode).test().awaitTerminalEvent();
         testObserver = store
                 .get(barCode)
                 .test();

@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
@@ -49,13 +50,14 @@ public class GetRefreshingTest {
                 .thenReturn(Maybe.just(1)); //read from disk after making additional network call
         when(persister.write(barcode, 1)).thenReturn(Single.just(true));
         when(persister.write(barcode, 2)).thenReturn(Single.just(true));
+        when(persister.clear(barcode)).thenReturn(Completable.complete());
 
 
         TestObserver<Integer> refreshingObservable = store.getRefreshing(barcode).test();
         refreshingObservable.assertValueCount(1);
         assertThat(networkCalls.intValue()).isEqualTo(1);
         //clearing the store should produce another network call
-        store.clear(barcode);
+        store.clear(barcode).test().awaitTerminalEvent();
         refreshingObservable.assertValueCount(2);
         assertThat(networkCalls.intValue()).isEqualTo(2);
 
@@ -86,6 +88,9 @@ public class GetRefreshingTest {
         when(persister.write(barcode2, 1)).thenReturn(Single.just(true));
         when(persister.write(barcode2, 2)).thenReturn(Single.just(true));
 
+        when(persister.clear(barcode1)).thenReturn(Completable.complete());
+        when(persister.clear(barcode2)).thenReturn(Completable.complete());
+
         TestObserver<Integer> testObservable1 = store.getRefreshing(barcode1).test();
         TestObserver<Integer> testObservable2 = store.getRefreshing(barcode2).test();
         testObservable1.assertValueCount(1);
@@ -93,7 +98,7 @@ public class GetRefreshingTest {
 
         assertThat(networkCalls.intValue()).isEqualTo(2);
 
-        store.clear();
+        store.clear().test().awaitTerminalEvent();
         assertThat(networkCalls.intValue()).isEqualTo(4);
 
 
@@ -102,7 +107,7 @@ public class GetRefreshingTest {
     //everything will be mocked
     static class ClearingPersister implements Persister<Integer, BarCode>, Clearable<BarCode> {
         @Override
-        public void clear(@Nonnull BarCode key) {
+        public Completable clear(@Nonnull BarCode key) {
             throw new RuntimeException();
         }
 

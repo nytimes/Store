@@ -7,8 +7,10 @@ import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
 
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nonnull;
 
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
@@ -64,7 +66,7 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
     }
 
     @Override
-    public void clear(@Nonnull Key key) {
-        networkResponses.invalidate(key);
+    public Completable clear(@Nonnull Key key) {
+        return Completable.fromAction(() -> networkResponses.invalidate(key));
     }
 }

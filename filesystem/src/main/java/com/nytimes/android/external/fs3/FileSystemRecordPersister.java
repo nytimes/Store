@@ -1,6 +1,7 @@
 package com.nytimes.android.external.fs3;
 
 import com.nytimes.android.external.fs3.filesystem.FileSystem;
+import com.nytimes.android.external.store3.base.Clearable;
 import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.base.RecordProvider;
 import com.nytimes.android.external.store3.base.RecordState;
@@ -9,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import okio.BufferedSource;
@@ -20,9 +22,11 @@ import okio.BufferedSource;
  *
  * @param <Key> key type
  */
-public final class FileSystemRecordPersister<Key> implements Persister<BufferedSource, Key>, RecordProvider<Key> {
+public final class FileSystemRecordPersister<Key> implements Persister<BufferedSource, Key>,
+        Clearable<Key>, RecordProvider<Key> {
     private final FSReader<Key> fileReader;
     private final FSWriter<Key> fileWriter;
+    private final FSEraser<Key> fileEraser;
     private final FileSystem fileSystem;
     private final PathResolver<Key> pathResolver;
     private final long expirationDuration;
@@ -38,6 +42,7 @@ public final class FileSystemRecordPersister<Key> implements Persister<BufferedS
         this.expirationUnit = expirationUnit;
         fileReader = new FSReader<>(fileSystem, pathResolver);
         fileWriter = new FSWriter<>(fileSystem, pathResolver);
+        fileEraser = new FSEraser<>(fileSystem, pathResolver);
     }
 
     @Nonnull
@@ -68,5 +73,10 @@ public final class FileSystemRecordPersister<Key> implements Persister<BufferedS
     @Override
     public Single<Boolean> write(@Nonnull Key key, @Nonnull BufferedSource bufferedSource) {
         return fileWriter.write(key, bufferedSource);
+    }
+
+    @Override
+    public Completable clear(@Nonnull Key key) {
+        return fileEraser.delete(key).toCompletable();
     }
 }

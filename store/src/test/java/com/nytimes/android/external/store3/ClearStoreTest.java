@@ -12,6 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
@@ -48,13 +49,13 @@ public class ClearStoreTest {
                 .thenReturn(Maybe.just(1)); //read from disk after making additional network call
         when(persister.write(barcode, 1)).thenReturn(Single.just(true));
         when(persister.write(barcode, 2)).thenReturn(Single.just(true));
-
+        when(persister.clear(barcode)).thenReturn(Completable.complete());
 
         store.get(barcode).test().awaitTerminalEvent();
         assertThat(networkCalls.intValue()).isEqualTo(1);
 
         // after clearing the memory another call should be made
-        store.clear(barcode);
+        store.clear(barcode).test().awaitTerminalEvent();
         store.get(barcode).test().awaitTerminalEvent();
         verify(persister).clear(barcode);
         assertThat(networkCalls.intValue()).isEqualTo(2);
@@ -82,13 +83,15 @@ public class ClearStoreTest {
         when(persister.write(barcode2, 1)).thenReturn(Single.just(true));
         when(persister.write(barcode2, 2)).thenReturn(Single.just(true));
 
+        when(persister.clear(barcode1)).thenReturn(Completable.complete());
+        when(persister.clear(barcode2)).thenReturn(Completable.complete());
 
         // each request should produce one call
         store.get(barcode1).test().awaitTerminalEvent();
         store.get(barcode2).test().awaitTerminalEvent();
         assertThat(networkCalls.intValue()).isEqualTo(2);
 
-        store.clear();
+        store.clear().test().awaitTerminalEvent();
 
         // after everything is cleared each request should produce another 2 calls
         store.get(barcode1).test().awaitTerminalEvent();

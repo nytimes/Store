@@ -1,10 +1,12 @@
 package com.nytimes.android.external.fs3;
 
 import com.nytimes.android.external.fs3.filesystem.FileSystem;
+import com.nytimes.android.external.store3.base.Clearable;
 import com.nytimes.android.external.store3.base.Persister;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import okio.BufferedSource;
@@ -15,13 +17,15 @@ import okio.BufferedSource;
  * Make sure to have keys containing same data resolve to same "path"
  * @param <T> key type
  */
-public final class FileSystemPersister<T> implements Persister<BufferedSource, T> {
+public final class FileSystemPersister<T> implements Persister<BufferedSource, T>, Clearable<T> {
     private final FSReader<T> fileReader;
     private final FSWriter<T> fileWriter;
+    private final FSEraser<T> fileEraser;
 
     private FileSystemPersister(FileSystem fileSystem, PathResolver<T> pathResolver) {
         fileReader = new FSReader<>(fileSystem, pathResolver);
         fileWriter = new FSWriter<>(fileSystem, pathResolver);
+        fileEraser = new FSEraser<>(fileSystem, pathResolver);
     }
 
     @Nonnull
@@ -43,5 +47,10 @@ public final class FileSystemPersister<T> implements Persister<BufferedSource, T
     @Override
     public Single<Boolean> write(@Nonnull final T key, @Nonnull final BufferedSource data) {
         return fileWriter.write(key, data);
+    }
+
+    @Override
+    public Completable clear(@Nonnull T key) {
+        return fileEraser.delete(key).toCompletable();
     }
 }

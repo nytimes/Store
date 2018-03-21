@@ -179,7 +179,7 @@ public class StoreTest {
     public void testSubclass() {
 
         RealStore<String, BarCode> simpleStore = new SampleStore(fetcher, persister);
-        simpleStore.clear();
+        simpleStore.clear().test().awaitTerminalEvent();
 
         when(fetcher.fetch(barCode))
                 .thenReturn(Single.just(NETWORK));
@@ -200,7 +200,7 @@ public class StoreTest {
     public void testSubclassWithResult() {
 
         RealStore<String, BarCode> simpleStore = new SampleStore(fetcher, persister);
-        simpleStore.clear();
+        simpleStore.clear().test().awaitTerminalEvent();
 
         when(fetcher.fetch(barCode))
             .thenReturn(Single.just(NETWORK));

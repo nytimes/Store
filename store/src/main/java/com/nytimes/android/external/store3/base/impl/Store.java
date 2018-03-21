@@ -3,6 +3,8 @@ package com.nytimes.android.external.store3.base.impl;
 import com.nytimes.android.external.store.util.Result;
 import com.nytimes.android.external.store3.annotations.Experimental;
 import javax.annotation.Nonnull;
+
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -89,11 +91,11 @@ public interface Store<T, V> {
      * purges all entries from memory and disk cache
      * Persister will only be cleared if they implements Clearable
      */
-    void clear();
+    Completable clear();
 
     /**
      * Purge a particular entry from memory and disk cache.
      * Persister will only be cleared if they implements Clearable
      */
-    void clear(@Nonnull V key);
+    Completable clear(@Nonnull V key);
 }
