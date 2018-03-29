@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StoreNetworkBeforeStaleFailTest {
-    static final Exception sorry = new Exception("sorry");
+    static final Exception SORRY = new Exception("sorry");
     private static final BarCode barCode = new BarCode("key", "value");
     @Mock
     Fetcher<BufferedSource, BarCode> fetcher;
@@ -46,10 +46,10 @@ public class StoreNetworkBeforeStaleFailTest {
 
     @Test
     public void networkBeforeStaleNoNetworkResponse() {
-        Single<BufferedSource> exception = Single.error(sorry);
+        Single<BufferedSource> exception = Single.error(SORRY);
         when(fetcher.fetch(barCode))
                 .thenReturn(exception);
-        store.get(barCode).test().assertError(sorry);
+        store.get(barCode).test().assertError(SORRY);
         verify(fetcher, times(1)).fetch(barCode);
     }
 
@@ -63,7 +63,7 @@ public class StoreNetworkBeforeStaleFailTest {
         @Nonnull
         @Override
         public Maybe<BufferedSource> read(@Nonnull BarCode barCode) {
-            return Maybe.error(sorry);
+            return Maybe.error(SORRY);
         }
 
         @Nonnull
