@@ -8,6 +8,7 @@ allprojects {
         maven {
             url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
         }
+        google()
         jcenter()
     }
 }
