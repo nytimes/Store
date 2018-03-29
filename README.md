@@ -20,6 +20,25 @@ A Store is responsible for managing a particular data request. When you create a
 
 Store leverages RxJava and multiple request throttling to prevent excessive calls to the network and disk cache. By utilizing Store, you eliminate the possibility of flooding your network with the same request while adding two layers of caching (memory and disk).
 
+### How to include in your project
+
+###### Include gradle dependency
+```
+    implementation 'com.nytimes.android:store3:3.0.1'
+```
+###### Set the source & target compatibilities to `1.8`
+Starting with Store 3.0, `retrolambda` is no longer uses. Therefore to allow support for lambdas the Java sourceCompatibility and targetCompatibility need to be set to `1.8`
+
+```
+android {
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+    ...
+}
+```
+
 ### Fully Configured Store
 Let's start by looking at what a fully configured Store looks like. We will then walk through simpler examples showing each piece:
 ```java
