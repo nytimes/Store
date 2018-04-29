@@ -58,6 +58,14 @@ public class StoreActivity extends AppCompatActivity {
     public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
 
+        /*
+        First call to get(awwRequest) will use the network, then save response in the in-memory
+        cache. Subsequent calls will retrieve the cached version of the data.
+
+        But, since the policy of this store is to expire after 10 seconds, the cache will
+        only be used for subsequent requests that happen within 10 seconds of the initial request.
+        After that, the request will use the network.
+         */
         this.nonPersistedStore
                 .get(awwRequest)
                 .flatMapObservable(new Function<RedditData, ObservableSource<Post>>() {
