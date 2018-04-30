@@ -1,6 +1,7 @@
 package com.nytimes.android.sample;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,6 +57,9 @@ public class SampleApp extends Application {
         return this.persistedStore;
     }
 
+    /**
+     * Provides a Store which only retains RedditData for 10 seconds in memory.
+     */
     private Store<RedditData, BarCode> provideRedditStore() {
         return StoreBuilder.<RedditData>barcode()
                 .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
@@ -69,6 +73,10 @@ public class SampleApp extends Application {
                 .open();
     }
 
+    /**
+     * Provides a Store which will persist RedditData to the cache, and use Gson to parse the JSON
+     * that comes back from the network into RedditData.
+     */
     private Store<RedditData, BarCode> providePersistedRedditStore() {
         return StoreBuilder.<BarCode, BufferedSource, RedditData>parsedWithKey()
                 .fetcher(this::fetcher)
@@ -77,10 +85,17 @@ public class SampleApp extends Application {
                 .open();
     }
 
+    /**
+     * Returns a new Persister with the cache as the root.
+     */
     private Persister<BufferedSource, BarCode> newPersister() throws IOException {
         return SourcePersisterFactory.create(getApplicationContext().getCacheDir());
     }
 
+    /**
+     * Returns a "fetcher" which will retrieve new data from the network.
+     */
+    @NonNull
     private Single<BufferedSource> fetcher(BarCode barCode) {
         return provideRetrofit().fetchSubredditForPersister(barCode.getKey(), "10")
                 .map(ResponseBody::source);

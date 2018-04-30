@@ -6,10 +6,10 @@ import com.nytimes.android.sample.data.model.Image;
 import com.squareup.picasso.Transformation;
 
 
-public class BitmapTransform implements Transformation
-{
-    int maxWidth, maxHeight;
-    Image key;
+public class BitmapTransform implements Transformation {
+    private int maxWidth;
+    private int maxHeight;
+    private Image key;
     public int targetWidth;
     public int targetHeight;
     private final String picassoKey;

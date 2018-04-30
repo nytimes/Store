@@ -57,6 +57,10 @@ public class PersistingStoreActivity extends AppCompatActivity {
     public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
 
+        /*
+        First call to get(awwRequest) will use the network, then save response in the in-memory
+        cache. Subsequent calls will retrieve the cached version of the data.
+         */
         this.persistedStore
                 .get(awwRequest)
                 .flatMapObservable(this::sanitizeData)

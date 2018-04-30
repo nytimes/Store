@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.nytimes.android.sample.R;
 import com.nytimes.android.sample.data.model.Image;
 import com.nytimes.android.sample.data.model.ImmutableImage;
