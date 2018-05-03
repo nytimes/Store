@@ -2,11 +2,11 @@
 
 ![Store Logo](https://raw.githubusercontent.com/NYTimes/Store/feature/rx2/Images/store-logo.png)
 
-Store is an Android library for effortless, reactive data loading.  
+Store is a Java library for effortless, reactive data loading.  
 
 ### The Problems:
 
-+ Modern Android Apps need their data representations to be fluid and always available.
++ Modern software needs data representations to be fluid and always available.
 + Users expect their UI experience to never be compromised (blocked) by new data loads. Whether an application is social, news, or business-to-business, users expect a seamless experience both online and offline.
 + International users expect minimal data downloads as many megabytes of downloaded data can quickly result in astronomical phone bills.
 
