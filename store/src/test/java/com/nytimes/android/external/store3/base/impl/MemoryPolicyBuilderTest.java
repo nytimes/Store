@@ -57,4 +57,12 @@ public class MemoryPolicyBuilderTest {
 
         assertThat(policy.getMaxSize()).isEqualTo(10L);
     }
+
+    @Test
+    public void testDefaultMemorySizeIfNotSet() {
+        MemoryPolicy policy = MemoryPolicy.builder()
+            .build();
+
+        assertThat(policy.getMaxSize()).isEqualTo(1L);
+    }
 }

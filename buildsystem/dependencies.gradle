@@ -8,6 +8,7 @@ allprojects {
         maven {
             url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
         }
+        google()
         jcenter()
     }
 }
@@ -16,7 +17,7 @@ ext.versions = [
         minSdk               : 16,
         targetSdk            : 25,
         compileSdk           : 25,
-        buildTools           : '26.0.2',
+        buildTools           : '27.0.3',
         kotlin               : '1.1.2-5',
 
         // UI libs.

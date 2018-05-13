@@ -57,6 +57,9 @@ public class MemoryPolicy {
     }
 
     public long getMaxSize() {
+        if (isDefaultMaxSize()) {
+            return 1;
+        }
         return maxSize;
     }
 
@@ -76,6 +79,10 @@ public class MemoryPolicy {
         return expireAfterAccess == DEFAULT_POLICY;
     }
 
+    public boolean isDefaultMaxSize() {
+        return maxSize == DEFAULT_POLICY;
+    }
+
     public boolean hasWritePolicy() {
         return expireAfterWrite != DEFAULT_POLICY;
     }
@@ -84,11 +91,15 @@ public class MemoryPolicy {
         return expireAfterAccess != DEFAULT_POLICY;
     }
 
+    public boolean hasMaxSize() {
+        return maxSize != DEFAULT_POLICY;
+    }
+
     public static class MemoryPolicyBuilder {
         private long expireAfterWrite = DEFAULT_POLICY;
         private long expireAfterAccess = DEFAULT_POLICY;
         private TimeUnit expireAfterTimeUnit = TimeUnit.SECONDS;
-        private long maxSize = 1;
+        private long maxSize = -1;
 
         /**
          * @deprecated Use {@link MemoryPolicyBuilder#setExpireAfterWrite(long)} or

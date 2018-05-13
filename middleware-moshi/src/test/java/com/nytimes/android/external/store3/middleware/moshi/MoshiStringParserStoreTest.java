@@ -3,8 +3,8 @@ package com.nytimes.android.external.store3.middleware.moshi;
 import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.base.impl.BarCode;
-import com.nytimes.android.external.store3.base.impl.Store;
 import com.nytimes.android.external.store3.base.impl.ParsingStoreBuilder;
+import com.nytimes.android.external.store3.base.impl.Store;
 import com.nytimes.android.external.store3.middleware.moshi.data.Foo;
 import com.squareup.moshi.Moshi;
 
