@@ -7,6 +7,7 @@ import com.nytimes.android.external.store3.base.RecordState;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.subjects.PublishSubject;
@@ -39,11 +40,13 @@ final class StoreUtil {
         return false;
     }
 
-    static <Raw, Key> void clearPersister(Persister<Raw, Key> persister, @Nonnull Key key) {
+    static <Raw, Key> Completable clearPersister(Persister<Raw, Key> persister, @Nonnull Key key) {
         boolean isPersisterClearable = persister instanceof Clearable;
 
         if (isPersisterClearable) {
-            ((Clearable<Key>) persister).clear(key);
+            return ((Clearable<Key>) persister).clear(key);
+        } else {
+            return Completable.complete();
         }
     }
 }

@@ -7,11 +7,16 @@ import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.InternalStore;
 import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.util.KeyParser;
+
 import java.util.AbstractMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -76,8 +81,8 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Override
     public Single<Result<Parsed>> getWithResult(@Nonnull Key key) {
         return lazyCacheWithResult(key)
-            .switchIfEmpty(fetchWithResult(key).toMaybe())
-            .toSingle();
+                .switchIfEmpty(fetchWithResult(key).toMaybe())
+                .toSingle();
     }
 
     @Override
@@ -112,8 +117,8 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     private Maybe<Result<Parsed>> lazyCacheWithResult(@Nonnull final Key key) {
         return Maybe
-            .defer(() -> cacheWithResult(key))
-            .onErrorResumeNext(Maybe.<Result<Parsed>>empty());
+                .defer(() -> cacheWithResult(key))
+                .onErrorResumeNext(Maybe.<Result<Parsed>>empty());
     }
 
     Maybe<Result<Parsed>> cacheWithResult(@Nonnull final Key key) {
@@ -270,7 +275,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Override
     @Deprecated
     public void clearMemory() {
-        clear();
+        clear().blockingAwait();
     }
 
     /**
@@ -281,23 +286,30 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Override
     @Deprecated
     public void clearMemory(@Nonnull final Key key) {
-        clear(key);
+        clear(key).blockingAwait();
     }
 
 
     @Override
-    public void clear() {
-        for (Key cachedKey : memCache.asMap().keySet()) {
-            clear(cachedKey);
-        }
+    public Completable clear() {
+        return Completable.concat(memCache
+                .asMap()
+                .keySet()
+                .stream()
+                .map(this::clear)
+                .collect(Collectors.toList())
+        );
     }
 
     @Override
-    public void clear(@Nonnull Key key) {
-        inFlightRequests.invalidate(key);
-        memCache.invalidate(key);
-        StoreUtil.clearPersister(persister(), key);
-        notifyRefresh(key);
+    public Completable clear(@Nonnull Key key) {
+        return Completable
+                .fromAction(() -> {
+                    inFlightRequests.invalidate(key);
+                    memCache.invalidate(key);
+                })
+                .andThen(StoreUtil.clearPersister(persister(), key))
+                .doOnComplete(() -> notifyRefresh(key));
     }
 
     private void notifyRefresh(@Nonnull Key key) {

@@ -8,10 +8,9 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
-import okio.BufferedSource;
+import io.reactivex.Single;
 
-public class FSEraser<T> implements DiskErase<BufferedSource, T> {
+public class FSEraser<T> implements DiskErase<T> {
     final FileSystem fileSystem;
     final PathResolver<T> pathResolver;
 
@@ -22,8 +21,8 @@ public class FSEraser<T> implements DiskErase<BufferedSource, T> {
 
     @Nonnull
     @Override
-    public Observable<Boolean> delete(final @Nonnull T key) {
-        return Observable.fromCallable(new Callable<Boolean>() {
+    public Single<Boolean> delete(final @Nonnull T key) {
+        return Single.fromCallable(new Callable<Boolean>() {
             @Nonnull
             @Override
             @SuppressWarnings("PMD.SignatureDeclareThrowsException")
