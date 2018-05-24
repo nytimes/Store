@@ -1,6 +1,8 @@
 package com.nytimes.android.sample;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
@@ -17,9 +19,15 @@ import com.nytimes.android.sample.data.model.RedditData;
 import com.nytimes.android.sample.data.remote.Api;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import okio.BufferedSource;
 import retrofit2.Retrofit;
@@ -32,13 +40,38 @@ public class SampleApp extends Application {
     private Store<RedditData, BarCode> persistedStore;
     private Persister<BufferedSource, BarCode> persister;
 
+    static Context appContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        appContext = this;
 
-        initPersister();
-        this.nonPersistedStore = provideRedditStore();
-        this.persistedStore = providePersistedRedditStore();
+
+        Disposable foo = SampleRoomStoreKt.getStore().get("")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(strings1 -> {
+                    boolean success = strings1 != null;
+                }, throwable -> {
+                    throwable.getStackTrace();
+                });
+
+        foo= Observable.timer(15, TimeUnit.SECONDS)
+                .subscribe(it -> again());
+
+
+    }
+
+    private void again() {
+        Disposable bar = SampleRoomStoreKt.getStore().fetch("")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(strings1 -> {
+                    boolean success = strings1 != null;
+                }, throwable -> {
+                    throwable.getStackTrace();
+                });
     }
 
     private void initPersister() {
