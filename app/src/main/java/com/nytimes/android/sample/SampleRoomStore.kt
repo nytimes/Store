@@ -35,11 +35,6 @@ interface UserDao {
     @Query("SELECT name FROM user")
     fun loadAll(): Flowable<List<String>>
 
-    @Query("SELECT * FROM user WHERE uid IN (:userIds)")
-    fun loadAllByUserId(vararg userIds: Int): List<User>
-
-    @Query("SELECT * FROM user where name LIKE :first AND lastName LIKE :last LIMIT 1")
-    fun loadOneByNameAndLastName(first: String, last: String): User
 
     @Insert
     fun insertAll(vararg users: User)
@@ -67,12 +62,15 @@ val persister = object : RoomPersister<User, List<String>, String> {
     }
 
 }
-val fetcher=Fetcher<User,String> { Single.just(User(name = "Mike", lastName = "naki")) }
-
-val store = SampleRoomStore( fetcher, persister)
+//store
 
 class SampleRoomStore(fetcher: Fetcher<User, String>,
                       persister: RoomPersister<User, List<String>, String>,
                       stalePolicy: StalePolicy = StalePolicy.UNSPECIFIED) :
         RoomInternalStore<User, List<String>, String>(fetcher, persister, stalePolicy)
+
+val fetcher=Fetcher<User,String> { Single.just(User(name = "Mike", lastName = "naki")) }
+
+val store = SampleRoomStore( fetcher, persister)
+
 
