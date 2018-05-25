@@ -3,11 +3,6 @@ apply plugin: 'java'
 group = GROUP
 version = VERSION_NAME
 
-
-//Room
-def room_version = "1.1.0" // or, for latest rc, use "1.1.1-rc1"
-
-
 dependencies {
     implementation project(path: ':cache')
     implementation libraries.rxJava2
@@ -18,18 +13,6 @@ dependencies {
     testImplementation libraries.assertJ
     testImplementation libraries.junit
     testCompileOnly libraries.jsr305
-
-    apiElements "android.arch.persistence.room:runtime:$room_version"
-    implementation "android.arch.persistence.room:runtime:$room_version"
-    compile 'android.arch.persistence.room:runtime:1.1.0';
-    annotationProcessor "android.arch.persistence.room:compiler:$room_version"
-
-//    androidTestImplementation "android.arch.persistence.room:testing:$room_version"
-    // optional - RxJava support for Room
-    implementation "android.arch.persistence.room:rxjava2:$room_version"
-
-
-
 }
 
 buildscript {

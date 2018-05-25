@@ -1,9 +1,7 @@
 package com.nytimes.android.sample
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.nytimes.android.external.fs3.SourcePersisterFactory
@@ -17,42 +15,43 @@ import com.nytimes.android.external.store3.middleware.GsonParserFactory
 import com.nytimes.android.sample.data.model.GsonAdaptersModel
 import com.nytimes.android.sample.data.model.RedditData
 import com.nytimes.android.sample.data.remote.Api
-
-import java.io.IOException
-import java.util.concurrent.TimeUnit
-
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import okhttp3.ResponseBody
 import okio.BufferedSource
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class SampleApp : Application() {
 
-    val nonPersistedStore: Store<RedditData, BarCode>? = null
-    val persistedStore: Store<RedditData, BarCode>? = null
-    private var persister: Persister<BufferedSource, BarCode>? = null
+    var nonPersistedStore: Store<RedditData, BarCode>? = null
+    var  persistedStore: Store<RedditData, BarCode>? =null
+    private var persister: Persister<BufferedSource, BarCode>? =null
 
     override fun onCreate() {
         super.onCreate()
         appContext = this
 
+        initPersister();
+        nonPersistedStore = provideRedditStore();
+        persistedStore=providePersistedRedditStore();
+        RoomSample()
 
+
+    }
+
+    private fun RoomSample() {
         var foo = store.get("")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ strings1 -> val success = strings1 != null }) { throwable -> throwable.stackTrace }
 
         foo = Observable.timer(15, TimeUnit.SECONDS)
-                .subscribe { it -> again() }
-
-
+                .subscribe { again() }
     }
 
     private fun again() {
@@ -94,7 +93,7 @@ class SampleApp : Application() {
     private fun providePersistedRedditStore(): Store<RedditData, BarCode> {
         return StoreBuilder.parsedWithKey<BarCode, BufferedSource, RedditData>()
                 .fetcher(Fetcher<BufferedSource, BarCode> { this.fetcher(it) })
-                .persister(persister!!)
+                .persister(newPersister())
                 .parser(GsonParserFactory.createSourceParser(provideGson(), RedditData::class.java))
                 .open()
     }
@@ -104,7 +103,7 @@ class SampleApp : Application() {
      */
     @Throws(IOException::class)
     private fun newPersister(): Persister<BufferedSource, BarCode> {
-        return SourcePersisterFactory.create(applicationContext.cacheDir)
+        return SourcePersisterFactory.create(this.cacheDir)
     }
 
     /**
@@ -112,7 +111,7 @@ class SampleApp : Application() {
      */
     private fun fetcher(barCode: BarCode): Single<BufferedSource> {
         return provideRetrofit().fetchSubredditForPersister(barCode.key, "10")
-                .map( { it.source() })
+                .map({ it.source() })
     }
 
     private fun provideRetrofit(): Api {
@@ -133,6 +132,6 @@ class SampleApp : Application() {
 
     companion object {
 
-         var appContext: Context? = null
+        var appContext: Context? = null
     }
 }
