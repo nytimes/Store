@@ -1,4 +1,4 @@
-package com.nytimes.android.external.store3.base;
+package com.nytimes.android.external.store3.base.room;
 
 import javax.annotation.Nonnull;
 

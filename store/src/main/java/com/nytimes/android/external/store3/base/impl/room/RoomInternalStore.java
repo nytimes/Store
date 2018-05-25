@@ -1,24 +1,22 @@
-package com.nytimes.android.external.store3.base.impl;
+package com.nytimes.android.external.store3.base.impl.room;
 
 import com.nytimes.android.external.cache3.Cache;
-import com.nytimes.android.external.store.util.Result;
-import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.Fetcher;
-import com.nytimes.android.external.store3.base.InternalStore;
-import com.nytimes.android.external.store3.base.RoomPersister;
-import com.nytimes.android.external.store3.util.KeyParser;
+import com.nytimes.android.external.store3.base.impl.CacheFactory;
+import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
+import com.nytimes.android.external.store3.base.impl.StalePolicy;
+import com.nytimes.android.external.store3.base.impl.StoreUtil;
+import com.nytimes.android.external.store3.base.room.RoomPersister;
 
-import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Store to be used for loading an object from different data sources
@@ -26,21 +24,18 @@ import io.reactivex.subjects.PublishSubject;
  * @param <Raw>    data type before parsing, usually a String, Reader or BufferedSource
  * @param <Parsed> data type after parsing
  *                 <p>
- *                 Example usage:  @link
  */
-public  class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, Key> {
-    Cache<Key, Observable<Parsed>> inFlightRequests;
-    Cache<Key, Observable<Parsed>> memCache;
-    StalePolicy stalePolicy;
-    RoomPersister<Raw, Parsed, Key> persister;
+public class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, Key> {
+    private final Fetcher<Raw, Key> fetcher;
+    private final RoomPersister<Raw, Parsed, Key> persister;
+    private final Cache<Key, Observable<Parsed>> memCache;
+    private final StalePolicy stalePolicy;
+    private final Cache<Key, Observable<Parsed>> inFlightRequests;
 
-    private final PublishSubject<Key> refreshSubject = PublishSubject.create();
-    private Fetcher<Raw, Key> fetcher;
-    private PublishSubject<AbstractMap.SimpleEntry<Key, Parsed>> subject;
 
     public RoomInternalStore(Fetcher<Raw, Key> fetcher,
-                      RoomPersister<Raw, Parsed, Key> persister,
-                      StalePolicy stalePolicy) {
+                             RoomPersister<Raw, Parsed, Key> persister,
+                             StalePolicy stalePolicy) {
         this(fetcher, persister, null, stalePolicy);
     }
 
@@ -48,15 +43,11 @@ public  class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, K
                       RoomPersister<Raw, Parsed, Key> persister,
                       MemoryPolicy memoryPolicy,
                       StalePolicy stalePolicy) {
-
         this.fetcher = fetcher;
         this.persister = persister;
         this.stalePolicy = stalePolicy;
-
-        this.memCache = RoomCacheFactory.createCache(memoryPolicy);
-        this.inFlightRequests = RoomCacheFactory.createInflighter(memoryPolicy);
-
-        subject = PublishSubject.create();
+        this.memCache = CacheFactory.createRoomCache(memoryPolicy);
+        this.inFlightRequests = CacheFactory.createRoomInflighter(memoryPolicy);
     }
 
     /**
@@ -66,17 +57,14 @@ public  class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, K
     @Nonnull
     @Override
     public Observable<Parsed> get(@Nonnull final Key key) {
-        return lazyCache(key)
-                .switchIfEmpty(fetch(key));
+        return lazyCache(key).switchIfEmpty(fetch(key));
     }
 
     /**
      * @return data from memory
      */
     private Observable<Parsed> lazyCache(@Nonnull final Key key) {
-        return Observable
-                .defer(() -> cache(key))
-                .onErrorResumeNext(Observable.<Parsed>empty());
+        return Observable.defer(() -> cache(key)).onErrorResumeNext(Observable.empty());
     }
 
     Observable<Parsed> cache(@Nonnull final Key key) {
@@ -102,32 +90,30 @@ public  class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, K
      */
     @Nonnull
     public Observable<Parsed> disk(@Nonnull final Key key) {
-//        if (StoreUtil.shouldReturnNetworkBeforeStale(persister, stalePolicy, key)) {
-//            return Maybe.empty();
-//        }
+        if (StoreUtil.shouldReturnNetworkBeforeStale(persister, stalePolicy, key)) {
+            return Observable.empty();
+        }
         return readDisk(key);
     }
 
     Observable<Parsed> readDisk(@Nonnull final Key key) {
-        return persister().read(key)
+        return persister()
+                .read(key)
+                .doOnNext(this::guardAgainstEmptyCollection)
                 .onErrorResumeNext(
                         Observable.empty())
                 .doOnNext(parsed -> {
                     updateMemory(key, parsed);
-//                    if (stalePolicy == StalePolicy.REFRESH_ON_STALE
-//                            && StoreUtil.persisterIsStale(key, persister)) {
-//                        backfillCache(key);
-//                    }
+                    if (stalePolicy == StalePolicy.REFRESH_ON_STALE
+                            && StoreUtil.persisterIsStale(key, persister)) {
+                        backfillCache(key);
+                    }
                 }).cache();
     }
 
     @SuppressWarnings("CheckReturnValue")
     void backfillCache(@Nonnull Key key) {
-        fetch(key).subscribe(parsed -> {
-            // do Nothing we are just backfilling cache
-        }, throwable -> {
-            // do nothing as we are just backfilling cache
-        });
+        Disposable noop = fetch(key).subscribe(it -> { }, it -> { });
     }
 
 
@@ -175,13 +161,8 @@ public  class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, K
                     }
                     return Observable.error(throwable);
                 })
-                .doOnNext(data -> notifySubscribers(data, key))
                 .doAfterTerminate(() -> inFlightRequests.invalidate(key))
                 .cache();
-    }
-
-    void notifySubscribers(Parsed data, Key key) {
-        subject.onNext(new AbstractMap.SimpleEntry<>(key, data));
     }
 
 
@@ -197,6 +178,7 @@ public  class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, K
 
 
     @Override
+    //TODO: create a clearable override to clear all since room knows what table associated with data
     public void clear() {
         for (Key cachedKey : memCache.asMap().keySet()) {
             clear(cachedKey);
@@ -207,13 +189,9 @@ public  class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, K
     public void clear(@Nonnull Key key) {
         inFlightRequests.invalidate(key);
         memCache.invalidate(key);
-//        StoreUtil.clearPersister(persister(), key);
-        notifyRefresh(key);
+        StoreUtil.clearPersister(persister(), key);
     }
 
-    private void notifyRefresh(@Nonnull Key key) {
-        refreshSubject.onNext(key);
-    }
 
     /**
      * @return DiskDAO that stores and stores <Raw> data
@@ -227,6 +205,12 @@ public  class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, K
      */
     Fetcher<Raw, Key> fetcher() {
         return fetcher;
+    }
+
+    private void guardAgainstEmptyCollection(Parsed v) {
+        if (v instanceof Collection && ((Collection) v).isEmpty()) {
+            throw new IllegalStateException("empty result set");
+        }
     }
 }
 

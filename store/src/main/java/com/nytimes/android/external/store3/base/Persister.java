@@ -11,7 +11,7 @@ import io.reactivex.Single;
  *
  * @param <Raw> data type before parsing
  */
-public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, Key> {
+public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, Key>,BasePersister {
 
     /**
      * @param key to use to get data from persister
