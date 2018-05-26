@@ -35,6 +35,11 @@ public class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, Ke
 
 
     public RoomInternalStore(Fetcher<Raw, Key> fetcher,
+                             RoomPersister<Raw, Parsed, Key> persister) {
+        this(fetcher, persister, null, StalePolicy.UNSPECIFIED);
+    }
+
+    public RoomInternalStore(Fetcher<Raw, Key> fetcher,
                              RoomPersister<Raw, Parsed, Key> persister,
                              StalePolicy stalePolicy) {
         this(fetcher, persister, null, stalePolicy);

@@ -9,7 +9,6 @@ import android.arch.persistence.room.Query
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import com.nytimes.android.external.store3.base.Fetcher
-import com.nytimes.android.external.store3.base.impl.StalePolicy
 import com.nytimes.android.external.store3.base.impl.room.RoomInternalStore
 import com.nytimes.android.external.store3.base.room.RoomPersister
 import io.reactivex.Flowable
@@ -17,29 +16,22 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 
-// File: User.java
 @Entity
 data class User(
-        @PrimaryKey(autoGenerate = true) var uid: Int = 0,
-        val name: String,
-        val lastName: String)
+        @PrimaryKey(autoGenerate = true)
+        var uid: Int = 0,
+        val name: String)
 
-
-// File: UserDao.java
 @Dao
 interface UserDao {
     @Query("SELECT name FROM user")
     fun loadAll(): Flowable<List<String>>
 
-
     @Insert
     fun insertAll(vararg users: User)
 
-//    @Delete
-//    fun delete(user: User)
 }
 
-// File: AppDatabase.java
 @Database(entities = arrayOf(User::class), version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
@@ -47,28 +39,18 @@ abstract class AppDatabase : RoomDatabase() {
 
 val db = Room.databaseBuilder(SampleApp.appContext!!, AppDatabase::class.java, "db").build()
 
-val persister = object : RoomPersister<User, List<String>, String> {
 
-    override fun read(key: String): Observable<List<String>> {
-        return db.userDao().loadAll().toObservable()
-    }
+val store = RoomInternalStore(
+        Fetcher<User, String> { Single.just(User(name = "Mike")) },
+        object : RoomPersister<User, List<String>, String> {
 
-    override fun write(key: String, user: User) {
-        db.userDao().insertAll(user)
-    }
+            override fun read(key: String): Observable<List<String>> {
+                return db.userDao().loadAll().toObservable()
+            }
 
-}
-
-
-
-//store
-class SampleRoomStore(fetcher: Fetcher<User, String>,
-                      persister: RoomPersister<User, List<String>, String>,
-                      stalePolicy: StalePolicy = StalePolicy.UNSPECIFIED) :
-        RoomInternalStore<User, List<String>, String>(fetcher, persister, stalePolicy)
-
-val fetcher=Fetcher<User,String> { Single.just(User(name = "Mike", lastName = "naki")) }
-
-val store = SampleRoomStore( fetcher, persister)
+            override fun write(key: String, user: User) {
+                db.userDao().insertAll(user)
+            }
+        })
 
 
