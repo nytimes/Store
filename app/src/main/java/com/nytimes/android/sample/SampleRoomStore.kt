@@ -47,7 +47,7 @@ abstract class AppDatabase : RoomDatabase() {
 
 val db = Room.databaseBuilder(SampleApp.appContext!!, AppDatabase::class.java, "db").build()
 
-val persister = object : RoomPersister<User, List<String>, String>() {
+val persister = object : RoomPersister<User, List<String>, String> {
 
     override fun read(key: String): Observable<List<String>> {
         return db.userDao().loadAll().toObservable()

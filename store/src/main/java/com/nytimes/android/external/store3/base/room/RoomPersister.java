@@ -1,5 +1,6 @@
 package com.nytimes.android.external.store3.base.room;
 
+import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.BasePersister;
 
 import javax.annotation.Nonnull;
@@ -12,7 +13,9 @@ import io.reactivex.Observable;
  *
  * @param <Raw> data type before parsing
  */
-public abstract class RoomPersister<Raw, Parsed, Key> implements RoomDiskRead<Parsed, Key>, RoomDiskWrite<Raw, Key>, BasePersister {
+@Experimental
+public interface RoomPersister<Raw, Parsed, Key> extends
+        RoomDiskRead<Parsed, Key>, RoomDiskWrite<Raw, Key>, BasePersister {
 
     /**
      * @param key to use to get data from persister

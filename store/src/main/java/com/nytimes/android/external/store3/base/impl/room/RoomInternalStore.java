@@ -1,6 +1,7 @@
 package com.nytimes.android.external.store3.base.impl.room;
 
 import com.nytimes.android.external.cache3.Cache;
+import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.impl.CacheFactory;
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
@@ -16,7 +17,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 
 /**
  * Store to be used for loading an object from different data sources
@@ -25,6 +25,7 @@ import io.reactivex.disposables.Disposable;
  * @param <Parsed> data type after parsing
  *                 <p>
  */
+@Experimental
 public class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, Key> {
     private final Fetcher<Raw, Key> fetcher;
     private final RoomPersister<Raw, Parsed, Key> persister;
@@ -113,7 +114,9 @@ public class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, Ke
 
     @SuppressWarnings("CheckReturnValue")
     void backfillCache(@Nonnull Key key) {
-        Disposable noop = fetch(key).subscribe(it -> { }, it -> { });
+        fetch(key).subscribe(it -> {
+        }, it -> {
+        });
     }
 
 
@@ -178,7 +181,8 @@ public class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, Ke
 
 
     @Override
-    //TODO: create a clearable override to clear all since room knows what table associated with data
+    //need to create a clearable override to clear all
+    // since room knows what table associated with data
     public void clear() {
         for (Key cachedKey : memCache.asMap().keySet()) {
             clear(cachedKey);

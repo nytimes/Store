@@ -11,12 +11,12 @@ import io.reactivex.Single;
  *
  * @param <Raw> data type before parsing
  */
-public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, Key>,BasePersister {
+public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, Key>, BasePersister {
 
     /**
      * @param key to use to get data from persister
-     *                If data is not available implementer needs to
-     *                either return Observable.empty or throw an exception
+     *            If data is not available implementer needs to
+     *            either return Observable.empty or throw an exception
      */
     @Override
     @Nonnull
@@ -24,7 +24,7 @@ public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, 
 
     /**
      * @param key to use to store data to persister
-     * @param raw     raw string to be stored
+     * @param raw raw string to be stored
      */
     @Override
     @Nonnull

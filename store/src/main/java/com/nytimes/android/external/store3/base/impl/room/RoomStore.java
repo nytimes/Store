@@ -1,5 +1,6 @@
 package com.nytimes.android.external.store3.base.impl.room;
 
+import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.impl.StoreBuilder;
 
 import javax.annotation.Nonnull;
@@ -15,6 +16,7 @@ import io.reactivex.Observable;
  * force a call to {@link RoomStore#fetch(V) Store.fetch() }
  * (skipping cache)
  */
+@Experimental
 public interface RoomStore<T, V> {
 
     /**

@@ -1,9 +1,10 @@
 package com.nytimes.android.external.store3.base.room;
 
+import com.nytimes.android.external.store3.annotations.Experimental;
+
 import javax.annotation.Nonnull;
 
-import io.reactivex.Single;
-
+@Experimental
 public interface RoomDiskWrite<Raw, Key> {
     /**
      * @param key to use to get data from persister
@@ -11,5 +12,5 @@ public interface RoomDiskWrite<Raw, Key> {
      *            either return Observable.empty or throw an exception
      */
     @Nonnull
-     void write(@Nonnull Key key, @Nonnull Raw raw);
+    void write(@Nonnull Key key, @Nonnull Raw raw);
 }
