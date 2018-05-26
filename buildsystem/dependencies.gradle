@@ -21,7 +21,7 @@ ext.versions = [
         kotlin               : '1.1.2-5',
 
         // UI libs.
-        supportLibs          : '26.1.0',
+        supportLibs          : '27.1.0',
         picasso              : '2.5.2',
         butterKnife          : '7.0.1',
 

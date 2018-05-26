@@ -35,13 +35,10 @@ class SampleApp : Application() {
     override fun onCreate() {
         super.onCreate()
         appContext = this
-
         initPersister();
         nonPersistedStore = provideRedditStore();
         persistedStore=providePersistedRedditStore();
         RoomSample()
-
-
     }
 
     private fun RoomSample() {
@@ -131,7 +128,6 @@ class SampleApp : Application() {
     }
 
     companion object {
-
         var appContext: Context? = null
     }
 }
