@@ -26,7 +26,7 @@ import io.reactivex.Observable;
  *                 <p>
  */
 @Experimental
-public class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, Key> {
+class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
     private final Fetcher<Raw, Key> fetcher;
     private final RoomPersister<Raw, Parsed, Key> persister;
     private final Cache<Key, Observable<Parsed>> memCache;
@@ -34,21 +34,21 @@ public class RoomInternalStore<Raw, Parsed, Key> implements RoomStore<Parsed, Ke
     private final Cache<Key, Observable<Parsed>> inFlightRequests;
 
 
-    public RoomInternalStore(Fetcher<Raw, Key> fetcher,
-                             RoomPersister<Raw, Parsed, Key> persister) {
+     RealStoreRoom(Fetcher<Raw, Key> fetcher,
+                         RoomPersister<Raw, Parsed, Key> persister) {
         this(fetcher, persister, null, StalePolicy.UNSPECIFIED);
     }
 
-    public RoomInternalStore(Fetcher<Raw, Key> fetcher,
-                             RoomPersister<Raw, Parsed, Key> persister,
-                             StalePolicy stalePolicy) {
+     RealStoreRoom(Fetcher<Raw, Key> fetcher,
+                         RoomPersister<Raw, Parsed, Key> persister,
+                         StalePolicy stalePolicy) {
         this(fetcher, persister, null, stalePolicy);
     }
 
-    RoomInternalStore(Fetcher<Raw, Key> fetcher,
-                      RoomPersister<Raw, Parsed, Key> persister,
-                      MemoryPolicy memoryPolicy,
-                      StalePolicy stalePolicy) {
+    RealStoreRoom(Fetcher<Raw, Key> fetcher,
+                  RoomPersister<Raw, Parsed, Key> persister,
+                  MemoryPolicy memoryPolicy,
+                  StalePolicy stalePolicy) {
         this.fetcher = fetcher;
         this.persister = persister;
         this.stalePolicy = stalePolicy;

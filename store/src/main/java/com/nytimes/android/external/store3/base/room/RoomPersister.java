@@ -24,7 +24,7 @@ public interface RoomPersister<Raw, Parsed, Key> extends
      */
     @Override
     @Nonnull
-    public abstract Observable<Parsed> read(@Nonnull final Key key);
+    Observable<Parsed> read(@Nonnull final Key key);
 
     /**
      * @param key to use to store data to persister
@@ -32,5 +32,5 @@ public interface RoomPersister<Raw, Parsed, Key> extends
      */
     @Override
     @Nonnull
-    public abstract void write(@Nonnull final Key key, @Nonnull final Raw raw);
+    void write(@Nonnull final Key key, @Nonnull final Raw raw);
 }

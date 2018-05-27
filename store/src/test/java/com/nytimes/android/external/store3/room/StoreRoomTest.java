@@ -3,8 +3,7 @@ package com.nytimes.android.external.store3.room;
 import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.impl.BarCode;
 import com.nytimes.android.external.store3.base.impl.StalePolicy;
-import com.nytimes.android.external.store3.base.impl.room.RoomInternalStore;
-import com.nytimes.android.external.store3.base.impl.room.RoomStore;
+import com.nytimes.android.external.store3.base.impl.room.StoreRoom;
 import com.nytimes.android.external.store3.base.room.RoomPersister;
 
 import org.junit.Before;
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class RoomStoreTest {
+public class StoreRoomTest {
 
     private static final String DISK = "disk";
     private static final String NETWORK = "fetch";
@@ -41,7 +40,7 @@ public class RoomStoreTest {
     @Test
     public void testSimple() {
 
-        RoomStore<String, BarCode> simpleStore = new RoomInternalStore<>(
+        StoreRoom<String, BarCode> simpleStore = StoreRoom.from(
                 fetcher,
                 persister,
                 StalePolicy.UNSPECIFIED
@@ -67,9 +66,7 @@ public class RoomStoreTest {
 
     @Test
     public void testDoubleTap() {
-
-
-        RoomStore<String, BarCode> simpleStore = new RoomInternalStore<>(
+        StoreRoom<String, BarCode> simpleStore = StoreRoom.from(
                 fetcher,
                 persister,
                 StalePolicy.UNSPECIFIED
@@ -83,7 +80,6 @@ public class RoomStoreTest {
                         emitter.onError(new RuntimeException("Yo Dawg your inflight is broken"));
                     }
                 });
-
 
         when(fetcher.fetch(barCode))
                 .thenReturn(networkSingle);

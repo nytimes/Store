@@ -3,8 +3,7 @@ package com.nytimes.android.external.store3.room;
 import com.nytimes.android.external.store3.base.Clearable;
 import com.nytimes.android.external.store3.base.impl.BarCode;
 import com.nytimes.android.external.store3.base.impl.StalePolicy;
-import com.nytimes.android.external.store3.base.impl.room.RoomInternalStore;
-import com.nytimes.android.external.store3.base.impl.room.RoomStore;
+import com.nytimes.android.external.store3.base.impl.room.StoreRoom;
 import com.nytimes.android.external.store3.base.room.RoomPersister;
 
 import org.junit.Before;
@@ -25,16 +24,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ClearRoomStoreTest {
+public class ClearStoreRoomTest {
     @Mock
     RoomClearingPersister persister;
     private AtomicInteger networkCalls;
-    private RoomStore<Integer, BarCode> store;
+    private StoreRoom<Integer, BarCode> store;
 
     @Before
     public void setUp() {
         networkCalls = new AtomicInteger(0);
-        store = new RoomInternalStore<>(
+        store = StoreRoom.from(
                 barCode -> Single.fromCallable(() -> networkCalls.incrementAndGet()),
                 persister,
                 StalePolicy.UNSPECIFIED);
