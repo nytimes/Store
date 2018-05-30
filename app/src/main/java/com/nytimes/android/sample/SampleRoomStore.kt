@@ -8,6 +8,7 @@ import android.arch.persistence.room.PrimaryKey
 import android.arch.persistence.room.Query
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
+import android.content.Context
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.impl.room.StoreRoom
 import com.nytimes.android.external.store3.base.room.RoomPersister
@@ -36,21 +37,24 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 }
 
-val db = Room.databaseBuilder(SampleApp.appContext!!, AppDatabase::class.java, "db").build()
+class SampleRoomStore(context: Context){
+    val db = Room.databaseBuilder(context, AppDatabase::class.java, "db").build()
 
+    val fetcher = Fetcher<User, String> { Single.just(User(name = "Mike")) }
+    val persister = object : RoomPersister<User, List<String>, String> {
 
-val fetcher = Fetcher<User, String> { Single.just(User(name = "Mike")) }
-val persister = object : RoomPersister<User, List<String>, String> {
+        override fun read(key: String): Observable<List<String>> {
+            return db.userDao().loadAll().toObservable()
+        }
 
-    override fun read(key: String): Observable<List<String>> {
-        return db.userDao().loadAll().toObservable()
+        override fun write(key: String, user: User) {
+            db.userDao().insertAll(user)
+        }
     }
 
-    override fun write(key: String, user: User) {
-        db.userDao().insertAll(user)
-    }
+    val store = StoreRoom.from(fetcher, persister)
 }
 
-val store = StoreRoom.from(fetcher, persister)
+
 
 

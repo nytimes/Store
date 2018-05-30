@@ -5,7 +5,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.nytimes.android.external.fs3.SourcePersisterFactory
-import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy
@@ -31,6 +30,7 @@ class SampleApp : Application() {
     var nonPersistedStore: Store<RedditData, BarCode>? = null
     var  persistedStore: Store<RedditData, BarCode>? =null
     private var persister: Persister<BufferedSource, BarCode>? =null
+    private val sampleRoomStore=SampleRoomStore(this)
 
     override fun onCreate() {
         super.onCreate()
@@ -42,17 +42,17 @@ class SampleApp : Application() {
     }
 
     private fun RoomSample() {
-        var foo = store.get("")
+        var foo = sampleRoomStore.store.get("")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ strings1 -> val success = strings1 != null }) { throwable -> throwable.stackTrace }
 
         foo = Observable.timer(15, TimeUnit.SECONDS)
-                .subscribe { again() }
+                .subscribe { makeFetchRequest() }
     }
 
-    private fun again() {
-        val bar = store.fetch("")
+    private fun makeFetchRequest() {
+        val bar = sampleRoomStore.store.fetch("")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ strings1 -> val success = strings1 != null }) { throwable -> throwable.stackTrace }
@@ -89,7 +89,7 @@ class SampleApp : Application() {
      */
     private fun providePersistedRedditStore(): Store<RedditData, BarCode> {
         return StoreBuilder.parsedWithKey<BarCode, BufferedSource, RedditData>()
-                .fetcher(Fetcher<BufferedSource, BarCode> { this.fetcher(it) })
+                .fetcher({ this.fetcher(it) })
                 .persister(newPersister())
                 .parser(GsonParserFactory.createSourceParser(provideGson(), RedditData::class.java))
                 .open()
