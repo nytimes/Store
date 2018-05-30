@@ -15,13 +15,13 @@ allprojects {
 
 ext.versions = [
         minSdk               : 16,
-        targetSdk            : 25,
-        compileSdk           : 25,
+        targetSdk            : 27,
+        compileSdk           : 27,
         buildTools           : '27.0.3',
         kotlin               : '1.1.2-5',
 
         // UI libs.
-        supportLibs          : '25.1.1',
+        supportLibs          : '27.1.0',
         picasso              : '2.5.2',
         butterKnife          : '7.0.1',
 

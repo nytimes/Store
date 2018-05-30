@@ -1,9 +1,11 @@
-package com.nytimes.android.external.store3.base;
+package com.nytimes.android.external.store3.base.room;
+
+import com.nytimes.android.external.store3.annotations.Experimental;
+import com.nytimes.android.external.store3.base.BasePersister;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.Observable;
 
 /**
  * Interface for fetching data from persister
@@ -11,7 +13,9 @@ import io.reactivex.Single;
  *
  * @param <Raw> data type before parsing
  */
-public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, Key>, BasePersister {
+@Experimental
+public interface RoomPersister<Raw, Parsed, Key> extends
+        RoomDiskRead<Parsed, Key>, RoomDiskWrite<Raw, Key>, BasePersister {
 
     /**
      * @param key to use to get data from persister
@@ -20,7 +24,7 @@ public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, 
      */
     @Override
     @Nonnull
-    Maybe<Raw> read(@Nonnull final Key key);
+    Observable<Parsed> read(@Nonnull final Key key);
 
     /**
      * @param key to use to store data to persister
@@ -28,5 +32,5 @@ public interface Persister<Raw, Key> extends DiskRead<Raw, Key>, DiskWrite<Raw, 
      */
     @Override
     @Nonnull
-    Single<Boolean> write(@Nonnull final Key key, @Nonnull final Raw raw);
+    void write(@Nonnull final Key key, @Nonnull final Raw raw);
 }

@@ -2,6 +2,7 @@ apply from: 'buildsystem/dependencies.gradle'
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
+    ext.kotlin_version = '1.2.41'
     repositories {
         mavenLocal()
         maven {
@@ -22,12 +23,13 @@ buildscript {
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha15'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.11'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$rootProject.ext.versions.kotlin"
         classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.14'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -54,7 +56,7 @@ allprojects {
 ext {
     // POM file
     GROUP = "com.nytimes.android"
-    VERSION_NAME = "3.0.2-SNAPSHOT"
+    VERSION_NAME = "3.1.0-SNAPSHOT"
     POM_PACKAGING = "pom"
     POM_DESCRIPTION = "Store3 is built with RxJava2"
 

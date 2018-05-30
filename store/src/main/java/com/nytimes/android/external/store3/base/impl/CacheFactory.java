@@ -6,14 +6,57 @@ import com.nytimes.android.external.cache3.CacheBuilder;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
-final class CacheFactory {
+public final class CacheFactory {
     private CacheFactory() {
 
     }
 
     static <Key, Parsed> Cache<Key, Maybe<Parsed>> createCache(MemoryPolicy memoryPolicy) {
+       return createBaseCache(memoryPolicy);
+    }
+
+    static <Key, Parsed> Cache<Key, Single<Parsed>> createInflighter(MemoryPolicy memoryPolicy) {
+       return createBaseInFlighter(memoryPolicy);
+    }
+
+    public static <Key, Parsed> Cache<Key, Observable<Parsed>> createRoomCache(MemoryPolicy memoryPolicy) {
+     return createBaseCache(memoryPolicy);
+    }
+
+
+
+    public static <Key, Parsed> Cache<Key, Observable<Parsed>> createRoomInflighter(MemoryPolicy memoryPolicy) {
+        return createBaseInFlighter(memoryPolicy);
+    }
+
+
+    private static <Key, Value> Cache<Key, Value> createBaseInFlighter(MemoryPolicy memoryPolicy) {
+        long expireAfterToSeconds = memoryPolicy == null ? StoreDefaults.getCacheTTLTimeUnit()
+                .toSeconds(StoreDefaults.getCacheTTL())
+                : memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfterWrite());
+        long maximumInFlightRequestsDuration = TimeUnit.MINUTES.toSeconds(1);
+
+        if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
+            return CacheBuilder
+                    .newBuilder()
+                    .expireAfterWrite(maximumInFlightRequestsDuration, TimeUnit.SECONDS)
+                    .build();
+        } else {
+            long expireAfter = memoryPolicy == null ? StoreDefaults.getCacheTTL() :
+                    memoryPolicy.getExpireAfterWrite();
+            TimeUnit expireAfterUnit = memoryPolicy == null ? StoreDefaults.getCacheTTLTimeUnit() :
+                    memoryPolicy.getExpireAfterTimeUnit();
+            return CacheBuilder.newBuilder()
+                    .expireAfterWrite(expireAfter, expireAfterUnit)
+                    .build();
+        }
+    }
+
+
+    private static <Key, Value> Cache<Key, Value> createBaseCache(MemoryPolicy memoryPolicy){
         if (memoryPolicy == null) {
             return CacheBuilder
                     .newBuilder()
@@ -37,25 +80,4 @@ final class CacheFactory {
         }
     }
 
-    static <Key, Parsed> Cache<Key, Single<Parsed>> createInflighter(MemoryPolicy memoryPolicy) {
-        long expireAfterToSeconds = memoryPolicy == null ? StoreDefaults.getCacheTTLTimeUnit()
-                .toSeconds(StoreDefaults.getCacheTTL())
-                : memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfterWrite());
-        long maximumInFlightRequestsDuration = TimeUnit.MINUTES.toSeconds(1);
-
-        if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
-            return CacheBuilder
-                    .newBuilder()
-                    .expireAfterWrite(maximumInFlightRequestsDuration, TimeUnit.SECONDS)
-                    .build();
-        } else {
-            long expireAfter = memoryPolicy == null ? StoreDefaults.getCacheTTL() :
-                    memoryPolicy.getExpireAfterWrite();
-            TimeUnit expireAfterUnit = memoryPolicy == null ? StoreDefaults.getCacheTTLTimeUnit() :
-                    memoryPolicy.getExpireAfterTimeUnit();
-            return CacheBuilder.newBuilder()
-                    .expireAfterWrite(expireAfter, expireAfterUnit)
-                    .build();
-        }
-    }
 }
