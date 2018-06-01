@@ -129,7 +129,7 @@ To prevent duplicate requests for the same data, Store offers an inflight deboun
 
 ### Adding a Parser
 
-Since it is rare for data to arrive from the network in the format that your views need, Stores can delegate to a parser by using a `StoreBuilder.<BarCode, BufferedSource, Article>parsedWithKey()``
+Since it is rare for data to arrive from the network in the format that your views need, Stores can delegate to a parser by using a `StoreBuilder.<BarCode, BufferedSource, Article>parsedWithKey()`
 
 ```java
 Store<Article, Integer> store = StoreBuilder.<Integer, BufferedSource, Article>parsedWithKey()
