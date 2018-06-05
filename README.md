@@ -27,7 +27,7 @@ Store leverages RxJava and multiple request throttling to prevent excessive call
     implementation 'com.nytimes.android:store3:3.0.1'
 ```
 ###### Set the source & target compatibilities to `1.8`
-Starting with Store 3.0, `retrolambda` is no longer uses. Therefore to allow support for lambdas the Java sourceCompatibility and targetCompatibility need to be set to `1.8`
+Starting with Store 3.0, `retrolambda` is no longer used. Therefore to allow support for lambdas the Java sourceCompatibility and targetCompatibility need to be set to `1.8`
 
 ```
 android {
@@ -71,7 +71,7 @@ You create a Store using a builder. The only requirement is to include a `.Fetch
 Stores use generic keys as identifiers for data. A key can be any value object that properly implements toString and equals and hashCode. When your Fetcher function is called, it will be passed a particular Key value. Similarly, the key will be used as a primary identifier within caches (Make sure to have a proper hashCode!!) 
 
 ### Our Key implementation - Barcodes
-For convenience we included our own key implementation called a BarCode. Barcode has two fields `String key and String type`
+For convenience we included our own key implementation called a BarCode. Barcode has two fields `String key` and `String type`
 ``` java
 BarCode barcode = new BarCode("Article", "42");
 ```
@@ -119,20 +119,20 @@ Calls to both `fetch()` and `get()` emit one value and then call `onCompleted()`
 For real-time updates, you may also call `store.stream()` which returns an Observable that emits each time a new item is added to the Store. You can think of stream as an Event Bus-like feature that allows you to know when any new network hits happen for a particular Store. You can leverage the Rx operator `filter()` to only subscribe to a subset of emissions.
 
 ### Get Refreshing
-There is another special way to subscribe to a Store: getRefreshing(key). Get Refreshing will subscribe to get() which returns a single response, but unlike Get, Get Refreshing will stay subscribed. Anytime you call store.clear(key) anyone subscribed to getRefreshing(key) will resubscribe and force a new network response.
+There is another special way to subscribe to a Store: `getRefreshing(key)`. Get Refreshing will subscribe to `get()` which returns a single response, but unlike Get, Get Refreshing will stay subscribed. Anytime you call store.`clear(key)` anyone subscribed to `getRefreshing(key)` will resubscribe and force a new network response.
 
 
 ### Inflight Debouncer
 
-To prevent duplicative requests for the same data, Store offers an inflight debouncer. If the same request is made within a minute of a previous identical request, the same response will be returned. This is useful for situations when your app needs to make many async calls for the same data at startup or for when users are obsessively pulling to refresh. As an example, The New York Times news app asynchronously calls `ConfigStore.get()` from 12 different places on startup. The first call blocks while all others wait for the data to arrive. We have seen a dramatic decrease in the app's the data usage after implementing this in flight logic.
+To prevent duplicate requests for the same data, Store offers an inflight debouncer. If the same request is made within a minute of a previous identical request, the same response will be returned. This is useful for situations when your app needs to make many async calls for the same data at startup or when users are obsessively pulling to refresh. As an example, The New York Times news app asynchronously calls `ConfigStore.get()` from 12 different places on startup. The first call blocks while all others wait for the data to arrive. We have seen a dramatic decrease in the app's the data usage after implementing this in flight logic.
 
 
 ### Adding a Parser
 
-Since it is rare for data to arrive from the network in the format that your views need, Stores can delegate to a parser by using a `StoreBuilder.<BarCode, BufferedSource, Article>parsedWithKey()
+Since it is rare for data to arrive from the network in the format that your views need, Stores can delegate to a parser by using a `StoreBuilder.<BarCode, BufferedSource, Article>parsedWithKey()`
 
 ```java
-Store<Article,Integer> store = StoreBuilder.<Integer, BufferedSource, Article>parsedWithKey()
+Store<Article, Integer> store = StoreBuilder.<Integer, BufferedSource, Article>parsedWithKey()
         .fetcher(articleId -> api.getArticle(articleId)) 
         .parser(source -> {
           try (InputStreamReader reader = new InputStreamReader(source.inputStream())) {
@@ -230,7 +230,7 @@ We've found the fastest form of persistence is streaming network responses direc
 Now back to our first example:
 
 ```java
-Store<Article,Integer> store = StoreBuilder.<Integer, BufferedSource, Article>parsedWithKey()
+Store<Article, Integer> store = StoreBuilder.<Integer, BufferedSource, Article>parsedWithKey()
                .fetcher(articleId -> api.getArticles(articleId)) 
                .persister(FileSystemPersister.create(FileSystemFactory.create(context.getFilesDir()),pathResolver))
                .parser(GsonParserFactory.createSourceParser(gson, String.class))
@@ -242,7 +242,7 @@ As mentioned, the above builder is how we work with network operations at the Ne
 + Disk caching with FileSystem (you can reuse the same file system implementation for all stores)
 + Parsing from a BufferedSource to a <T> (Article in our case) with Gson
 + In-flight request management
-+ Ability to get cached data or bust through your caches (get vs. fresh)
++ Ability to get cached data or bust through your caches (`get` vs. `fetch`)
 + Ability to listen for any new emissions from network (stream)
 + Ability to be notified and resubscribed when caches are cleared (helpful for times when you need to do a post request and update another screen, such as with `getRefreshing`)
 
