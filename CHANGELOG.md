@@ -3,6 +3,24 @@ Change Log
 
 The change log for Store version 1.x can be found [here](https://github.com/NYTimes/Store/blob/develop/CHANGELOG.md).
 
+
+Version 3.1.0 *(2018-06-07)*
+----------------------------
+
+**New Features**
+
+* (#319) Store can now be used in Java (non-Android) projects
+* (#338) Room integration for Store
+
+**Bug Fixes and Stability Improvements**
+
+* (#315) Add missing reading of expire-after-policy when creating a NoopPersister
+* (#311) Update Kotlin & AGP versions
+* (#328) Fix memory policy default size
+* (#329) Adding docs to README for setting 1.8 compatibility
+* (#273) Adds comments to the sample app
+* (#336) Fixes errors in README
+
 Version 3.0.1 *(2018-03-20)*
 ----------------------------
 
