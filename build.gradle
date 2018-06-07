@@ -56,7 +56,7 @@ allprojects {
 ext {
     // POM file
     GROUP = "com.nytimes.android"
-    VERSION_NAME = "3.1.0"
+    VERSION_NAME = "3.1.1-SNAPSHOT"
     POM_PACKAGING = "pom"
     POM_DESCRIPTION = "Store3 is built with RxJava2"
 
