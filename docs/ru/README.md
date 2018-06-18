@@ -95,7 +95,7 @@ Observable<Article> article = store.get(barCode);
 
 
 Поток данных, которым управляет Store, на данный момент будет выглядеть следующим образом:
-![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-1.jpg)
+![Simple Store Flow](https://github.com/nytm/Store/blob/feature/rx2/Images/store-1.jpg)
 
 
 По умолчанию, 100 элементов будут сохранены в памяти на 24 часа.
@@ -108,7 +108,7 @@ Observable<Article> article = store.get(barCode);
 
 
 Получение свежих данных выглядит следующим образом: `store.fetch()`
-![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-2.jpg)
+![Simple Store Flow](https://github.com/nytm/Store/blob/feature/rx2/Images/store-2.jpg)
 
 
 В приложении The New York Times фоновое обновление, выполняемое ночью, использует `fetch()`, чтобы во время обычного использования приложения вызов `store.get()` не приводил к сетевым запросам.
@@ -158,7 +158,7 @@ Store<Article,Integer> store = StoreBuilder.<Integer, BufferedSource, Article>pa
 
 Теперь обновленный поток данных будет выглядеть следующим образом:
 
-`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-3.jpg)
+`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/feature/rx2/Images/store-3.jpg)
 
 
 
@@ -199,7 +199,7 @@ Store<List<Article>,Integer> store = StoreBuilder.<Integer, BufferedSource, List
 
 
 Поток данных будет выглядеть так:
-`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/master/Images/store-5.jpg)
+`store.get()` -> ![Simple Store Flow](https://github.com/nytm/Store/blob/feature/rx2/Images/store-5.jpg)
 
 Идеальным вариантом будет, если данные будут передаваться из сети на диск с использованием BufferedSource или Reader в качестве типа данных (а не String).
 
