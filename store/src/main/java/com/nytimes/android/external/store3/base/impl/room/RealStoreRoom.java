@@ -1,14 +1,14 @@
 package com.nytimes.android.external.store3.base.impl.room;
 
-import com.nytimes.android.external.cache3.Cache;
 import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.Fetcher;
-import com.nytimes.android.external.store3.base.impl.CacheFactory;
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
 import com.nytimes.android.external.store3.base.impl.StalePolicy;
 import com.nytimes.android.external.store3.base.impl.StoreUtil;
-import com.nytimes.android.external.store3.base.impl.WriterLock;
+import com.nytimes.android.external.store3.storecache.WriterLock;
 import com.nytimes.android.external.store3.base.room.RoomPersister;
+import com.nytimes.android.external.store3.storecache.StoreCache;
+import com.nytimes.android.external.store3.storecache.StoreCacheBuilder;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ import io.reactivex.Observable;
 class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
     private final Fetcher<Raw, Key> fetcher;
     private final RoomPersister<Raw, Parsed, Key> persister;
-    private final Cache<Key, Observable<Parsed>> memCache;
+    private final StoreCache<Key, Observable<Parsed>> memCache;
     private final StalePolicy stalePolicy;
     private final Map<Key, Observable<Parsed>> inFlightRequests = new HashMap<>();
     private final WriterLock writerLock = new WriterLock();
@@ -56,7 +56,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
         this.fetcher = fetcher;
         this.persister = persister;
         this.stalePolicy = stalePolicy;
-        this.memCache = CacheFactory.createRoomCache(memoryPolicy);
+        this.memCache = StoreCacheBuilder.newBuilder().build();
     }
 
     /**

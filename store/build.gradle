@@ -4,7 +4,6 @@ group = GROUP
 version = VERSION_NAME
 
 dependencies {
-    implementation project(path: ':cache')
     implementation libraries.rxJava2
     apiElements libraries.rxJava2
     compileOnly libraries.jsr305

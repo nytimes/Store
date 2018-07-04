@@ -8,8 +8,9 @@ import java.util.List;
 
 import io.reactivex.annotations.NonNull;
 
-import static com.nytimes.android.external.cache3.Preconditions.checkArgument;
-import static com.nytimes.android.external.cache3.Preconditions.checkNotNull;
+import static com.nytimes.android.external.store3.storecache.Preconditions.checkArgument;
+import static com.nytimes.android.external.store3.storecache.Preconditions.checkNotNull;
+
 
 public class MultiParser<Key, Raw, Parsed> implements KeyParser<Key, Raw, Parsed> {
 

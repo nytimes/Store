@@ -1,7 +1,5 @@
 package com.nytimes.android.external.store3.base.impl;
 
-import com.nytimes.android.external.cache3.Cache;
-import com.nytimes.android.external.cache3.CacheBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +12,7 @@ public final class CacheFactory {
 
     }
 
-    static <Key, Parsed> Cache<Key, Maybe<Parsed>> createCache(MemoryPolicy memoryPolicy) {
+    /*static <Key, Parsed> Cache<Key, Maybe<Parsed>> createCache(MemoryPolicy memoryPolicy) {
        return createBaseCache(memoryPolicy);
     }
 
@@ -78,6 +76,6 @@ public final class CacheFactory {
                         .build();
             }
         }
-    }
+    }*/
 
 }

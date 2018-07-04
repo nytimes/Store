@@ -21,8 +21,4 @@ public enum RecordPolicy {
         return (nowInMs > expireTime);
     }
 
-    public static boolean hasExpired(StoreRecord storeRecord) {
-        return hasExpired(storeRecord, System.currentTimeMillis());
-    }
-
 }

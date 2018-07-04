@@ -1,7 +1,5 @@
 package com.nytimes.android.external.store3;
 
-import com.nytimes.android.external.cache3.Cache;
-import com.nytimes.android.external.cache3.CacheBuilder;
 import com.nytimes.android.external.store.util.Result;
 import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.Persister;
@@ -9,6 +7,8 @@ import com.nytimes.android.external.store3.base.impl.BarCode;
 import com.nytimes.android.external.store3.base.impl.RealStore;
 import com.nytimes.android.external.store3.base.impl.Store;
 import com.nytimes.android.external.store3.base.impl.StoreBuilder;
+import com.nytimes.android.external.store3.storecache.StoreCache;
+import com.nytimes.android.external.store3.storecache.StoreCacheBuilder;
 import com.nytimes.android.external.store3.util.NoopPersister;
 import org.junit.Before;
 import org.junit.Test;
@@ -275,9 +275,9 @@ public class StoreTest {
 
     @Test
     public void testEquivalence() {
-        Cache<BarCode, String> cache = CacheBuilder.newBuilder()
+        StoreCache<BarCode, String> cache = StoreCacheBuilder.newBuilder()
                 .maximumSize(1)
-                .expireAfterAccess(Long.MAX_VALUE, TimeUnit.SECONDS)
+                //.expireAfterAccess(Long.MAX_VALUE, TimeUnit.SECONDS)
                 .build();
 
         cache.put(barCode, MEMORY);

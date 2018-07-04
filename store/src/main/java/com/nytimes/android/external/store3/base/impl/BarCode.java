@@ -1,7 +1,7 @@
 package com.nytimes.android.external.store3.base.impl;
 
-import com.nytimes.android.external.cache3.Preconditions;
 import com.nytimes.android.external.store3.base.Persister;
+import com.nytimes.android.external.store3.storecache.Preconditions;
 
 import java.io.Serializable;
 

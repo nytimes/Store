@@ -1,4 +1,4 @@
-package com.nytimes.android.external.store3.base.impl;
+package com.nytimes.android.external.store3.storecache;
 
 public class WriterLock {
 

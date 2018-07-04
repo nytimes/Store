@@ -7,6 +7,7 @@ public class StoreCacheBuilder<K, V> {
 
     static final int UNSET_INT = -1;
     long maximumSize = UNSET_INT;
+    TimeProvider timeProvider = () -> System.currentTimeMillis();
 
     @Nonnull
     public static StoreCacheBuilder<Object, Object> newBuilder() {
@@ -19,6 +20,11 @@ public class StoreCacheBuilder<K, V> {
         return this;
     }
 
+    @Nonnull
+    public StoreCacheBuilder<K, V> timeProvider(TimeProvider timeProvider) {
+        this.timeProvider = timeProvider;
+        return this;
+    }
 
     @Nonnull
     public <K1 extends K, V1 extends V> StoreCache<K1, V1> build() {

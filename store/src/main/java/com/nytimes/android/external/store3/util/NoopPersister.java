@@ -1,10 +1,10 @@
 package com.nytimes.android.external.store3.util;
 
-import com.nytimes.android.external.cache3.Cache;
-import com.nytimes.android.external.cache3.CacheBuilder;
 import com.nytimes.android.external.store3.base.Clearable;
 import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
+import com.nytimes.android.external.store3.storecache.StoreCache;
+import com.nytimes.android.external.store3.storecache.StoreCacheBuilder;
 
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -16,17 +16,17 @@ import io.reactivex.Single;
  * Pass-through diskdao for stores that don't want to use persister
  */
 public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<Key> {
-    protected final Cache<Key, Maybe<Raw>> networkResponses;
+    protected final StoreCache<Key, Maybe<Raw>> networkResponses;
 
     NoopPersister(MemoryPolicy memoryPolicy) {
         if (memoryPolicy.hasAccessPolicy()) {
-            networkResponses = CacheBuilder.newBuilder()
-                .expireAfterAccess(memoryPolicy.getExpireAfterAccess(), memoryPolicy.getExpireAfterTimeUnit())
+            networkResponses = StoreCacheBuilder.newBuilder()
+                //.expireAfterAccess(memoryPolicy.getExpireAfterAccess(), memoryPolicy.getExpireAfterTimeUnit())
                 .build();
 
         } else if (memoryPolicy.hasWritePolicy()) {
-            networkResponses = CacheBuilder.newBuilder()
-                .expireAfterWrite(memoryPolicy.getExpireAfterWrite(), memoryPolicy.getExpireAfterTimeUnit())
+            networkResponses = StoreCacheBuilder.newBuilder()
+                //.expireAfterWrite(memoryPolicy.getExpireAfterWrite(), memoryPolicy.getExpireAfterTimeUnit())
                 .build();
         } else {
             throw new IllegalArgumentException("No expiry policy set on memory-policy.");

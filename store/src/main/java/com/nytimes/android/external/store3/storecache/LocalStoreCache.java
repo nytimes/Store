@@ -1,8 +1,6 @@
 package com.nytimes.android.external.store3.storecache;
 
 
-import com.nytimes.android.external.store3.base.impl.WriterLock;
-
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,11 +20,14 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     private final long expDuration = 1;
     private final TimeUnit expUnit = TimeUnit.MINUTES;
 
-    private final StoreCacheBuilder storeCacheBuilder;
+    private final TimeProvider timeProvider;
+    private final long maximumSize;
+
     private long count = 0;
 
     LocalStoreCache(StoreCacheBuilder storeCacheBuilder) {
-        this.storeCacheBuilder = storeCacheBuilder;
+        this.timeProvider = storeCacheBuilder.timeProvider;
+        this.maximumSize = storeCacheBuilder.maximumSize;
     }
 
     @Nullable
@@ -39,7 +40,7 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
 
         if (cache.containsKey(key)) {
             StoreRecord<V> record = cache.get(key);
-            if (RecordPolicy.hasExpired(record)) {
+            if (RecordPolicy.hasExpired(record, timeProvider.provideTime())) {
                 // present AND expired...so we evict
                 internalInvalidate(key);
             } else {
@@ -71,7 +72,7 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     }
 
     private StoreRecord<V> internalPut(K key, V value) {
-        StoreRecord<V> record = StoreRecordFactory.create(expDuration, expUnit);
+        StoreRecord<V> record = StoreRecord.create(expDuration, expUnit);
         record.setValue(value);
         cache.put(key, record);
         count++;
@@ -102,30 +103,53 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     @Override
     public V getIfPresent(Object key) {
         V returnValue = null;
-        writerLock.getWriteLock();
 
+        writerLock.getWriteLock();
         if (cache.containsKey(key)) {
             StoreRecord<V> record = cache.get(key);
-            record.setAccessTime(System.currentTimeMillis());
-            returnValue = record.getValue();
+            if (RecordPolicy.hasExpired(record, timeProvider.provideTime())) {
+                //it's expired, we invalidate
+                internalInvalidate(key);
+            } else {
+                //it's valid, we update access time and return
+                record.setAccessTime(System.currentTimeMillis());
+                returnValue = record.getValue();
+            }
         }
-
         writerLock.releaseLock();
         return returnValue;
     }
 
     @Override
     public ConcurrentMap<K, V> asMap() {
-        ConcurrentMap<K, V> map = new ConcurrentHashMap();
+        ConcurrentMap<K, V> map;
 
         writerLock.getWriteLock();
+        //do initial internalAsMap to prune expired
+        ConcurrentMap<K, V> copy = internalAsMap();
+        Iterator<K> iterator = copy.keySet().iterator();
+        while (iterator.hasNext()) {
+            K key = iterator.next();
+            StoreRecord<V> record = cache.get(key);
+            //prune out any expired entries
+            if (RecordPolicy.hasExpired(record, timeProvider.provideTime())){
+                internalInvalidate(key);
+            }
+        }
+        //get pruned map and return that
+        map = internalAsMap();
+        writerLock.releaseLock();
+        return map;
+    }
+
+    private ConcurrentMap<K, V> internalAsMap() {
+        ConcurrentMap<K, V> map = new ConcurrentHashMap();
         Iterator<K> iterator = cache.keySet().iterator();
         while (iterator.hasNext()) {
             K key = iterator.next();
             V value = cache.get(key).getValue();
             map.put(key, value);
         }
-        writerLock.releaseLock();
         return map;
     }
 

@@ -6,7 +6,8 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 
-import static com.nytimes.android.external.cache3.Preconditions.checkNotNull;
+import static com.nytimes.android.external.store3.storecache.Preconditions.checkNotNull;
+
 
 /**
  * A Transformer that takes a source observable and re-subscribes to the upstream Observable when
