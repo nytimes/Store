@@ -22,6 +22,9 @@ import static java.lang.String.format;
  * to support checks applied in Dagger's generated code.
  */
 public final class Preconditions {
+
+    private Preconditions() {}
+
     /**
      * Ensures that an object reference passed as a parameter to the calling method is not null.
      *
@@ -50,8 +53,6 @@ public final class Preconditions {
         }
         return reference;
     }
-
-    private Preconditions() {}
 
     public static void checkArgument(boolean expression) {
         if (!expression) {

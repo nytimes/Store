@@ -277,7 +277,7 @@ public class StoreTest {
     public void testEquivalence() {
         StoreCache<BarCode, String> cache = StoreCacheBuilder.newBuilder()
                 .maximumSize(1)
-                //.expireAfterAccess(Long.MAX_VALUE, TimeUnit.SECONDS)
+                .expireAfterAccess(5, TimeUnit.DAYS)
                 .build();
 
         cache.put(barCode, MEMORY);

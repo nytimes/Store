@@ -5,10 +5,10 @@ import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
 import com.nytimes.android.external.store3.base.impl.StalePolicy;
 import com.nytimes.android.external.store3.base.impl.StoreUtil;
-import com.nytimes.android.external.store3.storecache.WriterLock;
 import com.nytimes.android.external.store3.base.room.RoomPersister;
 import com.nytimes.android.external.store3.storecache.StoreCache;
 import com.nytimes.android.external.store3.storecache.StoreCacheBuilder;
+import com.nytimes.android.external.store3.storecache.WriterLock;
 
 import java.util.Collection;
 import java.util.HashMap;

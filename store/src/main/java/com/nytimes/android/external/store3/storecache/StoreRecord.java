@@ -2,7 +2,7 @@ package com.nytimes.android.external.store3.storecache;
 
 import java.util.concurrent.TimeUnit;
 
-public class StoreRecord<V> {
+public final class StoreRecord<V> {
 
     private long accessTime = -1;
     private long writeTime = -1;
@@ -10,6 +10,8 @@ public class StoreRecord<V> {
     private TimeUnit timeUnit = TimeUnit.MINUTES;
     private RecordPolicy recordPolicy = RecordPolicy.ExpireAfterWrite;
     private V value;
+
+    private StoreRecord() {}
 
     public V getValue(){
         return value;

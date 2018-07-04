@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RecordPolicyTest {
 
-    private long nowInMs = System.currentTimeMillis();
+    private final long nowInMs = System.currentTimeMillis();
 
     @Test
     public void basicValid() {

@@ -17,8 +17,9 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     private final WriterLock writerLock = new WriterLock();
     private final Map<K, StoreRecord<V>> cache = new LinkedHashMap<>();
 
-    private final long expDuration = 1;
-    private final TimeUnit expUnit = TimeUnit.MINUTES;
+    private final long expDuration;
+    private final TimeUnit expUnit;
+    private final RecordPolicy policy;
 
     private final TimeProvider timeProvider;
     private final long maximumSize;
@@ -28,6 +29,16 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     LocalStoreCache(StoreCacheBuilder storeCacheBuilder) {
         this.timeProvider = storeCacheBuilder.timeProvider;
         this.maximumSize = storeCacheBuilder.maximumSize;
+
+        if (storeCacheBuilder.useExpireAfterWrite) {
+            policy = RecordPolicy.ExpireAfterWrite;
+            expDuration = storeCacheBuilder.expireAfterWriteDuration;
+            expUnit = storeCacheBuilder.expireAfterWriteUnit;
+        } else {
+            policy = RecordPolicy.ExpireAfterAccess;
+            expDuration = storeCacheBuilder.expireAfterAccessDuration;
+            expUnit = storeCacheBuilder.expireAfterAccessUnit;
+        }
     }
 
     @Nullable
