@@ -51,12 +51,13 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
 
         if (cache.containsKey(key)) {
             StoreRecord<V> record = cache.get(key);
-            if (RecordPolicy.hasExpired(record, timeProvider.provideTime())) {
+            long now = timeProvider.provideTime();
+            if (RecordPolicy.hasExpired(record, now)) {
                 // present AND expired...so we evict
                 internalInvalidate(key);
             } else {
                 //record is present and NOT expired
-                record.setAccessTime(System.currentTimeMillis());
+                record.setAccessTime(now);
                 returnValue = record.getValue();
             }
         }
@@ -83,7 +84,7 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     }
 
     private StoreRecord<V> internalPut(K key, V value) {
-        StoreRecord<V> record = new StoreRecord(policy, expDuration, expUnit, timeProvider.provideTime(), value);
+        StoreRecord<V> record = new StoreRecord(policy, expDuration, expUnit, value);
         if (count == maximumSize) {
             evictOne();
         }
@@ -125,12 +126,13 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
         writerLock.getWriteLock();
         if (cache.containsKey(key)) {
             StoreRecord<V> record = cache.get(key);
-            if (RecordPolicy.hasExpired(record, timeProvider.provideTime())) {
+            long now = timeProvider.provideTime();
+            if (RecordPolicy.hasExpired(record, now)) {
                 //it's expired, we invalidate
                 internalInvalidate(key);
             } else {
                 //it's valid, we update access time and return
-                record.setAccessTime(System.currentTimeMillis());
+                record.setAccessTime(now);
                 returnValue = record.getValue();
             }
         }
@@ -146,11 +148,12 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
         //do initial internalAsMap to prune expired
         ConcurrentMap<K, V> copy = internalAsMap();
         Iterator<K> iterator = copy.keySet().iterator();
+        long now = timeProvider.provideTime();
         while (iterator.hasNext()) {
             K key = iterator.next();
             StoreRecord<V> record = cache.get(key);
             //prune out any expired entries
-            if (RecordPolicy.hasExpired(record, timeProvider.provideTime())){
+            if (RecordPolicy.hasExpired(record, now)){
                 internalInvalidate(key);
             }
         }

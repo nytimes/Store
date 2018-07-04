@@ -11,7 +11,8 @@ public final class StoreRecord<V> {
     private final TimeUnit timeUnit;
     private final RecordPolicy recordPolicy;
 
-    StoreRecord(RecordPolicy recordPolicy, long timeDuration, TimeUnit timeUnit, long nowMs, V value) {
+    StoreRecord(RecordPolicy recordPolicy, long timeDuration, TimeUnit timeUnit, V value) {
+        long nowMs = System.currentTimeMillis();
         this.recordPolicy = recordPolicy;
         this.timeDuration = timeDuration;
         this.timeUnit = timeUnit;

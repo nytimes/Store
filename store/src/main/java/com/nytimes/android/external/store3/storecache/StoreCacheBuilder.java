@@ -7,8 +7,7 @@ import javax.annotation.Nonnull;
 
 public class StoreCacheBuilder<K, V> {
 
-    static final int UNSET_INT = -1;
-    long maximumSize = UNSET_INT;
+    long maximumSize = 1000L;
     long expireAfterAccessDuration = -1;
     TimeUnit expireAfterAccessUnit = TimeUnit.MINUTES;
     boolean useExpireAfterWrite = true;
