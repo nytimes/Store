@@ -83,8 +83,7 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     }
 
     private StoreRecord<V> internalPut(K key, V value) {
-        StoreRecord<V> record = StoreRecord.create(expDuration, expUnit);
-        record.setValue(value);
+        StoreRecord<V> record = new StoreRecord(policy, expDuration, expUnit, timeProvider.provideTime(), value);
         cache.put(key, record);
         count++;
         return record;

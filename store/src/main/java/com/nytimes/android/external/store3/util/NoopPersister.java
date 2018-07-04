@@ -21,12 +21,12 @@ public class NoopPersister<Raw, Key> implements Persister<Raw, Key>, Clearable<K
     NoopPersister(MemoryPolicy memoryPolicy) {
         if (memoryPolicy.hasAccessPolicy()) {
             networkResponses = StoreCacheBuilder.newBuilder()
-                //.expireAfterAccess(memoryPolicy.getExpireAfterAccess(), memoryPolicy.getExpireAfterTimeUnit())
+                .expireAfterAccess(memoryPolicy.getExpireAfterAccess(), memoryPolicy.getExpireAfterTimeUnit())
                 .build();
 
         } else if (memoryPolicy.hasWritePolicy()) {
             networkResponses = StoreCacheBuilder.newBuilder()
-                //.expireAfterWrite(memoryPolicy.getExpireAfterWrite(), memoryPolicy.getExpireAfterTimeUnit())
+                .expireAfterWrite(memoryPolicy.getExpireAfterWrite(), memoryPolicy.getExpireAfterTimeUnit())
                 .build();
         } else {
             throw new IllegalArgumentException("No expiry policy set on memory-policy.");

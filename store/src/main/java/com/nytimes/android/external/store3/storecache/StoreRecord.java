@@ -6,18 +6,22 @@ public final class StoreRecord<V> {
 
     private long accessTime = -1;
     private long writeTime = -1;
-    private long timeDuration = 1;
-    private TimeUnit timeUnit = TimeUnit.MINUTES;
-    private RecordPolicy recordPolicy = RecordPolicy.ExpireAfterWrite;
-    private V value;
+    private final V value;
+    private final long timeDuration;
+    private final TimeUnit timeUnit;
+    private final RecordPolicy recordPolicy;
 
-    private StoreRecord() {}
+    StoreRecord(RecordPolicy recordPolicy, long timeDuration, TimeUnit timeUnit, long nowMs, V value) {
+        this.recordPolicy = recordPolicy;
+        this.timeDuration = timeDuration;
+        this.timeUnit = timeUnit;
+        this.value = value;
+        setAccessTime(nowMs);
+        setWriteTime(nowMs);
+    }
 
     public V getValue(){
         return value;
-    }
-    public void setValue(V value) {
-        this.value = value;
     }
 
     public long getAccessTime() {
@@ -40,36 +44,12 @@ public final class StoreRecord<V> {
         return timeDuration;
     }
 
-    public void setTimeDuration(long timeDuration) {
-        this.timeDuration = timeDuration;
-    }
-
     public TimeUnit getTimeUnit() {
         return timeUnit;
-    }
-
-    public void setTimeUnit(TimeUnit timeUnit) {
-        this.timeUnit = timeUnit;
     }
 
     public RecordPolicy getRecordPolicy() {
         return recordPolicy;
     }
 
-    public void setRecordPolicy(RecordPolicy recordPolicy) {
-        this.recordPolicy = recordPolicy;
-    }
-
-    public static StoreRecord create(long duration, TimeUnit timeUnit) {
-        return create(duration, timeUnit, System.currentTimeMillis());
-    }
-
-    public static StoreRecord create(long duration, TimeUnit timeUnit, long nowMs) {
-        StoreRecord record = new StoreRecord();
-        record.setAccessTime(nowMs);
-        record.setWriteTime(nowMs);
-        record.setTimeDuration(duration);
-        record.setTimeUnit(timeUnit);
-        return record;
-    }
 }
