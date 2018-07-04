@@ -6,7 +6,6 @@ import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.InternalStore;
 import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.storecache.StoreCache;
-import com.nytimes.android.external.store3.storecache.StoreCacheBuilder;
 import com.nytimes.android.external.store3.util.KeyParser;
 
 import java.util.AbstractMap;
@@ -60,8 +59,9 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         this.parser = parser;
         this.stalePolicy = stalePolicy;
 
-        this.memCache = StoreCacheBuilder.newBuilder().build();
-        this.inFlightRequests = StoreCacheBuilder.newBuilder().build();
+        this.memCache = CacheFactory.createCache(memoryPolicy);
+        this.inFlightRequests = CacheFactory.createInflighter(memoryPolicy);
+
         subject = PublishSubject.create();
     }
 

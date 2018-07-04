@@ -32,6 +32,7 @@ public final class Preconditions {
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
      */
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> T checkNotNull(T reference) {
         if (reference == null) {
             throw new NullPointerException();
@@ -47,6 +48,7 @@ public final class Preconditions {
      * @return the non-null reference that was validated
      * @throws NullPointerException if {@code reference} is null
      */
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     public static <T> T checkNotNull(T reference, String errorMessage) {
         if (reference == null) {
             throw new NullPointerException(errorMessage);

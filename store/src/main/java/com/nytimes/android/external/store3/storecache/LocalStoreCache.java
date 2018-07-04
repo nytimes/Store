@@ -84,9 +84,17 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
 
     private StoreRecord<V> internalPut(K key, V value) {
         StoreRecord<V> record = new StoreRecord(policy, expDuration, expUnit, timeProvider.provideTime(), value);
+        if (count == maximumSize) {
+            evictOne();
+        }
         cache.put(key, record);
         count++;
         return record;
+    }
+
+    private void evictOne() {
+        //do impl
+        System.currentTimeMillis();
     }
 
     private void internalInvalidate(Object key) {

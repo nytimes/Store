@@ -2,17 +2,14 @@ package com.nytimes.android.external.store3.base.impl.room;
 
 import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.Fetcher;
+import com.nytimes.android.external.store3.base.impl.CacheFactory;
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
 import com.nytimes.android.external.store3.base.impl.StalePolicy;
 import com.nytimes.android.external.store3.base.impl.StoreUtil;
 import com.nytimes.android.external.store3.base.room.RoomPersister;
 import com.nytimes.android.external.store3.storecache.StoreCache;
-import com.nytimes.android.external.store3.storecache.StoreCacheBuilder;
-import com.nytimes.android.external.store3.storecache.WriterLock;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 
@@ -34,8 +31,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
     private final RoomPersister<Raw, Parsed, Key> persister;
     private final StoreCache<Key, Observable<Parsed>> memCache;
     private final StalePolicy stalePolicy;
-    private final Map<Key, Observable<Parsed>> inFlightRequests = new HashMap<>();
-    private final WriterLock writerLock = new WriterLock();
+    private final StoreCache<Key, Observable<Parsed>> inFlightRequests;
 
 
      RealStoreRoom(Fetcher<Raw, Key> fetcher,
@@ -56,7 +52,8 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
         this.fetcher = fetcher;
         this.persister = persister;
         this.stalePolicy = stalePolicy;
-        this.memCache = StoreCacheBuilder.newBuilder().build();
+        this.memCache = CacheFactory.createRoomCache(memoryPolicy);
+        this.inFlightRequests = CacheFactory.createRoomInflighter(memoryPolicy);
     }
 
     /**
@@ -153,16 +150,11 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
      */
     @Nullable
     Observable<Parsed> fetchAndPersist(@Nonnull final Key key) {
-        Observable<Parsed> response = null;
-        writerLock.getWriteLock();
-        if (inFlightRequests.containsKey(key)) {
-            response = inFlightRequests.get(key);
-        } else {
-            response = response(key);
-            inFlightRequests.put(key, response);
+        try {
+            return inFlightRequests.get(key, () -> response(key));
+        } catch (ExecutionException e) {
+            return Observable.error(e);
         }
-        writerLock.releaseLock();
-        return response;
     }
 
     @Nonnull
@@ -177,7 +169,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
                     }
                     return Observable.error(throwable);
                 })
-                .doAfterTerminate(() -> invalidateIt(key))
+                .doAfterTerminate(() -> inFlightRequests.invalidate(key))
                 .cache();
     }
 
@@ -204,7 +196,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
 
     @Override
     public void clear(@Nonnull Key key) {
-        invalidateIt(key);
+        inFlightRequests.invalidate(key);
         memCache.invalidate(key);
         StoreUtil.clearPersister(persister(), key);
     }
@@ -228,12 +220,6 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
         if (v instanceof Collection && ((Collection) v).isEmpty()) {
             throw new IllegalStateException("empty result set");
         }
-    }
-
-    void invalidateIt(@Nonnull final Key key) {
-        writerLock.getWriteLock();
-        inFlightRequests.remove(key);
-        writerLock.releaseLock();
     }
 }
 
