@@ -1,17 +1,22 @@
 package com.nytimes.android.external.store3.base.impl;
 
-import com.nytimes.android.external.cache3.Cache;
 import com.nytimes.android.external.store.util.Result;
 import com.nytimes.android.external.store3.annotations.Experimental;
 import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.InternalStore;
 import com.nytimes.android.external.store3.base.Persister;
+import com.nytimes.android.external.store3.storecache.StoreCache;
+import com.nytimes.android.external.store3.storecache.StoreCacheBuilder;
 import com.nytimes.android.external.store3.util.KeyParser;
+
 import java.util.AbstractMap;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -26,12 +31,13 @@ import io.reactivex.subjects.PublishSubject;
  *                 Example usage:  @link
  */
 final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
-    Cache<Key, Single<Parsed>> inFlightRequests;
-    Cache<Key, Maybe<Parsed>> memCache;
+
     StalePolicy stalePolicy;
     Persister<Raw, Key> persister;
     KeyParser<Key, Raw, Parsed> parser;
 
+    private final StoreCache<Key, Maybe<Parsed>> memCache;
+    private final StoreCache<Key, Single<Parsed>> inFlightRequests;
     private final PublishSubject<Key> refreshSubject = PublishSubject.create();
     private Fetcher<Raw, Key> fetcher;
     private PublishSubject<AbstractMap.SimpleEntry<Key, Parsed>> subject;
@@ -54,9 +60,8 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         this.parser = parser;
         this.stalePolicy = stalePolicy;
 
-        this.memCache = CacheFactory.createCache(memoryPolicy);
-        this.inFlightRequests = CacheFactory.createInflighter(memoryPolicy);
-
+        this.memCache = StoreCacheBuilder.newBuilder().build();
+        this.inFlightRequests = StoreCacheBuilder.newBuilder().build();
         subject = PublishSubject.create();
     }
 
@@ -284,18 +289,19 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         clear(key);
     }
 
-
     @Override
     public void clear() {
-        for (Key cachedKey : memCache.asMap().keySet()) {
-            clear(cachedKey);
+
+        Iterator<Key> iterator = memCache.asMap().keySet().iterator();
+        while (iterator.hasNext()) {
+            clear(iterator.next());
         }
     }
 
     @Override
     public void clear(@Nonnull Key key) {
-        inFlightRequests.invalidate(key);
         memCache.invalidate(key);
+        inFlightRequests.invalidate(key);
         StoreUtil.clearPersister(persister(), key);
         notifyRefresh(key);
     }
