@@ -52,5 +52,4 @@ public class StoreCacheBuilder<K, V> {
     public <K1 extends K, V1 extends V> StoreCache<K1, V1> build() {
         return new LocalStoreCache(this);
     }
-
 }

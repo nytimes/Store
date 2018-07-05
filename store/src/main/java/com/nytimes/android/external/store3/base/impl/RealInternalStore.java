@@ -7,15 +7,11 @@ import com.nytimes.android.external.store3.base.InternalStore;
 import com.nytimes.android.external.store3.base.Persister;
 import com.nytimes.android.external.store3.storecache.StoreCache;
 import com.nytimes.android.external.store3.util.KeyParser;
-
 import java.util.AbstractMap;
-import java.util.Iterator;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -289,19 +285,18 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         clear(key);
     }
 
+
     @Override
     public void clear() {
-
-        Iterator<Key> iterator = memCache.asMap().keySet().iterator();
-        while (iterator.hasNext()) {
-            clear(iterator.next());
+        for (Key cachedKey : memCache.asMap().keySet()) {
+            clear(cachedKey);
         }
     }
 
     @Override
     public void clear(@Nonnull Key key) {
-        memCache.invalidate(key);
         inFlightRequests.invalidate(key);
+        memCache.invalidate(key);
         StoreUtil.clearPersister(persister(), key);
         notifyRefresh(key);
     }

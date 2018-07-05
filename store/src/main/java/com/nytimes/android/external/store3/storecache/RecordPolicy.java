@@ -9,7 +9,6 @@ public enum RecordPolicy {
     public static boolean hasExpired(StoreRecord storeRecord, long nowInMs) {
 
         long expireTime;
-
         if (storeRecord.getRecordPolicy() == ExpireAfterWrite) {
             expireTime = storeRecord.getWriteTime();
         } else {
@@ -17,8 +16,6 @@ public enum RecordPolicy {
         }
         expireTime = expireTime + TimeUnit.MILLISECONDS
                 .convert(storeRecord.getTimeDuration(), storeRecord.getTimeUnit());
-
         return (nowInMs > expireTime);
     }
-
 }

@@ -7,7 +7,6 @@ import java.util.concurrent.ExecutionException;
 import javax.annotation.Nullable;
 
 public interface StoreCache<K, V> {
-
     /*
      * "if cached, return; otherwise create, cache and return" pattern.
      */
@@ -42,5 +41,4 @@ public interface StoreCache<K, V> {
      * the map directly affect the cache.
      */
     ConcurrentMap<K, V> asMap();
-
 }
