@@ -20,16 +20,12 @@ public class WriterLock {
         synchronized (mutex) {
             if (givenLocks == 0) {
                 return;
-            }
-
-            if (givenLocks == -1) {
+            } else if (givenLocks == -1) {
                 givenLocks = 0;
             } else {
                 givenLocks--;
             }
-
             mutex.notifyAll();
         }
     }
-
 }

@@ -10,17 +10,16 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 class LocalStoreCache<K, V> implements StoreCache<K, V> {
 
     private final WriterLock writerLock = new WriterLock();
     private final Map<K, StoreRecord<V>> cache = new LinkedHashMap<>();
-
     private final long expDuration;
     private final TimeUnit expUnit;
     private final RecordPolicy policy;
-
     private final TimeProvider timeProvider;
     private final long maximumSize;
 
@@ -45,32 +44,16 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     @Override
     public V get(K key, Callable<? extends V> valueLoader) throws ExecutionException {
 
-        V returnValue = null;
-
+        V returnValue;
         writerLock.getWriteLock();
-
-        if (cache.containsKey(key)) {
-            StoreRecord<V> record = cache.get(key);
-            long now = timeProvider.provideTime();
-            if (RecordPolicy.hasExpired(record, now)) {
-                // present AND expired...so we evict
-                internalInvalidate(key);
-            } else {
-                //record is present and NOT expired
-                record.setAccessTime(now);
-                returnValue = record.getValue();
-            }
-        }
-
+        returnValue = internalGetIfPresent(key);
         //not found in cache, use provided
         if (returnValue == null) {
-            StoreRecord<V> record = null;
             try {
-                record = internalPut(key, valueLoader.call());
+                returnValue = internalPut(key, valueLoader.call()).getValue();
             } catch (Exception exception) {
                 throw new ExecutionException(exception);
             }
-            returnValue = record.getValue();
         }
         writerLock.releaseLock();
         return returnValue;
@@ -121,30 +104,47 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     @Nullable
     @Override
     public V getIfPresent(Object key) {
-        V returnValue = null;
-
+        V returnValue;
         writerLock.getWriteLock();
-        if (cache.containsKey(key)) {
-            StoreRecord<V> record = cache.get(key);
-            long now = timeProvider.provideTime();
-            if (RecordPolicy.hasExpired(record, now)) {
-                //it's expired, we invalidate
-                internalInvalidate(key);
-            } else {
-                //it's valid, we update access time and return
-                record.setAccessTime(now);
-                returnValue = record.getValue();
-            }
-        }
+        returnValue = internalGetIfPresent(key);
         writerLock.releaseLock();
         return returnValue;
     }
 
+    @Nullable
+    private V internalGetIfPresent(Object key) {
+
+        V returnValue = null;
+        if (!cache.containsKey(key)) {
+            return returnValue;
+        }
+
+        StoreRecord<V> record = cache.get(key);
+        long now = timeProvider.provideTime();
+        if (RecordPolicy.hasExpired(record, now)) {
+            //it's expired, we invalidate
+            internalInvalidate(key);
+        } else {
+            //it's valid, we update access time and return
+            record.setAccessTime(now);
+            returnValue = record.getValue();
+        }
+        return returnValue;
+    }
+
     @Override
+    @Nonnull
     public ConcurrentMap<K, V> asMap() {
         ConcurrentMap<K, V> map;
-
         writerLock.getWriteLock();
+        pruneExpiredEntries();
+        //get pruned map and return that
+        map = internalAsMap();
+        writerLock.releaseLock();
+        return map;
+    }
+
+    private void pruneExpiredEntries() {
         //do initial internalAsMap to prune expired
         ConcurrentMap<K, V> copy = internalAsMap();
         Iterator<K> iterator = copy.keySet().iterator();
@@ -157,12 +157,9 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
                 internalInvalidate(key);
             }
         }
-        //get pruned map and return that
-        map = internalAsMap();
-        writerLock.releaseLock();
-        return map;
     }
 
+    @Nonnull
     private ConcurrentMap<K, V> internalAsMap() {
         ConcurrentMap<K, V> map = new ConcurrentHashMap();
         Iterator<K> iterator = cache.keySet().iterator();
