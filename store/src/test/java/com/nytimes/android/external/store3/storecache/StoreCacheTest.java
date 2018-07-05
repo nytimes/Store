@@ -128,7 +128,7 @@ public class StoreCacheTest {
                             return System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.SECONDS);
                         } else if (callCount == 1) {
                             callCount++;
-                            return System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES);
+                            return System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(65, TimeUnit.SECONDS);
                         } else {
                             return System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES);
                         }
