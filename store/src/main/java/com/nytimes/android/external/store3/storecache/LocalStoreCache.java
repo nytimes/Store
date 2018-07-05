@@ -77,8 +77,22 @@ class LocalStoreCache<K, V> implements StoreCache<K, V> {
     }
 
     private void evictOne() {
-        //do impl
-        System.currentTimeMillis();
+        K oldestKey = null;
+        StoreRecord oldest = null;
+
+        Iterator<K> iterator = internalAsMap().keySet().iterator();
+        while (iterator.hasNext()) {
+            K key = iterator.next();
+            StoreRecord record = cache.get(key);
+            if (oldest == null) {
+                oldestKey = key;
+                oldest = record;
+            } else if (record.getExpireTime() <= oldest.getExpireTime()) {
+                oldestKey = key;
+                oldest = record;
+            }
+        }
+        internalInvalidate(oldestKey);
     }
 
     private void internalInvalidate(Object key) {

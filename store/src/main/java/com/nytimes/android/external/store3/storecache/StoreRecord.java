@@ -53,4 +53,11 @@ public final class StoreRecord<V> {
         return recordPolicy;
     }
 
+    public long getExpireTime() {
+        if (recordPolicy == RecordPolicy.ExpireAfterWrite) {
+            return  writeTime + TimeUnit.MILLISECONDS.convert(timeDuration, timeUnit);
+        } else {
+            return  accessTime + TimeUnit.MILLISECONDS.convert(timeDuration, timeUnit);
+        }
+    }
 }
