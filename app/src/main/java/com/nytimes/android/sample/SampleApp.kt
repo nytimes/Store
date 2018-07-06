@@ -30,11 +30,12 @@ class SampleApp : Application() {
     var nonPersistedStore: Store<RedditData, BarCode>? = null
     var  persistedStore: Store<RedditData, BarCode>? =null
     private var persister: Persister<BufferedSource, BarCode>? =null
-    private val sampleRoomStore=SampleRoomStore(this)
+    lateinit var sampleRoomStore:SampleRoomStore
 
     override fun onCreate() {
         super.onCreate()
         appContext = this
+        sampleRoomStore = SampleRoomStore(this)
         initPersister();
         nonPersistedStore = provideRedditStore();
         persistedStore=providePersistedRedditStore();
