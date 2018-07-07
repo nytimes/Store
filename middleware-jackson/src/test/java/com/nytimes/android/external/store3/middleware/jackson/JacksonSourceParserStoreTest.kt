@@ -3,33 +3,24 @@ package com.nytimes.android.external.store3.middleware.jackson
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nytimes.android.external.store3.base.Fetcher
-import com.nytimes.android.external.store3.base.Parser
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
-import com.nytimes.android.external.store3.base.impl.Store
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
-import com.nytimes.android.external.store3.middleware.jackson.data.Foo
-
+import io.reactivex.Maybe
+import io.reactivex.Single
+import okio.BufferedSource
+import okio.Okio
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
 import org.mockito.Mock
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
-
 import java.io.ByteArrayInputStream
 import java.nio.charset.Charset
-
-import io.reactivex.Maybe
-import io.reactivex.Single
-import okio.BufferedSource
-import okio.Okio
-
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
 
 class JacksonSourceParserStoreTest {
     @Rule
