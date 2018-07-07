@@ -38,11 +38,11 @@ class SampleApp : Application() {
         sampleRoomStore = SampleRoomStore(this)
         initPersister();
         nonPersistedStore = provideRedditStore();
-        persistedStore=providePersistedRedditStore();
-        RoomSample()
+        persistedStore = providePersistedRedditStore();
+        //RoomSample()
     }
 
-    private fun RoomSample() {
+    /*private fun RoomSample() {
         var foo = sampleRoomStore.store.get("")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -57,7 +57,7 @@ class SampleApp : Application() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ strings1 -> val success = strings1 != null }) { throwable -> throwable.stackTrace }
-    }
+    }*/
 
     private fun initPersister() {
         try {

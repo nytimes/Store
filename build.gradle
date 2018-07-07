@@ -2,7 +2,7 @@ apply from: 'buildsystem/dependencies.gradle'
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.2.41'
+    ext.kotlin_version = '1.2.51'
     repositories {
         mavenLocal()
         maven {
@@ -23,7 +23,7 @@ buildscript {
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha16'
+        classpath 'com.android.tools.build:gradle:3.2.0-beta02'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.11'
