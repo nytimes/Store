@@ -1,4 +1,4 @@
-package com.nytimes.android.sample.activity
+package com.nytimes.android.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,11 +10,10 @@ import android.widget.Toast
 import android.widget.Toast.makeText
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.Store
-import com.nytimes.android.sample.R
-import com.nytimes.android.sample.SampleApp
 import com.nytimes.android.sample.data.model.Post
 import com.nytimes.android.sample.data.model.RedditData
 import com.nytimes.android.sample.reddit.PostAdapter
+import com.squareup.moshi.Moshi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -25,6 +24,7 @@ class PersistingStoreActivity : AppCompatActivity() {
 
     private var postAdapter: PostAdapter? = null
     private var persistedStore: Store<RedditData, BarCode>? = null
+    private var moshi: Moshi? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +37,8 @@ class PersistingStoreActivity : AppCompatActivity() {
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         postRecyclerView!!.layoutManager = layoutManager
         postRecyclerView!!.adapter = postAdapter
-    }
-
-    private fun initStore() {
-        if (this.persistedStore == null) {
-            this.persistedStore = (applicationContext as SampleApp).persistedStore
-        }
+        persistedStore = (applicationContext as SampleApp).persistedStore
+        moshi = (applicationContext as SampleApp).moshi
     }
 
     fun loadPosts() {
@@ -70,13 +66,12 @@ class PersistingStoreActivity : AppCompatActivity() {
     }
 
     private fun sanitizeData(redditData: RedditData): Observable<Post> {
-        return Observable.fromIterable(redditData.data().children())
-                .map({ it.data() })
+        return Observable.fromIterable(redditData.data.children)
+                .map({ it.data })
     }
 
     override fun onResume() {
         super.onResume()
-        initStore()
         loadPosts()
     }
 }

@@ -2,34 +2,30 @@ package com.nytimes.android.sample
 
 import android.app.Application
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.nytimes.android.external.fs3.SourcePersisterFactory
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy
 import com.nytimes.android.external.store3.base.impl.Store
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
-import com.nytimes.android.external.store3.middleware.GsonParserFactory
-import com.nytimes.android.sample.data.model.GsonAdaptersModel
+import com.nytimes.android.external.store3.middleware.moshi.MoshiParserFactory
 import com.nytimes.android.sample.data.model.RedditData
 import com.nytimes.android.sample.data.remote.Api
-import io.reactivex.Observable
+import com.squareup.moshi.Moshi
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import okio.BufferedSource
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class SampleApp : Application() {
 
     var nonPersistedStore: Store<RedditData, BarCode>? = null
-    var  persistedStore: Store<RedditData, BarCode>? =null
-    private var persister: Persister<BufferedSource, BarCode>? =null
+    var  persistedStore: Store<RedditData, BarCode>? = null
+    val moshi = Moshi.Builder().build()
+    private var persister: Persister<BufferedSource, BarCode>? = null
     lateinit var sampleRoomStore:SampleRoomStore
 
     override fun onCreate() {
@@ -92,7 +88,7 @@ class SampleApp : Application() {
         return StoreBuilder.parsedWithKey<BarCode, BufferedSource, RedditData>()
                 .fetcher({ this.fetcher(it) })
                 .persister(newPersister())
-                .parser(GsonParserFactory.createSourceParser(provideGson(), RedditData::class.java))
+                .parser(MoshiParserFactory.createSourceParser(moshi, RedditData::class.java))
                 .open()
     }
 
@@ -115,18 +111,13 @@ class SampleApp : Application() {
     private fun provideRetrofit(): Api {
         return Retrofit.Builder()
                 .baseUrl("http://reddit.com/")
-                .addConverterFactory(GsonConverterFactory.create(provideGson()))
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .validateEagerly(BuildConfig.DEBUG)  // Fail early: check Retrofit configuration at creation time in Debug build.
                 .build()
                 .create(Api::class.java)
     }
 
-    internal fun provideGson(): Gson {
-        return GsonBuilder()
-                .registerTypeAdapterFactory(GsonAdaptersModel())
-                .create()
-    }
 
     companion object {
         var appContext: Context? = null
