@@ -1,3 +1,14 @@
+buildscript {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
+
 apply plugin: 'java'
 
 group = GROUP
@@ -17,17 +28,26 @@ dependencies {
     testImplementation libraries.gson
     testImplementation project(path: ':middleware')
     testCompileOnly libraries.jsr305
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
-buildscript {
-    tasks.withType(JavaCompile) {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
+
 
 apply from: rootProject.file("gradle/maven-push.gradle")
 apply from: rootProject.file("gradle/checkstyle.gradle")
 apply from: rootProject.file("gradle/pmd.gradle")
 
 
+repositories {
+    mavenCentral()
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
