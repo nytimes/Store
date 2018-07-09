@@ -31,7 +31,7 @@ class RecordPersisterTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        sourcePersister = RecordPersister(fileSystem, 1L, TimeUnit.DAYS)
+        sourcePersister = RecordPersister(fileSystem!!, 1L, TimeUnit.DAYS)
     }
 
     @Test

@@ -35,7 +35,7 @@ class SourcePersisterTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        sourcePersister = SourcePersister(fileSystem)
+        sourcePersister = SourcePersister(fileSystem!!)
     }
 
     @Test
