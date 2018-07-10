@@ -19,7 +19,7 @@ buildscript {
     }
 
     rootProject.ext.versions = [
-        kotlin: '1.2.21'
+            kotlin: '1.2.51'
     ]
 
     dependencies {
