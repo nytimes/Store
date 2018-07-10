@@ -25,9 +25,9 @@ class MoshiSourceParserTest {
     @JvmField
     var expectedException = ExpectedException.none()
     @Mock
-    internal var fetcher: Fetcher<BufferedSource, BarCode>? = null
+    lateinit var fetcher: Fetcher<BufferedSource, BarCode>
     @Mock
-    internal var persister: Persister<BufferedSource, BarCode>? = null
+    lateinit var persister: Persister<BufferedSource, BarCode>
     private val barCode = BarCode("value", KEY)
 
     @Before
@@ -38,14 +38,14 @@ class MoshiSourceParserTest {
         val bufferedSource = source(sourceString)
         assertNotNull(bufferedSource)
 
-        `when`(fetcher!!.fetch(barCode))
+        `when`(fetcher.fetch(barCode))
                 .thenReturn(Single.just(bufferedSource))
 
-        `when`(persister!!.read(barCode))
+        `when`(persister.read(barCode))
                 .thenReturn(Maybe.empty())
                 .thenReturn(Maybe.just(bufferedSource))
 
-        `when`(persister!!.write(barCode, bufferedSource))
+        `when`(persister.write(barCode, bufferedSource))
                 .thenReturn(Single.just(true))
     }
 
@@ -56,8 +56,8 @@ class MoshiSourceParserTest {
         val parser = MoshiParserFactory.createSourceParser<Foo>(Foo::class.java)
 
         val store = ParsingStoreBuilder.builder<BufferedSource, Foo>()
-                .persister(persister!!)
-                .fetcher(fetcher!!)
+                .persister(persister)
+                .fetcher(fetcher)
                 .parser(parser)
                 .open()
 

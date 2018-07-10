@@ -21,9 +21,9 @@ class MoshiStringParserStoreTest {
     @JvmField
     var expectedException = ExpectedException.none()
     @Mock
-    internal var fetcher: Fetcher<String, BarCode>? = null
+    lateinit var fetcher: Fetcher<String, BarCode>
     @Mock
-    internal var persister: Persister<String, BarCode>? = null
+    lateinit var persister: Persister<String, BarCode>
     private val barCode = BarCode("value", KEY)
 
     @Before
@@ -31,23 +31,23 @@ class MoshiStringParserStoreTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        `when`(fetcher!!.fetch(barCode))
+        `when`(fetcher.fetch(barCode))
                 .thenReturn(Single.just(source))
 
-        `when`(persister!!.read(barCode))
+        `when`(persister.read(barCode))
                 .thenReturn(Maybe.empty())
                 .thenReturn(Maybe.just(source))
 
-        `when`(persister!!.write(barCode, source))
+        `when`(persister.write(barCode, source))
                 .thenReturn(Single.just(true))
     }
 
     @Test
     fun testMoshiString() {
         val store = ParsingStoreBuilder.builder<String, Foo>()
-                .persister(persister!!)
-                .fetcher(fetcher!!)
-                .parser(MoshiParserFactory.createStringParser(Foo::class.java!!))
+                .persister(persister)
+                .fetcher(fetcher)
+                .parser(MoshiParserFactory.createStringParser(Foo::class.java))
                 .open()
 
         val result = store.get(barCode).blockingGet()
@@ -64,7 +64,7 @@ class MoshiStringParserStoreTest {
     @Test
     fun testNullMoshi() {
         expectedException.expect(NullPointerException::class.java)
-        MoshiParserFactory.createStringParser<Any>(null!!, Foo::class.java!!)
+        MoshiParserFactory.createStringParser<Any>(null!!, Foo::class.java)
     }
 
     @Test
