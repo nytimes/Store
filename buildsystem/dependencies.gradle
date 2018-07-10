@@ -32,13 +32,13 @@ ext.versions = [
         rxAndroid2           : '2.0.1',
 
         // Others.
-        retrofit             : '2.2.0',
+        retrofit             : '2.4.0',
         dagger               : '2.9',
         jsr305               : '3.0.1',
         okHttp               : '2.7.5',
         okio                 : '1.13.0',
         gson                 : '2.8.1',
-        moshi                : '1.5.0',
+        moshi                : '1.6.0',
         jackson              : '2.8.8',
         guava                : '19.0',
         javapoet             : '1.8.0',
@@ -87,6 +87,7 @@ ext.libraries = [
         // Others.
         retrofit                : "com.squareup.retrofit2:retrofit:$versions.retrofit",
         retrofitGsonConverter   : "com.squareup.retrofit2:converter-gson:$versions.retrofit",
+        retrofitMoshiConverter  : "com.squareup.retrofit2:converter-moshi:$versions.retrofit",
         retrofitRx2             : "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit",
         dagger                  : "com.google.dagger:dagger:$versions.dagger",
         daggerCompiler          : "com.google.dagger:dagger-compiler:$versions.dagger",
@@ -95,6 +96,7 @@ ext.libraries = [
         okio                    : "com.squareup.okio:okio:$versions.okio",
         gson                    : "com.google.code.gson:gson:$versions.gson",
         moshi                   : "com.squareup.moshi:moshi:$versions.moshi",
+        moshiCodegen            : "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi",
         jacksonCore             : "com.fasterxml.jackson.core:jackson-core:$versions.jackson",
         jacksonDatabind         : "com.fasterxml.jackson.core:jackson-databind:$versions.jackson",
         guava                   : "com.google.guava:guava:$versions.guava",
