@@ -28,9 +28,9 @@ import org.mockito.Mockito.`when`
 
 class GenericParserStoreTest {
     @Mock
-    internal var fetcher: Fetcher<BufferedSource, BarCode>? = null
+    lateinit var fetcher: Fetcher<BufferedSource, BarCode>
     @Mock
-    internal var persister: Persister<BufferedSource, BarCode>? = null
+    lateinit var persister: Persister<BufferedSource, BarCode>
     private val barCode = BarCode("value", KEY)
 
     @Test
@@ -40,8 +40,8 @@ class GenericParserStoreTest {
         val parser = GsonParserFactory.createSourceParser<Foo>(Gson(), Foo::class.java)
 
         val simpleStore = StoreBuilder.parsedWithKey<BarCode, BufferedSource, Foo>()
-                .persister(persister!!)
-                .fetcher(fetcher!!)
+                .persister(persister)
+                .fetcher(fetcher)
                 .parser(parser)
                 .open()
 
@@ -53,14 +53,14 @@ class GenericParserStoreTest {
 
         val source = source(sourceData)
         val value = Single.just(source)
-        `when`(fetcher!!.fetch(barCode))
+        `when`(fetcher.fetch(barCode))
                 .thenReturn(value)
 
-        `when`(persister!!.read(barCode))
+        `when`(persister.read(barCode))
                 .thenReturn(Maybe.empty())
                 .thenReturn(value.toMaybe())
 
-        `when`(persister!!.write(barCode, source))
+        `when`(persister.write(barCode, source))
                 .thenReturn(Single.just(true))
 
         var result = simpleStore.get(barCode).blockingGet()

@@ -19,7 +19,7 @@ class GsonParserFactoryTest {
     var expectedException = ExpectedException.none()
 
     @Mock
-    internal var type: Type? = null
+    lateinit var type: Type
     private val gson = Gson()
 
     @Before
@@ -30,9 +30,9 @@ class GsonParserFactoryTest {
 
     @Test
     fun shouldCreateParsersProperly() {
-        GsonParserFactory.createReaderParser<Any>(gson, type!!)
-        GsonParserFactory.createSourceParser<Any>(gson, type!!)
-        GsonParserFactory.createStringParser<Any>(gson, type!!)
+        GsonParserFactory.createReaderParser<Any>(gson, type)
+        GsonParserFactory.createSourceParser<Any>(gson, type)
+        GsonParserFactory.createStringParser<Any>(gson, type)
     }
 
     @Test
@@ -44,7 +44,7 @@ class GsonParserFactoryTest {
     @Test
     fun shouldThrowExceptionWhenCreatingReaderWithNullGson() {
         expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createReaderParser<Any>(null!!, type!!)
+        GsonParserFactory.createReaderParser<Any>(null!!, type)
     }
 
     @Test
@@ -56,7 +56,7 @@ class GsonParserFactoryTest {
     @Test
     fun shouldThrowExceptionWhenCreatingSourceWithNullGson() {
         expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createSourceParser<Any>(null!!, type!!)
+        GsonParserFactory.createSourceParser<Any>(null!!, type)
     }
 
     @Test
@@ -68,6 +68,6 @@ class GsonParserFactoryTest {
     @Test
     fun shouldThrowExceptionWhenCreatingStringWithNullGson() {
         expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createStringParser<Any>(null!!, type!!)
+        GsonParserFactory.createStringParser<Any>(null!!, type)
     }
 }
