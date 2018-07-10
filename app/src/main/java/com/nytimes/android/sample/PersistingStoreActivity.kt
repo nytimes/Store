@@ -10,6 +10,7 @@ import android.widget.Toast
 import android.widget.Toast.makeText
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.Store
+import com.nytimes.android.sample.R.id.postRecyclerView
 import com.nytimes.android.sample.data.model.Post
 import com.nytimes.android.sample.data.model.RedditData
 import com.nytimes.android.sample.reddit.PostAdapter
@@ -22,9 +23,9 @@ import kotlinx.android.synthetic.main.activity_store.*
 
 class PersistingStoreActivity : AppCompatActivity() {
 
-    private var postAdapter: PostAdapter? = null
-    private var persistedStore: Store<RedditData, BarCode>? = null
-    private var moshi: Moshi? = null
+    lateinit var postAdapter: PostAdapter
+    lateinit var persistedStore: Store<RedditData, BarCode>
+    lateinit var moshi: Moshi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +36,8 @@ class PersistingStoreActivity : AppCompatActivity() {
         postAdapter = PostAdapter()
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
-        postRecyclerView!!.layoutManager = layoutManager
-        postRecyclerView!!.adapter = postAdapter
+        postRecyclerView.layoutManager = layoutManager
+        postRecyclerView.adapter = postAdapter
         persistedStore = (applicationContext as SampleApp).persistedStore
         moshi = (applicationContext as SampleApp).moshi
     }
@@ -48,7 +49,7 @@ class PersistingStoreActivity : AppCompatActivity() {
         First call to get(awwRequest) will use the network, then save response in the in-memory
         cache. Subsequent calls will retrieve the cached version of the data.
          */
-        this.persistedStore!!
+        this.persistedStore
                 .get(awwRequest)
                 .flatMapObservable { sanitizeData(it) }
                 .toList()
@@ -58,9 +59,9 @@ class PersistingStoreActivity : AppCompatActivity() {
     }
 
     private fun showPosts(posts: List<Post>) {
-        postAdapter!!.setPosts(posts)
+        postAdapter.setPosts(posts)
         makeText(this@PersistingStoreActivity,
-                "Loaded " + posts.size + " posts",
+                "Loaded ${posts.size} posts",
                 Toast.LENGTH_SHORT)
                 .show()
     }

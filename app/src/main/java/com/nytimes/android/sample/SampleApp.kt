@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit
 
 class SampleApp : Application() {
 
-    var nonPersistedStore: Store<RedditData, BarCode>? = null
-    var  persistedStore: Store<RedditData, BarCode>? = null
+    lateinit var nonPersistedStore: Store<RedditData, BarCode>
+    lateinit var persistedStore: Store<RedditData, BarCode>
     val moshi = Moshi.Builder().build()
-    private var persister: Persister<BufferedSource, BarCode>? = null
+    lateinit var persister: Persister<BufferedSource, BarCode>
     lateinit var sampleRoomStore:SampleRoomStore
 
     override fun onCreate() {
