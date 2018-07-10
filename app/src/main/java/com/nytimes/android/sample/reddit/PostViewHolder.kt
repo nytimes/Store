@@ -12,16 +12,13 @@ class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun onBind(article: Post) {
         itemView.title!!.text = article.title
-        article.nestedThumbnail()?.let { showImage(article) }
+        article.nestedThumbnail()?.url?.let { showImage(it) }
     }
 
-    private fun showImage(article: Post) {
-        val nestedImage = article.nestedThumbnail()
-        nestedImage?.url?.let {
-            Picasso.with(itemView.context)
-                    .load(it)
-                    .placeholder(R.color.gray80)
-                    .into(itemView.thumbnail)
-        }
+    private fun showImage(url: String) {
+        Picasso.with(itemView.context)
+                .load(url)
+                .placeholder(R.color.gray80)
+                .into(itemView.thumbnail)
     }
 }
