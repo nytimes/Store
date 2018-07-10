@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -43,16 +44,18 @@ dependencies {
     implementation libraries.supportCardView
     implementation libraries.supportDesign
     implementation libraries.retrofit
-    implementation libraries.retrofitGsonConverter
+
     implementation libraries.retrofitRx2
     implementation libraries.picasso
     implementation libraries.guava
     annotationProcessor libraries.immutablesValue // <-- for annotation processor
-    compileOnly libraries.immutablesValue // <-- for annotation API
-    compileOnly libraries.immutablesGson // for annotations
+    implementation libraries.moshi
+    implementation libraries.retrofitMoshiConverter
+    kapt(libraries.moshiCodegen)
     implementation project(':store')
     implementation project(':cache')
     implementation project(':middleware')
+    implementation project(':middleware-moshi')
     implementation project(':filesystem')
     implementation libraries.rxAndroid2
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
