@@ -58,7 +58,7 @@ dependencies {
     implementation project(':middleware-moshi')
     implementation project(':filesystem')
     implementation libraries.rxAndroid2
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"

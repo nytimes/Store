@@ -22,7 +22,7 @@ dependencies {
     compileOnly libraries.javax
     testImplementation libraries.mockito
     testImplementation libraries.junit
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 apply from: rootProject.file("gradle/maven-push.gradle")
