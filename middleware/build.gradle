@@ -26,7 +26,7 @@ dependencies {
     testImplementation libraries.assertJ
     testImplementation libraries.junit
     testImplementation libraries.guava
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 apply from: rootProject.file("gradle/maven-push.gradle")
