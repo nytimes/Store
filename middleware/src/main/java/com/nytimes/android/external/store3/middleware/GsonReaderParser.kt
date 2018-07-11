@@ -12,7 +12,5 @@ class GsonReaderParser<Parsed> @Inject
 constructor(private val gson: Gson, private val type: Type) : Parser<Reader, Parsed> {
 
     @Throws(ParserException::class)
-    override fun apply(@NonNull reader: Reader): Parsed {
-        return gson.fromJson(reader, type)
-    }
+    override fun apply(@NonNull reader: Reader): Parsed = gson.fromJson(reader, type)
 }

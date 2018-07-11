@@ -14,8 +14,6 @@ object GsonTransformerFactory {
      * objects of the specified type to JSON using the provided [Gson] instance.
      */
     @Experimental
-    fun <Parsed> createObjectToSourceTransformer(gson: Gson): ObjectToSourceTransformer<Parsed> {
-        return ObjectToSourceTransformer(GsonBufferedSourceAdapter(gson))
-    }
+    fun <Parsed> createObjectToSourceTransformer(gson: Gson): ObjectToSourceTransformer<Parsed> = ObjectToSourceTransformer(GsonBufferedSourceAdapter(gson))
 
 }

@@ -11,7 +11,5 @@ class GsonStringParser<Parsed> @Inject
 constructor(private val gson: Gson, private val type: Type) : Parser<String, Parsed> {
 
     @Throws(ParserException::class)
-    override fun apply(@NonNull s: String): Parsed? {
-        return gson.fromJson<Parsed>(s, type)
-    }
+    override fun apply(@NonNull s: String): Parsed? = gson.fromJson<Parsed>(s, type)
 }
