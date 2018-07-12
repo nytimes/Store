@@ -67,8 +67,6 @@ class FileSystemRecordPersisterTest {
         inOrder.verify<FileSystem>(fileSystem).read(resolvedPath)
 
         assertThat(source).isEqualTo(bufferedSource)
-
-
     }
 
     @Test
@@ -94,6 +92,4 @@ class FileSystemRecordPersisterTest {
 
         assertThat(fileSystemPersister.getRecordState(simple)).isEqualTo(RecordState.MISSING)
     }
-
-
 }

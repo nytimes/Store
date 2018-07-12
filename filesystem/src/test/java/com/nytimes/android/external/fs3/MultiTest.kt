@@ -55,10 +55,8 @@ class MultiTest {
 
     companion object {
 
-        private val fileData = ImmutableMap.builder<String, List<String>>()
-                .put("/foo/bar.txt", asList("sfvSFv", "AsfgasFgae", "szfvzsfbzdsfb"))
-                .put("/foo/bar/baz.xyz", asList("sasffvSFv", "AsfgsdvzsfbvasFgae", "szfvzsfszfvzsvbzdsfb"))
-                .build()
+        private val fileData: Map<String, List<String>> = mapOf("/foo/bar.txt" to listOf("sfvSFv", "AsfgasFgae", "szfvzsfbzdsfb"),
+                "/foo/bar/baz.xyz" to listOf("sasffvSFv", "AsfgsdvzsfbvasFgae", "szfvzsfszfvzsvbzdsfb"))
 
         private fun source(data: String): BufferedSource {
             return Okio.buffer(Okio.source(ByteArrayInputStream(data.toByteArray(UTF_8))))
