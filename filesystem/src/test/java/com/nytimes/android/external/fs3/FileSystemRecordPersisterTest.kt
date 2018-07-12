@@ -1,7 +1,7 @@
 package com.nytimes.android.external.fs3
 
 import com.nytimes.android.external.fs3.filesystem.FileSystem
-import com.nytimes.android.external.store3.base.Persister
+import com.nytimes.android.external.store3.base.RecordState
 import com.nytimes.android.external.store3.base.impl.BarCode
 import okio.BufferedSource
 import org.assertj.core.api.Assertions.assertThat
@@ -13,8 +13,9 @@ import org.mockito.Mockito.inOrder
 import org.mockito.MockitoAnnotations
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
-class FilePersisterTest {
+class FileSystemRecordPersisterTest {
 
     @Mock
     lateinit var fileSystem: FileSystem
@@ -23,12 +24,14 @@ class FilePersisterTest {
 
     private val simple = BarCode("type", "key")
     private val resolvedPath = BarCodePathResolver().resolve(simple)
-    lateinit var fileSystemPersister: Persister<BufferedSource, BarCode>
+    lateinit var fileSystemPersister: FileSystemRecordPersister<BarCode>
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        fileSystemPersister = FileSystemPersister.create(fileSystem, BarCodePathResolver())
+        fileSystemPersister = FileSystemRecordPersister.create(fileSystem,
+                BarCodePathResolver(),
+                1, TimeUnit.DAYS)
     }
 
     @Test
@@ -64,5 +67,33 @@ class FilePersisterTest {
         inOrder.verify<FileSystem>(fileSystem).read(resolvedPath)
 
         assertThat(source).isEqualTo(bufferedSource)
+
+
     }
+
+    @Test
+    fun freshTest() {
+        `when`(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
+                .thenReturn(RecordState.FRESH)
+
+        assertThat(fileSystemPersister.getRecordState(simple)).isEqualTo(RecordState.FRESH)
+    }
+
+    @Test
+    fun staleTest() {
+        `when`(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
+                .thenReturn(RecordState.STALE)
+
+        assertThat(fileSystemPersister.getRecordState(simple)).isEqualTo(RecordState.STALE)
+    }
+
+    @Test
+    fun missingTest() {
+        `when`(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
+                .thenReturn(RecordState.MISSING)
+
+        assertThat(fileSystemPersister.getRecordState(simple)).isEqualTo(RecordState.MISSING)
+    }
+
+
 }
