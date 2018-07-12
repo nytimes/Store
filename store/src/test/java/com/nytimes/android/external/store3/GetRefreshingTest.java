@@ -99,24 +99,4 @@ public class GetRefreshingTest {
 
     }
 
-    //everything will be mocked
-    static class ClearingPersister implements Persister<Integer, BarCode>, Clearable<BarCode> {
-        @Override
-        public void clear(@Nonnull BarCode key) {
-            throw new RuntimeException();
-        }
-
-        @Nonnull
-        @Override
-        public Maybe<Integer> read(@Nonnull BarCode barCode) {
-            throw new RuntimeException();
-        }
-
-        @Nonnull
-        @Override
-        public Single<Boolean> write(@Nonnull BarCode barCode, @Nonnull Integer integer) {
-            throw new RuntimeException();
-        }
-    }
-
 }
