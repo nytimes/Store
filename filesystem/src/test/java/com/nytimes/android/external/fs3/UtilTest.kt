@@ -1,19 +1,12 @@
 package com.nytimes.android.external.fs3
 
-import org.junit.Test
-
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.IOException
-
-import okio.BufferedSource
-import okio.Okio
-
-import com.google.common.base.Charsets.UTF_8
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import java.io.File
+import java.io.IOException
 
 class UtilTest {
 
@@ -38,9 +31,5 @@ class UtilTest {
         `when`(parent.isDirectory).thenReturn(true)
         util.createParentDirs(child)
         verify(parent).mkdirs()
-    }
-
-    companion object {
-        internal fun source(data: String): BufferedSource = Okio.buffer(Okio.source(ByteArrayInputStream(data.toByteArray(UTF_8))))
     }
 }
