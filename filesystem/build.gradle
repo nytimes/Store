@@ -1,9 +1,21 @@
+buildscript {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
+
 apply plugin: 'java'
 
 group = GROUP
 version = VERSION_NAME
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation libraries.okio
     compileOnly libraries.jsr305
     compileOnly libraries.javax
@@ -17,13 +29,6 @@ dependencies {
     testImplementation libraries.gson
     testImplementation project(path: ':middleware')
     testCompileOnly libraries.jsr305
-}
-
-buildscript {
-    tasks.withType(JavaCompile) {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
 }
 
 apply from: rootProject.file("gradle/maven-push.gradle")
