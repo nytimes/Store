@@ -20,7 +20,6 @@ class KeyParserTest {
                 .parser { integer, s -> s + integer }
                 .fetcher { integer -> Single.just(NETWORK) }
                 .open()
-
     }
 
     @Test
@@ -34,7 +33,7 @@ class KeyParserTest {
 
     companion object {
 
-        val NETWORK = "Network"
+        private const val NETWORK = "Network"
         val KEY = 5
     }
 }

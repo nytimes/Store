@@ -12,8 +12,8 @@ import io.reactivex.Single
 
 class DontCacheErrorsTest {
 
-    internal var shouldThrow: Boolean = false
-    lateinit var store: Store<Int, BarCode>
+    private var shouldThrow: Boolean = false
+    private lateinit var store: Store<Int, BarCode>
 
     @Before
     fun setUp() {

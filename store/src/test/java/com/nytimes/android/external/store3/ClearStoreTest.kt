@@ -19,8 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger
 class ClearStoreTest {
     @Mock
     lateinit var persister: ClearingPersister
-    lateinit var networkCalls: AtomicInteger
-    lateinit var store: Store<Int, BarCode>
+    private lateinit var networkCalls: AtomicInteger
+    private lateinit var store: Store<Int, BarCode>
 
     @Before
     fun setUp() {
@@ -43,7 +43,6 @@ class ClearStoreTest {
                 .thenReturn(Maybe.just(1)) //read from disk after making additional network call
         `when`(persister.write(barcode, 1)).thenReturn(Single.just(true))
         `when`(persister.write(barcode, 2)).thenReturn(Single.just(true))
-
 
         store.get(barcode).test().awaitTerminalEvent()
         assertThat(networkCalls.toInt()).isEqualTo(1)
@@ -76,7 +75,6 @@ class ClearStoreTest {
 
         `when`(persister.write(barcode2, 1)).thenReturn(Single.just(true))
         `when`(persister.write(barcode2, 2)).thenReturn(Single.just(true))
-
 
         // each request should produce one call
         store.get(barcode1).test().awaitTerminalEvent()

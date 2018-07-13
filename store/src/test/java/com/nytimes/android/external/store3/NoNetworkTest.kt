@@ -10,7 +10,7 @@ import org.junit.Test
 import io.reactivex.Single
 
 class NoNetworkTest {
-    lateinit var store: Store<Any, BarCode>
+    private lateinit var store: Store<Any, BarCode>
 
     @Before
     fun setUp() {

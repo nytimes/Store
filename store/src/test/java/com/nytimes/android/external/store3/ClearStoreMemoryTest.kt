@@ -13,8 +13,8 @@ import org.assertj.core.api.Assertions.assertThat
 
 class ClearStoreMemoryTest {
 
-    internal var networkCalls = 0
-    lateinit var store: Store<Int, BarCode>
+    private var networkCalls = 0
+    private lateinit var store: Store<Int, BarCode>
 
     @Before
     fun setUp() {
