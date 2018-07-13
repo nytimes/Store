@@ -1,7 +1,6 @@
 package com.nytimes.android.external.fs3
 
 import com.google.common.base.Charsets.UTF_8
-import com.google.common.collect.ImmutableMap
 import com.google.common.io.Files.createTempDir
 import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.fs3.filesystem.FileSystemFactory
@@ -11,7 +10,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.util.Arrays.asList
 
 class MultiTest {
 
@@ -58,8 +56,6 @@ class MultiTest {
         private val fileData: Map<String, List<String>> = mapOf("/foo/bar.txt" to listOf("sfvSFv", "AsfgasFgae", "szfvzsfbzdsfb"),
                 "/foo/bar/baz.xyz" to listOf("sasffvSFv", "AsfgsdvzsfbvasFgae", "szfvzsfszfvzsvbzdsfb"))
 
-        private fun source(data: String): BufferedSource {
-            return Okio.buffer(Okio.source(ByteArrayInputStream(data.toByteArray(UTF_8))))
-        }
+        private fun source(data: String): BufferedSource = Okio.buffer(Okio.source(ByteArrayInputStream(data.toByteArray(UTF_8))))
     }
 }
