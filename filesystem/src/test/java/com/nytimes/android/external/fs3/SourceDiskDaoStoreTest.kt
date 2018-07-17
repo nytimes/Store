@@ -28,7 +28,7 @@ class SourceDiskDaoStoreTest {
     private val barCode = BarCode("value", KEY)
 
     @Test
-    fun testSimple() {
+    fun fetcherOnlyCalledOnce() {
         MockitoAnnotations.initMocks(this)
         val parser = GsonSourceParser<Foo>(Gson(), Foo::class.java)
         val store = StoreBuilder.parsedWithKey<BarCode, BufferedSource, Foo>()
