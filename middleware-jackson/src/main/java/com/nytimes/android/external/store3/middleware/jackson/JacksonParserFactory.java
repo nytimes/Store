@@ -2,6 +2,7 @@ package com.nytimes.android.external.store3.middleware.jackson;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import com.nytimes.android.external.store3.base.Parser;
 
 import java.io.Reader;
@@ -57,7 +58,7 @@ public final class JacksonParserFactory {
      */
     @Nonnull
     public static <T> Parser<String, T> createStringParser(@Nonnull Class<T> type) {
-        return createStringParser(new ObjectMapper(), type);
+        return createStringParser(new ObjectMapper().registerModule(new KotlinModule()), type);
     }
 
     /**
@@ -100,7 +101,7 @@ public final class JacksonParserFactory {
      */
     @Nonnull
     public static <T> Parser<BufferedSource, T> createSourceParser(@Nonnull Type type) {
-        return createSourceParser(new ObjectMapper(), type);
+        return createSourceParser(new ObjectMapper().registerModule(new KotlinModule()), type);
     }
 
     /**
@@ -143,6 +144,6 @@ public final class JacksonParserFactory {
      */
     @Nonnull
     public static <T> Parser<Reader, T> createReaderParser(@Nonnull Type type) {
-        return createReaderParser(new ObjectMapper(), type);
+        return createReaderParser(new ObjectMapper().registerModule(new KotlinModule()), type);
     }
 }

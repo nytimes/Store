@@ -3,6 +3,7 @@ package com.nytimes.android.external.store3.middleware.jackson;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import com.nytimes.android.external.store3.base.Parser;
 import com.nytimes.android.external.store3.util.ParserException;
 
@@ -22,7 +23,7 @@ public class JacksonSourceParser<Parsed> implements Parser<BufferedSource, Parse
     private final JavaType parsedType;
 
     public JacksonSourceParser(@Nonnull JsonFactory jsonFactory, @Nonnull Type type) {
-        objectMapper = new ObjectMapper(jsonFactory);
+        objectMapper = new ObjectMapper(jsonFactory).registerModule(new KotlinModule());
         parsedType = objectMapper.constructType(type);
     }
 
