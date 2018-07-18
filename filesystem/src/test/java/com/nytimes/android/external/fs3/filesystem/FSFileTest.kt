@@ -33,7 +33,6 @@ class FSFileTest {
         fsFile = FSFile(root, TEST_FILE_PATH)
     }
 
-
     @Test
     @Throws(IOException::class)
     fun closeSourceAfterWrite() {
