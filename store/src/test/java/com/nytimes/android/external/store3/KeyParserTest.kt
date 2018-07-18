@@ -32,8 +32,7 @@ class KeyParserTest {
     }
 
     companion object {
-
         private const val NETWORK = "Network"
-        val KEY = 5
+        private const val KEY = 5
     }
 }
