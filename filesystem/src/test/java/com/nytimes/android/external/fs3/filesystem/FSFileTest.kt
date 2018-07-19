@@ -6,8 +6,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.mockito.Matchers.any
-import org.mockito.Matchers.anyByte
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
@@ -36,7 +35,7 @@ class FSFileTest {
     @Test
     @Throws(IOException::class)
     fun closeSourceAfterWrite() {
-        `when`(source.read(any(Buffer::class.java), anyByte().toLong())).thenReturn(java.lang.Long.valueOf(-1))
+        `when`(source.read(ArgumentMatchers.any(Buffer::class.java), ArgumentMatchers.anyLong())).thenReturn(-1L)
         fsFile.write(source)
         verify<BufferedSource>(source).close()
     }
