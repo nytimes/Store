@@ -65,7 +65,6 @@ class ClearStoreTest {
                 .thenReturn(Maybe.empty()) //read from disk after clearing disk cache
                 .thenReturn(Maybe.just(1)) //read from disk after making additional network call
         `when`(persister.write(barcode1, 1)).thenReturn(Single.just(true))
-        `when`(persister.write(barcode1, 2)).thenReturn(Single.just(true))
 
         `when`(persister.read(barcode2))
                 .thenReturn(Maybe.empty()) //read from disk
@@ -73,7 +72,6 @@ class ClearStoreTest {
                 .thenReturn(Maybe.empty()) //read from disk after clearing disk cache
                 .thenReturn(Maybe.just(1)) //read from disk after making additional network call
 
-        `when`(persister.write(barcode2, 1)).thenReturn(Single.just(true))
         `when`(persister.write(barcode2, 2)).thenReturn(Single.just(true))
 
         // each request should produce one call

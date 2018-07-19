@@ -35,7 +35,7 @@ public final class SourcePersisterFactory {
         if (root == null) {
             throw new IllegalArgumentException("root file cannot be null.");
         }
-        return RecordPersister.create(FileSystemFactory.create(root), expirationDuration, expirationUnit);
+        return RecordPersister.Companion.create(FileSystemFactory.create(root), expirationDuration, expirationUnit);
     }
 
     /**
@@ -49,7 +49,7 @@ public final class SourcePersisterFactory {
         if (fileSystem == null) {
             throw new IllegalArgumentException("fileSystem cannot be null.");
         }
-        return RecordPersister.create(fileSystem, expirationDuration, expirationUnit);
+        return RecordPersister.Companion.create(fileSystem, expirationDuration, expirationUnit);
     }
 
     /**
@@ -63,7 +63,7 @@ public final class SourcePersisterFactory {
         if (root == null) {
             throw new IllegalArgumentException("root file cannot be null.");
         }
-        return SourcePersister.create(FileSystemFactory.create(root));
+        return SourcePersister.Companion.create(FileSystemFactory.create(root));
     }
 
     /**
@@ -75,7 +75,7 @@ public final class SourcePersisterFactory {
         if (fileSystem == null) {
             throw new IllegalArgumentException("fileSystem cannot be null.");
         }
-        return SourcePersister.create(fileSystem);
+        return SourcePersister.Companion.create(fileSystem);
     }
 
     /**
@@ -89,7 +89,7 @@ public final class SourcePersisterFactory {
         if (root == null) {
             throw new IllegalArgumentException("root file cannot be null.");
         }
-        return SourceAllPersister.create(FileSystemFactory.create(root));
+        return SourceAllPersister.Companion.create(FileSystemFactory.create(root));
     }
 
     /**
@@ -101,6 +101,6 @@ public final class SourcePersisterFactory {
         if (fileSystem == null) {
             throw new IllegalArgumentException("fileSystem cannot be null.");
         }
-        return SourceAllPersister.create(fileSystem);
+        return SourceAllPersister.Companion.create(fileSystem);
     }
 }
