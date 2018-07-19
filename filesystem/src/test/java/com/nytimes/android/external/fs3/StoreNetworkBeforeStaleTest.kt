@@ -50,9 +50,6 @@ class StoreNetworkBeforeStaleTest {
                 .thenReturn(Maybe.just(disk1))  //get should return from disk
         `when`(persister.getRecordState(barCode)).thenReturn(RecordState.STALE)
 
-        `when`(persister.write(barCode, network1))
-                .thenReturn(Single.just(true))
-
         store.get(barCode).test().awaitTerminalEvent()
 
         val inOrder = inOrder(fetcher, persister)
@@ -105,9 +102,6 @@ class StoreNetworkBeforeStaleTest {
                 .thenReturn(maybeError, maybeError)  //first call should return
         // empty, second call after network should return the network value
         `when`(persister.getRecordState(barCode)).thenReturn(RecordState.MISSING)
-
-        `when`(persister.write(barCode, network1))
-                .thenReturn(Single.just(true))
 
         store.get(barCode).test().assertError(sorry)
 

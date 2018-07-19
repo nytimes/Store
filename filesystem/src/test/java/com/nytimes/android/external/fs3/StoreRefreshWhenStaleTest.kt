@@ -68,15 +68,10 @@ class StoreRefreshWhenStaleTest {
 
     @Test
     fun diskWasNotRefreshedWhenFreshRecord() {
-        `when`(fetcher.fetch(barCode))
-                .thenReturn(Single.just(network1))
         `when`(persister.read(barCode))
                 .thenReturn(Maybe.just(disk1))  //get should return from disk
                 .thenReturn(Maybe.just(disk2)) //backfill should read from disk again
         `when`(persister.getRecordState(barCode)).thenReturn(RecordState.FRESH)
-
-        `when`(persister.write(barCode, network1))
-                .thenReturn(Single.just(true))
 
         var testObserver: TestObserver<BufferedSource> = store
                 .get(barCode)
