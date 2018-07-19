@@ -22,31 +22,17 @@ import okio.BufferedSource
 open class SourcePersister @Inject
 constructor(fileSystem: FileSystem) : Persister<BufferedSource, BarCode> {
 
-    internal val sourceFileReader: SourceFileReader
-    internal val sourceFileWriter: SourceFileWriter
+    internal val sourceFileReader: SourceFileReader by lazy { SourceFileReader(fileSystem) }
+    internal val sourceFileWriter: SourceFileWriter by lazy { SourceFileWriter(fileSystem)}
 
-    init {
-        sourceFileReader = SourceFileReader(fileSystem)
-        sourceFileWriter = SourceFileWriter(fileSystem)
-    }
+    override fun read(barCode: BarCode): Maybe<BufferedSource> = sourceFileReader.read(barCode)
 
-    override fun read(barCode: BarCode): Maybe<BufferedSource> {
-        return sourceFileReader.read(barCode)
-    }
-
-    override fun write(barCode: BarCode, data: BufferedSource): Single<Boolean> {
-        return sourceFileWriter.write(barCode, data)
-    }
+    override fun write(barCode: BarCode, data: BufferedSource): Single<Boolean> = sourceFileWriter.write(barCode, data)
 
     companion object {
 
-        fun create(fileSystem: FileSystem): SourcePersister {
-            return SourcePersister(fileSystem)
-        }
+        fun create(fileSystem: FileSystem): SourcePersister = SourcePersister(fileSystem)
 
-        internal fun pathForBarcode(barCode: BarCode): String {
-            return barCode.type + barCode.key
-        }
+        internal fun pathForBarcode(barCode: BarCode): String = barCode.type + barCode.key
     }
-
 }

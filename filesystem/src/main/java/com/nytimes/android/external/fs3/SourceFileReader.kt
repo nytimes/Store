@@ -11,7 +11,5 @@ class SourceFileReader @JvmOverloads constructor(fileSystem: FileSystem, pathRes
 
     fun getRecordState(barCode: BarCode,
                        expirationUnit: TimeUnit,
-                       expirationDuration: Long): RecordState {
-        return fileSystem.getRecordState(expirationUnit, expirationDuration, SourcePersister.pathForBarcode(barCode))
-    }
+                       expirationDuration: Long): RecordState = fileSystem.getRecordState(expirationUnit, expirationDuration, SourcePersister.pathForBarcode(barCode))
 }

@@ -12,12 +12,10 @@ import okio.BufferedSource
  * Make sure to have keys containing same data resolve to same "path"
  * @param <T> key type
 </T> */
-open class FSWriter<T>(internal val fileSystem: FileSystem, internal val pathResolver: PathResolver<T>) : DiskWrite<BufferedSource, T> {
+open class FSWriter<T>(private val fileSystem: FileSystem, internal val pathResolver: PathResolver<T>) : DiskWrite<BufferedSource, T> {
 
-    override fun write(key: T, data: BufferedSource): Single<Boolean> {
-        return Single.fromCallable {
-            fileSystem.write(pathResolver.resolve(key), data)
-            true
-        }
+    override fun write(key: T, data: BufferedSource): Single<Boolean> = Single.fromCallable {
+        fileSystem.write(pathResolver.resolve(key), data)
+        true
     }
 }

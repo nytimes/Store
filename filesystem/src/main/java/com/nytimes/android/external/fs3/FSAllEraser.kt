@@ -5,11 +5,9 @@ import com.nytimes.android.external.store3.base.DiskAllErase
 import io.reactivex.Observable
 
 
-class FSAllEraser(internal val fileSystem: FileSystem) : DiskAllErase {
-    override fun deleteAll(path: String): Observable<Boolean> {
-        return Observable.fromCallable {
-            fileSystem.deleteAll(path)
-            true
-        }
+class FSAllEraser(private val fileSystem: FileSystem) : DiskAllErase {
+    override fun deleteAll(path: String): Observable<Boolean> = Observable.fromCallable {
+        fileSystem.deleteAll(path)
+        true
     }
 }
