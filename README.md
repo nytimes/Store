@@ -221,7 +221,7 @@ Stores don’t care how you’re storing or retrieving your data from disk. As a
 **Note**: When using a Parser and a disk cache, the Parser will be called AFTER fetching from disk and not between the network and disk. This allows your persister to work on the network stream directly.
 
 
-If using SQLite we recommend working with SqlBrite. If you are not using SqlBrite, an Observable can be created rather simply with `Observable.fromCallable(() -> getDBValue())`
+If using SQLite we recommend working with [SqlBrite](https://github.com/square/sqlbrite). If you are not using SqlBrite, an Observable can be created rather simply with `Observable.fromCallable(() -> getDBValue())`
 
 ### Middleware - SourcePersister & FileSystem
 
@@ -332,7 +332,7 @@ public class SampleStore extends RealStore<String, BarCode> {
     ```groovy
     compile 'com.nytimes.android:middleware-moshi3:CurrentVersion'
     ```
-+ **File System** Persistence Library built using OKIO Source/Sink + Middleware for streaming from Network to FileSystem 
++ **File System** Persistence Library built using [Okio](https://github.com/square/okio) Source/Sink + Middleware for streaming from Network to FileSystem 
 
 	```groovy
 	compile 'com.nytimes.android:filesystem3:CurrentVersion'
@@ -342,7 +342,7 @@ public class SampleStore extends RealStore<String, BarCode> {
 
 See the app for example usage of Store. Alternatively, the Wiki contains a set of recipes for common use cases
 + Simple Example: Retrofit + Store
-+ Complex Example: BufferedSource from Retrofit (Can be OKHTTP too) + our FileSystem + our GsonSourceParser
++ Complex Example: BufferedSource from Retrofit (Can be [OkHttp](https://github.com/square/okhttp) too) + our FileSystem + our GsonSourceParser
 
 ### Talks
 [DroidCon Italy](https://youtu.be/TvsOsgd0--c)
