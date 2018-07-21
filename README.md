@@ -60,7 +60,7 @@ And now for the details:
 
 ### Creating a Store
 
-You create a Store using a builder. The only requirement is to include a `.Fetcher<ReturnType,KeyType>` that returns an Single<ReturnType> and has a single method `fetch(key)`
+You create a Store using a builder. The only requirement is to include a `.Fetcher<ReturnType,KeyType>` that returns a Single<ReturnType> and has a single method `fetch(key)`
 
 
 ``` java
@@ -119,12 +119,12 @@ Calls to both `fetch()` and `get()` emit one value and then call `onCompleted()`
 For real-time updates, you may also call `store.stream()` which returns an Observable that emits each time a new item is added to the Store. You can think of stream as an Event Bus-like feature that allows you to know when any new network hits happen for a particular Store. You can leverage the Rx operator `filter()` to only subscribe to a subset of emissions.
 
 ### Get Refreshing
-There is another special way to subscribe to a Store: `getRefreshing(key)`. Get Refreshing will subscribe to `get()` which returns a single response, but unlike Get, Get Refreshing will stay subscribed. Anytime you call store.`clear(key)` anyone subscribed to `getRefreshing(key)` will resubscribe and force a new network response.
+There is another special way to subscribe to a Store: `getRefreshing(key)`. Get Refreshing will subscribe to `get()` which returns a single response, but unlike Get, Get Refreshing will stay subscribed. Anytime you call `store.clear(key)` anyone subscribed to `getRefreshing(key)` will resubscribe and force a new network response.
 
 
 ### Inflight Debouncer
 
-To prevent duplicate requests for the same data, Store offers an inflight debouncer. If the same request is made within a minute of a previous identical request, the same response will be returned. This is useful for situations when your app needs to make many async calls for the same data at startup or when users are obsessively pulling to refresh. As an example, The New York Times news app asynchronously calls `ConfigStore.get()` from 12 different places on startup. The first call blocks while all others wait for the data to arrive. We have seen a dramatic decrease in the app's the data usage after implementing this in flight logic.
+To prevent duplicate requests for the same data, Store offers an inflight debouncer. If the same request is made within a minute of a previous identical request, the same response will be returned. This is useful for situations when your app needs to make many async calls for the same data at startup or when users are obsessively pulling to refresh. As an example, The New York Times news app asynchronously calls `ConfigStore.get()` from 12 different places on startup. The first call blocks while all others wait for the data to arrive. We have seen a dramatic decrease in the app's data usage after implementing this inflight logic.
 
 
 ### Adding a Parser
@@ -232,7 +232,7 @@ Now back to our first example:
 ```java
 Store<Article, Integer> store = StoreBuilder.<Integer, BufferedSource, Article>parsedWithKey()
                .fetcher(articleId -> api.getArticles(articleId)) 
-               .persister(FileSystemPersister.create(FileSystemFactory.create(context.getFilesDir()),pathResolver))
+               .persister(FileSystemPersister.create(FileSystemFactory.create(context.getFilesDir()), pathResolver))
                .parser(GsonParserFactory.createSourceParser(gson, String.class))
                .open();
 ```
@@ -240,7 +240,7 @@ Store<Article, Integer> store = StoreBuilder.<Integer, BufferedSource, Article>p
 As mentioned, the above builder is how we work with network operations at the New York Times. With the above setup you have:
 + Memory caching with Guava Cache
 + Disk caching with FileSystem (you can reuse the same file system implementation for all stores)
-+ Parsing from a BufferedSource to a <T> (Article in our case) with Gson
++ Parsing from a BufferedSource (to an <T> Article in our case) with Gson
 + In-flight request management
 + Ability to get cached data or bust through your caches (`get` vs. `fetch`)
 + Ability to listen for any new emissions from network (stream)
