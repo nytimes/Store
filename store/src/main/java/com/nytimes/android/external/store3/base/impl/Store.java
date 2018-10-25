@@ -69,7 +69,6 @@ public interface Store<T, V> {
      * Errors will be dropped
      *
      */
-    @Deprecated
     @Nonnull
     Observable<T> stream(V key);
 
