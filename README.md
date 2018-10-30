@@ -313,7 +313,7 @@ public class SampleStore extends RealStore<String, BarCode> {
   implementation 'com.nytimes.android:cache3:CurrentVersion'
   ```
   
-+ **Store** This contains only Store classes and has a dependecy on RxJava + the above cache.  
++ **Store** This contains only Store classes and has a dependency on RxJava + the above cache.  
 
   ```groovy
   implementation 'com.nytimes.android:store3:CurrentVersion'
@@ -331,7 +331,7 @@ public class SampleStore extends RealStore<String, BarCode> {
     implementation 'com.nytimes.android:middleware3:CurrentVersion'
     ```
     
-+ **Middleware-Jackson** Sample Jackon parsers, (feel free to create more and open PRs)
++ **Middleware-Jackson** Sample Jackson parsers, (feel free to create more and open PRs)
 
     ```groovy
     implementation 'com.nytimes.android:middleware-jackson3:CurrentVersion'
