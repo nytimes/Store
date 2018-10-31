@@ -333,32 +333,32 @@ public class SampleStore extends RealStore<String, BarCode> {
 + **Cache** Кэш, извлеченный из библиотеки Guava (чтобы сократить количество методов)
 
 	```groovy
-	compile 'com.nytimes.android:cache:CurrentVersion'
+	implementation 'com.nytimes.android:cache:CurrentVersion'
 	```
 + **Store** Содержит только классы Store, зависит от RxJava и артефакта кэша  
 
 	```groovy
-	compile 'com.nytimes.android:store:CurrentVersion'
+	implementation 'com.nytimes.android:store:CurrentVersion'
 	```
 + **Middleware** Парсеры Gson (не стесняйтесь создавать новые и предлагать PR)
 
     ```groovy
-    compile 'com.nytimes.android:middleware:CurrentVersion'
+    implementation 'com.nytimes.android:middleware:CurrentVersion'
     ```
 + **Middleware-Jackson** Парсеры Jackson (не стесняйтесь создавать новые и предлагать PR)
 
     ```groovy
-    compile 'com.nytimes.android:middleware-jackson:CurrentVersion'
+    implementation 'com.nytimes.android:middleware-jackson:CurrentVersion'
     ```
 + **Middleware-Moshi** Парсеры Moshi (не стесняйтесь создавать новые и предлагать PR)
 
     ```groovy
-    compile 'com.nytimes.android:middleware-moshi:CurrentVersion'
+    implementation 'com.nytimes.android:middleware-moshi:CurrentVersion'
     ```
 + **File System** библиотека, использующая Okio Source/Sink + Middleware для сохранения потока данных из сети в файловую систему 
 
 	```groovy
-	compile 'com.nytimes.android:filesystem:CurrentVersion'
+	implementation 'com.nytimes.android:filesystem:CurrentVersion'
 	```
 
 
