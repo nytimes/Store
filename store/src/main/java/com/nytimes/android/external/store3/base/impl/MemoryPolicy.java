@@ -24,12 +24,14 @@ public class MemoryPolicy {
     private final long expireAfterAccess;
     private final TimeUnit expireAfterTimeUnit;
     private final long maxSize;
+    private final long maximumInFlightRequestsDurationInSeconds;
 
-    MemoryPolicy(long expireAfterWrite, long expireAfterAccess, TimeUnit expireAfterTimeUnit, long maxSize) {
+    MemoryPolicy(long expireAfterWrite, long expireAfterAccess, TimeUnit expireAfterTimeUnit, long maxSize, long maximumInFlightRequestsDurationInSeconds) {
         this.expireAfterWrite = expireAfterWrite;
         this.expireAfterAccess = expireAfterAccess;
         this.expireAfterTimeUnit = expireAfterTimeUnit;
         this.maxSize = maxSize;
+        this.maximumInFlightRequestsDurationInSeconds = maximumInFlightRequestsDurationInSeconds;
     }
 
     public static MemoryPolicyBuilder builder() {
@@ -61,6 +63,10 @@ public class MemoryPolicy {
             return 1;
         }
         return maxSize;
+    }
+
+    public long getMaximumInFlightRequestsDurationInSeconds() {
+        return maximumInFlightRequestsDurationInSeconds;
     }
 
     /**
@@ -100,6 +106,7 @@ public class MemoryPolicy {
         private long expireAfterAccess = DEFAULT_POLICY;
         private TimeUnit expireAfterTimeUnit = TimeUnit.SECONDS;
         private long maxSize = -1;
+        private long maximumInFlightRequestsFurationInSeconds = 60;
 
         /**
          * @deprecated Use {@link MemoryPolicyBuilder#setExpireAfterWrite(long)} or
@@ -136,8 +143,13 @@ public class MemoryPolicy {
             return this;
         }
 
+        public MemoryPolicyBuilder setMaximumInFlightRequestsDurationInSeconds(long maximumInFlightRequestsDurationInSeconds) {
+            this.maximumInFlightRequestsFurationInSeconds = maximumInFlightRequestsDurationInSeconds;
+            return this;
+        }
+
         public MemoryPolicy build() {
-            return new MemoryPolicy(expireAfterWrite, expireAfterAccess, expireAfterTimeUnit, maxSize);
+            return new MemoryPolicy(expireAfterWrite, expireAfterAccess, expireAfterTimeUnit, maxSize, maximumInFlightRequestsFurationInSeconds);
         }
     }
 }

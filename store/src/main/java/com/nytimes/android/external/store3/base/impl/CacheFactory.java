@@ -37,7 +37,7 @@ public final class CacheFactory {
         long expireAfterToSeconds = memoryPolicy == null ? StoreDefaults.getCacheTTLTimeUnit()
                 .toSeconds(StoreDefaults.getCacheTTL())
                 : memoryPolicy.getExpireAfterTimeUnit().toSeconds(memoryPolicy.getExpireAfterWrite());
-        long maximumInFlightRequestsDuration = TimeUnit.MINUTES.toSeconds(1);
+        long maximumInFlightRequestsDuration = memoryPolicy == null ? TimeUnit.MINUTES.toSeconds(1) : memoryPolicy.getMaximumInFlightRequestsDurationInSeconds();
 
         if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
             return CacheBuilder
