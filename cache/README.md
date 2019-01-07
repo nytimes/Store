@@ -28,7 +28,7 @@ memCache.get(key, new Callable<T>() {
  https://github.com/google/guava/wiki/CachesExplained
 
 ```groovy
-	compile 'com.nytimes.android:cache3:3.0.0-beta'
+	implementation 'com.nytimes.android:cache3:3.0.0-beta'
 ```
 
 ```

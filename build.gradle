@@ -2,9 +2,8 @@ apply from: 'buildsystem/dependencies.gradle'
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.2.41'
     repositories {
-        mavenLocal()
+        mavenCentral()
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
@@ -19,17 +18,16 @@ buildscript {
     }
 
     rootProject.ext.versions = [
-        kotlin: '1.2.21'
+        kotlin: '1.3.0'
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha16'
-        classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6'
+        classpath 'com.android.tools.build:gradle:3.4.0-alpha02'
+        classpath 'com.google.gms:google-services:4.2.0'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.4'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.11'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$rootProject.ext.versions.kotlin"
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.16'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.17'
     }
 }
 
