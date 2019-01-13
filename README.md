@@ -356,8 +356,8 @@ See the app for example usage of Store. Alternatively, the [Wiki](https://github
 + Complex Example: BufferedSource from Retrofit (Can be [OkHttp](https://github.com/square/okhttp) too) + our FileSystem + our GsonSourceParser
 
 ### Talks
-[DroidCon Italy](https://youtu.be/TvsOsgd0--c)
-[Android Makers](https://www.youtube.com/watch?time_continue=170&v=G1MebI2k9aA)
++ [DroidCon Italy](https://youtu.be/TvsOsgd0--c)
++ [Android Makers](https://www.youtube.com/watch?time_continue=170&v=G1MebI2k9aA)
 
 ### Community projects
 
