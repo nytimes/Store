@@ -322,6 +322,7 @@ public class SampleStore extends RealStore<String, BarCode> {
 + **Store-Kotlin** Store plus a couple of added Kotlin classes for more idiomatic usage.
 
     ```groovy
+    implementation 'com.nytimes.android:store3:CurrentVersion'
     implementation 'com.nytimes.android:store-kotlin3:CurrentVersion'
     ```
     
