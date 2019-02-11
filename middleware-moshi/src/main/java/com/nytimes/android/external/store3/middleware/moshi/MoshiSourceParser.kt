@@ -22,12 +22,11 @@ constructor(moshi: Moshi, type: Type) : Parser<BufferedSource, Parsed> {
     }
 
     @Throws(ParserException::class)
-    override fun apply(@NonNull bufferedSource: BufferedSource): Parsed? {
+    override suspend fun apply(@NonNull bufferedSource: BufferedSource): Parsed {
         try {
-            return jsonAdapter.fromJson(bufferedSource)
+            return jsonAdapter.fromJson(bufferedSource)!!
         } catch (e: IOException) {
             throw ParserException(e.message, e)
         }
-
     }
 }

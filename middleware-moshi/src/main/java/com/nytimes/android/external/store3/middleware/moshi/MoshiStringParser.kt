@@ -21,9 +21,9 @@ constructor(moshi: Moshi, type: Type) : Parser<String, Parsed> {
     }
 
     @Throws(ParserException::class)
-    override fun apply(@NonNull s: String): Parsed? {
+    override suspend fun apply(@NonNull s: String): Parsed {
         try {
-            return jsonAdapter.fromJson(s)
+            return jsonAdapter.fromJson(s)!!
         } catch (e: IOException) {
             throw ParserException(e.message, e)
         }

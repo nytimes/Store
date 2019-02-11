@@ -2,7 +2,9 @@ package com.nytimes.android.sample
 
 import android.app.Application
 import android.content.Context
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.nytimes.android.external.fs3.SourcePersisterFactory
+import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy
@@ -12,10 +14,11 @@ import com.nytimes.android.external.store3.middleware.moshi.MoshiParserFactory
 import com.nytimes.android.sample.data.model.RedditData
 import com.nytimes.android.sample.data.remote.Api
 import com.squareup.moshi.Moshi
-import io.reactivex.Single
+import kotlinx.coroutines.Deferred
+import okhttp3.ResponseBody
 import okio.BufferedSource
+import okio.Okio.source
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -26,12 +29,12 @@ class SampleApp : Application() {
     lateinit var persistedStore: Store<RedditData, BarCode>
     val moshi = Moshi.Builder().build()
     lateinit var persister: Persister<BufferedSource, BarCode>
-    lateinit var sampleRoomStore:SampleRoomStore
+//    lateinit var sampleRoomStore:SampleRoomStore
 
     override fun onCreate() {
         super.onCreate()
         appContext = this
-        sampleRoomStore = SampleRoomStore(this)
+//        sampleRoomStore = SampleRoomStore(this)
         initPersister();
         nonPersistedStore = provideRedditStore();
         persistedStore = providePersistedRedditStore();
@@ -69,7 +72,11 @@ class SampleApp : Application() {
      */
     private fun provideRedditStore(): Store<RedditData, BarCode> {
         return StoreBuilder.barcode<RedditData>()
-                .fetcher { barCode -> provideRetrofit().fetchSubreddit(barCode.key, "10") }
+                .fetcher(object : Fetcher<RedditData, BarCode> {
+                    override suspend fun fetch(key: BarCode): RedditData {
+                        return provideRetrofit().fetchSubreddit(key.key, "10").await()
+                    }
+                })
                 .memoryPolicy(
                         MemoryPolicy
                                 .builder()
@@ -86,7 +93,11 @@ class SampleApp : Application() {
      */
     private fun providePersistedRedditStore(): Store<RedditData, BarCode> {
         return StoreBuilder.parsedWithKey<BarCode, BufferedSource, RedditData>()
-                .fetcher({ this.fetcher(it) })
+                .fetcher(object : Fetcher<BufferedSource, BarCode> {
+                    override suspend fun fetch(key: BarCode): BufferedSource {
+                        return fetcher(key).await().source()
+                    }
+                })
                 .persister(newPersister())
                 .parser(MoshiParserFactory.createSourceParser(moshi, RedditData::class.java))
                 .open()
@@ -103,16 +114,16 @@ class SampleApp : Application() {
     /**
      * Returns a "fetcher" which will retrieve new data from the network.
      */
-    private fun fetcher(barCode: BarCode): Single<BufferedSource> {
+    private suspend fun fetcher(barCode: BarCode): Deferred<ResponseBody> {
         return provideRetrofit().fetchSubredditForPersister(barCode.key, "10")
-                .map({ it.source() })
+
     }
 
     private fun provideRetrofit(): Api {
         return Retrofit.Builder()
-                .baseUrl("http://reddit.com/")
+                .baseUrl("https://reddit.com/")
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .validateEagerly(BuildConfig.DEBUG)  // Fail early: check Retrofit configuration at creation time in Debug build.
                 .build()
                 .create(Api::class.java)

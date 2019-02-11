@@ -29,13 +29,14 @@ open class FSReader<T>(internal val fileSystem: FileSystem, internal val pathRes
             } catch (e: FileNotFoundException) {
                 throw e
             } finally {
-                if (bufferedSource != null) {
-                    try {
-                        bufferedSource.close()
-                    } catch (e: IOException) {
-                        e.printStackTrace(System.err)
-                    }
-                }
+                //TODO MIKE: figure out why this was here
+//                if (bufferedSource != null) {
+//                    try {
+//                        bufferedSource.close()
+//                    } catch (e: IOException) {
+//                        e.printStackTrace(System.err)
+//                    }
+//                }
             }
         }
         else{

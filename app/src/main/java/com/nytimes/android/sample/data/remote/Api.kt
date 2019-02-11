@@ -1,8 +1,7 @@
 package com.nytimes.android.sample.data.remote
 
 import com.nytimes.android.sample.data.model.RedditData
-
-import io.reactivex.Single
+import kotlinx.coroutines.Deferred
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -12,9 +11,9 @@ interface Api {
 
     @GET("r/{subredditName}/new/.json")
     fun fetchSubreddit(@Path("subredditName") subredditName: String,
-                       @Query("limit") limit: String): Single<RedditData>
+                       @Query("limit") limit: String): Deferred<RedditData>
 
     @GET("r/{subredditName}/new/.json")
     fun fetchSubredditForPersister(@Path("subredditName") subredditName: String,
-                                   @Query("limit") limit: String): Single<ResponseBody>
+                                   @Query("limit") limit: String): Deferred<ResponseBody>
 }
