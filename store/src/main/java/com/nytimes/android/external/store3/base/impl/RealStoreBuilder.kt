@@ -56,6 +56,15 @@ class RealStoreBuilder<Raw, Parsed, Key> {
         return this
     }
 
+    fun parser(parser: suspend (Raw) -> Parsed): RealStoreBuilder<Raw, Parsed, Key> {
+        this.parser = NoKeyParser(object : Parser<Raw, Parsed> {
+            override suspend fun apply(raw: Raw): Parsed {
+                return parser(raw)
+            }
+        })
+        return this
+    }
+
     fun parser(parser: KeyParser<Key, Raw, Parsed>): RealStoreBuilder<Raw, Parsed, Key> {
         this.parser = parser
 
