@@ -46,7 +46,7 @@ public class RecordPersisterTest {
 
     @Test
     public void freshTest() {
-        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.Companion.pathForBarcode(simple)))
                 .thenReturn(RecordState.FRESH);
 
         assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.FRESH);
@@ -54,7 +54,7 @@ public class RecordPersisterTest {
 
     @Test
     public void staleTest() {
-        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.Companion.pathForBarcode(simple)))
                 .thenReturn(RecordState.STALE);
 
         assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.STALE);
@@ -62,7 +62,7 @@ public class RecordPersisterTest {
 
     @Test
     public void missingTest() {
-        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.getRecordState(TimeUnit.DAYS, 1L, SourcePersister.Companion.pathForBarcode(simple)))
                 .thenReturn(RecordState.MISSING);
 
         assertThat(sourcePersister.getRecordState(simple)).isEqualTo(RecordState.MISSING);
@@ -71,7 +71,7 @@ public class RecordPersisterTest {
     @Test
     @SuppressWarnings("CheckReturnValue")
     public void readDoesNotExist() throws FileNotFoundException {
-        when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.exists(SourcePersister.Companion.pathForBarcode(simple)))
                 .thenReturn(false);
 
         sourcePersister.read(simple).test().assertError(FileNotFoundException.class);
@@ -84,6 +84,6 @@ public class RecordPersisterTest {
 
     @Test
     public void pathForBarcode() {
-        assertThat(SourcePersister.pathForBarcode(simple)).isEqualTo("typekey");
+        assertThat(SourcePersister.Companion.pathForBarcode(simple)).isEqualTo("typekey");
     }
 }

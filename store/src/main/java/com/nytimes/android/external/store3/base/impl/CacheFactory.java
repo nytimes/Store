@@ -14,11 +14,11 @@ public final class CacheFactory {
 
     }
 
-    static <Key, Parsed> Cache<Key, Maybe<Parsed>> createCache(MemoryPolicy memoryPolicy) {
+    static <Key, Parsed> Cache<Key, Parsed> createCache(MemoryPolicy memoryPolicy) {
        return createBaseCache(memoryPolicy);
     }
 
-    static <Key, Parsed> Cache<Key, Single<Parsed>> createInflighter(MemoryPolicy memoryPolicy) {
+    static <Key, Parsed> Cache<Key, Parsed> createInflighter(MemoryPolicy memoryPolicy) {
        return createBaseInFlighter(memoryPolicy);
     }
 

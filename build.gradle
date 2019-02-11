@@ -32,17 +32,14 @@ buildscript {
 }
 
 allprojects {
-    buildscript {
-
-    }
+    buildscript {}
 
     repositories {
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
-
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/'}
         mavenCentral()
+        jcenter()
     }
+
 
     // Workaround to prevent Gradle from stealing focus from other apps during tests run/etc.
     // https://gist.github.com/artem-zinnatullin/4c250e04636e25797165

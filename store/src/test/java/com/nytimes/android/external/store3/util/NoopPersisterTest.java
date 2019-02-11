@@ -17,7 +17,7 @@ public class NoopPersisterTest {
     @Test
     public void writeReadTest() {
         BarCode barCode = new BarCode("key", "value");
-        NoopPersister<String, BarCode> persister = NoopPersister.create();
+        NoopPersister<String, BarCode> persister = NoopPersister.Companion.create();
         boolean success = persister.write(barCode, "foo").blockingGet();
         assertThat(success).isTrue();
         String rawValue = persister.read(barCode).blockingGet();
@@ -41,19 +41,19 @@ public class NoopPersisterTest {
             .setExpireAfterWrite(1)
             .setExpireAfterTimeUnit(TimeUnit.HOURS)
             .build();
-        NoopPersister.create(expireAfterWritePolicy);
+        NoopPersister.Companion.create(expireAfterWritePolicy);
 
         MemoryPolicy expireAfterAccessPolicy = MemoryPolicy.builder()
             .setExpireAfterAccess(1)
             .setExpireAfterTimeUnit(TimeUnit.HOURS)
             .build();
-        NoopPersister.create(expireAfterAccessPolicy);
+        NoopPersister.Companion.create(expireAfterAccessPolicy);
 
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("No expiry policy set");
         MemoryPolicy incompletePolicy = MemoryPolicy.builder()
             .setExpireAfterTimeUnit(TimeUnit.HOURS)
             .build();
-        NoopPersister.create(incompletePolicy);
+        NoopPersister.Companion.create(incompletePolicy);
     }
 }

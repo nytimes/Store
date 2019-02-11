@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class StoreWithParserTest {
 
     private static final String DISK = "persister";
-    private static final String NETWORK = "fetch";
+    private static final String NETWORK = "fresh";
     @Mock
     Fetcher<String, BarCode> fetcher;
     @Mock

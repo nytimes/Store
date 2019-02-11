@@ -2,11 +2,11 @@ package com.nytimes.android.external.store3.base.impl.room;
 
 import com.nytimes.android.external.cache3.Cache;
 import com.nytimes.android.external.store3.annotations.Experimental;
-import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.impl.CacheFactory;
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
 import com.nytimes.android.external.store3.base.impl.StalePolicy;
 import com.nytimes.android.external.store3.base.impl.StoreUtil;
+import com.nytimes.android.external.store3.base.room.RoomFetcher;
 import com.nytimes.android.external.store3.base.room.RoomPersister;
 
 import java.util.Collection;
@@ -27,25 +27,25 @@ import io.reactivex.Observable;
  */
 @Experimental
 class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
-    private final Fetcher<Raw, Key> fetcher;
+    private final RoomFetcher<Raw, Key> fetcher;
     private final RoomPersister<Raw, Parsed, Key> persister;
     private final Cache<Key, Observable<Parsed>> memCache;
     private final StalePolicy stalePolicy;
     private final Cache<Key, Observable<Parsed>> inFlightRequests;
 
 
-     RealStoreRoom(Fetcher<Raw, Key> fetcher,
-                         RoomPersister<Raw, Parsed, Key> persister) {
+    RealStoreRoom(RoomFetcher<Raw, Key> fetcher,
+                  RoomPersister<Raw, Parsed, Key> persister) {
         this(fetcher, persister, null, StalePolicy.UNSPECIFIED);
     }
 
-     RealStoreRoom(Fetcher<Raw, Key> fetcher,
-                         RoomPersister<Raw, Parsed, Key> persister,
-                         StalePolicy stalePolicy) {
+    RealStoreRoom(RoomFetcher<Raw, Key> fetcher,
+                  RoomPersister<Raw, Parsed, Key> persister,
+                  StalePolicy stalePolicy) {
         this(fetcher, persister, null, stalePolicy);
     }
 
-    RealStoreRoom(Fetcher<Raw, Key> fetcher,
+    RealStoreRoom(RoomFetcher<Raw, Key> fetcher,
                   RoomPersister<Raw, Parsed, Key> persister,
                   MemoryPolicy memoryPolicy,
                   StalePolicy stalePolicy) {
@@ -129,7 +129,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
      * Will check to see if there exists an in flight observable and return it before
      * going to network
      *
-     * @return data from fetch and store it in memory and persister
+     * @return data from fresh and store it in memory and persister
      */
     @Nonnull
     @Override
@@ -139,7 +139,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
 
 
     /**
-     * There should only be one fetch request in flight at any give time.
+     * There should only be one fresh request in flight at any give time.
      * <p>
      * Return cached request in the form of a Behavior Subject which will emit to its subscribers
      * the last value it gets. Subject/Observable is cached in a {@link ConcurrentMap} to maintain
@@ -149,7 +149,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
      * @return observable that emits a {@link Parsed} value
      */
     @Nullable
-    Observable<Parsed> fetchAndPersist(@Nonnull final Key key) {
+    private Observable<Parsed> fetchAndPersist(@Nonnull final Key key) {
         try {
             return inFlightRequests.get(key, () -> response(key));
         } catch (ExecutionException e) {
@@ -158,11 +158,13 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
     }
 
     @Nonnull
-    Observable<Parsed> response(@Nonnull final Key key) {
+    private Observable<Parsed> response(@Nonnull final Key key) {
         return fetcher()
                 .fetch(key)
-                .doOnSuccess(it -> persister().write(key, it))
-                .flatMapObservable(it -> readDisk(key))
+                .concatMapEagerDelayError(it -> {
+                    persister().write(key, it);
+                    return readDisk(key);
+                },true)
                 .onErrorResumeNext(throwable -> {
                     if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
                         return readDisk(key).switchIfEmpty(Observable.error(throwable));
@@ -212,7 +214,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
     /**
      *
      */
-    Fetcher<Raw, Key> fetcher() {
+    RoomFetcher<Raw, Key> fetcher() {
         return fetcher;
     }
 

@@ -50,7 +50,7 @@ public class SourcePersisterTest {
     @Test
     @SuppressWarnings("CheckReturnValue")
     public void readDoesNotExist() throws FileNotFoundException {
-        when(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
+        when(fileSystem.exists(SourcePersister.Companion.pathForBarcode(simple)))
                 .thenReturn(false);
 
         sourcePersister.read(simple).test().assertError(FileNotFoundException.class);
@@ -63,6 +63,6 @@ public class SourcePersisterTest {
 
     @Test
     public void pathForBarcode() {
-        assertThat(SourcePersister.pathForBarcode(simple)).isEqualTo("typekey");
+        assertThat(SourcePersister.Companion.pathForBarcode(simple)).isEqualTo("typekey");
     }
 }

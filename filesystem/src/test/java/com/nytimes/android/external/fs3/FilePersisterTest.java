@@ -33,7 +33,7 @@ public class FilePersisterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        fileSystemPersister = FileSystemPersister.create(fileSystem, new BarCodePathResolver());
+        fileSystemPersister = FileSystemPersister.Companion.create(fileSystem, new BarCodePathResolver());
     }
 
     @Test

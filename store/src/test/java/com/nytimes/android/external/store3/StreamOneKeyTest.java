@@ -63,12 +63,12 @@ public class StreamOneKeyTest {
     public void testStream() {
         TestObserver<String> streamObservable = store.stream(barCode).test();
         //first time we subscribe to stream it will fail getting from memory & disk and instead
-        //fetch from network, write to disk and notifiy subscribers
+        //fresh from network, write to disk and notifiy subscribers
         streamObservable.assertValueCount(1);
 
         store.clear();
-        //fetch should notify subscribers again
-        store.fetch(barCode).test().awaitCount(1);
+        //fresh should notify subscribers again
+        store.fresh(barCode).test().awaitCount(1);
         streamObservable.assertValues(TEST_ITEM, TEST_ITEM2);
 
         //get for another barcode should not trigger a stream for barcode1

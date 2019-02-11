@@ -5,6 +5,7 @@ import com.nytimes.android.external.store3.base.Fetcher;
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy;
 import com.nytimes.android.external.store3.base.impl.StalePolicy;
 import com.nytimes.android.external.store3.base.impl.StoreBuilder;
+import com.nytimes.android.external.store3.base.room.RoomFetcher;
 import com.nytimes.android.external.store3.base.room.RoomPersister;
 
 import javax.annotation.Nonnull;
@@ -17,7 +18,7 @@ import io.reactivex.Observable;
  * <p>
  * A {@link StoreRoom  Store} can
  * {@link StoreRoom#get(V) Store.get() } cached data or
- * force a call to {@link StoreRoom#fetch(V) Store.fetch() }
+ * force a call to {@link StoreRoom#fetch(V) Store.fresh() }
  * (skipping cache)
  */
 @Experimental
@@ -51,19 +52,19 @@ public abstract class StoreRoom<T, V> {
 
 
     public static <Raw, Parsed, Key> StoreRoom<Parsed, Key> from
-            (Fetcher<Raw, Key> fetcher, RoomPersister<Raw, Parsed, Key> persister) {
+            (RoomFetcher<Raw, Key> fetcher, RoomPersister<Raw, Parsed, Key> persister) {
         return new RealStoreRoom<>(fetcher, persister);
     }
 
     public static <Raw, Parsed, Key> StoreRoom<Parsed, Key> from(
-            Fetcher<Raw, Key> fetcher,
+            RoomFetcher<Raw, Key> fetcher,
             RoomPersister<Raw, Parsed, Key> persister,
             StalePolicy policy) {
         return new RealStoreRoom<>(fetcher, persister, policy);
     }
 
     public static <Raw, Parsed, Key> StoreRoom<Parsed, Key> from
-            (Fetcher<Raw, Key> fetcher, RoomPersister<Raw, Parsed, Key> persister,
+            (RoomFetcher<Raw, Key> fetcher, RoomPersister<Raw, Parsed, Key> persister,
              StalePolicy stalePolicy, MemoryPolicy memoryPolicy) {
         return new RealStoreRoom<>(fetcher, persister, memoryPolicy, stalePolicy);
     }

@@ -42,7 +42,7 @@ public class GenericParserStoreTest {
     public void testSimple() {
         MockitoAnnotations.initMocks(this);
 
-        Parser<BufferedSource, Foo> parser = GsonParserFactory.createSourceParser(new Gson(), Foo.class);
+        Parser<BufferedSource, Foo> parser = GsonParserFactory.INSTANCE.createSourceParser(new Gson(), Foo.class);
 
         Store<Foo, BarCode> simpleStore = StoreBuilder.<BarCode, BufferedSource, Foo>parsedWithKey()
                 .persister(persister)

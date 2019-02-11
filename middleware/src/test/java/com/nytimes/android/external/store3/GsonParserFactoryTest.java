@@ -28,44 +28,44 @@ public class GsonParserFactoryTest {
 
     @Test
     public void shouldCreateParsersProperly() {
-        GsonParserFactory.createReaderParser(gson, type);
-        GsonParserFactory.createSourceParser(gson, type);
-        GsonParserFactory.createStringParser(gson, type);
+        GsonParserFactory.INSTANCE.createReaderParser(gson, type);
+        GsonParserFactory.INSTANCE.createSourceParser(gson, type);
+        GsonParserFactory.INSTANCE.createStringParser(gson, type);
     }
 
     @Test
     public void shouldThrowExceptionWhenCreatingReaderWithNullType() {
         expectedException.expect(NullPointerException.class);
-        GsonParserFactory.createReaderParser(gson, null);
+        GsonParserFactory.INSTANCE.createReaderParser(gson, null);
     }
 
     @Test
     public void shouldThrowExceptionWhenCreatingReaderWithNullGson() {
         expectedException.expect(NullPointerException.class);
-        GsonParserFactory.createReaderParser(null, type);
+        GsonParserFactory.INSTANCE.createReaderParser(null, type);
     }
 
     @Test
     public void shouldThrowExceptionWhenCreatingSourceWithNullType() {
         expectedException.expect(NullPointerException.class);
-        GsonParserFactory.createSourceParser(gson, null);
+        GsonParserFactory.INSTANCE.createSourceParser(gson, null);
     }
 
     @Test
     public void shouldThrowExceptionWhenCreatingSourceWithNullGson() {
         expectedException.expect(NullPointerException.class);
-        GsonParserFactory.createSourceParser(null, type);
+        GsonParserFactory.INSTANCE.createSourceParser(null, type);
     }
 
     @Test
     public void shouldThrowExceptionWhenCreatingStringWithNullType() {
         expectedException.expect(NullPointerException.class);
-        GsonParserFactory.createStringParser(gson, null);
+        GsonParserFactory.INSTANCE.createStringParser(gson, null);
     }
 
     @Test
     public void shouldThrowExceptionWhenCreatingStringWithNullGson() {
         expectedException.expect(NullPointerException.class);
-        GsonParserFactory.createStringParser(null, type);
+        GsonParserFactory.INSTANCE.createStringParser(null, type);
     }
 }

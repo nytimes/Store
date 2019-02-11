@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 public class StoreTest {
 
     private static final String DISK = "disk";
-    private static final String NETWORK = "fetch";
+    private static final String NETWORK = "fresh";
     private static final String MEMORY = "memory";
     final AtomicInteger counter = new AtomicInteger(0);
     @Mock
@@ -224,7 +224,7 @@ public class StoreTest {
     @Test
     public void testNoopAndDefault() {
 
-        Persister<String, BarCode> persister = spy(NoopPersister.<String, BarCode>create());
+        Persister<String, BarCode> persister = spy(NoopPersister.Companion.<String, BarCode>create());
         RealStore<String, BarCode> simpleStore = new SampleStore(fetcher, persister);
 
 
@@ -249,7 +249,7 @@ public class StoreTest {
     @Test
     public void testNoopAndDefaultWithResult() {
 
-        Persister<String, BarCode> persister = spy(NoopPersister.<String, BarCode>create());
+        Persister<String, BarCode> persister = spy(NoopPersister.Companion.<String, BarCode>create());
         RealStore<String, BarCode> simpleStore = new SampleStore(fetcher, persister);
 
 

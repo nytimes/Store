@@ -34,7 +34,7 @@ public class FileSystemRecordPersisterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        fileSystemPersister = FileSystemRecordPersister.create(fileSystem,
+        fileSystemPersister = FileSystemRecordPersister.Companion.create(fileSystem,
                 new BarCodePathResolver(),
                 1, TimeUnit.DAYS);
     }

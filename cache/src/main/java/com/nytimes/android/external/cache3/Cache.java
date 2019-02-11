@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface Cache<K, V> {
@@ -36,7 +37,7 @@ public interface Cache<K, V> {
    *
    * @since 11.0
    */
-  @Nullable
+  @Nonnull
   V get(K key, Callable<? extends V> valueLoader) throws ExecutionException;
 
   /**

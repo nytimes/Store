@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class StoreRoomTest {
 
     private static final String DISK = "disk";
-    private static final String NETWORK = "fetch";
+    private static final String NETWORK = "fresh";
     final AtomicInteger counter = new AtomicInteger(0);
     @Mock
     Fetcher<String, BarCode> fetcher;
