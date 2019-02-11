@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.nytimes.android.external.fs3.SourcePersisterFactory
-import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy
@@ -17,7 +16,6 @@ import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Deferred
 import okhttp3.ResponseBody
 import okio.BufferedSource
-import okio.Okio.source
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.IOException
@@ -72,11 +70,7 @@ class SampleApp : Application() {
      */
     private fun provideRedditStore(): Store<RedditData, BarCode> {
         return StoreBuilder.barcode<RedditData>()
-                .fetcher(object : Fetcher<RedditData, BarCode> {
-                    override suspend fun fetch(key: BarCode): RedditData {
-                        return provideRetrofit().fetchSubreddit(key.key, "10").await()
-                    }
-                })
+                .fetcher { key -> provideRetrofit().fetchSubreddit(key.key, "10").await() }
                 .memoryPolicy(
                         MemoryPolicy
                                 .builder()
@@ -93,11 +87,7 @@ class SampleApp : Application() {
      */
     private fun providePersistedRedditStore(): Store<RedditData, BarCode> {
         return StoreBuilder.parsedWithKey<BarCode, BufferedSource, RedditData>()
-                .fetcher(object : Fetcher<BufferedSource, BarCode> {
-                    override suspend fun fetch(key: BarCode): BufferedSource {
-                        return fetcher(key).await().source()
-                    }
-                })
+                .fetcher { key -> fetcher(key).await().source() }
                 .persister(newPersister())
                 .parser(MoshiParserFactory.createSourceParser(moshi, RedditData::class.java))
                 .open()

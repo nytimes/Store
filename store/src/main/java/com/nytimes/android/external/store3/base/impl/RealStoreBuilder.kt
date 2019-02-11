@@ -25,6 +25,15 @@ class RealStoreBuilder<Raw, Parsed, Key> {
         return this
     }
 
+    fun fetcher(fetcher: suspend (Key) -> Raw): RealStoreBuilder<Raw, Parsed, Key> {
+        this.fetcher = object : Fetcher<Raw, Key> {
+            override suspend fun fetch(key: Key): Raw {
+                return fetcher(key)
+            }
+        }
+        return this
+    }
+
     fun persister(persister: Persister<Raw, Key>): RealStoreBuilder<Raw, Parsed, Key> {
         this.persister = persister
         return this
@@ -86,7 +95,7 @@ class RealStoreBuilder<Raw, Parsed, Key> {
             persister = NoopPersister.create(memoryPolicy)
         }
 
-        if (parser==null) {
+        if (parser == null) {
             parser(NoopParserFunc())
         }
 

@@ -54,7 +54,8 @@ ext.versions = [
         // Testing.
         junit                : '4.12',
         assertJ              : '1.7.1',
-        mockito              : '1.9.5',
+        mockito              : '2.24.0',
+        mockitoKotlin        : '2.1.0',
         robolectric          : '3.1.2',
         supportTestRunner    : '0.4.1',
         espresso             : '2.2.1',
@@ -120,6 +121,7 @@ ext.libraries = [
         junit                   : "junit:junit:$versions.junit",
         assertJ                 : "org.assertj:assertj-core:$versions.assertJ",
         mockito                 : "org.mockito:mockito-core:$versions.mockito",
+        mockitoKotlin           : "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockitoKotlin",
         robolectric             : "org.robolectric:robolectric:$versions.robolectric",
         robolectricMultiDex     : "org.robolectric:shadows-multidex:$versions.robolectric",
         supportTestRunner       : "com.android.support.test:runner:$versions.supportTestRunner",

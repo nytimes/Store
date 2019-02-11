@@ -3,8 +3,6 @@ package com.nytimes.android.external.store3.base.impl
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Parser
 
-import io.reactivex.Single
-
 
 /**
  * Parsing fetcher that takes parser of Raw type and fetcher of raw type returning parsed instance.
@@ -12,9 +10,9 @@ import io.reactivex.Single
  */
 class ParsingFetcher<Parsed, Raw, Key>
 (private val rawFetcher: Fetcher<Raw, Key>,
- private val parser: Parser<Raw, Parsed>) : Fetcher<Parsed, Key> {
+ private val parser: Parser<Raw, Parsed>) {
 
-    override suspend fun fetch(key: Key): Parsed {
+    suspend fun fetch(key: Key): Parsed {
         return rawFetcher.fetch(key).let { parser.apply(it) }
     }
 
