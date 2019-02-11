@@ -4,7 +4,7 @@ import com.nytimes.android.external.store3.base.Parser
 
 import io.reactivex.annotations.NonNull
 
-class NoKeyParser<Key, Raw, Parsed>(private val parser: Parser<Raw, Parsed>) : KeyParser<Key, Raw, Parsed> {
+class NoKeyParser<in Key, in Raw, out Parsed>(private val parser: Parser<Raw, out Parsed>) : KeyParser<Key, Raw, Parsed> {
 
     @Throws(ParserException::class)
     override suspend fun apply(@NonNull key: Key, @NonNull raw: Raw): Parsed {
