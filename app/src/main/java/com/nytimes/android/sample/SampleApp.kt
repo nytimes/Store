@@ -104,7 +104,7 @@ class SampleApp : Application() {
     /**
      * Returns a "fetcher" which will retrieve new data from the network.
      */
-    private suspend fun fetcher(barCode: BarCode): Deferred<ResponseBody> {
+    private  fun fetcher(barCode: BarCode): Deferred<ResponseBody> {
         return provideRetrofit().fetchSubredditForPersister(barCode.key, "10")
 
     }

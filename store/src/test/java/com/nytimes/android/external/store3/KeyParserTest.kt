@@ -19,13 +19,13 @@ class KeyParserTest {
     @Throws(Exception::class)
     fun setUp() {
         store = StoreBuilder.parsedWithKey<Int, String, String>()
-                .parser(object : KeyParser<Int, String, String> {
-                    override suspend fun apply(key: Int, raw: String): String {
-                        return raw + key
-                    }
-                })
-                .fetcher { NETWORK }
-                .open()
+            .parser(object : KeyParser<Int, String, String> {
+                override suspend fun apply(key: Int, raw: String): String {
+                    return raw + key
+                }
+            })
+            .fetcher { NETWORK }
+            .open()
     }
 
     @Test

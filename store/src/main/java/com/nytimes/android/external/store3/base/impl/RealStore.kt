@@ -13,6 +13,7 @@ import com.nytimes.android.external.store3.util.NoopPersister
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.channels.ReceiveChannel
 
 open class RealStore<Parsed, Key> : Store<Parsed, Key> {
 
@@ -89,15 +90,13 @@ TODO("not implemented")
         return internalStore.fresh(key)
     }
 
-    suspend override fun freshWithResult(key: Key): Result<Parsed> {
-        TODO("not implemented")
-    }
 
-    override fun stream(): Observable<Parsed> {
+
+    override fun stream(): ReceiveChannel<Parsed> {
         return internalStore.stream()
     }
 
-    override fun stream(key: Key): Observable<Parsed> {
+    override fun stream(key: Key): ReceiveChannel<Parsed> {
         return internalStore.stream(key)
     }
 

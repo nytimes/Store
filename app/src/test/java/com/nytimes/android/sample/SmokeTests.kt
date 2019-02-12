@@ -158,8 +158,8 @@ class SmokeTests {
         persister = object : Persister<String, BarCode> {
             override suspend fun read(key: BarCode): String? {
                 when {
-                    counter.get() == 1 && key == first -> return "first"
-                    counter.get() == 2 && key == second -> return "second"
+                    counter.get() >= 1 && key == first -> return "first"
+                    counter.get() >= 2 && key == second -> return "second"
                     else -> return null
                 }
             }
@@ -210,7 +210,7 @@ class SmokeTests {
 
     companion object {
 
-        private val DISK = "disk"
+        val DISK = "disk"
         private val NETWORK = "fresh"
         private val MEMORY = "memory"
     }

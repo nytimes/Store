@@ -4,6 +4,8 @@ import com.nytimes.android.external.store.util.Result
 import com.nytimes.android.external.store3.annotations.Experimental
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 
 /**
  * a [StoreBuilder]
@@ -48,14 +50,14 @@ interface Store<T, V> {
     /**
      * Return an Observable of [Result]<T> for requested Barcode skipping Memory & Disk Cache
     </T> */
-    suspend fun freshWithResult(key: V): Result<T>
+//    suspend fun freshWithResult(key: V): Result<T>
 
     /**
      * @return an Observable that emits "fresh" new response from the store that hit the fetcher
      * WARNING: stream is an endless observable, be careful when combining
      * with operators that expect an OnComplete event
      */
-    fun stream(): Observable<T>
+    fun stream(): ReceiveChannel<T>
 
     /**
      * Similar to  [Store.get() ][Store.get]
@@ -64,7 +66,7 @@ interface Store<T, V> {
      * Errors will be dropped
      *
      */
-    fun stream(key: V): Observable<T>
+    fun stream(key: V): ReceiveChannel<T>
 
     /**
      * Clear the memory cache of all entries
