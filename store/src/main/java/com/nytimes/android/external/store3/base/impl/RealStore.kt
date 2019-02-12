@@ -9,8 +9,6 @@ import com.nytimes.android.external.store3.util.KeyParser
 import com.nytimes.android.external.store3.util.NoKeyParser
 import com.nytimes.android.external.store3.util.NoopParserFunc
 import com.nytimes.android.external.store3.util.NoopPersister
-
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -38,12 +36,12 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
                 StalePolicy.UNSPECIFIED)
     }
 
-    constructor(fetcher: Fetcher<Any, Key>,
-                persister: Persister<Any, Key>,
-                parser: Parser<Any, Parsed>) {
-        internalStore = RealInternalStore(fetcher,
-                persister,
-                NoKeyParser(parser),
+    constructor(fetcher: Fetcher<*, Key>,
+                persister: Persister<*, Key>,
+                parser: Parser<*, Parsed>) {
+        internalStore = RealInternalStore(fetcher as Fetcher<Any, Key>,
+                persister as Persister<Any, Key>,
+                NoKeyParser(parser as Parser<Any, Parsed>),
                 StalePolicy.UNSPECIFIED)
     }
 
@@ -72,7 +70,7 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
     }
 
     fun getWithResult(key: Key): Single<Result<Parsed>> {
-TODO("not implemented")
+        TODO("not implemented")
     }
 
     fun getRefreshing(key: Key): Observable<Parsed> {

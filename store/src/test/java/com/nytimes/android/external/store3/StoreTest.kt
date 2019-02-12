@@ -1,13 +1,13 @@
 package com.nytimes.android.external.store3
 
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.cache3.CacheBuilder
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import com.nytimes.android.external.store3.util.NoopPersister
-import io.reactivex.Maybe
 import io.reactivex.Single
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -32,15 +32,15 @@ class StoreTest {
                 .open()
 
 
-        `when`<Any>(fetcher.fetch(barCode))
-                .thenReturn(Single.just(NETWORK))
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(NETWORK)
 
-        `when`<Any>(persister.read(barCode))
-                .thenReturn(Maybe.empty<String>())
-                .thenReturn(Maybe.just(DISK))
+        whenever(persister.read(barCode))
+                .thenReturn(null)
+                .thenReturn(DISK)
 
-        `when`<Any>(persister.write(barCode, NETWORK))
-                .thenReturn(Single.just(true))
+        whenever(persister.write(barCode, NETWORK))
+                .thenReturn(true)
 
         var value = simpleStore.get(barCode)
 
@@ -59,15 +59,15 @@ class StoreTest {
 //                .open()
 //
 //
-//        `when`<Any>(fetcher.fetch(barCode))
-//                .thenReturn(Single.just(NETWORK))
+//        whenever(fetcher.fetch(barCode))
+//                .thenReturn(NETWORK)
 //
-//        `when`<Any>(persister.read(barCode))
-//                .thenReturn(Maybe.empty<String>())
-//                .thenReturn(Maybe.just(DISK))
+//        whenever(persister.read(barCode))
+//                .thenReturn(null)
+//                .thenReturn(DISK)
 //
-//        `when`<Any>(persister.write(barCode, NETWORK))
-//                .thenReturn(Single.just(true))
+//        whenever(persister.write(barCode, NETWORK))
+//                .thenReturn(true)
 //
 //        var result = simpleStore.getWithResult(barCode)
 //
@@ -90,23 +90,24 @@ class StoreTest {
                 .open()
 
         val networkSingle = Single.create<String> { emitter ->
-            if (counter.incrementAndGet() == 1) {
-                emitter.onSuccess(NETWORK)
-            } else {
-                emitter.onError(RuntimeException("Yo Dawg your inflight is broken"))
-            }
         }
 
 
-        `when`<Any>(fetcher.fetch(barCode))
-                .thenReturn(networkSingle)
+        whenever(fetcher.fetch(barCode))
+                .thenAnswer {
+                    if (counter.incrementAndGet() == 1) {
+                        NETWORK
+                    } else {
+                        throw RuntimeException("Yo Dawg your inflight is broken")
+                    }
+                }
 
-        `when`<Any>(persister.read(barCode))
-                .thenReturn(Maybe.empty<String>())
-                .thenReturn(Maybe.just(DISK))
+        whenever(persister.read(barCode))
+                .thenReturn(null)
+                .thenReturn(DISK)
 
-        `when`<Any>(persister.write(barCode, NETWORK))
-                .thenReturn(Single.just(true))
+        whenever(persister.write(barCode, NETWORK))
+                .thenReturn(true)
 
 
         val deferred = async { simpleStore.get(barCode) }
@@ -133,15 +134,15 @@ class StoreTest {
 //        }
 //
 //
-//        `when`<Any>(fetcher.fetch(barCode))
+//        whenever(fetcher.fetch(barCode))
 //                .thenReturn(networkSingle)
 //
-//        `when`<Any>(persister.read(barCode))
-//                .thenReturn(Maybe.empty<String>())
-//                .thenReturn(Maybe.just(DISK))
+//        whenever(persister.read(barCode))
+//                .thenReturn(null)
+//                .thenReturn(DISK)
 //
-//        `when`<Any>(persister.write(barCode, NETWORK))
-//                .thenReturn(Single.just(true))
+//        whenever(persister.write(barCode, NETWORK))
+//                .thenReturn(true)
 //
 //
 //        val response = simpleStore.getWithResult(barCode)
@@ -160,13 +161,13 @@ class StoreTest {
         val simpleStore = SampleStore(fetcher, persister)
         simpleStore.clear()
 
-        `when`<Any>(fetcher.fetch(barCode))
-                .thenReturn(Single.just(NETWORK))
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(NETWORK)
 
-        `when`<Any>(persister.read(barCode))
-                .thenReturn(Maybe.empty<String>())
-                .thenReturn(Maybe.just(DISK))
-        `when`<Any>(persister.write(barCode, NETWORK)).thenReturn(Single.just(true))
+        whenever(persister.read(barCode))
+                .thenReturn(null)
+                .thenReturn(DISK)
+        whenever(persister.write(barCode, NETWORK)).thenReturn(true)
 
         var value = simpleStore.get(barCode)
         assertThat(value).isEqualTo(DISK)
@@ -181,13 +182,13 @@ class StoreTest {
 //        val simpleStore = SampleStore(fetcher, persister)
 //        simpleStore.clear()
 //
-//        `when`<Any>(fetcher.fetch(barCode))
-//                .thenReturn(Single.just(NETWORK))
+//        whenever(fetcher.fetch(barCode))
+//                .thenReturn(NETWORK)
 //
-//        `when`<Any>(persister.read(barCode))
-//                .thenReturn(Maybe.empty<String>())
-//                .thenReturn(Maybe.just(DISK))
-//        `when`<Any>(persister.write(barCode, NETWORK)).thenReturn(Single.just(true))
+//        whenever(persister.read(barCode))
+//                .thenReturn(null)
+//                .thenReturn(DISK)
+//        whenever(persister.write(barCode, NETWORK)).thenReturn(true)
 //
 //        var result = simpleStore.getWithResult(barCode)
 //
@@ -207,8 +208,8 @@ class StoreTest {
         val simpleStore = SampleStore(fetcher, persister)
 
 
-        `when`<Any>(fetcher.fetch(barCode))
-                .thenReturn(Single.just(NETWORK))
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(NETWORK)
 
         var value = simpleStore.get(barCode)
         verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
@@ -232,8 +233,8 @@ class StoreTest {
 //        val simpleStore = SampleStore(fetcher, persister)
 //
 //
-//        `when`<Any>(fetcher.fetch(barCode))
-//                .thenReturn(Single.just(NETWORK))
+//        whenever(fetcher.fetch(barCode))
+//                .thenReturn(NETWORK)
 //
 //        var value = simpleStore.getWithResult(barCode)
 //        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)

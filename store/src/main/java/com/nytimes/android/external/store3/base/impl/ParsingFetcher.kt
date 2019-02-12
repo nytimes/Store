@@ -10,9 +10,9 @@ import com.nytimes.android.external.store3.base.Parser
  */
 class ParsingFetcher<Parsed, Raw, Key>
 (private val rawFetcher: Fetcher<Raw, Key>,
- private val parser: Parser<Raw, Parsed>) {
+ private val parser: Parser<Raw, Parsed>) : Fetcher<Parsed, Key> {
 
-    suspend fun fetch(key: Key): Parsed {
+    override suspend fun fetch(key: Key): Parsed {
         return rawFetcher.fetch(key).let { parser.apply(it) }
     }
 

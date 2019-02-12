@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 class NoopPersisterTest {
 
-    @Rule
+    @get:Rule
     var exception = ExpectedException.none()
 
     @Test
