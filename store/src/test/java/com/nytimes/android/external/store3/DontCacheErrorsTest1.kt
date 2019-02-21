@@ -1,31 +1,24 @@
 package com.nytimes.android.external.store3
 
 import com.nytimes.android.external.store3.base.impl.BarCode
-import com.nytimes.android.external.store3.base.impl.Store
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import junit.framework.Assert.fail
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import org.junit.Test
 
 
 class DontCacheErrorsTest {
 
     private var shouldThrow: Boolean = false
-    private lateinit var store: Store<Int, BarCode>
-
-    @Before
-    fun setUp() {
-        store = StoreBuilder.barcode<Int>()
-                .fetcher {
-                    if (shouldThrow) {
-                        throw RuntimeException()
-                    } else {
-                        0
-                    }
+    private val store = StoreBuilder.barcode<Int>()
+            .fetcher {
+                if (shouldThrow) {
+                    throw RuntimeException()
+                } else {
+                    0
                 }
-                .open()
-    }
+            }
+            .open()
 
     @Test
     fun testStoreDoesntCacheErrors() = runBlocking<Unit> {

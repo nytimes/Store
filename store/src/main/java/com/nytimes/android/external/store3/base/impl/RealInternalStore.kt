@@ -142,6 +142,8 @@ internal class RealInternalStore<Raw, Parsed, Key>(
       return diskValue
     } catch (e: Exception) {
       handleNetworkError(key, e)
+    } finally {
+      inFlightRequests.invalidate(key)
     }
   }
 
