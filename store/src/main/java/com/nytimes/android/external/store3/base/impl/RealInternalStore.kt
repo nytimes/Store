@@ -6,17 +6,12 @@ import com.nytimes.android.external.store3.base.InternalStore
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.util.KeyParser
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.filter
 import kotlinx.coroutines.channels.map
-import kotlinx.coroutines.withContext
-import java.util.AbstractMap
 import java.util.concurrent.ConcurrentMap
 
 /**
@@ -39,26 +34,23 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     Persister<Raw, Key> by persister,
     KeyParser<Key, Raw, Parsed> by parser,
     InternalStore<Parsed, Key> {
-  val inFlightRequests: Cache<Key, Deferred<Parsed>>
-  var memCache: Cache<Key, Deferred<Parsed>>
+  private val inFlightRequests: Cache<Key, Deferred<Parsed>> = CacheFactory.createInflighter(memoryPolicy)
+  var memCache: Cache<Key, Deferred<Parsed>> = CacheFactory.createCache(memoryPolicy)
   private val inFlightScope = CoroutineScope(SupervisorJob())
   private val memoryScope = CoroutineScope(SupervisorJob())
   private val refreshSubject = PublishSubject.create<Key>()
-  private val subject: Channel<AbstractMap.SimpleEntry<Key, Parsed>>
+  private val subject = BroadcastChannel<Pair<Key, Parsed>?>(CONFLATED).apply {
+    //a conflated channel always maintains the last element, the stream method ignore this element.
+    //Here we add an empty element that will be ignored later
+    offer(null)
+  }
 
   constructor(
     fetcher: Fetcher<Raw, Key>,
     persister: Persister<Raw, Key>,
     parser: KeyParser<Key, Raw, Parsed>,
     stalePolicy: StalePolicy
-  ) : this(fetcher, persister, parser, null, stalePolicy) {
-  }
-
-  init {
-    this.memCache = CacheFactory.createCache(memoryPolicy)
-    this.inFlightRequests = CacheFactory.createInflighter(memoryPolicy)
-    subject = Channel()
-  }
+  ) : this(fetcher, persister, parser, null, stalePolicy)
 
   /**
    * @param key
@@ -68,7 +60,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     withContext(Dispatchers.IO) {
       memCache.get(key) {
         memoryScope.async {
-          return@async disk(key) ?: fresh(key)
+          disk(key) ?: fresh(key)
         }
       }
           .await()
@@ -97,7 +89,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
       if (stalePolicy == StalePolicy.REFRESH_ON_STALE) {
         backfillCache(key)
       }
-      diskValue;
+      diskValue
     } catch (e: Exception) {
       //store fetching acts as a fallthrough,
       // if we error on disk fetching we should return no data rather than throwing the error
@@ -146,7 +138,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
       val fetchedValue = fetch(key)
       write(key, fetchedValue)
       val diskValue = readDisk(key)!!
-//      notifySubscribers(diskValue, key)
+      notifySubscribers(diskValue, key)
       return diskValue
     } catch (e: Exception) {
       handleNetworkError(key, e)
@@ -169,16 +161,22 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     data: Parsed,
     key: Key
   ) {
-    subject.send(AbstractMap.SimpleEntry(key, data))
+    subject.send(key to data)
   }
 
   //STREAM NO longer calls get
   override fun stream(key: Key): ReceiveChannel<Parsed> =
-    subject.filter { it.key == key }.map { it.value }
+    streamSubscription().filter { it.first == key }.map { (_, value) -> value }
 
   override fun stream(): ReceiveChannel<Parsed> {
-    return subject.map { it.value }
+    return streamSubscription().map { (_, value) -> value }
   }
+
+  private fun streamSubscription() =
+          subject.openSubscription()
+                  //ignore first element so only new elements are returned
+                  .apply { poll() }
+                  .map { it!! }
 
   @Deprecated("")
   override fun clearMemory() {

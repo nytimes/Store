@@ -7,6 +7,7 @@ import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import kotlinx.coroutines.runBlocking
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 
@@ -36,17 +37,17 @@ class StreamTest {
 
     @Test
     fun testStream() = runBlocking<Unit> {
-        val streamObservable = store.stream().test()
-        streamObservable.assertValueCount(0)
+        val streamObservable = store.stream()
+        assertThat(streamObservable.isEmpty).isTrue()
         store.get(barCode)
-        streamObservable.assertValueCount(1)
+        assertThat(streamObservable.isEmpty).isFalse()
     }
 
     @Test
     fun testStreamEmitsOnlyFreshData() = runBlocking<Unit> {
         store.get(barCode)
-        val streamObservable = store.stream().test()
-        streamObservable.assertValueCount(0)
+        val streamObservable = store.stream()
+        assertThat(streamObservable.isEmpty).isTrue()
     }
 
     companion object {
