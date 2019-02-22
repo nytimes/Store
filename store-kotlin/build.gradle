@@ -15,7 +15,7 @@ javadoc.dependsOn dokka
 
 dependencies {
     implementation project(':store')
-    apiElements project(':store')
+    api project(':store')
     implementation libraries.kotlinStdLib
     apiElements libraries.kotlinStdLib
 
