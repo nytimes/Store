@@ -1,6 +1,5 @@
 package com.nytimes.android.external.store3.base.impl
 
-import com.nytimes.android.external.store.util.Result
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.InternalStore
 import com.nytimes.android.external.store3.base.Parser
@@ -9,8 +8,6 @@ import com.nytimes.android.external.store3.util.KeyParser
 import com.nytimes.android.external.store3.util.NoKeyParser
 import com.nytimes.android.external.store3.util.NoopParserFunc
 import com.nytimes.android.external.store3.util.NoopPersister
-import io.reactivex.Observable
-import io.reactivex.Single
 import kotlinx.coroutines.channels.ReceiveChannel
 
 open class RealStore<Parsed, Key> : Store<Parsed, Key> {
@@ -69,13 +66,13 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
         return internalStore.get(key)
     }
 
-    fun getWithResult(key: Key): Single<Result<Parsed>> {
-        TODO("not implemented")
-    }
-
-    fun getRefreshing(key: Key): Observable<Parsed> {
-        TODO("not implemented")
-    }
+//    fun getWithResult(key: Key): Single<Result<Parsed>> {
+//        TODO("not implemented")
+//    }
+//
+//    fun getRefreshing(key: Key): Observable<Parsed> {
+//        TODO("not implemented")
+//    }
 
 
     /**
@@ -87,7 +84,6 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
     suspend override fun fresh(key: Key): Parsed {
         return internalStore.fresh(key)
     }
-
 
 
     override fun stream(): ReceiveChannel<Parsed> {

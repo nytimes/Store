@@ -121,6 +121,7 @@ ext.libraries = [
         junit                   : "junit:junit:$versions.junit",
         assertJ                 : "org.assertj:assertj-core:$versions.assertJ",
         mockito                 : "org.mockito:mockito-core:$versions.mockito",
+        mockitoInline           : "org.mockito:mockito-inline:$versions.mockito",
         mockitoKotlin           : "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockitoKotlin",
         robolectric             : "org.robolectric:robolectric:$versions.robolectric",
         robolectricMultiDex     : "org.robolectric:shadows-multidex:$versions.robolectric",

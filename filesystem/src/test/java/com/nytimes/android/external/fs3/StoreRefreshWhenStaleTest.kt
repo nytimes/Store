@@ -1,99 +1,70 @@
 package com.nytimes.android.external.fs3
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.RecordState
 import com.nytimes.android.external.store3.base.impl.BarCode
-import com.nytimes.android.external.store3.base.impl.Store
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
-
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-import org.mockito.runners.MockitoJUnitRunner
-
-import io.reactivex.Maybe
-import io.reactivex.Single
-import io.reactivex.observers.TestObserver
+import kotlinx.coroutines.runBlocking
 import okio.BufferedSource
-
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
 
-@RunWith(MockitoJUnitRunner::class)
 class StoreRefreshWhenStaleTest {
-    @Mock
-    internal lateinit var fetcher: Fetcher<BufferedSource, BarCode>
-    @Mock
-    internal lateinit var persister: RecordPersister
-    @Mock
-    internal lateinit var network1: BufferedSource
-    @Mock
-    internal lateinit var disk1: BufferedSource
-    @Mock
-    internal lateinit var disk2: BufferedSource
+    private val fetcher: Fetcher<BufferedSource, BarCode> = mock()
+    private val persister: RecordPersister = mock()
+    private val network1: BufferedSource = mock()
+    private val disk1: BufferedSource = mock()
+    private val disk2: BufferedSource = mock()
 
     private val barCode = BarCode("key", "value")
-    private lateinit var store: Store<BufferedSource, BarCode>
+    private val store = StoreBuilder.barcode<BufferedSource>()
+            .fetcher(fetcher)
+            .persister(persister)
+            .refreshOnStale()
+            .open()
 
-    @Before
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        store = StoreBuilder.barcode<BufferedSource>()
-                .fetcher(fetcher)
-                .persister(persister)
-                .refreshOnStale()
-                .open()
+    @Test
+    fun diskWasRefreshedWhenStaleRecord() = runBlocking<Unit> {
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(network1)
+        whenever(persister.read(barCode))
+                .thenReturn(disk1)  //get should return from disk
+        whenever(persister.getRecordState(barCode)).thenReturn(RecordState.STALE)
+
+        whenever(persister.write(barCode, network1))
+                .thenReturn(true)
+
+        store.get(barCode)
+        verify(fetcher, times(1)).fetch(barCode)
+        verify(persister, times(2)).getRecordState(barCode)
+        verify(persister, times(1)).write(barCode, network1)
+        verify(persister, times(2)).read(barCode) //reads from disk a second time when backfilling
     }
 
     @Test
-    fun diskWasRefreshedWhenStaleRecord() {
-        `when`(fetcher.fetch(barCode))
-                .thenReturn(Single.just(network1))
-        `when`(persister.read(barCode))
-                .thenReturn(Maybe.just(disk1))  //get should return from disk
-        `when`(persister.getRecordState(barCode)).thenReturn(RecordState.STALE)
+    fun diskWasNotRefreshedWhenFreshRecord() = runBlocking<Unit> {
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(network1)
+        whenever(persister.read(barCode))
+                .thenReturn(disk1)  //get should return from disk
+                .thenReturn(disk2) //backfill should read from disk again
+        whenever(persister.getRecordState(barCode)).thenReturn(RecordState.FRESH)
 
-        `when`(persister.write(barCode, network1))
-                .thenReturn(Single.just(true))
+        whenever(persister.write(barCode, network1))
+                .thenReturn(true)
 
-        store.get(barCode).test().awaitTerminalEvent()
-        verify<Fetcher<BufferedSource, BarCode>>(fetcher, times(1)).fetch(barCode)
-        verify<RecordPersister>(persister, times(2)).getRecordState(barCode)
-        verify<RecordPersister>(persister, times(1)).write(barCode, network1)
-        verify<RecordPersister>(persister, times(2)).read(barCode) //reads from disk a second time when backfilling
-    }
+        assertThat(store.get(barCode)).isEqualTo(disk1)
 
-    @Test
-    fun diskWasNotRefreshedWhenFreshRecord() {
-        `when`(fetcher.fetch(barCode))
-                .thenReturn(Single.just(network1))
-        `when`(persister.read(barCode))
-                .thenReturn(Maybe.just(disk1))  //get should return from disk
-                .thenReturn(Maybe.just(disk2)) //backfill should read from disk again
-        `when`(persister.getRecordState(barCode)).thenReturn(RecordState.FRESH)
-
-        `when`(persister.write(barCode, network1))
-                .thenReturn(Single.just(true))
-
-        var testObserver: TestObserver<BufferedSource> = store
-                .get(barCode)
-                .test()
-        testObserver.awaitTerminalEvent()
-        testObserver.assertNoErrors()
-        testObserver.assertResult(disk1)
-        verify<Fetcher<BufferedSource, BarCode>>(fetcher, times(0)).fetch(barCode)
-        verify<RecordPersister>(persister, times(1)).getRecordState(barCode)
+        verify(fetcher, times(0)).fetch(barCode)
+        verify(persister, times(1)).getRecordState(barCode)
 
         store.clear(barCode)
-        testObserver = store
-                .get(barCode)
-                .test()
-        testObserver.awaitTerminalEvent()
-        testObserver.assertResult(disk2)
-        verify<Fetcher<BufferedSource, BarCode>>(fetcher, times(0)).fetch(barCode)
-        verify<RecordPersister>(persister, times(2)).getRecordState(barCode)
+        assertThat(store.get(barCode)).isEqualTo(disk2)
+        verify(fetcher, times(0)).fetch(barCode)
+        verify(persister, times(2)).getRecordState(barCode)
     }
 }

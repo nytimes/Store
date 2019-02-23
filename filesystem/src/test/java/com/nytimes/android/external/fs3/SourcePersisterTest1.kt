@@ -1,22 +1,17 @@
 package com.nytimes.android.external.fs3
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.store3.base.impl.BarCode
-
-import org.junit.Before
+import junit.framework.Assert.fail
+import kotlinx.coroutines.runBlocking
+import okio.BufferedSource
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-
 import java.io.FileNotFoundException
-import java.io.IOException
-
-import okio.BufferedSource
-
-import org.assertj.core.api.Assertions.assertThat
-import org.mockito.Mockito.`when`
 
 class SourcePersisterTest {
 
@@ -24,48 +19,41 @@ class SourcePersisterTest {
     @JvmField
     var expectedException = ExpectedException.none()
 
-    @Mock
-    lateinit var fileSystem: FileSystem
-    @Mock
-    lateinit var bufferedSource: BufferedSource
+    private val fileSystem: FileSystem = mock()
+    private val bufferedSource: BufferedSource = mock()
 
-    private lateinit var sourcePersister: SourcePersister
+    private val sourcePersister = SourcePersister(fileSystem)
     private val simple = BarCode("type", "key")
 
-    @Before
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        sourcePersister = SourcePersister(fileSystem)
-    }
-
     @Test
-    @Throws(FileNotFoundException::class)
-    fun readExists() {
-        `when`(fileSystem.exists(simple.toString()))
+    fun readExists() = runBlocking<Unit> {
+        whenever(fileSystem.exists(simple.toString()))
                 .thenReturn(true)
-        `when`(fileSystem.read(simple.toString())).thenReturn(bufferedSource)
+        whenever(fileSystem.read(simple.toString())).thenReturn(bufferedSource)
 
-        val returnedValue = sourcePersister.read(simple).blockingGet()
+        val returnedValue = sourcePersister.read(simple)
         assertThat(returnedValue).isEqualTo(bufferedSource)
     }
 
     @Test
-    @Throws(FileNotFoundException::class)
-    fun readDoesNotExist() {
-        `when`(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
+    fun readDoesNotExist() = runBlocking<Unit> {
+        whenever(fileSystem.exists(SourcePersister.pathForBarcode(simple)))
                 .thenReturn(false)
 
-        sourcePersister.read(simple).test().assertError(FileNotFoundException::class.java)
+        try {
+            sourcePersister.read(simple)
+            fail()
+        } catch (e: FileNotFoundException) {
+        }
     }
 
     @Test
-    @Throws(IOException::class)
-    fun write() {
-        assertThat(sourcePersister.write(simple, bufferedSource).blockingGet()).isTrue()
+    fun write() = runBlocking<Unit> {
+        assertThat(sourcePersister.write(simple, bufferedSource)).isTrue()
     }
 
     @Test
-    fun pathForBarcode() {
+    fun pathForBarcode() = runBlocking<Unit> {
         assertThat(SourcePersister.pathForBarcode(simple)).isEqualTo("typekey")
     }
 }

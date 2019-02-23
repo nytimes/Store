@@ -5,7 +5,6 @@ import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.InternalStore
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.util.KeyParser
-import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
@@ -38,7 +37,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
   var memCache: Cache<Key, Deferred<Parsed>> = CacheFactory.createCache(memoryPolicy)
   private val inFlightScope = CoroutineScope(SupervisorJob())
   private val memoryScope = CoroutineScope(SupervisorJob())
-  private val refreshSubject = PublishSubject.create<Key>()
+//  private val refreshSubject = PublishSubject.create<Key>()
   private val subject = BroadcastChannel<Pair<Key, Parsed>?>(CONFLATED).apply {
     //a conflated channel always maintains the last element, the stream method ignore this element.
     //Here we add an empty element that will be ignored later
@@ -214,7 +213,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
   }
 
   private fun notifyRefresh(key: Key) {
-    refreshSubject.onNext(key)
+//    refreshSubject.onNext(key)
   }
 }
 

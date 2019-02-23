@@ -4,12 +4,8 @@ import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.RecordProvider
 import com.nytimes.android.external.store3.base.RecordState
-
-import java.util.concurrent.TimeUnit
-
-import io.reactivex.Maybe
-import io.reactivex.Single
 import okio.BufferedSource
+import java.util.concurrent.TimeUnit
 
 /**
  * FileSystemRecordPersister is used when persisting to/from file system while being stale aware

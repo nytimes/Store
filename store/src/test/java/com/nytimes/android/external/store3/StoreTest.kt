@@ -12,7 +12,6 @@ import io.reactivex.Single
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.*
 import java.util.concurrent.TimeUnit
@@ -202,7 +201,6 @@ class StoreTest {
 //        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
 //    }
 
-    @Ignore("Add mockito inline to fix it")
     @Test
     fun testNoopAndDefault() = runBlocking<Unit> {
 

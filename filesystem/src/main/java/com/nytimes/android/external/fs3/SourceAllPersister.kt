@@ -4,14 +4,11 @@ package com.nytimes.android.external.fs3
 import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.store3.base.AllPersister
 import com.nytimes.android.external.store3.base.impl.BarCode
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.ReceiveChannel
+import okio.BufferedSource
 import java.io.FileNotFoundException
 import javax.inject.Inject
-
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import okio.BufferedSource
 
 class SourceAllPersister @Inject
 constructor(fileSystem: FileSystem) : AllPersister<BufferedSource, BarCode> {
@@ -30,11 +27,11 @@ constructor(fileSystem: FileSystem) : AllPersister<BufferedSource, BarCode> {
     }
 
     @Throws(FileNotFoundException::class)
-    override fun readAll(path: String): Observable<BufferedSource> {
-        return sourceFileAllReader.readAll(path)
+    override suspend fun CoroutineScope.readAll(path: String): ReceiveChannel<BufferedSource> {
+        return with(sourceFileAllReader) { readAll(path) }
     }
 
-    override fun deleteAll(path: String): Observable<Boolean> {
+    override suspend fun deleteAll(path: String): Boolean {
         return sourceFileAllEraser.deleteAll(path)
     }
 

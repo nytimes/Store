@@ -1,18 +1,14 @@
 package com.nytimes.android.external.fs3.filesystem
 
-import okio.Buffer
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import okio.BufferedSource
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.mockito.Matchers.any
-import org.mockito.Matchers.anyByte
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-import java.io.IOException
 
 class FSFileTest {
 
@@ -20,25 +16,15 @@ class FSFileTest {
     @JvmField
     var folder = TemporaryFolder()
 
-    @Mock
-    internal lateinit var source: BufferedSource
+    private val source: BufferedSource = mock()
 
-    private lateinit var fsFile: FSFile
-
-    @Before
-    @Throws(IOException::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        val root = folder.newFolder()
-        fsFile = FSFile(root, TEST_FILE_PATH)
-    }
+    private val fsFile by lazy { FSFile(folder.newFolder(), TEST_FILE_PATH) }
 
     @Test
-    @Throws(IOException::class)
     fun closeSourceAfterWrite() {
-        `when`(source.read(any(Buffer::class.java), anyByte().toLong())).thenReturn(java.lang.Long.valueOf(-1))
+        whenever(source.read(any(), any())) doReturn -1L
         fsFile.write(source)
-        verify<BufferedSource>(source).close()
+        verify(source).close()
     }
 
     companion object {

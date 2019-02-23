@@ -1,26 +1,21 @@
 package com.nytimes.android.external.fs3.filesystem
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
-
 import java.io.File
-import java.io.IOException
-
-import org.assertj.core.api.Assertions.assertThat
 
 class BreadthFirstFileTreeIteratorTest {
 
     private lateinit var systemTempDir: File
 
     @Before
-    @Throws(IOException::class)
     fun setUp() {
         val property = "java.io.tmpdir"
         systemTempDir = createDirWithSubFiles(File(System.getProperty(property)), 0)
     }
 
     @Test
-    @Throws(IOException::class)
     fun testHasNextEmpty() {
         val hasNextDir = createDirWithSubFiles(systemTempDir, 0)
         val btfti = BreadthFirstFileTreeIterator(hasNextDir)
@@ -28,7 +23,6 @@ class BreadthFirstFileTreeIteratorTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun testHasNextOne() {
         val hasNextDir = createDirWithSubFiles(systemTempDir, 1)
         val btfti = BreadthFirstFileTreeIterator(hasNextDir)
@@ -38,7 +32,6 @@ class BreadthFirstFileTreeIteratorTest {
     }
 
     @Test
-    @Throws(IOException::class)
     fun testHastNextMany() {
         val fileCount = 30
         val hasNextDir = createDirWithSubFiles(systemTempDir, fileCount)
@@ -52,7 +45,6 @@ class BreadthFirstFileTreeIteratorTest {
         assertThat(counter).isEqualTo(fileCount * 2)
     }
 
-    @Throws(IOException::class)
     private fun createDirWithSubFiles(root: File, fileCount: Int): File {
         assertThat(root).exists()
         assertThat(root.isDirectory).isTrue()
@@ -64,7 +56,6 @@ class BreadthFirstFileTreeIteratorTest {
         return tempDir
     }
 
-    @Throws(IOException::class)
     private fun createFile(root: File) {
         val someFile = File(root, "somefile" + System.nanoTime())
         assertThat(someFile.createNewFile()).isTrue()

@@ -1,66 +1,58 @@
 package com.nytimes.android.external.fs3
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.store3.base.RecordState
 import com.nytimes.android.external.store3.base.impl.BarCode
+import junit.framework.Assert.fail
+import kotlinx.coroutines.runBlocking
 import okio.BufferedSource
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.inOrder
-import org.mockito.MockitoAnnotations
 import java.io.FileNotFoundException
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class FileSystemRecordPersisterTest {
 
-    @Mock
-    lateinit var fileSystem: FileSystem
-    @Mock
-    lateinit var bufferedSource: BufferedSource
+    private val fileSystem: FileSystem = mock()
+    private val bufferedSource: BufferedSource = mock()
 
     private val simple = BarCode("type", "key")
     private val resolvedPath = BarCodePathResolver().resolve(simple)
-    lateinit var fileSystemPersister: FileSystemRecordPersister<BarCode>
-
-    @Before
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        fileSystemPersister = FileSystemRecordPersister.create(fileSystem,
-                BarCodePathResolver(),
-                1, TimeUnit.DAYS)
-    }
+    private val fileSystemPersister = FileSystemRecordPersister.create(fileSystem,
+            BarCodePathResolver(),
+            1, TimeUnit.DAYS)
 
     @Test
-    @Throws(FileNotFoundException::class)
-    fun readExists() {
-        `when`(fileSystem.exists(resolvedPath))
+    fun readExists() = runBlocking<Unit> {
+        whenever(fileSystem.exists(resolvedPath))
                 .thenReturn(true)
-        `when`(fileSystem.read(resolvedPath)).thenReturn(bufferedSource)
+        whenever(fileSystem.read(resolvedPath)).thenReturn(bufferedSource)
 
-        val returnedValue = fileSystemPersister.read(simple).blockingGet()
+        val returnedValue = fileSystemPersister.read(simple)
         assertThat(returnedValue).isEqualTo(bufferedSource)
     }
 
     @Test
-    @Throws(FileNotFoundException::class)
-    fun readDoesNotExist() {
-        `when`(fileSystem.exists(resolvedPath))
+    fun readDoesNotExist() = runBlocking<Unit> {
+        whenever(fileSystem.exists(resolvedPath))
                 .thenReturn(false)
 
-        fileSystemPersister.read(simple).test().assertError(FileNotFoundException::class.java)
+        try {
+            fileSystemPersister.read(simple)
+            fail()
+        } catch (e: FileNotFoundException) {
+        }
     }
 
     @Test
-    @Throws(IOException::class)
-    fun writeThenRead() {
-        `when`(fileSystem.read(resolvedPath)).thenReturn(bufferedSource)
-        `when`(fileSystem.exists(resolvedPath)).thenReturn(true)
-        fileSystemPersister.write(simple, bufferedSource).blockingGet()
-        val source = fileSystemPersister.read(simple).blockingGet()
+    fun writeThenRead() = runBlocking<Unit> {
+        whenever(fileSystem.read(resolvedPath)).thenReturn(bufferedSource)
+        whenever(fileSystem.exists(resolvedPath)).thenReturn(true)
+        fileSystemPersister.write(simple, bufferedSource)
+        val source = fileSystemPersister.read(simple)
         val inOrder = inOrder(fileSystem)
         inOrder.verify<FileSystem>(fileSystem).write(resolvedPath, bufferedSource)
         inOrder.verify<FileSystem>(fileSystem).exists(resolvedPath)
@@ -70,24 +62,24 @@ class FileSystemRecordPersisterTest {
     }
 
     @Test
-    fun freshTest() {
-        `when`(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
+    fun freshTest() = runBlocking<Unit> {
+        whenever(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
                 .thenReturn(RecordState.FRESH)
 
         assertThat(fileSystemPersister.getRecordState(simple)).isEqualTo(RecordState.FRESH)
     }
 
     @Test
-    fun staleTest() {
-        `when`(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
+    fun staleTest() = runBlocking<Unit> {
+        whenever(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
                 .thenReturn(RecordState.STALE)
 
         assertThat(fileSystemPersister.getRecordState(simple)).isEqualTo(RecordState.STALE)
     }
 
     @Test
-    fun missingTest() {
-        `when`(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
+    fun missingTest() = runBlocking<Unit> {
+        whenever(fileSystem.getRecordState(TimeUnit.DAYS, 1L, resolvedPath))
                 .thenReturn(RecordState.MISSING)
 
         assertThat(fileSystemPersister.getRecordState(simple)).isEqualTo(RecordState.MISSING)

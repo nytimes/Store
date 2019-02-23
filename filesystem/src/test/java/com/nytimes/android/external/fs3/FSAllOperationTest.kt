@@ -4,18 +4,17 @@ package com.nytimes.android.external.fs3
 import com.google.common.base.Charsets.UTF_8
 import com.google.common.io.Files.createTempDir
 import com.nytimes.android.external.fs3.filesystem.FileSystemFactory
+import kotlinx.coroutines.runBlocking
 import okio.BufferedSource
 import okio.Okio
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.ByteArrayInputStream
-import java.io.IOException
 
 class FSAllOperationTest {
 
     @Test
-    @Throws(IOException::class)
-    fun readAll() {
+    fun readAll() = runBlocking<Unit> {
         val tempDir = createTempDir()
         val fileSystem = FileSystemFactory.create(tempDir)
 
@@ -24,14 +23,13 @@ class FSAllOperationTest {
         fileSystem.write("$FOLDER/$INNER_FOLDER/key2.txt", source(CHALLAH_CHALLAH))
         val reader = FSAllReader(fileSystem)
         //read back all values for the FOLDER
-        val observable = reader.readAll(FOLDER)
-        assertThat(observable.blockingFirst().readUtf8()).isEqualTo(CHALLAH)
-        assertThat(observable.blockingLast().readUtf8()).isEqualTo(CHALLAH_CHALLAH)
+        val observable = with(reader) { readAll(FOLDER) }
+        assertThat(observable.receive().readUtf8()).isEqualTo(CHALLAH)
+        assertThat(observable.receive().readUtf8()).isEqualTo(CHALLAH_CHALLAH)
     }
 
     @Test
-    @Throws(IOException::class)
-    fun deleteAll() {
+    fun deleteAll() = runBlocking<Unit> {
         val tempDir = createTempDir()
         val fileSystem = FileSystemFactory.create(tempDir)
         //write different data to File System for each barcode
@@ -39,8 +37,7 @@ class FSAllOperationTest {
         fileSystem.write("$FOLDER/$INNER_FOLDER/key2.txt", source(CHALLAH_CHALLAH))
 
         val eraser = FSAllEraser(fileSystem)
-        val observable = eraser.deleteAll(FOLDER)
-        assertThat(observable.blockingFirst()).isEqualTo(true)
+        assertThat(eraser.deleteAll(FOLDER)).isEqualTo(true)
     }
 
     companion object {
