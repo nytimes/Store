@@ -58,12 +58,17 @@ internal class RealInternalStore<Raw, Parsed, Key>(
    */
   override suspend fun get(key: Key): Parsed =
     withContext(Dispatchers.IO) {
-      memCache.get(key) {
-        memoryScope.async {
-          disk(key) ?: fresh(key)
-        }
+      try {
+          memCache.get(key) {
+            memoryScope.async {
+              disk(key) ?: fresh(key)
+            }
+          }
+                  .await()
+      } catch (e: Exception) {
+        // should we remove the key from the cache here ?
+        disk(key) ?: fresh(key)
       }
-          .await()
     }
 
 

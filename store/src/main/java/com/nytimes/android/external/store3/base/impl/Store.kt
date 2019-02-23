@@ -1,10 +1,6 @@
 package com.nytimes.android.external.store3.base.impl
 
 import com.nytimes.android.external.store.util.Result
-import com.nytimes.android.external.store3.annotations.Experimental
-import io.reactivex.Observable
-import io.reactivex.Single
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 
 /**
@@ -57,6 +53,7 @@ interface Store<T, V> {
      * WARNING: stream is an endless observable, be careful when combining
      * with operators that expect an OnComplete event
      */
+    // TODO should this method return a Pair<K, T> ?
     fun stream(): ReceiveChannel<T>
 
     /**
