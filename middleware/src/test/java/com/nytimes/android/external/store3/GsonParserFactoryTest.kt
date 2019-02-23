@@ -1,15 +1,11 @@
 package com.nytimes.android.external.store3
 
 import com.google.gson.Gson
+import com.nhaarman.mockitokotlin2.mock
 import com.nytimes.android.external.store3.middleware.GsonParserFactory
-
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-
 import java.lang.reflect.Type
 
 class GsonParserFactoryTest {
@@ -18,15 +14,8 @@ class GsonParserFactoryTest {
     @JvmField
     var expectedException = ExpectedException.none()
 
-    @Mock
-    lateinit var type: Type
+    private val type: Type = mock()
     private val gson = Gson()
-
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-    }
 
     @Test
     fun shouldCreateParsersProperly() {

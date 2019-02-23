@@ -1,22 +1,21 @@
 package com.nytimes.android.external.store3.middleware.moshi
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.ParsingStoreBuilder
-import io.reactivex.Maybe
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import okio.BufferedSource
 import okio.Okio
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Mock
-import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import java.io.ByteArrayInputStream
 import java.nio.charset.Charset
 
@@ -24,34 +23,27 @@ class MoshiSourceParserTest {
     @Rule
     @JvmField
     var expectedException = ExpectedException.none()
-    @Mock
-    lateinit var fetcher: Fetcher<BufferedSource, BarCode>
-    @Mock
-    lateinit var persister: Persister<BufferedSource, BarCode>
+    private val fetcher: Fetcher<BufferedSource, BarCode> = mock()
+    private val persister: Persister<BufferedSource, BarCode> = mock()
     private val barCode = BarCode("value", KEY)
 
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-
+    fun setUp() = runBlocking<Unit> {
         val bufferedSource = source(sourceString)
         assertNotNull(bufferedSource)
 
-        `when`(fetcher.fetch(barCode))
-                .thenReturn(Single.just(bufferedSource))
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(bufferedSource)
 
-        `when`(persister.read(barCode))
-                .thenReturn(Maybe.empty())
-                .thenReturn(Maybe.just(bufferedSource))
+        whenever(persister.read(barCode))
+                .thenReturn(null)
+                .thenReturn(bufferedSource)
 
-        `when`(persister.write(barCode, bufferedSource))
-                .thenReturn(Single.just(true))
+        whenever(persister.write(barCode, bufferedSource))
+                .thenReturn(true)
     }
 
     @Test
-    @Throws(Exception::class)
-    fun testSourceParser() {
+    fun testSourceParser() = runBlocking<Unit> {
 
         val parser = MoshiParserFactory.createSourceParser<Foo>(Foo::class.java)
 
@@ -61,7 +53,7 @@ class MoshiSourceParserTest {
                 .parser(parser)
                 .open()
 
-        val result = store.get(barCode).blockingGet()
+        val result = store.get(barCode)
 
         assertEquals(result.number.toLong(), 123)
         assertEquals(result.string, "abc")

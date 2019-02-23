@@ -17,10 +17,13 @@ version = VERSION_NAME
 dependencies {
     implementation project(path: ':store')
     implementation project(path: ':filesystem')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
     implementation libraries.moshi
     compileOnly libraries.jsr305
     compileOnly libraries.javax
     testImplementation libraries.mockito
+    testImplementation libraries.mockitoInline
+    testImplementation libraries.mockitoKotlin
     testImplementation libraries.junit
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }

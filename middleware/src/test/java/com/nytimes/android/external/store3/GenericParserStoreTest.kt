@@ -1,42 +1,30 @@
 package com.nytimes.android.external.store3
 
+import com.google.common.base.Charsets.UTF_8
 import com.google.gson.Gson
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.store3.base.Fetcher
-import com.nytimes.android.external.store3.base.Parser
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
-import com.nytimes.android.external.store3.base.impl.Store
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import com.nytimes.android.external.store3.middleware.GsonParserFactory
-
-import org.junit.Test
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-
-import java.io.ByteArrayInputStream
-
-import io.reactivex.Maybe
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import okio.BufferedSource
 import okio.Okio
-
-import com.google.common.base.Charsets.UTF_8
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import java.io.ByteArrayInputStream
 
 class GenericParserStoreTest {
-    @Mock
-    lateinit var fetcher: Fetcher<BufferedSource, BarCode>
-    @Mock
-    lateinit var persister: Persister<BufferedSource, BarCode>
+    private val fetcher: Fetcher<BufferedSource, BarCode> = mock()
+    private val persister: Persister<BufferedSource, BarCode> = mock()
     private val barCode = BarCode("value", KEY)
 
     @Test
-    fun testSimple() {
-        MockitoAnnotations.initMocks(this)
-
+    fun testSimple() = runBlocking<Unit> {
         val parser = GsonParserFactory.createSourceParser<Foo>(Gson(), Foo::class.java)
 
         val simpleStore = StoreBuilder.parsedWithKey<BarCode, BufferedSource, Foo>()
@@ -52,22 +40,21 @@ class GenericParserStoreTest {
 
 
         val source = source(sourceData)
-        val value = Single.just(source)
-        `when`(fetcher.fetch(barCode))
-                .thenReturn(value)
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(source)
 
-        `when`(persister.read(barCode))
-                .thenReturn(Maybe.empty())
-                .thenReturn(value.toMaybe())
+        whenever(persister.read(barCode))
+                .thenReturn(null)
+                .thenReturn(source)
 
-        `when`(persister.write(barCode, source))
-                .thenReturn(Single.just(true))
+        whenever(persister.write(barCode, source))
+                .thenReturn(true)
 
-        var result = simpleStore.get(barCode).blockingGet()
+        var result = simpleStore.get(barCode)
         assertThat(result.bar).isEqualTo(KEY)
-        result = simpleStore.get(barCode).blockingGet()
+        result = simpleStore.get(barCode)
         assertThat(result.bar).isEqualTo(KEY)
-        verify<Fetcher<BufferedSource, BarCode>>(fetcher, times(1)).fetch(barCode)
+        verify(fetcher, times(1)).fetch(barCode)
     }
 
     private class Foo internal constructor() {

@@ -17,6 +17,7 @@ version = VERSION_NAME
 dependencies {
     implementation project(path: ':store')
     implementation project(path: ':filesystem')
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
     compileOnly libraries.jsr305
     implementation libraries.jacksonCore
     implementation libraries.jacksonKotlin
@@ -24,6 +25,8 @@ dependencies {
     implementation libraries.okio
     compileOnly libraries.javax
     testImplementation libraries.mockito
+    testImplementation libraries.mockitoInline
+    testImplementation libraries.mockitoKotlin
     testImplementation libraries.junit
 }
 

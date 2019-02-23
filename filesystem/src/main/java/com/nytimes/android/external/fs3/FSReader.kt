@@ -2,12 +2,8 @@ package com.nytimes.android.external.fs3
 
 import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.store3.base.DiskRead
-
-import java.io.FileNotFoundException
-import java.io.IOException
-
-import io.reactivex.Maybe
 import okio.BufferedSource
+import java.io.FileNotFoundException
 
 /**
  * FSReader is used when persisting from file system
@@ -18,13 +14,13 @@ import okio.BufferedSource
 </T> */
 open class FSReader<T>(internal val fileSystem: FileSystem, internal val pathResolver: PathResolver<T>) : DiskRead<BufferedSource, T> {
 
-    suspend override fun read(key: T): BufferedSource? {
+    override suspend fun read(key: T): BufferedSource? {
         val resolvedKey = pathResolver.resolve(key)
         val exists = fileSystem.exists(resolvedKey)
-        if (exists==true) {
+        if (exists == true) {
             var bufferedSource: BufferedSource? = null
             try {
-                bufferedSource= fileSystem.read(resolvedKey)
+                bufferedSource = fileSystem.read(resolvedKey)
                 return bufferedSource
             } catch (e: FileNotFoundException) {
                 throw e
@@ -38,9 +34,8 @@ open class FSReader<T>(internal val fileSystem: FileSystem, internal val pathRes
 //                    }
 //                }
             }
-        }
-        else{
-           throw FileNotFoundException(ERROR_MESSAGE + resolvedKey)
+        } else {
+            throw FileNotFoundException(ERROR_MESSAGE + resolvedKey)
         }
     }
 

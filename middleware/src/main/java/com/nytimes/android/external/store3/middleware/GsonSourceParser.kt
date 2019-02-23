@@ -4,7 +4,6 @@ package com.nytimes.android.external.store3.middleware
 import com.google.gson.Gson
 import com.nytimes.android.external.store3.base.Parser
 import com.nytimes.android.external.store3.util.ParserException
-import io.reactivex.annotations.NonNull
 import okio.BufferedSource
 import java.io.IOException
 import java.io.InputStreamReader
@@ -28,8 +27,7 @@ class GsonSourceParser<Parsed> @Inject
 constructor(private val gson: Gson, private val type: Type) : Parser<BufferedSource, Parsed> {
 
     @Throws(ParserException::class)
-    override
-    suspend fun apply(@NonNull raw: BufferedSource): Parsed {
+    override suspend fun apply(raw: BufferedSource): Parsed {
         try {
             InputStreamReader(raw.inputStream(), Charset.forName("UTF-8")).use { reader -> return gson.fromJson(reader, type) }
         } catch (e: IOException) {

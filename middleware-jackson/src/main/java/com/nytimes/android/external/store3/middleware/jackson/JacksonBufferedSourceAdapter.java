@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
-import io.reactivex.exceptions.Exceptions;
 import okio.BufferedSource;
 import okio.Okio;
 
@@ -31,7 +30,7 @@ public class JacksonBufferedSourceAdapter<Parsed> implements BufferedSourceAdapt
         try {
             return Okio.buffer(Okio.source(new ByteArrayInputStream(objectMapper.writeValueAsBytes(value))));
         } catch (JsonProcessingException e) {
-            throw Exceptions.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 }

@@ -1,56 +1,51 @@
 package com.nytimes.android.external.store3.middleware.moshi
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.ParsingStoreBuilder
 import com.squareup.moshi.Moshi
-import io.reactivex.Maybe
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Mock
-import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 
 class MoshiStringParserStoreTest {
     @Rule
     @JvmField
     var expectedException = ExpectedException.none()
-    @Mock
-    lateinit var fetcher: Fetcher<String, BarCode>
-    @Mock
-    lateinit var persister: Persister<String, BarCode>
+    private val fetcher: Fetcher<String, BarCode> = mock()
+    private val persister: Persister<String, BarCode> = mock()
     private val barCode = BarCode("value", KEY)
 
     @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
+    fun setUp() = runBlocking<Unit> {
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(source)
 
-        `when`(fetcher.fetch(barCode))
-                .thenReturn(Single.just(source))
+        whenever(persister.read(barCode))
+                .thenReturn(null)
+                .thenReturn(source)
 
-        `when`(persister.read(barCode))
-                .thenReturn(Maybe.empty())
-                .thenReturn(Maybe.just(source))
-
-        `when`(persister.write(barCode, source))
-                .thenReturn(Single.just(true))
+        whenever(persister.write(barCode, source))
+                .thenReturn(true)
     }
 
     @Test
-    fun testMoshiString() {
+    fun testMoshiString() = runBlocking<Unit> {
         val store = ParsingStoreBuilder.builder<String, Foo>()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(MoshiParserFactory.createStringParser(Foo::class.java))
                 .open()
 
-        val result = store.get(barCode).blockingGet()
+        val result = store.get(barCode)
 
         assertEquals(result.number.toLong(), 123)
         assertEquals(result.string, "abc")

@@ -2,65 +2,58 @@ package com.nytimes.android.external.store3.middleware.jackson
 
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
-import io.reactivex.Maybe
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 
 class JacksonStringParserStoreTest {
     @Rule
     @JvmField
     var expectedException = ExpectedException.none()
-    @Mock
-    lateinit var fetcher: Fetcher<String, BarCode>
-    @Mock
-    lateinit var persister: Persister<String, BarCode>
+    private val fetcher: Fetcher<String, BarCode> = mock()
+    private val persister: Persister<String, BarCode> = mock()
     private val barCode = BarCode("value", KEY)
 
     @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
+    fun setUp() = runBlocking<Unit> {
+        whenever(fetcher.fetch(barCode))
+                .thenReturn(source)
 
-        `when`(fetcher.fetch(barCode))
-                .thenReturn(Single.just(source))
+        whenever(persister.read(barCode))
+                .thenReturn(null)
+                .thenReturn(source)
 
-        `when`(persister.read(barCode))
-                .thenReturn(Maybe.empty())
-                .thenReturn(Maybe.just(source))
-
-        `when`(persister.write(barCode, source))
-                .thenReturn(Single.just(true))
+        whenever(persister.write(barCode, source))
+                .thenReturn(true)
     }
 
     @Test
-    fun testDefaultJacksonStringParser() {
+    fun testDefaultJacksonStringParser() = runBlocking<Unit> {
         val store = StoreBuilder.parsedWithKey<BarCode, String, Foo>()
                 .persister(persister)
                 .fetcher(fetcher)
                 .parser(JacksonParserFactory.createStringParser(Foo::class.java))
                 .open()
 
-        val result = store.get(barCode).blockingGet()
+        val result = store.get(barCode)
         validateFoo(result)
         verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
     }
 
     @Test
-    fun testCustomJsonFactoryStringParser() {
+    fun testCustomJsonFactoryStringParser() = runBlocking<Unit> {
         val jsonFactory = JsonFactory()
 
         val parser = JacksonParserFactory.createStringParser<Foo>(jsonFactory, Foo::class.java)
@@ -71,7 +64,7 @@ class JacksonStringParserStoreTest {
                 .parser(parser)
                 .open()
 
-        val result = store.get(barCode).blockingGet()
+        val result = store.get(barCode)
         validateFoo(result)
         verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
     }

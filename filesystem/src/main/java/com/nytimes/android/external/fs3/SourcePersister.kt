@@ -4,11 +4,8 @@ package com.nytimes.android.external.fs3
 import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
-import javax.inject.Inject
-
-import io.reactivex.Maybe
-import io.reactivex.Single
 import okio.BufferedSource
+import javax.inject.Inject
 
 /**
  * Persister to be used when storing something to persister from a BufferedSource
@@ -22,13 +19,8 @@ import okio.BufferedSource
 open class SourcePersister @Inject
 constructor(fileSystem: FileSystem) : Persister<BufferedSource, BarCode> {
 
-    internal val sourceFileReader: SourceFileReader
-    internal val sourceFileWriter: SourceFileWriter
-
-    init {
-        sourceFileReader = SourceFileReader(fileSystem)
-        sourceFileWriter = SourceFileWriter(fileSystem)
-    }
+    protected val sourceFileReader: SourceFileReader = SourceFileReader(fileSystem)
+    protected val sourceFileWriter: SourceFileWriter = SourceFileWriter(fileSystem)
 
     override suspend fun read(barCode: BarCode): BufferedSource? {
         return sourceFileReader.read(barCode)

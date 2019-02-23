@@ -3,23 +3,20 @@ package com.nytimes.android.external.store3.middleware.jackson
 
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
-import io.reactivex.Maybe
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import java.io.Reader
 import java.io.StringReader
 
@@ -27,31 +24,23 @@ class JacksonReaderParserStoreTest {
     @Rule
     @JvmField
     var expectedException = ExpectedException.none()
-    @Mock
-    lateinit var fetcher: Fetcher<Reader, BarCode>
-    @Mock
-    lateinit var persister: Persister<Reader, BarCode>
+
+    private val source = StringReader(sourceString)
+
+    private val fetcher: Fetcher<Reader, BarCode> = mock {
+        onBlocking { it.fetch(barCode) } doReturn source as Reader
+    }
+    private val persister: Persister<Reader, BarCode> = mock {
+        onBlocking { it.read(barCode) }
+                .doReturn(null)
+                .doReturn(source)
+
+        onBlocking { it.write(barCode, source) } doReturn true
+    }
     private val barCode = BarCode("value", KEY)
 
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-
-        val source = StringReader(sourceString)
-        `when`(fetcher.fetch(barCode))
-                .thenReturn(Single.just(source as Reader))
-
-        `when`(persister.read(barCode))
-                .thenReturn(Maybe.empty())
-                .thenReturn(Maybe.just(source))
-
-        `when`(persister.write(barCode, source))
-                .thenReturn(Single.just(true))
-    }
-
     @Test
-    fun testDefaultJacksonReaderParser() {
+    fun testDefaultJacksonReaderParser() = runBlocking<Unit> {
         val parser = JacksonParserFactory.createReaderParser<Foo>(Foo::class.java)
         val store = StoreBuilder.parsedWithKey<BarCode, Reader, Foo>()
                 .persister(persister)
@@ -59,13 +48,13 @@ class JacksonReaderParserStoreTest {
                 .parser(parser)
                 .open()
 
-        val result = store.get(barCode).blockingGet()
+        val result = store.get(barCode)
         validateFoo(result)
-        verify<Fetcher<Reader, BarCode>>(fetcher, times(1)).fetch(barCode)
+        verify(fetcher, times(1)).fetch(barCode)
     }
 
     @Test
-    fun testCustomJsonFactoryReaderParser() {
+    fun testCustomJsonFactoryReaderParser() = runBlocking<Unit> {
         val jsonFactory = JsonFactory()
 
         val parser = JacksonParserFactory.createReaderParser<Foo>(jsonFactory, Foo::class.java)
@@ -76,9 +65,9 @@ class JacksonReaderParserStoreTest {
                 .parser(parser)
                 .open()
 
-        val result = store.get(barCode).blockingGet()
+        val result = store.get(barCode)
         validateFoo(result)
-        verify<Fetcher<Reader, BarCode>>(fetcher, times(1)).fetch(barCode)
+        verify(fetcher, times(1)).fetch(barCode)
     }
 
     private fun validateFoo(foo: Foo) {

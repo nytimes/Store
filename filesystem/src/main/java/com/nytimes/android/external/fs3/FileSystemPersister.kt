@@ -2,9 +2,6 @@ package com.nytimes.android.external.fs3
 
 import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.store3.base.Persister
-
-import io.reactivex.Maybe
-import io.reactivex.Single
 import okio.BufferedSource
 
 /**
@@ -14,13 +11,8 @@ import okio.BufferedSource
  * @param <T> key type
 </T> */
 class FileSystemPersister<T> private constructor(fileSystem: FileSystem, pathResolver: PathResolver<T>) : Persister<BufferedSource, T> {
-    private val fileReader: FSReader<T>
-    private val fileWriter: FSWriter<T>
-
-    init {
-        fileReader = FSReader(fileSystem, pathResolver)
-        fileWriter = FSWriter(fileSystem, pathResolver)
-    }
+    private val fileReader: FSReader<T> = FSReader(fileSystem, pathResolver)
+    private val fileWriter: FSWriter<T> = FSWriter(fileSystem, pathResolver)
 
     override suspend fun read(key: T): BufferedSource? {
         return fileReader.read(key)
