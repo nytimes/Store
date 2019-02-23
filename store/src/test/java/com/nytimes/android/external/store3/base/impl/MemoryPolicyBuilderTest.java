@@ -10,31 +10,31 @@ public class MemoryPolicyBuilderTest {
 
     @Test
     public void testBuildExpireAfterWriteMemoryPolicy() {
-        MemoryPolicy policy = MemoryPolicy.builder()
+        MemoryPolicy policy = MemoryPolicy.Companion.builder()
                 .setExpireAfterWrite(4L)
                 .build();
 
         assertThat(policy.getExpireAfterWrite()).isEqualTo(4L);
         assertThat(policy.getExpireAfterTimeUnit()).isEqualTo(TimeUnit.SECONDS);
         assertThat(policy.isDefaultWritePolicy()).isFalse();
-        assertThat(policy.getExpireAfterAccess()).isEqualTo(MemoryPolicy.DEFAULT_POLICY);
+        assertThat(policy.getExpireAfterAccess()).isEqualTo(MemoryPolicy.Companion.getDEFAULT_POLICY());
     }
 
     @Test
     public void testBuildExpireAfterAccessMemoryPolicy() {
-        MemoryPolicy policy = MemoryPolicy.builder()
+        MemoryPolicy policy = MemoryPolicy.Companion.builder()
                 .setExpireAfterAccess(4L)
                 .build();
 
         assertThat(policy.getExpireAfterAccess()).isEqualTo(4L);
         assertThat(policy.getExpireAfterTimeUnit()).isEqualTo(TimeUnit.SECONDS);
         assertThat(policy.isDefaultWritePolicy()).isTrue();
-        assertThat(policy.getExpireAfterWrite()).isEqualTo(MemoryPolicy.DEFAULT_POLICY);
+        assertThat(policy.getExpireAfterWrite()).isEqualTo(MemoryPolicy.Companion.getDEFAULT_POLICY());
     }
 
     @Test(expected = IllegalStateException.class)
     public void testCannotSetBothExpirationPolicies() {
-        MemoryPolicy.builder()
+        MemoryPolicy.Companion.builder()
                 .setExpireAfterAccess(4L)
                 .setExpireAfterWrite(4L)
                 .build();
@@ -42,7 +42,7 @@ public class MemoryPolicyBuilderTest {
 
     @Test
     public void testBuilderSetsExpireAfterTimeUnit() {
-        MemoryPolicy policy = MemoryPolicy.builder()
+        MemoryPolicy policy = MemoryPolicy.Companion.builder()
                 .setExpireAfterTimeUnit(TimeUnit.MINUTES)
                 .build();
 
@@ -51,7 +51,7 @@ public class MemoryPolicyBuilderTest {
 
     @Test
     public void testBuilderSetsMemorySize() {
-        MemoryPolicy policy = MemoryPolicy.builder()
+        MemoryPolicy policy = MemoryPolicy.Companion.builder()
                 .setMemorySize(10L)
                 .build();
 
@@ -60,7 +60,7 @@ public class MemoryPolicyBuilderTest {
 
     @Test
     public void testDefaultMemorySizeIfNotSet() {
-        MemoryPolicy policy = MemoryPolicy.builder()
+        MemoryPolicy policy = MemoryPolicy.Companion.builder()
             .build();
 
         assertThat(policy.getMaxSize()).isEqualTo(1L);

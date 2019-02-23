@@ -16,8 +16,8 @@ object CacheFactory {
 
     private fun <Key, Value> createBaseInFlighter(memoryPolicy: MemoryPolicy?): Cache<Key, Value> {
         val expireAfterToSeconds = memoryPolicy?.expireAfterTimeUnit?.toSeconds(memoryPolicy.expireAfterWrite)
-                ?: StoreDefaults.getCacheTTLTimeUnit()
-                        .toSeconds(StoreDefaults.getCacheTTL())
+                ?: StoreDefaults.cacheTTLTimeUnit
+                        .toSeconds(StoreDefaults.cacheTTL)
         val maximumInFlightRequestsDuration = TimeUnit.MINUTES.toSeconds(1)
 
         return if (expireAfterToSeconds > maximumInFlightRequestsDuration) {
@@ -26,9 +26,9 @@ object CacheFactory {
                     .expireAfterWrite(maximumInFlightRequestsDuration, TimeUnit.SECONDS)
                     .build()
         } else {
-            val expireAfter = memoryPolicy?.expireAfterWrite ?: StoreDefaults.getCacheTTL()
+            val expireAfter = memoryPolicy?.expireAfterWrite ?: StoreDefaults.cacheTTL
             val expireAfterUnit = if (memoryPolicy == null)
-                StoreDefaults.getCacheTTLTimeUnit()
+                StoreDefaults.cacheTTLTimeUnit
             else
                 memoryPolicy.expireAfterTimeUnit
             CacheBuilder.newBuilder()
@@ -42,8 +42,8 @@ object CacheFactory {
         return if (memoryPolicy == null) {
             CacheBuilder
                     .newBuilder()
-                    .maximumSize(StoreDefaults.getCacheSize())
-                    .expireAfterWrite(StoreDefaults.getCacheTTL(), StoreDefaults.getCacheTTLTimeUnit())
+                    .maximumSize(StoreDefaults.cacheSize)
+                    .expireAfterWrite(StoreDefaults.cacheTTL, StoreDefaults.cacheTTLTimeUnit)
                     .build()
         } else {
             if (memoryPolicy.expireAfterAccess == MemoryPolicy.DEFAULT_POLICY) {
