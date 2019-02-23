@@ -8,7 +8,6 @@ import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import com.nytimes.android.external.store3.util.NoopPersister
-import io.reactivex.Single
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
@@ -88,10 +87,6 @@ class StoreTest {
                 .persister(persister)
                 .fetcher(fetcher)
                 .open()
-
-        val networkSingle = Single.create<String> { emitter ->
-        }
-
 
         whenever(fetcher.fetch(barCode))
                 .thenAnswer {

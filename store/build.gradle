@@ -24,10 +24,8 @@ version = VERSION_NAME
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation project(path: ':cache')
-    implementation libraries.rxJava2
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
 
-    apiElements libraries.rxJava2
     compileOnly libraries.jsr305
 
     testImplementation libraries.mockito
