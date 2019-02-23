@@ -46,7 +46,6 @@ dependencies {
 
     implementation libraries.picasso
     implementation libraries.guava
-    annotationProcessor libraries.immutablesValue // <-- for annotation processor
     implementation libraries.moshi
     implementation libraries.retrofitMoshiConverter
     kapt(libraries.moshiCodegen)
