@@ -5,9 +5,7 @@ import com.nytimes.android.external.cache3.CacheBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 
 public final class CacheFactory {
     private CacheFactory() {
@@ -15,17 +13,16 @@ public final class CacheFactory {
     }
 
     static <Key, Parsed> Cache<Key, Parsed> createCache(MemoryPolicy memoryPolicy) {
-       return createBaseCache(memoryPolicy);
+        return createBaseCache(memoryPolicy);
     }
 
     static <Key, Parsed> Cache<Key, Parsed> createInflighter(MemoryPolicy memoryPolicy) {
-       return createBaseInFlighter(memoryPolicy);
+        return createBaseInFlighter(memoryPolicy);
     }
 
     public static <Key, Parsed> Cache<Key, Observable<Parsed>> createRoomCache(MemoryPolicy memoryPolicy) {
-     return createBaseCache(memoryPolicy);
+        return createBaseCache(memoryPolicy);
     }
-
 
 
     public static <Key, Parsed> Cache<Key, Observable<Parsed>> createRoomInflighter(MemoryPolicy memoryPolicy) {
@@ -56,7 +53,7 @@ public final class CacheFactory {
     }
 
 
-    private static <Key, Value> Cache<Key, Value> createBaseCache(MemoryPolicy memoryPolicy){
+    private static <Key, Value> Cache<Key, Value> createBaseCache(MemoryPolicy memoryPolicy) {
         if (memoryPolicy == null) {
             return CacheBuilder
                     .newBuilder()

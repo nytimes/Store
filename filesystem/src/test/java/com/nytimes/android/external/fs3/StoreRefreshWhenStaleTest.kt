@@ -33,7 +33,9 @@ class StoreRefreshWhenStaleTest {
                 .thenReturn(network1)
         whenever(persister.read(barCode))
                 .thenReturn(disk1)  //get should return from disk
-        whenever(persister.getRecordState(barCode)).thenReturn(RecordState.STALE)
+        whenever(persister.getRecordState(barCode))
+                .thenReturn(RecordState.STALE)
+                .thenReturn(RecordState.FRESH)
 
         whenever(persister.write(barCode, network1))
                 .thenReturn(true)

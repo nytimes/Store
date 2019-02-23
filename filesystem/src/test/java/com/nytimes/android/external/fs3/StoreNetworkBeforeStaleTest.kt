@@ -15,7 +15,7 @@ import org.mockito.Mockito.*
 
 class StoreNetworkBeforeStaleTest {
 
-    private val sorry = Exception("sorry")
+    private val sorry = RuntimeException("sorry")
     private val fetcher: Fetcher<BufferedSource, BarCode> = mock()
     private val persister: RecordPersister = mock()
     private val network1: BufferedSource = mock()
@@ -42,9 +42,9 @@ class StoreNetworkBeforeStaleTest {
         store.get(barCode)
 
         val inOrder = inOrder(fetcher, persister)
-        inOrder.verify<Fetcher<BufferedSource, BarCode>>(fetcher, times(1)).fetch(barCode)
-        inOrder.verify<RecordPersister>(persister, times(1)).read(barCode)
-        verify<RecordPersister>(persister, never()).write(barCode, network1)
+        inOrder.verify(fetcher, times(1)).fetch(barCode)
+        inOrder.verify(persister, times(1)).read(barCode)
+        verify(persister, never()).write(barCode, network1)
     }
 
     @Test
@@ -62,10 +62,10 @@ class StoreNetworkBeforeStaleTest {
         store.get(barCode)
 
         val inOrder = inOrder(fetcher, persister)
-        inOrder.verify<RecordPersister>(persister, times(1)).read(barCode)
-        inOrder.verify<Fetcher<BufferedSource, BarCode>>(fetcher, times(1)).fetch(barCode)
-        inOrder.verify<RecordPersister>(persister, times(1)).write(barCode, network1)
-        inOrder.verify<RecordPersister>(persister, times(1)).read(barCode)
+        inOrder.verify(persister, times(1)).read(barCode)
+        inOrder.verify(fetcher, times(1)).fetch(barCode)
+        inOrder.verify(persister, times(1)).write(barCode, network1)
+        inOrder.verify(persister, times(1)).read(barCode)
     }
 
     @Test
@@ -76,9 +76,9 @@ class StoreNetworkBeforeStaleTest {
 
         store.get(barCode)
 
-        verify<Fetcher<BufferedSource, BarCode>>(fetcher, never()).fetch(barCode)
-        verify<RecordPersister>(persister, never()).write(barCode, network1)
-        verify<RecordPersister>(persister, times(1)).read(barCode)
+        verify(fetcher, never()).fetch(barCode)
+        verify(persister, never()).write(barCode, network1)
+        verify(persister, times(1)).read(barCode)
     }
 
     @Test
@@ -101,8 +101,8 @@ class StoreNetworkBeforeStaleTest {
         }
 
         val inOrder = inOrder(fetcher, persister)
-        inOrder.verify<RecordPersister>(persister, times(1)).read(barCode)
-        inOrder.verify<Fetcher<BufferedSource, BarCode>>(fetcher, times(1)).fetch(barCode)
-        inOrder.verify<RecordPersister>(persister, times(1)).read(barCode)
+        inOrder.verify(persister, times(1)).read(barCode)
+        inOrder.verify(fetcher, times(1)).fetch(barCode)
+        inOrder.verify(persister, times(1)).read(barCode)
     }
 }

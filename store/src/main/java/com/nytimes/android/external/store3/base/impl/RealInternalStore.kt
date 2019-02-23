@@ -90,7 +90,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     return try {
       val diskValue: Parsed? = read(key)
           ?.let { apply(key, it) }
-      if (stalePolicy == StalePolicy.REFRESH_ON_STALE) {
+      if (stalePolicy == StalePolicy.REFRESH_ON_STALE && StoreUtil.persisterIsStale<Any, Key>(key, persister)) {
         backfillCache(key)
       }
       diskValue
@@ -119,7 +119,11 @@ internal class RealInternalStore<Raw, Parsed, Key>(
    * @return data from fresh and store it in memory and persister
    */
   override suspend fun fresh(key: Key): Parsed =
-    withContext(Dispatchers.IO) { fetchAndPersist(key).also { updateMemory(key, it) } }
+    withContext(Dispatchers.IO) {
+        fetchAndPersist(key).also {
+            updateMemory(key, it)
+        }
+    }
 
   /**
    * There should only be one fresh request in flight at any give time.
