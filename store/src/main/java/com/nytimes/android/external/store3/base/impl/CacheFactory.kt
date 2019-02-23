@@ -2,7 +2,6 @@ package com.nytimes.android.external.store3.base.impl
 
 import com.nytimes.android.external.cache3.Cache
 import com.nytimes.android.external.cache3.CacheBuilder
-import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
 object CacheFactory {
@@ -12,16 +11,6 @@ object CacheFactory {
     }
 
     internal fun <Key, Parsed> createInflighter(memoryPolicy: MemoryPolicy?): Cache<Key, Parsed> {
-        return createBaseInFlighter(memoryPolicy)
-    }
-
-    @JvmStatic
-    fun <Key, Parsed> createRoomCache(memoryPolicy: MemoryPolicy): Cache<Key, Observable<Parsed>> {
-        return createBaseCache(memoryPolicy)
-    }
-
-    @JvmStatic
-    fun <Key, Parsed> createRoomInflighter(memoryPolicy: MemoryPolicy): Cache<Key, Observable<Parsed>> {
         return createBaseInFlighter(memoryPolicy)
     }
 

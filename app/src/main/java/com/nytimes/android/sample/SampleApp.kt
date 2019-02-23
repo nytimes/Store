@@ -27,34 +27,14 @@ class SampleApp : Application() {
     lateinit var persistedStore: Store<RedditData, BarCode>
     val moshi = Moshi.Builder().build()
     lateinit var persister: Persister<BufferedSource, BarCode>
-//    lateinit var sampleRoomStore:SampleRoomStore
 
     override fun onCreate() {
         super.onCreate()
         appContext = this
-//        sampleRoomStore = SampleRoomStore(this)
         initPersister();
         nonPersistedStore = provideRedditStore();
         persistedStore = providePersistedRedditStore();
-        //RoomSample()
     }
-
-    /*private fun RoomSample() {
-        var foo = sampleRoomStore.store.get("")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ strings1 -> val success = strings1 != null }) { throwable -> throwable.stackTrace }
-
-        foo = Observable.timer(15, TimeUnit.SECONDS)
-                .subscribe { makeFetchRequest() }
-    }
-
-    private fun makeFetchRequest() {
-        val bar = sampleRoomStore.store.fetch("")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ strings1 -> val success = strings1 != null }) { throwable -> throwable.stackTrace }
-    }*/
 
     private fun initPersister() {
         try {
@@ -104,7 +84,7 @@ class SampleApp : Application() {
     /**
      * Returns a "fetcher" which will retrieve new data from the network.
      */
-    private  fun fetcher(barCode: BarCode): Deferred<ResponseBody> {
+    private fun fetcher(barCode: BarCode): Deferred<ResponseBody> {
         return provideRetrofit().fetchSubredditForPersister(barCode.key, "10")
 
     }
