@@ -7,21 +7,10 @@ import com.nytimes.android.external.store3.base.RecordState;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableTransformer;
-import io.reactivex.subjects.PublishSubject;
-
 import static com.nytimes.android.external.store3.base.RecordState.STALE;
 
 public final class StoreUtil {
     private StoreUtil() {
-    }
-
-    @Nonnull
-    public static <Parsed, Key> ObservableTransformer<Parsed, Parsed>
-    repeatWhenSubjectEmits(PublishSubject<Key> refreshSubject, @Nonnull final Key keyForRepeat) {
-        Observable<Key> filter = refreshSubject.filter(key -> key.equals(keyForRepeat));
-        return RepeatWhenEmits.from(filter);
     }
 
     public static <Raw, Key> boolean shouldReturnNetworkBeforeStale(
