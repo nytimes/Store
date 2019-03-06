@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import io.reactivex.Maybe;
@@ -99,6 +101,30 @@ public class StoreTest {
         verify(fetcher, times(1)).fetch(barCode);
     }
 
+    @Test
+    public void testFetchWithResultReturnsCacheOnErrors() {
+
+        Store<String, BarCode> simpleStore = StoreBuilder.<String>barcode()
+            .persister(persister)
+            .fetcher(fetcher)
+            .networkBeforeStale()
+            .open();
+
+
+        when(fetcher.fetch(barCode))
+            .thenReturn(Single.error(new IOException()));
+
+        when(persister.read(barCode))
+            .thenReturn(Maybe.just(DISK));
+
+        when(persister.write(barCode, NETWORK))
+            .thenReturn(Single.just(true));
+
+        Result<String> result = simpleStore.fetchWithResult(barCode).blockingGet();
+
+        assertThat(result.source()).isEqualTo(Result.Source.CACHE);
+        assertThat(result.value()).isEqualTo(DISK);
+    }
 
     @Test
     public void testDoubleTap() {
