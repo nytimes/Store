@@ -26,7 +26,7 @@ import io.reactivex.subjects.PublishSubject;
  *                 Example usage:  @link
  */
 final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed, Key> {
-    Cache<Key, Single<Parsed>> inFlightRequests;
+    Cache<Key, Single<Result<Parsed>>> inFlightRequests;
     Cache<Key, Maybe<Parsed>> memCache;
     StalePolicy stalePolicy;
     Persister<Raw, Key> persister;
@@ -188,7 +188,7 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
     @Nonnull
     @Override
     public Single<Result<Parsed>> fetchWithResult(@Nonnull Key key) {
-        return fetch(key).map(Result::createFromNetwork);
+        return Single.defer(() -> fetchAndPersistResult(key));
     }
 
     /**
@@ -203,8 +203,12 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
      */
     @Nullable
     Single<Parsed> fetchAndPersist(@Nonnull final Key key) {
+        return fetchAndPersistResult(key).map(Result::value);
+    }
+
+    private Single<Result<Parsed>> fetchAndPersistResult(@Nonnull final Key key) {
         try {
-            return inFlightRequests.get(key, () -> response(key));
+            return inFlightRequests.get(key, () -> responseResult(key));
         } catch (ExecutionException e) {
             return Single.error(e);
         }
@@ -212,20 +216,27 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
 
     @Nonnull
     Single<Parsed> response(@Nonnull final Key key) {
+        return responseResult(key).map(Result::value);
+    }
+
+    @Nonnull
+    private Single<Result<Parsed>> responseResult(@Nonnull final Key key) {
         return fetcher()
                 .fetch(key)
                 .flatMap(raw -> persister()
                         .write(key, raw)
                         .flatMap(aBoolean -> readDisk(key).toSingle()))
+                .map(Result::createFromNetwork)
                 .onErrorResumeNext(throwable -> {
                     if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
                         return readDisk(key)
                                 .switchIfEmpty(Maybe.<Parsed>error(throwable))
-                                .toSingle();
+                                .toSingle()
+                                .map(Result::createFromCache);
                     }
                     return Single.error(throwable);
                 })
-                .doOnSuccess(data -> notifySubscribers(data, key))
+                .doOnSuccess(data -> notifySubscribers(data.value(), key))
                 .doAfterTerminate(() -> inFlightRequests.invalidate(key))
                 .cache();
     }
