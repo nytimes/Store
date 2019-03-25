@@ -4,6 +4,24 @@ Change Log
 The change log for Store version 1.x can be found [here](https://github.com/NYTimes/Store/blob/develop/CHANGELOG.md).
 
 
+Version 3.1.1 *(2019-03-25)*
+----------------------------
+
+**Bug Fixes and Stability Improvements**
+
+* (#382) Fix fetchWithResult return value in case of fetch error
+* (#375) Fix Talks links
+* (#371) Update SDK, build tools, gradle, AGP, Kotlin, and library dependencies.
+* (#370) Typos on #316 & #334
+* (#368) Remove Deprecated annotation for stream(V key)
+* (#363) Update README.md
+* (#360) Fix typos
+* (#362) Use implementation instead of compile
+* (#361) Add links to mentioned libraries
+* (#346) issue #345 sample crashes on launch, create SampleRoomStore during onCreate
+* (#343) Update version in README
+* (#341) Updating images urls for Store/docs/ru/README.md
+
 Version 3.1.0 *(2018-06-07)*
 ----------------------------
 

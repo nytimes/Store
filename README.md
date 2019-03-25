@@ -25,7 +25,7 @@ Store leverages RxJava and multiple request throttling to prevent excessive call
 ###### Include gradle dependency
 
 ```
-implementation 'com.nytimes.android:store3:3.1.0'
+implementation 'com.nytimes.android:store3:3.1.1'
 ```
 
 ###### Set the source & target compatibilities to `1.8`
@@ -305,7 +305,7 @@ public class SampleStore extends RealStore<String, BarCode> {
 
 ### Artifacts
 
-**CurrentVersion = 3.1.0**
+**CurrentVersion = 3.1.1**
 
 + **Cache** Cache extracted from Guava (keeps method count to a minimum)
 
