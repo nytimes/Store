@@ -50,10 +50,10 @@ dependencies {
     annotationProcessor libraries.immutablesValue // <-- for annotation processor
     compileOnly libraries.immutablesValue // <-- for annotation API
     compileOnly libraries.immutablesGson // for annotations
-    implementation project(':store')
-    implementation project(':cache')
-    implementation project(':middleware')
-    implementation project(':filesystem')
+    implementation 'com.nytimes.android:store3:3.1.1'
+    implementation 'com.nytimes.android:cache3:3.1.1'
+    implementation 'com.nytimes.android:middleware3:3.1.1'
+    implementation 'com.nytimes.android:filesystem3:3.1.1'
     implementation libraries.rxAndroid2
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin"
 
