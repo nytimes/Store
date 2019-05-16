@@ -313,4 +313,25 @@ public class StoreTest {
         value = cache.getIfPresent(new BarCode(barCode.getType(), barCode.getKey()));
         assertThat(value).isEqualTo(MEMORY);
     }
+
+    @Test
+    public void testKeyPresenceInStore() {
+        Store<String, BarCode> simpleStore = StoreBuilder.<String>barcode()
+                .fetcher(fetcher)
+                .open();
+
+        when(fetcher.fetch(barCode))
+                .thenReturn(Single.just(NETWORK));
+
+        final BarCode anotherBarcode = new BarCode("anotherKey", "anotherValue");
+
+        assertThat(simpleStore.hasKey(barCode)).isFalse();
+        assertThat(simpleStore.hasKey(anotherBarcode)).isFalse();
+
+        String value = simpleStore.get(barCode).blockingGet();
+        assertThat(value).isEqualTo(NETWORK);
+
+        assertThat(simpleStore.hasKey(barCode)).isTrue();
+        assertThat(simpleStore.hasKey(anotherBarcode)).isFalse();
+    }
 }

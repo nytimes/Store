@@ -95,4 +95,9 @@ public interface Store<T, V> {
      * Persister will only be cleared if they implements Clearable
      */
     void clear(@Nonnull V key);
+
+    /**
+     * Returns true if key is present
+     */
+    boolean hasKey(@Nonnull V key);
 }

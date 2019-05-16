@@ -141,6 +141,11 @@ public class RealStore<Parsed, Key> implements Store<Parsed, Key> {
         internalStore.clear(key);
     }
 
+    @Override
+    public boolean hasKey(@Nonnull Key key) {
+        return internalStore.hasKey(key);
+    }
+
     protected Maybe<Parsed> memory(@Nonnull Key key) {
         return internalStore.memory(key);
     }
