@@ -1,1 +1,1 @@
-include ':app', ':store', ':store-kotlin', ':middleware', ':cache', ':filesystem', ':middleware-moshi', ':middleware-jackson'
+include ':app', ':store', ':store-kotlin', ':middleware', ':cache', ':filesystem', ':middleware-moshi'
