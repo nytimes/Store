@@ -18,7 +18,7 @@ constructor(moshi: Moshi, type: Type) : Parser<String, Parsed> {
         try {
             return jsonAdapter.fromJson(s)!!
         } catch (e: IOException) {
-            throw ParserException(e.message, e)
+            throw ParserException(e?.message ?: "", e)
         }
     }
 }

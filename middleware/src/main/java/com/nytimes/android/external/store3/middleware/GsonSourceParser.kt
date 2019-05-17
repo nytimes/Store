@@ -31,7 +31,7 @@ constructor(private val gson: Gson, private val type: Type) : Parser<BufferedSou
         try {
             InputStreamReader(raw.inputStream(), Charset.forName("UTF-8")).use { reader -> return gson.fromJson(reader, type) }
         } catch (e: IOException) {
-            throw ParserException(e.message, e)
+            throw ParserException(e?.message ?: "", e)
         }
 
     }

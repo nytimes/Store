@@ -31,7 +31,7 @@ class JacksonStringParser<Parsed> : Parser<String, Parsed> {
         try {
             return objectMapper.readValue(s, parsedType)
         } catch (e: IOException) {
-            throw ParserException(e.message, e)
+            throw ParserException(e?.message ?: "", e)
         }
     }
 }

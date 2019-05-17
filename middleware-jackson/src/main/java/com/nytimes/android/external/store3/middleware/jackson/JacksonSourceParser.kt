@@ -33,7 +33,7 @@ class JacksonSourceParser<Parsed> : Parser<BufferedSource, Parsed> {
         try {
             return objectMapper.readValue(inputStream, parsedType)
         } catch (e: IOException) {
-            throw ParserException(e.message, e)
+            throw ParserException(e?.message ?: "", e)
         } finally {
             try {
                 inputStream?.close()

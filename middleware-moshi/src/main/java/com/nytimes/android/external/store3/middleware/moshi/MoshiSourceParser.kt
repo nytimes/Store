@@ -19,7 +19,7 @@ constructor(moshi: Moshi, type: Type) : Parser<BufferedSource, Parsed> {
         try {
             return jsonAdapter.fromJson(bufferedSource)!!
         } catch (e: IOException) {
-            throw ParserException(e.message, e)
+            throw ParserException(e?.message ?: "", e)
         }
     }
 }
