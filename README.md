@@ -1,5 +1,3 @@
-#[![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=feature/rx2)](https://travis-ci.org/NYTimes/Store)
-
 ![FriendlyRepo Logo](https://raw.githubusercontent.com/friendlyrobotnyc/FriendlyRepo/feature/coroutines/Images/friendly_robot_icon.png) 
 # FriendlyRepo
 
