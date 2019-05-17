@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=feature/rx2)](https://travis-ci.org/NYTimes/Store)
 
-![Store Logo](https://raw.githubusercontent.com/friendlyrobotnyc/FriendlyRepo/feature/coroutines/Images/friendly_robot_icon.png)
+![FriendlyRepo Logo](https://raw.githubusercontent.com/friendlyrobotnyc/FriendlyRepo/feature/coroutines/Images/friendly_robot_icon.png) FriendlyRepo
 
 Store is a Java library for effortless, reactive data loading.  
 
