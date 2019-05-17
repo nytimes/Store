@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=feature/rx2)](https://travis-ci.org/NYTimes/Store)
 
-![Store Logo](https://raw.githubusercontent.com/NYTimes/Store/feature/rx2/Images/store-logo.png)
+![Store Logo](https://raw.githubusercontent.com/friendlyrobotnyc/FriendlyRepo/feature/coroutines/Images/friendly_robot_icon.png)
 
 Store is a Java library for effortless, reactive data loading.  
 
