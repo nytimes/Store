@@ -6,18 +6,14 @@ import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
-import org.junit.Before
 import org.junit.Test
 
 class NoNetworkTest {
-    private lateinit var store: Store<Any, BarCode>
-
-    @Before
-    fun setUp() {
-        store = StoreBuilder.barcode<Any>()
-                .fetcher { throw EXCEPTION }
-                .open()
-    }
+    private val store: Store<Any, BarCode> = StoreBuilder.barcode<Any>()
+            .fetcher {
+                throw EXCEPTION
+            }
+            .open()
 
     @Test
     fun testNoNetwork() = runBlocking<Unit> {
@@ -25,7 +21,7 @@ class NoNetworkTest {
             store.get(BarCode("test", "test"))
             fail("Exception not thrown")
         } catch (e: Exception) {
-            assertThat(e).isEqualTo(EXCEPTION)
+            assertThat(e.message).isEqualTo(EXCEPTION.message)
         }
     }
 
@@ -38,6 +34,6 @@ class NoNetworkTest {
 //    }
 
     companion object {
-        private val EXCEPTION = RuntimeException()
+        private val EXCEPTION = RuntimeException("abc")
     }
 }

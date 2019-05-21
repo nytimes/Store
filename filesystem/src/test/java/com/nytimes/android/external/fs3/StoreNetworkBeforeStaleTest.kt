@@ -31,7 +31,7 @@ class StoreNetworkBeforeStaleTest {
     @Test
     fun networkBeforeDiskWhenStale() = runBlocking<Unit> {
         whenever(fetcher.fetch(barCode))
-                .thenThrow(Exception())
+                .thenThrow(RuntimeException())
         whenever(persister.read(barCode))
                 .thenReturn(disk1)  //get should return from disk
         whenever(persister.getRecordState(barCode)).thenReturn(RecordState.STALE)

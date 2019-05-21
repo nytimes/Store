@@ -33,7 +33,7 @@ class SourceDiskDaoStoreTest {
                 .open()
 
         val foo = Foo()
-        foo.bar = barCode.getKey()
+        foo.bar = barCode.key
 
         val sourceData = Gson().toJson(foo)
         val source = source(sourceData)
