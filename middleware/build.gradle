@@ -18,7 +18,7 @@ dependencies {
     implementation project(path: ':cache')
     implementation project(path: ':store')
     implementation project(path: ':filesystem')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
+    implementation libraries.coroutinesCore
     implementation libraries.okio
     implementation libraries.gson
     compileOnly libraries.jsr305

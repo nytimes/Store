@@ -53,6 +53,7 @@ ext.versions = [
         supportTestRunner    : '0.4.1',
         espresso             : '2.2.1',
         compileTesting       : '0.8',
+        coroutines           : '1.2.1',
 ]
 
 ext.libraries = [
@@ -111,4 +112,7 @@ ext.libraries = [
         espressoContrib         : "com.android.support.test.espresso:espresso-contrib:$versions.espresso",
         mockWebserver           : "com.squareup.okhttp:mockwebserver:$versions.okHttp",
         compileTesting          : "com.google.testing.compile:compile-testing:$versions.compileTesting",
+        coroutinesCore          : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
+        coroutinesAndroid       : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines",
+
 ]

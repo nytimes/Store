@@ -24,7 +24,7 @@ version = VERSION_NAME
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation project(path: ':cache')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
+    implementation libraries.coroutinesCore
 
     compileOnly libraries.jsr305
 
