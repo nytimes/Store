@@ -15,6 +15,7 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import javax.management.Query.times
 
 class StoreNetworkBeforeStaleFailTest {
     private val fetcher: Fetcher<BufferedSource, BarCode> = mock()
@@ -31,7 +32,7 @@ class StoreNetworkBeforeStaleFailTest {
             store.get(barCode)
             fail("Exception not thrown")
         } catch (e: Exception) {
-            assertThat(e).isEqualTo(SORRY)
+            assertThat(e.localizedMessage).isEqualTo(SORRY.localizedMessage)
         }
         verify(fetcher, times(1)).fetch(barCode)
     }

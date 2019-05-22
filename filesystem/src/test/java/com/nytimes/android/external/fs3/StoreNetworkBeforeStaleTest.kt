@@ -12,6 +12,7 @@ import okio.BufferedSource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.Mockito.*
+import javax.management.Query.times
 
 class StoreNetworkBeforeStaleTest {
 
@@ -85,19 +86,12 @@ class StoreNetworkBeforeStaleTest {
     fun networkBeforeStaleNoNetworkResponse() = runBlocking<Unit> {
         whenever(fetcher.fetch(barCode))
                 .thenThrow(sorry)
-        whenever(persister.read(barCode))
-                .thenThrow(sorry)  //first call should return
-        // empty, second call after network should return the network value
-        whenever(persister.getRecordState(barCode)).thenReturn(RecordState.MISSING)
-
-        whenever(persister.write(barCode, network1))
-                .thenReturn(true)
 
         try {
             store.get(barCode)
             fail()
         } catch (e: Exception) {
-            assertThat(e).isEqualTo(sorry)
+            assertThat(e.localizedMessage).isEqualTo(sorry.localizedMessage)
         }
 
         val inOrder = inOrder(fetcher, persister)
