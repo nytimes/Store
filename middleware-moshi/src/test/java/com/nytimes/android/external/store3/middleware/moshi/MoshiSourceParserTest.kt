@@ -3,6 +3,7 @@ package com.nytimes.android.external.store3.middleware.moshi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.store3.base.Fetcher
+import com.nytimes.android.external.store3.base.Parser
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.ParsingStoreBuilder
@@ -27,7 +28,8 @@ class MoshiSourceParserTest {
     private val persister: Persister<BufferedSource, BarCode> = mock()
     private val barCode = BarCode("value", KEY)
 
-    fun setUp() = runBlocking<Unit> {
+    @Test
+    fun testSourceParser() = runBlocking<Unit> {
         val bufferedSource = source(sourceString)
         assertNotNull(bufferedSource)
 
@@ -40,10 +42,7 @@ class MoshiSourceParserTest {
 
         whenever(persister.write(barCode, bufferedSource))
                 .thenReturn(true)
-    }
 
-    @Test
-    fun testSourceParser() = runBlocking<Unit> {
 
         val parser = MoshiParserFactory.createSourceParser<Foo>(Foo::class.java)
 
@@ -65,7 +64,7 @@ class MoshiSourceParserTest {
 
     }
 
-    @Test
+   @Test
     fun testNullMoshi() {
         expectedException.expect(NullPointerException::class.java)
         MoshiParserFactory.createSourceParser<Any>(null!!, Foo::class.java)
