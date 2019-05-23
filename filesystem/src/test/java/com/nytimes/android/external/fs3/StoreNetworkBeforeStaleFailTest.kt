@@ -15,7 +15,6 @@ import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import javax.management.Query.times
 
 class StoreNetworkBeforeStaleFailTest {
     private val fetcher: Fetcher<BufferedSource, BarCode> = mock()
