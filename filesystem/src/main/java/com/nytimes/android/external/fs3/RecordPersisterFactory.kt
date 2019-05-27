@@ -4,12 +4,10 @@ import com.nytimes.android.external.fs3.filesystem.FileSystem
 import com.nytimes.android.external.fs3.filesystem.FileSystemFactory
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
-
+import okio.BufferedSource
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-
-import okio.BufferedSource
 
 /**
  * Factory for [RecordPersister]
@@ -26,12 +24,8 @@ object RecordPersisterFactory {
     @Throws(IOException::class)
     fun create(root: File,
                expirationDuration: Long,
-               expirationUnit: TimeUnit): Persister<BufferedSource, BarCode> {
-        if (root == null) {
-            throw IllegalArgumentException("root file cannot be null.")
-        }
-        return RecordPersister(FileSystemFactory.create(root), expirationDuration, expirationUnit)
-    }
+               expirationUnit: TimeUnit): Persister<BufferedSource, BarCode> =
+            RecordPersister(FileSystemFactory.create(root), expirationDuration, expirationUnit)
 
     /**
      * Returns a new [BufferedSource] persister with the provided fileSystem as the root of the
@@ -39,11 +33,6 @@ object RecordPersisterFactory {
      */
     fun create(fileSystem: FileSystem,
                expirationDuration: Long,
-               expirationUnit: TimeUnit): Persister<BufferedSource, BarCode> {
-        if (fileSystem == null) {
-            throw IllegalArgumentException("fileSystem cannot be null.")
-        }
-        return RecordPersister(fileSystem, expirationDuration, expirationUnit)
-    }
-
+               expirationUnit: TimeUnit): Persister<BufferedSource, BarCode> =
+            RecordPersister(fileSystem, expirationDuration, expirationUnit)
 }

@@ -25,6 +25,7 @@ dependencies {
     testImplementation libraries.mockitoInline
     testImplementation libraries.mockitoKotlin
     testImplementation libraries.junit
+    testImplementation libraries.coroutinesTest
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 

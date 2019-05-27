@@ -17,37 +17,25 @@ import java.util.concurrent.TimeUnit
 class FileSystemRecordPersister<Key> private constructor(private val fileSystem: FileSystem, private val pathResolver: PathResolver<Key>,
                                                          private val expirationDuration: Long,
                                                          private val expirationUnit: TimeUnit) : Persister<BufferedSource, Key>, RecordProvider<Key> {
-    private val fileReader: FSReader<Key>
-    private val fileWriter: FSWriter<Key>
+    private val fileReader: FSReader<Key> = FSReader(fileSystem, pathResolver)
+    private val fileWriter: FSWriter<Key> = FSWriter(fileSystem, pathResolver)
 
-    init {
-        fileReader = FSReader(fileSystem, pathResolver)
-        fileWriter = FSWriter(fileSystem, pathResolver)
-    }
+    override fun getRecordState(key: Key): RecordState =
+            fileSystem.getRecordState(expirationUnit, expirationDuration, pathResolver.resolve(key))
 
-    override fun getRecordState(key: Key): RecordState {
-        return fileSystem.getRecordState(expirationUnit, expirationDuration, pathResolver.resolve(key))
-    }
+    override suspend fun read(key: Key): BufferedSource? =
+            fileReader.read(key)
 
-    override suspend fun read(key: Key): BufferedSource? {
-        return fileReader.read(key)
-    }
-
-    override suspend fun write(key: Key, bufferedSource: BufferedSource): Boolean {
-        return fileWriter.write(key, bufferedSource)
-    }
+    override suspend fun write(key: Key, bufferedSource: BufferedSource): Boolean =
+            fileWriter.write(key, bufferedSource)
 
     companion object {
 
-        fun <T> create(fileSystem: FileSystem?,
+        fun <T> create(fileSystem: FileSystem,
                        pathResolver: PathResolver<T>,
                        expirationDuration: Long,
-                       expirationUnit: TimeUnit): FileSystemRecordPersister<T> {
-            if (fileSystem == null) {
-                throw IllegalArgumentException("root file cannot be null.")
-            }
-            return FileSystemRecordPersister(fileSystem, pathResolver,
-                    expirationDuration, expirationUnit)
-        }
+                       expirationUnit: TimeUnit): FileSystemRecordPersister<T> =
+                FileSystemRecordPersister(fileSystem, pathResolver,
+                        expirationDuration, expirationUnit)
     }
 }

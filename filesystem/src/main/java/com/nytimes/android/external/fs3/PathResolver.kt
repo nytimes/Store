@@ -1,7 +1,4 @@
-package com.nytimes.android.external.fs3;
-
-
-import javax.annotation.Nonnull;
+package com.nytimes.android.external.fs3
 
 /**
  * PathResolver will be used in creating file system paths based on cache keys.
@@ -9,8 +6,7 @@ import javax.annotation.Nonnull;
  *
  * @param <T> Store key/request param type
  */
-public interface PathResolver<T> {
+interface PathResolver<T> {
 
-    @Nonnull
-    String resolve(@Nonnull T key);
+    fun resolve(key: T): String
 }

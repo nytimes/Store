@@ -33,8 +33,8 @@ dependencies {
     testImplementation libraries.mockitoKotlin
     testImplementation libraries.assertJ
     testImplementation libraries.junit
+    testImplementation libraries.coroutinesTest
     testCompileOnly libraries.jsr305
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 apply from: rootProject.file("gradle/maven-push.gradle")

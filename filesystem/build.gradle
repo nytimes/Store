@@ -29,6 +29,7 @@ dependencies {
     testImplementation libraries.junit
     testImplementation libraries.guava
     testImplementation libraries.gson
+    testImplementation libraries.coroutinesTest
     testImplementation project(path: ':middleware')
     testCompileOnly libraries.jsr305
 }

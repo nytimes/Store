@@ -13,8 +13,8 @@ constructor(fileSystem: FileSystem,
             private val expirationDuration: Long,
             private val expirationUnit: TimeUnit) : SourcePersister(fileSystem), RecordProvider<BarCode> {
 
-    override fun getRecordState(barCode: BarCode): RecordState {
-        return sourceFileReader.getRecordState(barCode, expirationUnit, expirationDuration)
+    override fun getRecordState(key: BarCode): RecordState {
+        return sourceFileReader.getRecordState(key, expirationUnit, expirationDuration)
     }
 
     companion object {

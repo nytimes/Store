@@ -29,6 +29,7 @@ dependencies {
     testImplementation libraries.assertJ
     testImplementation libraries.junit
     testImplementation libraries.guava
+    testImplementation libraries.coroutinesTest
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 

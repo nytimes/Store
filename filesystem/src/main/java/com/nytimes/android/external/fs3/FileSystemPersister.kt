@@ -14,22 +14,16 @@ class FileSystemPersister<T> private constructor(fileSystem: FileSystem, pathRes
     private val fileReader: FSReader<T> = FSReader(fileSystem, pathResolver)
     private val fileWriter: FSWriter<T> = FSWriter(fileSystem, pathResolver)
 
-    override suspend fun read(key: T): BufferedSource? {
-        return fileReader.read(key)
-    }
+    override suspend fun read(key: T): BufferedSource? =
+            fileReader.read(key)
 
-    override suspend fun write(key: T, data: BufferedSource): Boolean {
-        return fileWriter.write(key, data)
-    }
+    override suspend fun write(key: T, data: BufferedSource): Boolean =
+            fileWriter.write(key, data)
 
     companion object {
 
-        fun <T> create(fileSystem: FileSystem?,
-                       pathResolver: PathResolver<T>): Persister<BufferedSource, T> {
-            if (fileSystem == null) {
-                throw IllegalArgumentException("root file cannot be null.")
-            }
-            return FileSystemPersister(fileSystem, pathResolver)
-        }
+        fun <T> create(fileSystem: FileSystem,
+                       pathResolver: PathResolver<T>): Persister<BufferedSource, T> =
+                FileSystemPersister(fileSystem, pathResolver)
     }
 }
