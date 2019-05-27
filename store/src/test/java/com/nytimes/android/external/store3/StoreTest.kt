@@ -46,39 +46,8 @@ class StoreTest {
         assertThat(value).isEqualTo(DISK)
         value = simpleStore.get(barCode)
         assertThat(value).isEqualTo(DISK)
-        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
+        verify(fetcher, times(1)).fetch(barCode)
     }
-
-//    @Test
-//    fun testSimpleWithResult() = runBlocking<Unit> {
-//
-//        val simpleStore = StoreBuilder.barcode<String>()
-//                .persister(persister)
-//                .fetcher(fetcher)
-//                .open()
-//
-//
-//        whenever(fetcher.fetch(barCode))
-//                .thenReturn(NETWORK)
-//
-//        whenever(persister.read(barCode))
-//                .thenReturn(null)
-//                .thenReturn(DISK)
-//
-//        whenever(persister.write(barCode, NETWORK))
-//                .thenReturn(true)
-//
-//        var result = simpleStore.getWithResult(barCode)
-//
-//        assertThat(result.source()).isEqualTo(Result.Source.NETWORK)
-//        assertThat(result.value()).isEqualTo(DISK)
-//
-//        result = simpleStore.getWithResult(barCode)
-//        assertThat(result.source()).isEqualTo(Result.Source.CACHE)
-//        assertThat(result.value()).isEqualTo(DISK)
-//        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
-//    }
-
 
     @Test
     fun testDoubleTap() = runBlocking<Unit> {
@@ -112,44 +81,6 @@ class StoreTest {
         verify(fetcher, times(1)).fetch(barCode)
     }
 
-//    @Test
-//    fun testDoubleTapWithResult() = runBlocking<Unit> {
-//
-//        val simpleStore = StoreBuilder.barcode<String>()
-//                .persister(persister)
-//                .fetcher(fetcher)
-//                .open()
-//
-//        val networkSingle = Single.create<String> { emitter ->
-//            if (counter.incrementAndGet() == 1) {
-//                emitter.onSuccess(NETWORK)
-//            } else {
-//                emitter.onError(RuntimeException("Yo Dawg your inflight is broken"))
-//            }
-//        }
-//
-//
-//        whenever(fetcher.fetch(barCode))
-//                .thenReturn(networkSingle)
-//
-//        whenever(persister.read(barCode))
-//                .thenReturn(null)
-//                .thenReturn(DISK)
-//
-//        whenever(persister.write(barCode, NETWORK))
-//                .thenReturn(true)
-//
-//
-//        val response = simpleStore.getWithResult(barCode)
-//                .zipWith(simpleStore.getWithResult(barCode), { s, s2 -> Result.createFromNetwork<T>("hello") })
-//
-//
-//        assertThat(response.source()).isEqualTo(Result.Source.NETWORK)
-//        assertThat(response.value()).isEqualTo("hello")
-//        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
-//    }
-
-
     @Test
     fun testSubclass() = runBlocking<Unit> {
 
@@ -168,33 +99,8 @@ class StoreTest {
         assertThat(value).isEqualTo(DISK)
         value = simpleStore.get(barCode)
         assertThat(value).isEqualTo(DISK)
-        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
+        verify(fetcher, times(1)).fetch(barCode)
     }
-
-//    @Test
-//    fun testSubclassWithResult() = runBlocking<Unit> {
-//
-//        val simpleStore = SampleStore(fetcher, persister)
-//        simpleStore.clear()
-//
-//        whenever(fetcher.fetch(barCode))
-//                .thenReturn(NETWORK)
-//
-//        whenever(persister.read(barCode))
-//                .thenReturn(null)
-//                .thenReturn(DISK)
-//        whenever(persister.write(barCode, NETWORK)).thenReturn(true)
-//
-//        var result = simpleStore.getWithResult(barCode)
-//
-//        assertThat(result.source()).isEqualTo(Result.Source.NETWORK)
-//        assertThat(result.value()).isEqualTo(DISK)
-//
-//        result = simpleStore.getWithResult(barCode)
-//        assertThat(result.source()).isEqualTo(Result.Source.CACHE)
-//        assertThat(result.value()).isEqualTo(DISK)
-//        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
-//    }
 
     @Test
     fun testNoopAndDefault() = runBlocking<Unit> {
@@ -207,46 +113,19 @@ class StoreTest {
                 .thenReturn(NETWORK)
 
         var value = simpleStore.get(barCode)
-        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
-        verify<Persister<String, BarCode>>(persister, times(1)).write(barCode, NETWORK)
-        verify<Persister<String, BarCode>>(persister, times(2)).read(barCode)
+        verify(fetcher, times(1)).fetch(barCode)
+        verify(persister, times(1)).write(barCode, NETWORK)
+        verify(persister, times(2)).read(barCode)
         assertThat(value).isEqualTo(NETWORK)
 
 
         value = simpleStore.get(barCode)
-        verify<Persister<String, BarCode>>(persister, times(2)).read(barCode)
-        verify<Persister<String, BarCode>>(persister, times(1)).write(barCode, NETWORK)
-        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
+        verify(persister, times(2)).read(barCode)
+        verify(persister, times(1)).write(barCode, NETWORK)
+        verify(fetcher, times(1)).fetch(barCode)
 
         assertThat(value).isEqualTo(NETWORK)
     }
-
-//    @Test
-//    fun testNoopAndDefaultWithResult() = runBlocking<Unit> {
-//
-//        val persister = spy(NoopPersister.create<String, BarCode>())
-//        val simpleStore = SampleStore(fetcher, persister)
-//
-//
-//        whenever(fetcher.fetch(barCode))
-//                .thenReturn(NETWORK)
-//
-//        var value = simpleStore.getWithResult(barCode)
-//        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
-//        verify<Persister<String, BarCode>>(persister, times(1)).write(barCode, NETWORK)
-//        verify<Persister<String, BarCode>>(persister, times(2)).read(barCode)
-//        assertThat(value.source()).isEqualTo(Result.Source.NETWORK)
-//        assertThat(value.value()).isEqualTo(NETWORK)
-//
-//
-//        value = simpleStore.getWithResult(barCode)
-//        verify<Persister<String, BarCode>>(persister, times(2)).read(barCode)
-//        verify<Persister<String, BarCode>>(persister, times(1)).write(barCode, NETWORK)
-//        verify<Fetcher<String, BarCode>>(fetcher, times(1)).fetch(barCode)
-//
-//        assertThat(value.source()).isEqualTo(Result.Source.CACHE)
-//        assertThat(value.value()).isEqualTo(NETWORK)
-//    }
 
     @Test
     fun testEquivalence() = runBlocking<Unit> {

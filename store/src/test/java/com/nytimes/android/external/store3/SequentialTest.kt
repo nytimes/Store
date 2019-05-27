@@ -23,15 +23,6 @@ class SequentialTest {
         assertThat(networkCalls).isEqualTo(1)
     }
 
-//    @Test
-//    fun sequentiallyWithResult() = runBlocking<Unit> {
-//        val b = BarCode("one", "two")
-//        store.getWithResult(b)
-//        store.getWithResult(b)
-//
-//        assertThat(networkCalls).isEqualTo(1)
-//    }
-
     @Test
     fun parallel() = runBlocking<Unit> {
         val b = BarCode("one", "two")
@@ -41,13 +32,4 @@ class SequentialTest {
 
         assertThat(networkCalls).isEqualTo(1)
     }
-
-//    @Test
-//    fun parallelWithResult() = runBlocking<Unit> {
-//        val b = BarCode("one", "two")
-//        val first = store.getWithResult(b)
-//        val second = store.getWithResult(b)
-//
-//        assertThat(networkCalls).isEqualTo(1)
-//    }
 }

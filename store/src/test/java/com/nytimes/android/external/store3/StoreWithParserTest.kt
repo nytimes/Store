@@ -48,36 +48,6 @@ class StoreWithParserTest {
         verify(fetcher, times(1)).fetch(barCode)
     }
 
-//    @Test
-//    fun testSimpleWithResult() = runBlocking<Unit> {
-//        val simpleStore = ParsingStoreBuilder.builder<String, String>()
-//                .persister(persister)
-//                .fetcher(fetcher)
-//                .parser(parser)
-//                .open()
-//
-//        whenever(fetcher.fetch(barCode))
-//                .thenReturn(NETWORK)
-//
-//        whenever(persister.read(barCode))
-//                .thenReturn(null)
-//                .thenReturn(DISK)
-//
-//        whenever(persister.write(barCode, NETWORK))
-//                .thenReturn(true)
-//
-//        whenever(parser.apply(DISK)).thenReturn(barCode.key)
-//
-//        var result = simpleStore.getWithResult(barCode)
-//        assertThat(result.source()).isEqualTo(Result.Source.NETWORK)
-//        assertThat(result.value()).isEqualTo(barCode.key)
-//
-//        result = simpleStore.getWithResult(barCode)
-//        assertThat(result.source()).isEqualTo(Result.Source.CACHE)
-//        assertThat(result.value()).isEqualTo(barCode.key)
-//        verify(fetcher, times(1)).fetch(barCode)
-//    }
-
     @Test
     fun testSubclass() = runBlocking<Unit> {
         MockitoAnnotations.initMocks(this)
@@ -103,37 +73,8 @@ class StoreWithParserTest {
         verify(fetcher, times(1)).fetch(barCode)
     }
 
-//    @Test
-//    fun testSubclassWithResult() = runBlocking<Unit> {
-//        MockitoAnnotations.initMocks(this)
-//
-//        val simpleStore = SampleParsingStore(fetcher, persister, parser)
-//
-//        whenever(fetcher.fetch(barCode))
-//                .thenReturn(NETWORK)
-//
-//        whenever(persister.read(barCode))
-//                .thenReturn(null)
-//                .thenReturn(DISK)
-//
-//        whenever(persister.write(barCode, NETWORK))
-//                .thenReturn(true)
-//
-//        whenever(parser.apply(DISK)).thenReturn(barCode.key)
-//
-//        var result = simpleStore.getWithResult(barCode)
-//        assertThat(result.source()).isEqualTo(Result.Source.NETWORK)
-//        assertThat(result.value()).isEqualTo(barCode.key)
-//
-//        result = simpleStore.getWithResult(barCode)
-//        assertThat(result.source()).isEqualTo(Result.Source.CACHE)
-//        assertThat(result.value()).isEqualTo(barCode.key)
-//        verify(fetcher, times(1)).fetch(barCode)
-//    }
-
     companion object {
-
-        private val DISK = "persister"
-        private val NETWORK = "fresh"
+        private const val DISK = "persister"
+        private const val NETWORK = "fresh"
     }
 }
