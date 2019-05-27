@@ -1,7 +1,7 @@
 package com.nytimes.android.external.store3.base.impl
 
 import com.nytimes.android.external.store.util.Result
-import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.Flow
 
 /**
  * a [StoreBuilder]
@@ -54,7 +54,7 @@ interface Store<T, V> {
      * with operators that expect an OnComplete event
      */
     // TODO should this method return a Pair<K, T> ?
-    fun stream(): ReceiveChannel<T>
+    fun stream(): Flow<T>
 
     /**
      * Similar to  [Store.get() ][Store.get]
@@ -63,7 +63,7 @@ interface Store<T, V> {
      * Errors will be dropped
      *
      */
-    fun stream(key: V): ReceiveChannel<T>
+    fun stream(key: V): Flow<T>
 
     /**
      * Clear the memory cache of all entries

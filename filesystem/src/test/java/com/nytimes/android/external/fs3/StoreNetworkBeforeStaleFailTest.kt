@@ -1,5 +1,7 @@
 package com.nytimes.android.external.fs3
 
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.store3.base.Fetcher
@@ -17,7 +19,13 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 
 class StoreNetworkBeforeStaleFailTest {
-    private val fetcher: Fetcher<BufferedSource, BarCode> = mock()
+    private val fetcher: Fetcher<BufferedSource, BarCode> = mock{
+        runBlocking {
+            on(it.fetch(any())) doAnswer {
+                null
+            }
+        }
+    }
     private val store = StoreBuilder.barcode<BufferedSource>()
             .fetcher(fetcher)
             .persister(TestPersister())

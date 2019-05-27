@@ -8,7 +8,7 @@ import com.nytimes.android.external.store3.util.KeyParser
 import com.nytimes.android.external.store3.util.NoKeyParser
 import com.nytimes.android.external.store3.util.NoopParserFunc
 import com.nytimes.android.external.store3.util.NoopPersister
-import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.Flow
 
 open class RealStore<Parsed, Key> : Store<Parsed, Key> {
 
@@ -81,16 +81,16 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
      *
      * @return data from fresh and store it in memory and persister
      */
-    suspend override fun fresh(key: Key): Parsed {
+    override suspend fun fresh(key: Key): Parsed {
         return internalStore.fresh(key)
     }
 
 
-    override fun stream(): ReceiveChannel<Parsed> {
+    override fun stream(): Flow<Parsed> {
         return internalStore.stream()
     }
 
-    override fun stream(key: Key): ReceiveChannel<Parsed> {
+    override fun stream(key: Key): Flow<Parsed> {
         return internalStore.stream(key)
     }
 

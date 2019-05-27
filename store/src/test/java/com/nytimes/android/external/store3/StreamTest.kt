@@ -6,6 +6,11 @@ import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.broadcastIn
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -13,8 +18,8 @@ import org.junit.Test
 
 class StreamTest {
 
-    val fetcher: Fetcher<String, BarCode> = mock()
-    val persister: Persister<String, BarCode> = mock()
+    private val fetcher: Fetcher<String, BarCode> = mock()
+    private val persister: Persister<String, BarCode> = mock()
 
     private val barCode = BarCode("key", "value")
 
@@ -37,21 +42,31 @@ class StreamTest {
 
     @Test
     fun testStream() = runBlocking<Unit> {
-        val streamObservable = store.stream()
-        assertThat(streamObservable.isEmpty).isTrue()
-        store.get(barCode)
-        assertThat(streamObservable.isEmpty).isFalse()
+        val streamSubscription = store.stream().openChannelSubscription()
+        try {
+            assertThat(streamSubscription.isEmpty).isTrue()
+            store.get(barCode)
+            assertThat(streamSubscription.isEmpty).isFalse()
+        } finally {
+            streamSubscription.cancel()
+        }
     }
 
     @Test
     fun testStreamEmitsOnlyFreshData() = runBlocking<Unit> {
         store.get(barCode)
-        val streamObservable = store.stream()
-        assertThat(streamObservable.isEmpty).isTrue()
+        val streamSubscription = store.stream().openChannelSubscription()
+        try {
+            assertThat(streamSubscription.isEmpty).isTrue()
+        } finally {
+            streamSubscription.cancel()
+        }
     }
 
     companion object {
-
-        private val TEST_ITEM = "test"
+        private const val TEST_ITEM = "test"
     }
 }
+
+fun <T> Flow<T>.openChannelSubscription() =
+        broadcastIn(GlobalScope + Dispatchers.Unconfined).openSubscription()
