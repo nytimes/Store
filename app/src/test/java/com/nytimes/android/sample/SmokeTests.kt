@@ -5,7 +5,10 @@ import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
 import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -147,7 +150,6 @@ class SmokeTests {
         val second = BarCode("b", "b")
         fetcher = object : Fetcher<String, BarCode> {
             override suspend fun fetch(key: BarCode): String {
-                delay(5000)
                 return counter.incrementAndGet().toString()
             }
         }
