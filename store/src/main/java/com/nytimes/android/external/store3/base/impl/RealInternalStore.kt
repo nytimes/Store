@@ -8,9 +8,7 @@ import com.nytimes.android.external.store3.util.KeyParser
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.filter
-import kotlinx.coroutines.channels.map
+import kotlinx.coroutines.flow.*
 import java.util.concurrent.ConcurrentMap
 
 /**
@@ -176,18 +174,18 @@ internal class RealInternalStore<Raw, Parsed, Key>(
   }
 
   //STREAM NO longer calls get
-  override fun stream(key: Key): ReceiveChannel<Parsed> =
-    streamSubscription().filter { it.first == key }.map { (_, value) -> value }
+  override fun stream(key: Key): Flow<Parsed> =
+      streamSubscription().filter { it.first == key }.map { (_, value) -> value }
 
-  override fun stream(): ReceiveChannel<Parsed> {
+  override fun stream(): Flow<Parsed> {
     return streamSubscription().map { (_, value) -> value }
   }
 
   private fun streamSubscription() =
-          subject.openSubscription()
-                  //ignore first element so only new elements are returned
-                  .apply { poll() }
-                  .map { it!! }
+      subject.asFlow()
+          //ignore first element so only new elements are returned
+          .drop(1)
+          .map { it!! }
 
   @Deprecated("")
   override fun clearMemory() {

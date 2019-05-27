@@ -43,30 +43,32 @@ class StreamOneKeyTest {
 
     @Test
     fun testStream() = runBlocking<Unit> {
-        val streamObservable = store.stream(barCode)
-        //stream doesn't invoke get anymore so when we call it the channel is empty
-        assertThat(streamObservable.isEmpty).isTrue()
+        val streamSubscription = store.stream(barCode).openChannelSubscription()
+        try {//stream doesn't invoke get anymore so when we call it the channel is empty
+            assertThat(streamSubscription.isEmpty).isTrue()
 
-        store.clear()
-        //fresh should notify subscribers again
-        store.fresh(barCode)
-        assertThat(streamObservable.poll()).isEqualTo(TEST_ITEM)
+            store.clear()
+            //fresh should notify subscribers again
+            store.fresh(barCode)
+            assertThat(streamSubscription.poll()).isEqualTo(TEST_ITEM)
 //        assertThat(streamObservable.poll()).isEqualTo(TEST_ITEM2)
 
-        //get for another barcode should not trigger a stream for barcode1
-        whenever(fetcher.fetch(barCode2))
-                .thenReturn(TEST_ITEM)
-        whenever(persister.read(barCode2))
-                .thenReturn(TEST_ITEM)
-        whenever(persister.write(barCode2, TEST_ITEM))
-                .thenReturn(true)
-        store.get(barCode2)
-        assertThat(streamObservable.isEmpty).isTrue()
+            //get for another barcode should not trigger a stream for barcode1
+            whenever(fetcher.fetch(barCode2))
+                    .thenReturn(TEST_ITEM)
+            whenever(persister.read(barCode2))
+                    .thenReturn(TEST_ITEM)
+            whenever(persister.write(barCode2, TEST_ITEM))
+                    .thenReturn(true)
+            store.get(barCode2)
+            assertThat(streamSubscription.isEmpty).isTrue()
+        } finally {
+            streamSubscription.cancel()
+        }
     }
 
     companion object {
-
-        private val TEST_ITEM = "test"
-        private val TEST_ITEM2 = "test2"
+        private const val TEST_ITEM = "test"
+        private const val TEST_ITEM2 = "test2"
     }
 }

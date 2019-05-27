@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.nytimes.android.external.store3.base.impl.MemoryPolicy
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.collect
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -49,17 +49,17 @@ class StreamActivity : AppCompatActivity(), CoroutineScope {
         }
 
         launch {
-            store.stream(1).consumeEach {
+            store.stream(1).collect {
                 findViewById<TextView>(R.id.stream_1).text = "Stream 1 $it"
             }
         }
         launch {
-            store.stream(2).consumeEach {
+            store.stream(2).collect {
                 findViewById<TextView>(R.id.stream_2).text = "Stream 2 $it"
             }
         }
         launch {
-            store.stream().consumeEach {
+            store.stream().collect {
                 findViewById<TextView>(R.id.stream).text = "Stream $it"
             }
         }
