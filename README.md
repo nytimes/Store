@@ -1,5 +1,5 @@
 ![FriendlyRepo Logo](https://raw.githubusercontent.com/friendlyrobotnyc/FriendlyRepo/feature/coroutines/Images/friendly_robot_icon.png) 
-# FriendlyRepo [![CircleCI](https://circleci.com/gh/friendlyrobotnyc/FriendlyRepo.svg?style=svg)](https://circleci.com/gh/friendlyrobotnyc/FriendlyRepo)
+# Core (Coroutines backed Store) [![CircleCI](https://circleci.com/gh/friendlyrobotnyc/FriendlyRepo.svg?style=svg)](https://circleci.com/gh/friendlyrobotnyc/FriendlyRepo)
 
 Store is a Java library for effortless, reactive data loading.  
 
