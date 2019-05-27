@@ -145,12 +145,11 @@ class SmokeTests {
     }
 
     @Test
-    fun testMutliBarcode() {
+    fun testMultiBarcode() {
         val first = BarCode("a", "a")
         val second = BarCode("b", "b")
         fetcher = object : Fetcher<String, BarCode> {
             override suspend fun fetch(key: BarCode): String {
-                Thread.sleep(5000)
                 return counter.incrementAndGet().toString()
             }
         }
