@@ -65,8 +65,8 @@ internal class RealInternalStore<Raw, Parsed, Key>(
           }
                   .await()
       } catch (e: Exception) {
-        // should we remove the key from the cache here ?
-        disk(key) ?: fresh(key)
+        memCache.invalidate(key)
+        throw e
       }
     }
 
