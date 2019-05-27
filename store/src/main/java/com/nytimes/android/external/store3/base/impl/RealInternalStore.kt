@@ -54,19 +54,21 @@ internal class RealInternalStore<Raw, Parsed, Key>(
    * @return an observable from the first data source that is available
    */
   override suspend fun get(key: Key): Parsed =
-      withContext(Dispatchers.IO) {
-        try {
+    withContext(Dispatchers.IO) {
+      try {
           memCache.get(key) {
             memoryScope.async {
               disk(key) ?: fresh(key)
             }
           }
-              .await()
-        } catch (e: Exception) {
-          // should we remove the key from the cache here ?
-          disk(key) ?: fresh(key)
-        }
+                  .await()
+      } catch (e: Exception) {
+        memCache.invalidate(key)
+        inFlightRequests.invalidate(key)
+        throw e
       }
+    }
+
 
 
   /**

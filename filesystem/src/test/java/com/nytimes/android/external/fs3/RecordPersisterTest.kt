@@ -77,3 +77,4 @@ class RecordPersisterTest {
         assertThat(SourcePersister.pathForBarcode(simple)).isEqualTo("typekey")
     }
 }
+
