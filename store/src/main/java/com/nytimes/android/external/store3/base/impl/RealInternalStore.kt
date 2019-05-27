@@ -66,6 +66,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
                   .await()
       } catch (e: Exception) {
         memCache.invalidate(key)
+        inFlightRequests.invalidate(key)
         throw e
       }
     }
