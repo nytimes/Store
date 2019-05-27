@@ -25,14 +25,6 @@ class NoNetworkTest {
         }
     }
 
-// TODO getWithResult test
-//    @Test
-//    fun testNoNetworkWithResult() = runBlocking<Unit> {
-//        store.getWithResult(BarCode("test", "test"))
-//                .test()
-//                .assertError(EXCEPTION)
-//    }
-
     companion object {
         private val EXCEPTION = RuntimeException("abc")
     }

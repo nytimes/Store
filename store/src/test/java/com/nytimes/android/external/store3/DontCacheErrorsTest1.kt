@@ -36,21 +36,4 @@ class DontCacheErrorsTest {
         shouldThrow = false
         store.get(barcode)
     }
-
-//    TODO storeWithResult test
-//    @Test
-//    fun testStoreDoesntCacheErrorsWithResult() = runBlocking<Unit> {
-//        val barcode = BarCode("bar", "code")
-//
-//        shouldThrow = true
-//        store.getWithResult(barcode).test()
-//                .assertTerminated()
-//                .assertError(Exception::class.java)
-//                .awaitTerminalEvent()
-//
-//        shouldThrow = false
-//        store.get(barcode).test()
-//                .assertNoErrors()
-//                .awaitTerminalEvent()
-//    }
 }

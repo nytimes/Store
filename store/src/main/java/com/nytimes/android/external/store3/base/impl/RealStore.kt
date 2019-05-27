@@ -67,9 +67,6 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
         return internalStore.get(key)
     }
 
-//    fun getWithResult(key: Key): Single<Result<Parsed>> {
-//        TODO("not implemented")
-//    }
 //
 //    fun getRefreshing(key: Key): Observable<Parsed> {
 //        TODO("not implemented")
