@@ -8,6 +8,7 @@ import com.nytimes.android.external.store3.base.impl.BarCode
 import com.nytimes.android.external.store3.base.impl.StoreBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.first
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.broadcastIn
 import kotlinx.coroutines.plus
@@ -46,7 +47,7 @@ class StreamTest {
         try {
             assertThat(streamSubscription.isEmpty).isTrue()
             store.get(barCode)
-            assertThat(streamSubscription.isEmpty).isFalse()
+            assertThat(streamSubscription.first()).isEqualTo(barCode to TEST_ITEM)
         } finally {
             streamSubscription.cancel()
         }

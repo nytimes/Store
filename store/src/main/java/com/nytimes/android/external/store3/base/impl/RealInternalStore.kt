@@ -174,14 +174,12 @@ internal class RealInternalStore<Raw, Parsed, Key>(
   }
 
   //STREAM NO longer calls get
+  @FlowPreview
   override fun stream(key: Key): Flow<Parsed> =
-      streamSubscription().filter { it.first == key }.map { (_, value) -> value }
+      stream().filter { it.first == key }.map { (_, value) -> value }
 
-  override fun stream(): Flow<Parsed> {
-    return streamSubscription().map { (_, value) -> value }
-  }
-
-  private fun streamSubscription() =
+  @FlowPreview
+  override fun stream(): Flow<Pair<Key, Parsed>> =
       subject.asFlow()
           //ignore first element so only new elements are returned
           .drop(1)

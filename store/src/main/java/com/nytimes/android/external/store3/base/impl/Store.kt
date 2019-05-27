@@ -1,6 +1,7 @@
 package com.nytimes.android.external.store3.base.impl
 
 import com.nytimes.android.external.store.util.Result
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -53,8 +54,8 @@ interface Store<T, V> {
      * WARNING: stream is an endless observable, be careful when combining
      * with operators that expect an OnComplete event
      */
-    // TODO should this method return a Pair<K, T> ?
-    fun stream(): Flow<T>
+    @FlowPreview
+    fun stream(): Flow<Pair<V, T>>
 
     /**
      * Similar to  [Store.get() ][Store.get]
@@ -63,6 +64,7 @@ interface Store<T, V> {
      * Errors will be dropped
      *
      */
+    @FlowPreview
     fun stream(key: V): Flow<T>
 
     /**

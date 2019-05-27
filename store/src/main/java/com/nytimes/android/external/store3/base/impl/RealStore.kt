@@ -8,6 +8,7 @@ import com.nytimes.android.external.store3.util.KeyParser
 import com.nytimes.android.external.store3.util.NoKeyParser
 import com.nytimes.android.external.store3.util.NoopParserFunc
 import com.nytimes.android.external.store3.util.NoopPersister
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 
 open class RealStore<Parsed, Key> : Store<Parsed, Key> {
@@ -85,11 +86,12 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
         return internalStore.fresh(key)
     }
 
-
-    override fun stream(): Flow<Parsed> {
+    @FlowPreview
+    override fun stream(): Flow<Pair<Key, Parsed>> {
         return internalStore.stream()
     }
 
+    @FlowPreview
     override fun stream(key: Key): Flow<Parsed> {
         return internalStore.stream(key)
     }
