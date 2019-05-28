@@ -1,7 +1,6 @@
 package com.nytimes.android.external.store3
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import com.nytimes.android.external.cache3.CacheBuilder
 import com.nytimes.android.external.store3.base.Fetcher
 import com.nytimes.android.external.store3.base.Persister
@@ -11,8 +10,8 @@ import com.nytimes.android.external.store3.util.NoopPersister
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.fail
 import org.junit.Test
-import org.mockito.Mockito.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -142,10 +141,33 @@ class StoreTest {
         assertThat(value).isEqualTo(MEMORY)
     }
 
-    companion object {
+    @Test
+    fun testFreshUsesOnlyNetwork() = runBlocking<Unit> {
+        val simpleStore = StoreBuilder.barcode<String>()
+                .persister(persister)
+                .fetcher(fetcher)
+                .networkBeforeStale()
+                .open()
 
-        private val DISK = "disk"
-        private val NETWORK = "fresh"
-        private val MEMORY = "memory"
+        whenever(fetcher.fetch(barCode)) doThrow RuntimeException(ERROR)
+
+        whenever(persister.read(barCode)) doReturn DISK
+
+        try {
+            simpleStore.fresh(barCode)
+            fail("Exception not thrown!")
+        } catch (e: Exception) {
+            assertThat(e.message).isEqualTo(ERROR)
+        }
+
+        verify(fetcher, times(1)).fetch(barCode)
+        verify(persister, never()).read(any())
+    }
+
+    companion object {
+        private const val DISK = "disk"
+        private const val NETWORK = "fresh"
+        private const val MEMORY = "memory"
+        private const val ERROR = "error!!"
     }
 }

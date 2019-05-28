@@ -58,7 +58,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
       try {
           memCache.get(key) {
             memoryScope.async {
-              disk(key) ?: fresh(key)
+              disk(key) ?: fetchAndPersist(key, useCacheOnError = stalePolicy == StalePolicy.NETWORK_BEFORE_STALE)
             }
           }
                   .await()
@@ -90,7 +90,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
       val diskValue: Parsed? = read(key)
           ?.let { apply(key, it) }
       if (stalePolicy == StalePolicy.REFRESH_ON_STALE && StoreUtil.persisterIsStale<Any, Key>(key, persister)) {
-        backfillCache(key)
+        fetchAndPersist(key, useCacheOnError = false)
       }
       diskValue
     } catch (e: Exception) {
@@ -107,10 +107,6 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     memCache.put(key, memoryScope.async { it })
   }
 
-  suspend fun backfillCache(key: Key) {
-    fresh(key)
-  }
-
   /**
    * Will check to see if there exists an in flight observable and return it before
    * going to network
@@ -119,9 +115,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
    */
   override suspend fun fresh(key: Key): Parsed =
     withContext(Dispatchers.IO) {
-        fetchAndPersist(key).also {
-            updateMemory(key, it)
-        }
+        fetchAndPersist(key, useCacheOnError = false)
     }
 
   /**
@@ -135,12 +129,15 @@ internal class RealInternalStore<Raw, Parsed, Key>(
    * @param key resource identifier
    * @return observable that emits a [Parsed] value
    */
-  suspend fun fetchAndPersist(key: Key): Parsed =
+  private suspend fun fetchAndPersist(key: Key, useCacheOnError: Boolean): Parsed =
     inFlightRequests
-        .get(key) { inFlightScope.async { response(key) } }
+        .get(key) { inFlightScope.async { response(key, useCacheOnError) } }
         .await()
+        .also {
+          updateMemory(key, it)
+        }
 
-  suspend fun response(key: Key): Parsed {
+  private suspend fun response(key: Key, useCacheOnError: Boolean): Parsed {
     return try {
       val fetchedValue = fetch(key)
       write(key, fetchedValue)
@@ -148,17 +145,18 @@ internal class RealInternalStore<Raw, Parsed, Key>(
       notifySubscribers(diskValue, key)
       return diskValue
     } catch (e: Exception) {
-      handleNetworkError(key, e)
+      handleNetworkError(key, e, useCacheOnError)
     } finally {
       inFlightRequests.invalidate(key)
     }
   }
 
   suspend fun handleNetworkError(
-    key: Key,
-    throwable: Throwable
+          key: Key,
+          throwable: Throwable,
+          useCacheOnError: Boolean
   ): Parsed {
-    if (stalePolicy == StalePolicy.NETWORK_BEFORE_STALE) {
+    if (useCacheOnError) {
       val diskValue = readDisk(key)
       if (diskValue != null)
         return diskValue else throw throwable
