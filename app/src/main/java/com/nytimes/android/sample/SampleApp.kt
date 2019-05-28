@@ -69,7 +69,7 @@ class SampleApp : Application() {
         return StoreBuilder.parsedWithKey<BarCode, BufferedSource, RedditData>()
                 .fetcher { key -> fetcher(key).await().source() }
                 .persister(newPersister())
-                .parser(MoshiParserFactory.createSourceParser(moshi, RedditData::class.java))
+                .parser(MoshiParserFactory.createSourceParser(moshi))
                 .open()
     }
 

@@ -2,10 +2,10 @@ package com.nytimes.android.external.store3.middleware
 
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.nytimes.android.external.store3.base.Parser
 
 import java.io.Reader
-import java.lang.reflect.Type
 
 import okio.BufferedSource
 
@@ -18,37 +18,43 @@ object GsonParserFactory {
      * Returns a new Parser which parses from [Reader] to the specified type, using
      * a new default configured [Gson] instance.
      */
-    fun <T> createReaderParser(type: Type): Parser<Reader, T> = createReaderParser(Gson(), type)
+    inline fun <reified T> createReaderParser(): Parser<Reader, T> = createReaderParser(Gson())
 
     /**
      * Returns a new Parser which parses from [Reader] to the specified type, using
      * the provided [Gson] instance.
      */
 
-    fun <T> createReaderParser(gson: Gson, type: Type): Parser<Reader, T> = GsonReaderParser(gson, type)
+    inline fun <reified T> createReaderParser(gson: Gson): Parser<Reader, T> = GsonReaderParser(gson, object : TypeToken<T>() {}.type)
 
     /**
      * Returns a new Parser which parses from [Reader] to the specified type, using
      * a new default configured [Gson] instance.
      */
-    fun <T> createSourceParser(type: Type): Parser<BufferedSource, T> = createSourceParser(Gson(), type)
+    inline fun <reified T> createSourceParser(): Parser<BufferedSource, T> = createSourceParser(Gson())
 
     /**
      * Returns a new Parser which parses from [BufferedSource] to the specified type, using
      * the provided [Gson] instance.
      */
-    fun <T> createSourceParser(gson: Gson, type: Type): Parser<BufferedSource, T> = GsonSourceParser(gson, type)
+    inline fun <reified T> createSourceParser(gson: Gson): Parser<BufferedSource, T> = GsonSourceParser(gson, object : TypeToken<T>() {}.type)
+
+    /*
+    object : TypeToken<T>() {
+
+        }.type)
+     */
 
     /**
      * Returns a new Parser which parses from a String to the specified type, using
      * a new default [Gson] instance.
      */
-    fun <T> createStringParser(type: Class<T>): Parser<String, T> = createStringParser(Gson(), type)
+    inline fun <reified T> createStringParser(): Parser<String, T> = createStringParser(Gson())
 
     /**
      * Returns a new Parser which parses from a String to the specified type, using
      * the provided [Gson] instance.
      */
-    fun <T> createStringParser(gson: Gson, type: Type): Parser<String, T> = GsonStringParser(gson, type)
+    inline fun <reified T>  createStringParser(gson: Gson): Parser<String, T> = GsonStringParser(gson, object : TypeToken<T>() {}.type)
 
 }
