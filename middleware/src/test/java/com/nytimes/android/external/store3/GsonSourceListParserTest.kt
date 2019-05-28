@@ -2,7 +2,6 @@ package com.nytimes.android.external.store3
 
 import com.google.common.base.Charsets.UTF_8
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import com.nytimes.android.external.store3.base.Fetcher
@@ -27,9 +26,7 @@ class GsonSourceListParserTest {
 
     @Test
     fun testSimple() = runBlocking<Unit> {
-        val parser = GsonParserFactory.createSourceParser<List<Foo>>(Gson(), object : TypeToken<List<Foo>>() {
-
-        }.type)
+        val parser = GsonParserFactory.createSourceParser<List<Foo>>(Gson())
 
 
         val simpleStore = StoreBuilder.parsedWithKey<BarCode, BufferedSource, List<Foo>>()

@@ -3,8 +3,6 @@ package com.nytimes.android.external.store3.middleware.moshi
 import com.nytimes.android.external.store3.base.Parser
 import com.squareup.moshi.Moshi
 
-import java.lang.reflect.Type
-
 import okio.BufferedSource
 
 /**
@@ -16,43 +14,37 @@ object MoshiParserFactory {
      * Returns a new Parser which parses from a String to the specified type, using
      * the provided [Moshi] instance.
      */
-    fun <T> createStringParser(moshi: Moshi, type: Type): Parser<String, T> {
+    inline  fun <reified T> createStringParser(moshi: Moshi): Parser<String, T> {
         if (moshi == null) {
             throw NullPointerException("moshi cannot be null.")
         }
-        if (type == null) {
-            throw NullPointerException("type cannot be null.")
-        }
-        return MoshiStringParser(moshi, type)
+        return MoshiStringParser(moshi, T::class.java)
     }
 
     /**
      * Returns a new Parser which parses from a String to the specified type, using
      * a new default [Moshi] instance.
      */
-    fun <T> createStringParser(type: Class<T>): Parser<String, T> {
-        return createStringParser(Moshi.Builder().build(), type)
+    inline fun <reified T> createStringParser(): Parser<String, T> {
+        return createStringParser(Moshi.Builder().build())
     }
 
     /**
      * Returns a new Parser which parses from [BufferedSource] to the specified type, using
      * the provided [Moshi] instance.
      */
-    fun <T> createSourceParser(moshi: Moshi, type: Type): Parser<BufferedSource, T> {
+    inline fun <reified T> createSourceParser(moshi: Moshi): Parser<BufferedSource, T> {
         if (moshi == null) {
             throw NullPointerException("moshi cannot be null.")
         }
-        if (type == null) {
-            throw NullPointerException("type cannot be null.")
-        }
-        return MoshiSourceParser(moshi, type)
+        return MoshiSourceParser<T>(moshi, T::class.java)
     }
 
     /**
      * Returns a new Parser which parses from [BufferedSource] to the specified type, using
      * a new default configured [Moshi] instance.
      */
-    fun <T> createSourceParser(type: Type): Parser<BufferedSource, T> {
-        return createSourceParser(Moshi.Builder().build(), type)
+    inline fun <reified T> createSourceParser(): Parser<BufferedSource, T> {
+        return createSourceParser(Moshi.Builder().build())
     }
 }

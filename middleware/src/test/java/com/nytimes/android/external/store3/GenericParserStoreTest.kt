@@ -25,7 +25,7 @@ class GenericParserStoreTest {
 
     @Test
     fun testSimple() = runBlocking<Unit> {
-        val parser = GsonParserFactory.createSourceParser<Foo>(Gson(), Foo::class.java)
+        val parser = GsonParserFactory.createSourceParser<Foo>(Gson())
 
         val simpleStore = StoreBuilder.parsedWithKey<BarCode, BufferedSource, Foo>()
                 .persister(persister)

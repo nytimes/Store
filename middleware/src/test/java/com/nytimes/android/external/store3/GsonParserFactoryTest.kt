@@ -1,12 +1,10 @@
 package com.nytimes.android.external.store3
 
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.mock
 import com.nytimes.android.external.store3.middleware.GsonParserFactory
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import java.lang.reflect.Type
 
 class GsonParserFactoryTest {
 
@@ -14,49 +12,30 @@ class GsonParserFactoryTest {
     @JvmField
     var expectedException = ExpectedException.none()
 
-    private val type: Type = mock()
     private val gson = Gson()
 
     @Test
     fun shouldCreateParsersProperly() {
-        GsonParserFactory.createReaderParser<Any>(gson, type)
-        GsonParserFactory.createSourceParser<Any>(gson, type)
-        GsonParserFactory.createStringParser<Any>(gson, type)
-    }
-
-    @Test
-    fun shouldThrowExceptionWhenCreatingReaderWithNullType() {
-        expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createReaderParser<Any>(gson, null!!)
+        GsonParserFactory.createReaderParser<Any>(gson)
+        GsonParserFactory.createSourceParser<Any>(gson)
+        GsonParserFactory.createStringParser<Any>(gson)
     }
 
     @Test
     fun shouldThrowExceptionWhenCreatingReaderWithNullGson() {
         expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createReaderParser<Any>(null!!, type)
-    }
-
-    @Test
-    fun shouldThrowExceptionWhenCreatingSourceWithNullType() {
-        expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createSourceParser<Any>(gson, null!!)
+        GsonParserFactory.createReaderParser<Any>(null!!)
     }
 
     @Test
     fun shouldThrowExceptionWhenCreatingSourceWithNullGson() {
         expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createSourceParser<Any>(null!!, type)
-    }
-
-    @Test
-    fun shouldThrowExceptionWhenCreatingStringWithNullType() {
-        expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createStringParser<Any>(gson, null!!)
+        GsonParserFactory.createSourceParser<Any>(null!!)
     }
 
     @Test
     fun shouldThrowExceptionWhenCreatingStringWithNullGson() {
         expectedException.expect(NullPointerException::class.java)
-        GsonParserFactory.createStringParser<Any>(null!!, type)
+        GsonParserFactory.createStringParser<Any>(null!!)
     }
 }

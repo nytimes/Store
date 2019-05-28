@@ -42,7 +42,7 @@ class MoshiStringParserStoreTest {
         val store = ParsingStoreBuilder.builder<String, Foo>()
                 .persister(persister)
                 .fetcher(fetcher)
-                .parser(MoshiParserFactory.createStringParser(Foo::class.java))
+                .parser(MoshiParserFactory.createStringParser<Foo>())
                 .open()
 
         val result = store.get(barCode)
@@ -59,14 +59,9 @@ class MoshiStringParserStoreTest {
     @Test
     fun testNullMoshi() {
         expectedException.expect(NullPointerException::class.java)
-        MoshiParserFactory.createStringParser<Any>(null!!, Foo::class.java)
+        MoshiParserFactory.createStringParser<Any>(null!!)
     }
 
-    @Test
-    fun testNullType() {
-        expectedException.expect(NullPointerException::class.java)
-        MoshiParserFactory.createStringParser<Any>(Moshi.Builder().build(), null!!)
-    }
 
     companion object {
 
