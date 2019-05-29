@@ -17,15 +17,13 @@ import java.util.concurrent.ConcurrentMap
  * @param <Raw>    data type before parsing, usually a String, Reader or BufferedSource
  * @param <Parsed> data type after parsing
  *
- *
- * Example usage:  @link
-</Parsed></Raw> */
+ */
 internal class RealInternalStore<Raw, Parsed, Key>(
   private val fetcher: Fetcher<Raw, Key>,
   private val persister: Persister<Raw, Key>,
   private val parser: KeyParser<Key, Raw, Parsed>,
-  memoryPolicy: MemoryPolicy?,
-  private val stalePolicy: StalePolicy
+  memoryPolicy: MemoryPolicy? = null,
+  private val stalePolicy: StalePolicy = StalePolicy.UNSPECIFIED
 ) : InternalStore<Parsed, Key> {
   private val inFlightRequests: Cache<Key, Deferred<Parsed>> = CacheFactory.createInflighter(memoryPolicy)
   var memCache: Cache<Key, Deferred<Parsed>> = CacheFactory.createCache(memoryPolicy)
@@ -37,13 +35,6 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     //Here we add an empty element that will be ignored later
     offer(null)
   }
-
-  constructor(
-    fetcher: Fetcher<Raw, Key>,
-    persister: Persister<Raw, Key>,
-    parser: KeyParser<Key, Raw, Parsed>,
-    stalePolicy: StalePolicy
-  ) : this(fetcher, persister, parser, null, stalePolicy)
 
   /**
    * @param key

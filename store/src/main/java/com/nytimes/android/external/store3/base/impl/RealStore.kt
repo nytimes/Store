@@ -22,7 +22,7 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
     constructor(fetcher: Fetcher<Parsed, Key>) {
         val noOpFunc = NoopParserFunc<Parsed, Parsed>()
         internalStore = RealInternalStore(fetcher, NoopPersister.create(),
-                NoKeyParser(noOpFunc), StalePolicy.UNSPECIFIED)
+                NoKeyParser(noOpFunc))
     }
 
     constructor(fetcher: Fetcher<Parsed, Key>,
@@ -30,8 +30,7 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
         val noOpFunc = NoopParserFunc<Parsed, Parsed>()
         internalStore = RealInternalStore(fetcher,
                 persister,
-                NoKeyParser(noOpFunc),
-                StalePolicy.UNSPECIFIED)
+                NoKeyParser(noOpFunc))
     }
 
     constructor(fetcher: Fetcher<*, Key>,
@@ -39,8 +38,7 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
                 parser: Parser<*, Parsed>) {
         internalStore = RealInternalStore(fetcher as Fetcher<Any, Key>,
                 persister as Persister<Any, Key>,
-                NoKeyParser(parser as Parser<Any, Parsed>),
-                StalePolicy.UNSPECIFIED)
+                NoKeyParser(parser as Parser<Any, Parsed>))
     }
 
 
