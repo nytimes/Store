@@ -183,25 +183,9 @@ internal class RealInternalStore<Raw, Parsed, Key>(
           .drop(1)
           .map { it!! }
 
-  @Deprecated("")
   override fun clearMemory() {
-    clear()
-  }
-
-  /**
-   * Clear memory by id
-   *
-   * @param key of data to clear
-   */
-  @Deprecated("")
-  override fun clearMemory(key: Key) {
-    clear(key)
-  }
-
-  override fun clear() {
-    for (cachedKey in memCache.asMap().keys) {
-      clear(cachedKey)
-    }
+    inFlightRequests.invalidateAll()
+    memCache.invalidateAll()
   }
 
   override fun clear(key: Key) {

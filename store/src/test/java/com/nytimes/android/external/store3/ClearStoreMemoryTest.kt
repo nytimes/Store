@@ -29,7 +29,7 @@ class ClearStoreMemoryTest {
         assertThat(networkCalls).isEqualTo(1)
 
         // after clearing the memory another call should be made
-        store.clearMemory(barcode)
+        store.clear(barcode)
         store.get(barcode)
         assertThat(networkCalls).isEqualTo(2)
     }
@@ -44,7 +44,8 @@ class ClearStoreMemoryTest {
         store.get(b2)
         assertThat(networkCalls).isEqualTo(2)
 
-        store.clearMemory()
+        store.clear(b1)
+        store.clear(b2)
 
         //after everything is cleared each request should produce another 2 calls
         store.get(b1)

@@ -63,7 +63,7 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
     }
 
 
-    suspend override fun get(key: Key): Parsed {
+    override suspend fun get(key: Key): Parsed {
         return internalStore.get(key)
     }
 
@@ -95,19 +95,6 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
 
     override fun clearMemory() {
         internalStore.clearMemory()
-    }
-
-    /**
-     * Clear memory by id
-     *
-     * @param key of data to clear
-     */
-    override fun clearMemory(key: Key) {
-        internalStore.clearMemory(key)
-    }
-
-    override fun clear() {
-        internalStore.clear()
     }
 
     override fun clear(key: Key) {

@@ -57,20 +57,7 @@ interface Store<T, V> {
     /**
      * Clear the memory cache of all entries
      */
-    @Deprecated("")
     fun clearMemory()
-
-    /**
-     * Purge a particular entry from memory cache.
-     */
-    @Deprecated("")
-    fun clearMemory(key: V)
-
-    /**
-     * purges all entries from memory and disk cache
-     * Persister will only be cleared if they implements Clearable
-     */
-    fun clear()
 
     /**
      * Purge a particular entry from memory and disk cache.
