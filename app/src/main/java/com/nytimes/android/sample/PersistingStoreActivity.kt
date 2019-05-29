@@ -57,9 +57,7 @@ class PersistingStoreActivity : AppCompatActivity(), CoroutineScope {
         cache. Subsequent calls will retrieve the cached version of the data.
          */
         launch {
-            showPosts(
-                    sanitizeData(
-                            persistedStore.get(awwRequest)))
+            showPosts(sanitizeData(persistedStore.get(awwRequest)))
         }
 
     }
