@@ -26,11 +26,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
   private val parser: KeyParser<Key, Raw, Parsed>,
   memoryPolicy: MemoryPolicy?,
   private val stalePolicy: StalePolicy
-) :
-    Fetcher<Raw, Key> by fetcher,
-    Persister<Raw, Key> by persister,
-    KeyParser<Key, Raw, Parsed> by parser,
-    InternalStore<Parsed, Key> {
+) : InternalStore<Parsed, Key> {
   private val inFlightRequests: Cache<Key, Deferred<Parsed>> = CacheFactory.createInflighter(memoryPolicy)
   var memCache: Cache<Key, Deferred<Parsed>> = CacheFactory.createCache(memoryPolicy)
   private val inFlightScope = CoroutineScope(SupervisorJob())
@@ -87,8 +83,8 @@ internal class RealInternalStore<Raw, Parsed, Key>(
 
   suspend fun readDisk(key: Key): Parsed? {
     return try {
-      val diskValue: Parsed? = read(key)
-          ?.let { apply(key, it) }
+      val diskValue: Parsed? = persister.read(key)
+          ?.let { parser.apply(key, it) }
       if (stalePolicy == StalePolicy.REFRESH_ON_STALE && StoreUtil.persisterIsStale<Any, Key>(key, persister)) {
         fetchAndPersist(key, useCacheOnError = false)
       }
@@ -139,8 +135,8 @@ internal class RealInternalStore<Raw, Parsed, Key>(
 
   private suspend fun response(key: Key, useCacheOnError: Boolean): Parsed {
     return try {
-      val fetchedValue = fetch(key)
-      write(key, fetchedValue)
+      val fetchedValue = fetcher.fetch(key)
+      persister.write(key, fetchedValue)
       val diskValue = readDisk(key)!!
       notifySubscribers(diskValue, key)
       return diskValue
