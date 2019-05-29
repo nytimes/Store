@@ -43,6 +43,7 @@ dependencies {
     testImplementation libraries.mockito
     testImplementation libraries.assertJ
     testImplementation libraries.junit
+    testImplementation libraries.coroutinesTest
     testCompileOnly libraries.jsr305
     implementation libraries.supportRecyclerView
     implementation libraries.supportAppCompat

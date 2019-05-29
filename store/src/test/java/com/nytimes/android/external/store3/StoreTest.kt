@@ -84,7 +84,7 @@ class StoreTest {
     fun testSubclass() = runBlocking<Unit> {
 
         val simpleStore = SampleStore(fetcher, persister)
-        simpleStore.clear()
+        simpleStore.clearMemory()
 
         whenever(fetcher.fetch(barCode))
                 .thenReturn(NETWORK)

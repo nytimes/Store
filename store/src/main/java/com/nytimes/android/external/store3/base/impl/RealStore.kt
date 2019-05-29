@@ -22,7 +22,7 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
     constructor(fetcher: Fetcher<Parsed, Key>) {
         val noOpFunc = NoopParserFunc<Parsed, Parsed>()
         internalStore = RealInternalStore(fetcher, NoopPersister.create(),
-                NoKeyParser(noOpFunc), StalePolicy.UNSPECIFIED)
+                NoKeyParser(noOpFunc))
     }
 
     constructor(fetcher: Fetcher<Parsed, Key>,
@@ -30,8 +30,7 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
         val noOpFunc = NoopParserFunc<Parsed, Parsed>()
         internalStore = RealInternalStore(fetcher,
                 persister,
-                NoKeyParser(noOpFunc),
-                StalePolicy.UNSPECIFIED)
+                NoKeyParser(noOpFunc))
     }
 
     constructor(fetcher: Fetcher<*, Key>,
@@ -39,8 +38,7 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
                 parser: Parser<*, Parsed>) {
         internalStore = RealInternalStore(fetcher as Fetcher<Any, Key>,
                 persister as Persister<Any, Key>,
-                NoKeyParser(parser as Parser<Any, Parsed>),
-                StalePolicy.UNSPECIFIED)
+                NoKeyParser(parser as Parser<Any, Parsed>))
     }
 
 
@@ -63,15 +61,9 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
     }
 
 
-    suspend override fun get(key: Key): Parsed {
+    override suspend fun get(key: Key): Parsed {
         return internalStore.get(key)
     }
-
-//
-//    fun getRefreshing(key: Key): Observable<Parsed> {
-//        TODO("not implemented")
-//    }
-
 
     /**
      * Will check to see if there exists an in flight observable and return it before
@@ -95,19 +87,6 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
 
     override fun clearMemory() {
         internalStore.clearMemory()
-    }
-
-    /**
-     * Clear memory by id
-     *
-     * @param key of data to clear
-     */
-    override fun clearMemory(key: Key) {
-        internalStore.clearMemory(key)
-    }
-
-    override fun clear() {
-        internalStore.clear()
     }
 
     override fun clear(key: Key) {

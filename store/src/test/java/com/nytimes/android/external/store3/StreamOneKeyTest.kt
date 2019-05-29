@@ -47,7 +47,7 @@ class StreamOneKeyTest {
         try {//stream doesn't invoke get anymore so when we call it the channel is empty
             assertThat(streamSubscription.isEmpty).isTrue()
 
-            store.clear()
+            store.clearMemory()
             //fresh should notify subscribers again
             store.fresh(barCode)
             assertThat(streamSubscription.poll()).isEqualTo(TEST_ITEM)

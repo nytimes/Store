@@ -17,37 +17,24 @@ import java.util.concurrent.ConcurrentMap
  * @param <Raw>    data type before parsing, usually a String, Reader or BufferedSource
  * @param <Parsed> data type after parsing
  *
- *
- * Example usage:  @link
-</Parsed></Raw> */
+ */
 internal class RealInternalStore<Raw, Parsed, Key>(
   private val fetcher: Fetcher<Raw, Key>,
   private val persister: Persister<Raw, Key>,
   private val parser: KeyParser<Key, Raw, Parsed>,
-  memoryPolicy: MemoryPolicy?,
-  private val stalePolicy: StalePolicy
-) :
-    Fetcher<Raw, Key> by fetcher,
-    Persister<Raw, Key> by persister,
-    KeyParser<Key, Raw, Parsed> by parser,
-    InternalStore<Parsed, Key> {
+  memoryPolicy: MemoryPolicy? = null,
+  private val stalePolicy: StalePolicy = StalePolicy.UNSPECIFIED
+) : InternalStore<Parsed, Key> {
   private val inFlightRequests: Cache<Key, Deferred<Parsed>> = CacheFactory.createInflighter(memoryPolicy)
   var memCache: Cache<Key, Deferred<Parsed>> = CacheFactory.createCache(memoryPolicy)
   private val inFlightScope = CoroutineScope(SupervisorJob())
   private val memoryScope = CoroutineScope(SupervisorJob())
-//  private val refreshSubject = PublishSubject.create<Key>()
+
   private val subject = BroadcastChannel<Pair<Key, Parsed>?>(CONFLATED).apply {
     //a conflated channel always maintains the last element, the stream method ignore this element.
     //Here we add an empty element that will be ignored later
     offer(null)
   }
-
-  constructor(
-    fetcher: Fetcher<Raw, Key>,
-    persister: Persister<Raw, Key>,
-    parser: KeyParser<Key, Raw, Parsed>,
-    stalePolicy: StalePolicy
-  ) : this(fetcher, persister, parser, null, stalePolicy)
 
   /**
    * @param key
@@ -87,8 +74,8 @@ internal class RealInternalStore<Raw, Parsed, Key>(
 
   suspend fun readDisk(key: Key): Parsed? {
     return try {
-      val diskValue: Parsed? = read(key)
-          ?.let { apply(key, it) }
+      val diskValue: Parsed? = persister.read(key)
+          ?.let { parser.apply(key, it) }
       if (stalePolicy == StalePolicy.REFRESH_ON_STALE && StoreUtil.persisterIsStale<Any, Key>(key, persister)) {
         fetchAndPersist(key, useCacheOnError = false)
       }
@@ -139,8 +126,8 @@ internal class RealInternalStore<Raw, Parsed, Key>(
 
   private suspend fun response(key: Key, useCacheOnError: Boolean): Parsed {
     return try {
-      val fetchedValue = fetch(key)
-      write(key, fetchedValue)
+      val fetchedValue = fetcher.fetch(key)
+      persister.write(key, fetchedValue)
       val diskValue = readDisk(key)!!
       notifySubscribers(diskValue, key)
       return diskValue
@@ -151,7 +138,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     }
   }
 
-  suspend fun handleNetworkError(
+  private suspend fun handleNetworkError(
           key: Key,
           throwable: Throwable,
           useCacheOnError: Boolean
@@ -164,7 +151,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     throw throwable
   }
 
-  suspend fun notifySubscribers(
+  private suspend fun notifySubscribers(
     data: Parsed,
     key: Key
   ) {
@@ -183,36 +170,15 @@ internal class RealInternalStore<Raw, Parsed, Key>(
           .drop(1)
           .map { it!! }
 
-  @Deprecated("")
   override fun clearMemory() {
-    clear()
-  }
-
-  /**
-   * Clear memory by id
-   *
-   * @param key of data to clear
-   */
-  @Deprecated("")
-  override fun clearMemory(key: Key) {
-    clear(key)
-  }
-
-  override fun clear() {
-    for (cachedKey in memCache.asMap().keys) {
-      clear(cachedKey)
-    }
+    inFlightRequests.invalidateAll()
+    memCache.invalidateAll()
   }
 
   override fun clear(key: Key) {
     inFlightRequests.invalidate(key)
     memCache.invalidate(key)
     StoreUtil.clearPersister<Any, Key>(persister, key)
-    notifyRefresh(key)
-  }
-
-  private fun notifyRefresh(key: Key) {
-//    refreshSubject.onNext(key)
   }
 }
 

@@ -23,15 +23,6 @@ interface Store<T, V> {
     suspend fun get(key: V): T
 
     /**
-     * Calls store.get(), additionally will repeat anytime store.clear(barcode) is called
-     * WARNING: getRefreshing(barcode) is an endless observable, be careful when combining
-     * with operators that expect an OnComplete event
-     */
-//    @Experimental
-//    fun getRefreshing(key: V): Observable<T>
-
-
-    /**
      * Return an Observable of T for requested Barcode skipping Memory & Disk Cache
      */
     suspend fun fresh(key: V): T
@@ -57,20 +48,7 @@ interface Store<T, V> {
     /**
      * Clear the memory cache of all entries
      */
-    @Deprecated("")
     fun clearMemory()
-
-    /**
-     * Purge a particular entry from memory cache.
-     */
-    @Deprecated("")
-    fun clearMemory(key: V)
-
-    /**
-     * purges all entries from memory and disk cache
-     * Persister will only be cleared if they implements Clearable
-     */
-    fun clear()
 
     /**
      * Purge a particular entry from memory and disk cache.
