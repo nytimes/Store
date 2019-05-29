@@ -35,7 +35,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
   var memCache: Cache<Key, Deferred<Parsed>> = CacheFactory.createCache(memoryPolicy)
   private val inFlightScope = CoroutineScope(SupervisorJob())
   private val memoryScope = CoroutineScope(SupervisorJob())
-//  private val refreshSubject = PublishSubject.create<Key>()
+
   private val subject = BroadcastChannel<Pair<Key, Parsed>?>(CONFLATED).apply {
     //a conflated channel always maintains the last element, the stream method ignore this element.
     //Here we add an empty element that will be ignored later
@@ -151,7 +151,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     }
   }
 
-  suspend fun handleNetworkError(
+  private suspend fun handleNetworkError(
           key: Key,
           throwable: Throwable,
           useCacheOnError: Boolean
@@ -164,7 +164,7 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     throw throwable
   }
 
-  suspend fun notifySubscribers(
+  private suspend fun notifySubscribers(
     data: Parsed,
     key: Key
   ) {
@@ -192,11 +192,6 @@ internal class RealInternalStore<Raw, Parsed, Key>(
     inFlightRequests.invalidate(key)
     memCache.invalidate(key)
     StoreUtil.clearPersister<Any, Key>(persister, key)
-    notifyRefresh(key)
-  }
-
-  private fun notifyRefresh(key: Key) {
-//    refreshSubject.onNext(key)
   }
 }
 

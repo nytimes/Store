@@ -67,12 +67,6 @@ open class RealStore<Parsed, Key> : Store<Parsed, Key> {
         return internalStore.get(key)
     }
 
-//
-//    fun getRefreshing(key: Key): Observable<Parsed> {
-//        TODO("not implemented")
-//    }
-
-
     /**
      * Will check to see if there exists an in flight observable and return it before
      * going to network
