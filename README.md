@@ -1,3 +1,14 @@
+<table>
+  <tr>
+    <td>
+        <h3>DEPRECATED</h3>
+        Store(3) is deprecated. No more development will be taking place. For an up-to-date version,
+        please use <a href="https://github.com/dropbox/store">Store(4)</a>. Thanks for all your support!
+    </td>
+  </tr>
+</table>
+<br/><br/>
+
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=feature/rx2)](https://travis-ci.org/NYTimes/Store)
 
 ![Store Logo](https://raw.githubusercontent.com/NYTimes/Store/feature/rx2/Images/store-logo.png)
