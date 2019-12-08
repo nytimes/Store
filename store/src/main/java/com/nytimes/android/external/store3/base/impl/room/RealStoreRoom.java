@@ -114,7 +114,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
                             && StoreUtil.persisterIsStale(key, persister)) {
                         backfillCache(key);
                     }
-                }).cache();
+                }).replay(1);
     }
 
     @SuppressWarnings("CheckReturnValue")
@@ -170,7 +170,7 @@ class RealStoreRoom<Raw, Parsed, Key> extends StoreRoom<Parsed, Key> {
                     return Observable.error(throwable);
                 })
                 .doAfterTerminate(() -> inFlightRequests.invalidate(key))
-                .cache();
+                .replay(1);
     }
 
 
