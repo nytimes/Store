@@ -315,17 +315,15 @@ final class RealInternalStore<Raw, Parsed, Key> implements InternalStore<Parsed,
         refreshSubject.onNext(key);
     }
 
-    /**
-     * @return DiskDAO that stores and stores <Raw> data
-     */
-    Persister<Raw, Key> persister() {
+    @Nonnull
+    @Override
+    public Persister<Raw, Key> persister() {
         return persister;
     }
 
-    /**
-     *
-     */
-    Fetcher<Raw, Key> fetcher() {
+    @Nullable
+    @Override
+    public Fetcher<Raw, Key> fetcher() {
         return fetcher;
     }
 }
