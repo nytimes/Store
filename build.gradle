@@ -11,10 +11,8 @@ buildscript {
         maven {
             url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
         }
-
-        jcenter()
-
         google()
+        jcenter()
     }
 
     rootProject.ext.versions = [
