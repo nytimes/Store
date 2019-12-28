@@ -35,14 +35,14 @@ Store leverages RxJava and multiple request throttling to prevent excessive call
 
 ###### Include gradle dependency
 
-```
+```groovy
 implementation 'com.nytimes.android:store3:3.1.1'
 ```
 
 ###### Set the source & target compatibilities to `1.8`
 Starting with Store 3.0, `retrolambda` is no longer used. Therefore to allow support for lambdas the Java `sourceCompatibility` and `targetCompatibility` need to be set to `1.8`
 
-```
+```gradle
 android {
     compileOptions {
         sourceCompatibility 1.8
