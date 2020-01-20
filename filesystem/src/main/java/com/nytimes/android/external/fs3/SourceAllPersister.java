@@ -3,6 +3,7 @@ package com.nytimes.android.external.fs3;
 
 import com.nytimes.android.external.fs3.filesystem.FileSystem;
 import com.nytimes.android.external.store3.base.AllPersister;
+import com.nytimes.android.external.store3.base.ReadResult;
 import com.nytimes.android.external.store3.base.impl.BarCode;
 
 import java.io.FileNotFoundException;
@@ -33,6 +34,12 @@ public class SourceAllPersister implements AllPersister<BufferedSource, BarCode>
         sourceFileAllEraser = new FSAllEraser(fileSystem);
         sourceFileReader = new FSReader<>(fileSystem,  new BarCodeReadAllPathResolver());
         sourceFileWriter = new FSWriter<>(fileSystem,  new BarCodeReadAllPathResolver());
+    }
+
+    @Nonnull
+    @Override
+    public Observable<ReadResult<BufferedSource>> safeReadAll(@Nonnull String path) {
+        return sourceFileAllReader.safeReadAll(path);
     }
 
     @Nonnull

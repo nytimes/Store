@@ -10,15 +10,26 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 
-public interface AllPersister<Raw, Key> extends Persister<Raw, Key>, DiskAllRead, DiskAllErase {
+public interface AllPersister<Raw, Key> extends Persister<Raw, Key>, DiskAllRead<Raw>, DiskAllErase {
+
     /**
+     * @param path to use to get data from persister
+     *                If data is not available implementer needs to
+     *                check for failures in the emitted {@link ReadResult}
+     */
+    @Nonnull
+    @Override
+    Observable<ReadResult<Raw>> safeReadAll(@Nonnull final String path);
+
+    /**
+     * @deprecated Use {@link #safeReadAll(String)} instead
      * @param path to use to get data from persister
      *                If data is not available implementer needs to
      *                throw an exception
      */
-    @Override
     @Nonnull
-    Observable<Raw> readAll(@Nonnull final String path) throws FileNotFoundException;
+    @Override
+    Observable<Raw> readAll(@Nonnull String path) throws FileNotFoundException;
 
     /**
      * @param path to delete all the data in the the path.
